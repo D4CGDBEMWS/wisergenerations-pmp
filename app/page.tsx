@@ -22,9 +22,21 @@ const AUDIENCE_MAP: Record<string, string[]> = {
 }
 
 const TESTIMONIALS = [
-  { name: 'Marcus T.', role: 'Army Veteran → Project Manager', quote: 'Crystal translated 12 years of military leadership into PMP® language. I passed on my first attempt.' },
-  { name: 'Renee A.', role: 'Career Transitioner → PMP®', quote: 'I went from zero PM credentials to PMP® certified in 14 weeks. The cohort kept me accountable.' },
-  { name: 'David L.', role: 'IT Director, Atlanta', quote: 'We sent 8 team members through the corporate program. All passed. ROI was immediate.' },
+  {
+    name: 'Tai Cochran, MA Ed. HD, PMP',
+    role: 'CEO, HER PM | Project Leadership Strategist',
+    quote: 'Crystal is the ultimate trainer! She is a wealth of knowledge and wisdom, truly invested to ensure the success of each of her students. Her knowledge, training and mentorship helped me to clear my PMP on the very first try!',
+  },
+  {
+    name: 'Lynn Fleming MBA, PMP, PMI-ACP, PMI-SP',
+    role: 'Principal Strategic Program Manager',
+    quote: 'Knowledgeable with a sincere concern for each of her pupils, she has a unique way of conveying the concepts regardless of their learning method. After attending her course, I gained confidence within the PMI realm. I highly recommend Crystal\'s services to any organization that desires to improve their PMO.',
+  },
+  {
+    name: 'Erin Sanders, PE, PMP',
+    role: 'Chief Operating Officer',
+    quote: 'Crystal is a project management professional. Her passion for teaching the project management process creates an engaging and exciting classroom. I would recommend Crystal to any organization or individual seeking project management education or PMP Certification.',
+  },
 ]
 
 export default function HomePage() {
