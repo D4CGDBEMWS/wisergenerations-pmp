@@ -233,7 +233,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <img src="/crystal-stewart.jpg" alt="Crystal Stewart, PMP®"
+              <img src="https://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpg" alt="Crystal Stewart, PMP®"
                 className="rounded-2xl shadow-xl w-full object-cover max-h-[500px]" />
             </div>
             <div>
