@@ -22,9 +22,9 @@ export default function VeteransPage() {
       <section className="relative bg-navy text-white py-24">
         <div className="absolute inset-0 overflow-hidden">
           <img
-            src={ARMY_PHOTOS.classroom1}
+            src={ARMY_PHOTOS.classroom2}
             alt="Military classroom training"
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-10"
           />
         </div>
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
@@ -44,13 +44,7 @@ export default function VeteransPage() {
         </div>
       </section>
 
-      {/* Photo banner — 3 military classroom photos */}
-      <section className="grid grid-cols-3 h-52 overflow-hidden">
-        <img src={ARMY_PHOTOS.classroom2} alt="Soldiers in classroom training" className="w-full h-full object-cover" />
-        <img src={ARMY_PHOTOS.classroom3} alt="Military professional development" className="w-full h-full object-cover" />
-        <img src={ARMY_PHOTOS.classroom4} alt="Soldiers in professional training session" className="w-full h-full object-cover" />
-      </section>
-      <p className="text-center text-xs text-gray-400 py-1">Photos: U.S. Army (Public Domain)</p>
+
 
       {/* Translation */}
       <section className="py-16 bg-light-navy">
@@ -110,12 +104,6 @@ export default function VeteransPage() {
               </div>
             </div>
             <div className="sticky top-24">
-              <img
-                src={ARMY_PHOTOS.classroom1}
-                alt="Military classroom training session"
-                className="w-full rounded-2xl shadow-lg object-cover h-[420px]"
-              />
-              <p className="text-xs text-gray-400 mt-1 text-center">Photo: U.S. Army (Public Domain)</p>
               <div className="mt-4 bg-navy rounded-xl p-5 text-white text-center">
                 <p className="font-bold text-gold mb-1">Ready to start?</p>
                 <p className="text-sm text-gray-300 mb-3">Book a free 15-min call with Crystal</p>
