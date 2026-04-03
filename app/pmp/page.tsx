@@ -168,18 +168,22 @@ export default function PMPPage() {
                       )}
                     </div>
                     <div className="space-y-3">
-                      <Link
-                        href={`/${p.id === 'pmp-coaching' ? 'contact' : 'enroll'}`}
+                      <a
+                        href="https://calendly.com/space4grace/15min"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors"
                       >
                         {p.id === 'pmp-coaching' ? 'Schedule a Call' : 'Get Started'}
-                      </Link>
-                      <Link
-                        href="/enroll"
+                      </a>
+                      <a
+                        href="https://calendly.com/space4grace/15min"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block w-full border-2 border-gold text-gold font-bold py-3 rounded-xl text-center hover:bg-gold hover:text-navy transition-colors"
                       >
                         Learn More
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -220,12 +224,14 @@ export default function PMPPage() {
             Your experience is already there. Let's give it the credential it deserves.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/enroll"
+            <a
+              href="https://calendly.com/space4grace/15min"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gold text-navy font-bold py-4 px-10 rounded-xl text-center hover:bg-yellow-400 transition-colors"
             >
               Enroll Today
-            </Link>
+            </a>
             <Link
               href="/contact"
               className="border-2 border-white text-white font-bold py-4 px-10 rounded-xl text-center hover:bg-white hover:text-navy transition-colors"
