@@ -29,9 +29,14 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-xs">© {new Date().getFullYear()} Enterprise Academy™. All rights reserved.</p>
-          <p className="text-gray-500 text-xs">PMP® and CAPM® are registered marks of the Project Management Institute, Inc.</p>
+        <div className="border-t border-gray-700 mt-10 pt-6 flex flex-col gap-3">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-500 text-xs">© {new Date().getFullYear()} Enterprise Academy™. All rights reserved.</p>
+            <a href="https://www.pmi.org" target="_blank" rel="noopener noreferrer" className="text-gray-500 text-xs hover:text-gold transition-colors">pmi.org</a>
+          </div>
+          <p className="text-white text-center leading-relaxed" style={{fontSize: '8px'}}>
+            "PMI", "PMP", "CAPM", "PMI-ACP", "PMI-RMP", "PMI-SP", "PMI-PBA", "PMBOK", "PM Network", "Project Management Journal", "PMI Today" and the PMI logo are registered marks of the Project Management Institute, Inc. Wiser Generations™ is an independent training provider and is not affiliated with, endorsed by, or sponsored by the Project Management Institute, Inc.
+          </p>
         </div>
       </div>
     </footer>
