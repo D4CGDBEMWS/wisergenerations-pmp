@@ -7,6 +7,14 @@ export const metadata: Metadata = {
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
+// U.S. Army public domain photos (no copyright restrictions)
+const ARMY_PHOTOS = {
+  classroom1: 'https://api.army.mil/e2/c/images/2020/12/09/7ae5443e/original.jpg',
+  classroom2: 'https://api.army.mil/e2/c/images/2020/12/09/2f2d4e92/original.jpg',
+  classroom3: 'https://api.army.mil/e2/c/images/2020/12/09/d1b44f38/original.jpg',
+  classroom4: 'https://api.army.mil/e2/c/images/2020/12/09/d845df59/original.jpg',
+}
+
 export default function VeteransPage() {
   return (
     <div>
@@ -14,8 +22,8 @@ export default function VeteransPage() {
       <section className="relative bg-navy text-white py-24">
         <div className="absolute inset-0 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=1600&q=80&fit=crop"
-            alt="Veterans"
+            src={ARMY_PHOTOS.classroom1}
+            alt="Military classroom training"
             className="w-full h-full object-cover opacity-20"
           />
         </div>
@@ -36,12 +44,13 @@ export default function VeteransPage() {
         </div>
       </section>
 
-      {/* Photo banner */}
-      <section className="grid grid-cols-3 h-48 overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=600&q=80&fit=crop" alt="Veteran in uniform" className="w-full h-full object-cover" />
-        <img src="https://images.unsplash.com/photo-1543700259-3a5f0e6cbab7?w=600&q=80&fit=crop" alt="Military service" className="w-full h-full object-cover" />
-        <img src="https://images.unsplash.com/photo-1521791055366-0d553872952f?w=600&q=80&fit=crop" alt="Professional veteran" className="w-full h-full object-cover" />
+      {/* Photo banner — 3 military classroom photos */}
+      <section className="grid grid-cols-3 h-52 overflow-hidden">
+        <img src={ARMY_PHOTOS.classroom2} alt="Soldiers in classroom training" className="w-full h-full object-cover" />
+        <img src={ARMY_PHOTOS.classroom3} alt="Military professional development" className="w-full h-full object-cover" />
+        <img src={ARMY_PHOTOS.classroom4} alt="Soldiers in professional training session" className="w-full h-full object-cover" />
       </section>
+      <p className="text-center text-xs text-gray-400 py-1">Photos: U.S. Army (Public Domain)</p>
 
       {/* Translation */}
       <section className="py-16 bg-light-navy">
@@ -102,10 +111,11 @@ export default function VeteransPage() {
             </div>
             <div className="sticky top-24">
               <img
-                src="https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=800&q=80&fit=crop"
-                alt="Veteran professional"
-                className="w-full rounded-2xl shadow-lg object-cover h-[500px]"
+                src={ARMY_PHOTOS.classroom1}
+                alt="Military classroom training session"
+                className="w-full rounded-2xl shadow-lg object-cover h-[420px]"
               />
+              <p className="text-xs text-gray-400 mt-1 text-center">Photo: U.S. Army (Public Domain)</p>
               <div className="mt-4 bg-navy rounded-xl p-5 text-white text-center">
                 <p className="font-bold text-gold mb-1">Ready to start?</p>
                 <p className="text-sm text-gray-300 mb-3">Book a free 15-min call with Crystal</p>
@@ -117,13 +127,8 @@ export default function VeteransPage() {
       </section>
 
       {/* Crystal veteran note */}
-      <section className="relative py-16 bg-navy text-white overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1600&q=80&fit=crop"
-          alt="Military background"
-          className="absolute inset-0 w-full h-full object-cover opacity-10"
-        />
-        <div className="relative max-w-3xl mx-auto px-4 text-center">
+      <section className="py-16 bg-navy text-white">
+        <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-gold font-bold uppercase text-sm tracking-wider mb-4">From Crystal</p>
           <blockquote className="text-xl italic text-gray-200 leading-relaxed mb-4">
             "I served. I know what it means to transition — to walk out of a world where your competence is
