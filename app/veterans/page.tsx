@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition, peer cohort, VA benefit guidance. Enterprise Academy™.',
 }
 
+const CALENDLY = 'https://calendly.com/space4grace/15min'
+
 export default function VeteransPage() {
   return (
     <div>
@@ -22,8 +24,8 @@ export default function VeteransPage() {
             certification that civilian employers recognize — and respect.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link href="/enroll" className="bg-gold text-white font-bold px-8 py-4 rounded-lg hover:bg-amber-600 transition-colors text-lg">Start Your Pathway</Link>
-            <Link href="/contact" className="border-2 border-white text-white font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">Talk to Crystal</Link>
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="bg-gold text-white font-bold px-8 py-4 rounded-lg hover:bg-amber-600 transition-colors text-lg">Start Your Pathway</a>
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="border-2 border-white text-white font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">Talk to Crystal</a>
           </div>
         </div>
       </section>
@@ -70,7 +72,7 @@ export default function VeteransPage() {
               { icon: '📚', title: 'PMP® or CAPM® Prep (Your Choice)', body: 'Full certification prep course with live study sessions, practice exams, and Crystal as your mentor. You choose the credential that fits your timeline.' },
               { icon: '💰', title: 'VA Benefit Compatibility Guidance', body: 'We help you understand which VA education benefits may apply to your tuition. Not a guarantee — but we navigate it with you.' },
               { icon: '👥', title: 'Veteran Peer Cohort', body: 'Study and grow alongside other veterans who understand your background, your communication style, and your mission-first mindset.' },
-              { icon: '💼', title: 'Employer Introduction Program', body: 'Access to Enterprise Academy\'s network of PM-hiring employers who actively seek veteran talent. Resume review and interview prep included.' },
+              { icon: '💼', title: 'Employer Introduction Program', body: "Access to Enterprise Academy's network of PM-hiring employers who actively seek veteran talent. Resume review and interview prep included." },
               { icon: '🎖️', title: 'Veteran-Discounted Tuition', body: 'Discounted rate for all honorably discharged veterans. Bring your DD-214 verification at enrollment.' },
             ].map(item => (
               <div key={item.title} className="border border-gray-200 rounded-xl p-6">
@@ -100,7 +102,7 @@ export default function VeteransPage() {
         <div className="max-w-xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold text-navy mb-4">Start Your Veterans Pathway</h2>
           <p className="text-gray-600 mb-6">Tell us your branch, your timeline, and your goal. We'll take it from there.</p>
-          <Link href="/enroll" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Apply Now →</Link>
+          <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Apply Now →</a>
         </div>
       </section>
     </div>
