@@ -2,78 +2,78 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'PMP® Certification Prep — Wiser Generations',
-  description: 'Earn your PMP® credential with instructor-led training built for working professionals. PMI-aligned curriculum, exam prep, and ongoing coaching.',
+  title: 'Corporate Training — PMP® & CAPM® for Teams | Wiser Generations',
+  description: 'Upskill your project management teams with PMI-aligned corporate training. Group rates, custom delivery, and measurable results for organizations of all sizes.',
 }
 
-const TRACKS = [
+const PACKAGES = [
   {
-    id: 'pmp-accelerator',
-    icon: '🎯',
-    name: 'PMP® Accelerator',
-    audience: 'Working Professionals & Career Transitioners',
+    id: 'corporate-team',
+    icon: '🏢',
+    name: 'Team Cohort Program',
+    audience: 'Teams of 5–25 Professionals',
     color: 'border-gold',
-    badge: 'Most Popular',
-    price: 1997,
-    description:
-      'A focused, instructor-led program that takes you from application to exam-ready in 12 weeks. Built around real project scenarios so the content clicks — not just for the exam, but for your career.',
-    features: [
-      '35 PMI-required contact hours (included)',
-      'Live weekly sessions + on-demand replay',
-      'Application assistance & audit support',
-      'Full-length practice exams with debrief',
-      'Private cohort community access',
-      'Exam attempt guarantee support',
-    ],
-  },
-  {
-    id: 'pmp-self-paced',
-    icon: '📚',
-    name: 'PMP® Self-Paced Prep',
-    audience: 'Independent Learners',
-    color: 'border-navy',
-    badge: '',
-    price: 797,
-    description:
-      'All the structure of the Accelerator — at your own pace. Access every lesson, practice exam, and resource on your schedule. Ideal if you already have PM experience and need focused exam prep.',
-    features: [
-      '35 contact hours certificate',
-      'Full video lesson library',
-      '500+ practice questions',
-      'Downloadable study guides & templates',
-      'Community forum access',
-      '6 months of content access',
-    ],
-  },
-  {
-    id: 'pmp-coaching',
-    icon: '🤝',
-    name: 'PMP® 1-on-1 Coaching',
-    audience: 'Professionals Who Want Personalized Support',
-    color: 'border-gold',
-    badge: 'Premium',
+    badge: 'Best Value',
     price: 0,
     description:
-      'Work directly with a certified PMP® mentor for personalized study planning, accountability check-ins, and targeted help on your weak areas. Best combined with the Accelerator or Self-Paced track.',
+      'Send your team through a dedicated cohort of our PMP® or CAPM® program. Everyone learns the same framework, speaks the same language, and returns to work immediately more aligned and effective.',
     features: [
-      'Bi-weekly 1-on-1 coaching sessions',
-      'Custom study plan built around your schedule',
-      'Application & experience documentation support',
-      'Targeted weak-area drills',
-      'Direct mentor access via messaging',
-      'Flexible 4- or 8-week packages',
+      'Dedicated cohort for your organization',
+      'Live instructor-led sessions (virtual or on-site)',
+      '35 PMI contact hours per participant',
+      'Group exam application support',
+      'Customized case studies from your industry',
+      'Progress reporting for managers & HR',
+    ],
+  },
+  {
+    id: 'corporate-custom',
+    icon: '⚙️',
+    name: 'Custom Training Design',
+    audience: 'Organizations with Specific PM Frameworks',
+    color: 'border-navy',
+    badge: '',
+    price: 0,
+    description:
+      'Already using Agile, Scrum, or a proprietary PM methodology? We build training that bridges your internal processes with PMI standards — so your team gets certified without abandoning what works.',
+    features: [
+      'Curriculum aligned to your internal frameworks',
+      'Hybrid Agile + Predictive content available',
+      'CAPM® pathway for emerging PMs on your team',
+      'Executive briefing sessions available',
+      'LMS integration or standalone delivery',
+      'Train-the-trainer option available',
+    ],
+  },
+  {
+    id: 'corporate-lunch',
+    icon: '🎤',
+    name: 'Lunch & Learn / Workshop',
+    audience: 'Organizations Exploring PM Development',
+    color: 'border-gold',
+    badge: 'Quick Win',
+    price: 0,
+    description:
+      'A 90-minute to half-day workshop introducing your team to project management fundamentals, PMP® certification pathways, and how structured PM improves delivery across your organization.',
+    features: [
+      '90-min, half-day, or full-day formats',
+      'Virtual or on-site delivery',
+      'Customized to your team\'s challenges',
+      'Interactive exercises and Q&A',
+      'Participant workbooks included',
+      'Follow-up resource package',
     ],
   },
 ]
 
-const OUTCOMES = [
-  { stat: '87%', label: 'First-attempt pass rate among our students' },
-  { stat: '35', label: 'PMI contact hours included — no extra cost' },
-  { stat: '12 wks', label: 'Average time from enrollment to exam-ready' },
-  { stat: '100%', label: 'PMI Exam Content Outline (ECO) aligned' },
+const BENEFITS = [
+  { icon: '📈', title: 'Measurable ROI', desc: 'Certified PMs deliver projects on time and on budget more consistently. PMI research shows certified teams outperform uncertified peers.' },
+  { icon: '🔗', title: 'Shared Language', desc: 'When your whole team speaks PMI — risk, scope, stakeholder, charter — collaboration improves and handoffs stop falling apart.' },
+  { icon: '🎯', title: 'Retention Tool', desc: 'Offering PMP® training signals investment in your people. It\'s one of the highest-impact benefits you can offer high-performing PMs.' },
+  { icon: '🏆', title: 'Competitive Advantage', desc: 'Clients and partners notice when your team holds credentials. It builds trust before a project even kicks off.' },
 ]
 
-export default function PMPPage() {
+export default function CorporatePage() {
   return (
     <div>
       {/* Hero */}
@@ -81,21 +81,21 @@ export default function PMPPage() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">
-            PMP® Certification Prep
+            Corporate Training
           </p>
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Earn Your PMP®.<br />
-            <span className="text-gold">Lead With Credentials.</span>
+            Upskill Your Team.<br />
+            <span className="text-gold">Deliver Better Projects.</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mb-8">
-            Instructor-led PMP® training designed for working professionals, career transitioners, and leaders ready to make their experience official. PMI-aligned. Exam-focused. Career-transforming.
+            PMI-aligned PMP® and CAPM® training designed for organizations that are serious about project delivery. Group cohorts, custom curricula, and measurable outcomes — built around your team.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/enroll"
+              href="/contact"
               className="bg-gold text-navy font-bold py-4 px-8 rounded-xl text-center hover:bg-yellow-400 transition-colors"
             >
-              Enroll Now
+              Request a Proposal
             </Link>
             <Link
               href="/programs"
@@ -107,11 +107,16 @@ export default function PMPPage() {
         </div>
       </section>
 
-      {/* Outcomes Bar */}
+      {/* Benefits Bar */}
       <section className="bg-gold py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {OUTCOMES.map((o) => (
+            {[
+              { stat: 'Group', label: 'Rates for teams of 5 or more' },
+              { stat: 'Virtual', label: 'or on-site delivery available' },
+              { stat: 'PMI', label: 'Aligned — 35 contact hours included' },
+              { stat: 'Custom', label: 'Curriculum options available' },
+            ].map((o) => (
               <div key={o.stat}>
                 <p className="text-3xl font-bold text-navy">{o.stat}</p>
                 <p className="text-navy text-sm mt-1 leading-snug">{o.label}</p>
@@ -121,18 +126,18 @@ export default function PMPPage() {
         </div>
       </section>
 
-      {/* Tracks */}
+      {/* Packages */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-navy mb-3">Choose Your Path to PMP®</h2>
+            <h2 className="text-3xl font-bold text-navy mb-3">Corporate Training Options</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Every track is built on PMI standards and delivered by Crystal Stewart, PMP®. Pick the format that fits your life.
+              Every program is built on PMI standards and delivered by Crystal Stewart, PMP®. All packages include group pricing — contact us for a custom quote.
             </p>
           </div>
 
           <div className="space-y-8">
-            {TRACKS.map((p) => (
+            {PACKAGES.map((p) => (
               <div key={p.id} className={`border-2 ${p.color} rounded-2xl p-8 md:p-10`}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="md:col-span-2">
@@ -158,28 +163,26 @@ export default function PMPPage() {
                       {p.badge && (
                         <p className="text-xs font-bold text-gold uppercase tracking-wider mb-2">{p.badge}</p>
                       )}
-                      {p.price > 0 ? (
-                        <>
-                          <p className="text-3xl font-bold text-navy">${p.price.toLocaleString()}</p>
-                          <p className="text-gray-500 text-sm">one-time investment</p>
-                        </>
-                      ) : (
-                        <p className="text-xl font-bold text-navy">Custom Pricing</p>
-                      )}
+                      <p className="text-xl font-bold text-navy">Custom Pricing</p>
+                      <p className="text-gray-500 text-sm mt-1">based on team size & format</p>
                     </div>
                     <div className="space-y-3">
-                      <Link
-                        href={`/${p.id === 'pmp-coaching' ? 'contact' : 'enroll'}`}
+                      <a
+                        href="https://calendly.com/space4grace/15min"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors"
                       >
-                        {p.id === 'pmp-coaching' ? 'Schedule a Call' : 'Get Started'}
-                      </Link>
-                      <Link
-                        href="/enroll"
+                        Request a Proposal
+                      </a>
+                      <a
+                        href="https://calendly.com/space4grace/15min"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block w-full border-2 border-gold text-gold font-bold py-3 rounded-xl text-center hover:bg-gold hover:text-navy transition-colors"
                       >
                         Learn More
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -189,19 +192,17 @@ export default function PMPPage() {
         </div>
       </section>
 
-      {/* Why Wiser Generations */}
+      {/* Why Invest */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-navy mb-4">Why Wiser Generations?</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-10">
-            We don't just teach you to pass an exam — we help you become the kind of project leader organizations trust with their most important work.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: '🏅', title: 'PMI-Aligned Curriculum', desc: 'Every lesson maps directly to the PMI Exam Content Outline so there are no surprises on exam day.' },
-              { icon: '👩‍🏫', title: 'Expert Instruction', desc: 'Learn from Crystal Stewart, PMP® — a practitioner who has managed real projects and passed the real exam.' },
-              { icon: '🎖️', title: 'Built for Experience', desc: 'Our programs honor what you already know and help you frame your experience in the language PMI values.' },
-            ].map((item) => (
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-navy mb-4">Why Invest in PM Certification?</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              PMP® certification isn't just a credential — it's a shared operating system for how your team plans, executes, and delivers.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {BENEFITS.map((item) => (
               <div key={item.title} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                 <p className="text-4xl mb-4">{item.icon}</p>
                 <h3 className="text-lg font-bold text-navy mb-2">{item.title}</h3>
@@ -215,22 +216,24 @@ export default function PMPPage() {
       {/* CTA */}
       <section className="bg-navy text-white py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Make It Official?</h2>
+          <h2 className="text-3xl font-bold mb-4">Let's Build Something for Your Team</h2>
           <p className="text-gray-300 text-lg mb-8">
-            Your experience is already there. Let's give it the credential it deserves.
+            Tell us about your organization and goals. We'll put together a proposal within 48 hours.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/enroll"
+            <a
+              href="https://calendly.com/space4grace/15min"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gold text-navy font-bold py-4 px-10 rounded-xl text-center hover:bg-yellow-400 transition-colors"
             >
-              Enroll Today
-            </Link>
+              Request a Proposal
+            </a>
             <Link
-              href="/contact"
+              href="/programs"
               className="border-2 border-white text-white font-bold py-4 px-10 rounded-xl text-center hover:bg-white hover:text-navy transition-colors"
             >
-              Ask a Question
+              Browse All Programs
             </Link>
           </div>
         </div>
