@@ -54,7 +54,7 @@ export default function AboutPage() {
         {/* Right — Photo */}
         <div className="sticky top-24">
           <img
-            src="/crystal-stewart.jpg"
+            src="https://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpg"
             alt="Crystal Stewart, PMP® — Founder of Wiser Generations™"
             className="w-full rounded-2xl shadow-xl object-cover"
           />
