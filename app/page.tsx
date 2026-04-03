@@ -90,7 +90,7 @@ export default function HomePage() {
           <div className="absolute bottom-0 left-0 w-64 h-64 border border-gold rounded-full -translate-x-1/2 translate-y-1/2" />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
             <div className="max-w-3xl">
               <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
@@ -120,20 +120,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Crystal photo in hero */}
-            <div className="hidden lg:flex justify-center">
-              <div className="relative">
-                <div className="w-80 h-80 rounded-full overflow-hidden border-4 border-gold shadow-2xl">
-                  <img src="/crystal-stewart.jpg" alt="Crystal Stewart, PMP®" className="w-full h-full object-cover" />
-                </div>
-                <div className="absolute -bottom-4 -right-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
-                  Crystal Stewart, PMP®
-                </div>
-                <div className="absolute -top-4 -left-4 bg-navy border-2 border-gold text-white font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
-                  20+ Years Experience
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
