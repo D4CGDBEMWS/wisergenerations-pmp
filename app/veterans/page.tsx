@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Veterans PM Pathway — PMP® & CAPM® for Military Veterans',
@@ -11,10 +10,17 @@ const CALENDLY = 'https://calendly.com/space4grace/15min'
 export default function VeteransPage() {
   return (
     <div>
-      {/* Hero */}
-      <section className="bg-navy text-white py-20">
+      {/* Hero with background image */}
+      <section className="relative bg-navy text-white py-24">
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=1600&q=80&fit=crop"
+            alt="Veterans"
+            className="w-full h-full object-cover opacity-20"
+          />
+        </div>
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-4xl mb-6">🎖️</div>
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">Veterans PM Pathway</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">You Already Lead Projects.<br/>Now Get the Credential.</h1>
@@ -28,6 +34,13 @@ export default function VeteransPage() {
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="border-2 border-white text-white font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">Talk to Crystal</a>
           </div>
         </div>
+      </section>
+
+      {/* Photo banner */}
+      <section className="grid grid-cols-3 h-48 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=600&q=80&fit=crop" alt="Veteran in uniform" className="w-full h-full object-cover" />
+        <img src="https://images.unsplash.com/photo-1543700259-3a5f0e6cbab7?w=600&q=80&fit=crop" alt="Military service" className="w-full h-full object-cover" />
+        <img src="https://images.unsplash.com/photo-1521791055366-0d553872952f?w=600&q=80&fit=crop" alt="Professional veteran" className="w-full h-full object-cover" />
       </section>
 
       {/* Translation */}
@@ -64,30 +77,53 @@ export default function VeteransPage() {
       {/* What's included */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-navy mb-2 text-center">Veterans PM Pathway — What's Included</h2>
-          <p className="text-center text-gold font-medium mb-10">Starting from $797 · Veteran discount applied at enrollment</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { icon: '📋', title: 'Military-to-PM Skills Translation Guide', body: 'A personalized document mapping your MOS/rate and service experience to PMI competency areas. Use this in interviews and on your resume.' },
-              { icon: '📚', title: 'PMP® or CAPM® Prep (Your Choice)', body: 'Full certification prep course with live study sessions, practice exams, and Crystal as your mentor. You choose the credential that fits your timeline.' },
-              { icon: '💰', title: 'VA Benefit Compatibility Guidance', body: 'We help you understand which VA education benefits may apply to your tuition. Not a guarantee — but we navigate it with you.' },
-              { icon: '👥', title: 'Veteran Peer Cohort', body: 'Study and grow alongside other veterans who understand your background, your communication style, and your mission-first mindset.' },
-              { icon: '💼', title: 'Employer Introduction Program', body: "Access to Enterprise Academy's network of PM-hiring employers who actively seek veteran talent. Resume review and interview prep included." },
-              { icon: '🎖️', title: 'Veteran-Discounted Tuition', body: 'Discounted rate for all honorably discharged veterans. Bring your DD-214 verification at enrollment.' },
-            ].map(item => (
-              <div key={item.title} className="border border-gray-200 rounded-xl p-6">
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="font-bold text-navy mb-2">{item.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{item.body}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div>
+              <h2 className="text-2xl font-bold text-navy mb-2">Veterans PM Pathway — What's Included</h2>
+              <p className="text-gold font-medium mb-8">Starting from $797 · Veteran discount applied at enrollment</p>
+              <div className="space-y-5">
+                {[
+                  { icon: '📋', title: 'Military-to-PM Skills Translation Guide', body: 'A personalized document mapping your MOS/rate and service experience to PMI competency areas. Use this in interviews and on your resume.' },
+                  { icon: '📚', title: 'PMP® or CAPM® Prep (Your Choice)', body: 'Full certification prep course with live study sessions, practice exams, and Crystal as your mentor. You choose the credential that fits your timeline.' },
+                  { icon: '💰', title: 'VA Benefit Compatibility Guidance', body: 'We help you understand which VA education benefits may apply to your tuition. Not a guarantee — but we navigate it with you.' },
+                  { icon: '👥', title: 'Veteran Peer Cohort', body: 'Study and grow alongside other veterans who understand your background, your communication style, and your mission-first mindset.' },
+                  { icon: '💼', title: 'Employer Introduction Program', body: "Access to Enterprise Academy's network of PM-hiring employers who actively seek veteran talent. Resume review and interview prep included." },
+                  { icon: '🎖️', title: 'Veteran-Discounted Tuition', body: 'Discounted rate for all honorably discharged veterans. Bring your DD-214 verification at enrollment.' },
+                ].map(item => (
+                  <div key={item.title} className="flex gap-4">
+                    <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                    <div>
+                      <h3 className="font-bold text-navy mb-1">{item.title}</h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">{item.body}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="sticky top-24">
+              <img
+                src="https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=800&q=80&fit=crop"
+                alt="Veteran professional"
+                className="w-full rounded-2xl shadow-lg object-cover h-[500px]"
+              />
+              <div className="mt-4 bg-navy rounded-xl p-5 text-white text-center">
+                <p className="font-bold text-gold mb-1">Ready to start?</p>
+                <p className="text-sm text-gray-300 mb-3">Book a free 15-min call with Crystal</p>
+                <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="block bg-gold text-navy font-bold py-2 rounded-lg hover:bg-amber-400 transition-colors">Book Your Call →</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Crystal veteran note */}
-      <section className="py-12 bg-navy text-white">
-        <div className="max-w-3xl mx-auto px-4 text-center">
+      <section className="relative py-16 bg-navy text-white overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1600&q=80&fit=crop"
+          alt="Military background"
+          className="absolute inset-0 w-full h-full object-cover opacity-10"
+        />
+        <div className="relative max-w-3xl mx-auto px-4 text-center">
           <p className="text-gold font-bold uppercase text-sm tracking-wider mb-4">From Crystal</p>
           <blockquote className="text-xl italic text-gray-200 leading-relaxed mb-4">
             "I served. I know what it means to transition — to walk out of a world where your competence is
