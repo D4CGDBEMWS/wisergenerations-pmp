@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: 'PMP® prep, CAPM® career launcher, corporate team training, and veterans PM pathway. Find your certification program at Wiser Generations™.',
 }
 
+const CALENDLY = 'https://calendly.com/space4grace/15min'
+
 export default function ProgramsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -49,8 +51,8 @@ export default function ProgramsPage() {
                   )}
                 </div>
                 <div className="space-y-3">
-                  <Link href={`/${p.id === 'capm-adult' ? 'capm' : p.id}`} className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors">Learn More</Link>
-                  <Link href="/enroll" className="block w-full border-2 border-gold text-gold font-bold py-3 rounded-xl text-center hover:bg-light-gold transition-colors">Get Started</Link>
+                  <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors">Learn More</a>
+                  <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="block w-full border-2 border-gold text-gold font-bold py-3 rounded-xl text-center hover:bg-light-gold transition-colors">Get Started</a>
                 </div>
               </div>
             </div>
@@ -60,7 +62,7 @@ export default function ProgramsPage() {
       <div className="mt-16 bg-navy rounded-2xl p-8 text-white text-center">
         <h2 className="text-2xl font-bold mb-3">Not sure which program is right for you?</h2>
         <p className="text-gray-300 mb-6">Tell Crystal where you are and she'll point you to the right path.</p>
-        <Link href="/contact" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Talk to Crystal →</Link>
+        <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Talk to Crystal →</a>
       </div>
     </div>
   )
