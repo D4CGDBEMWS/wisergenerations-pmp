@@ -85,7 +85,12 @@ export default function HomePage() {
       {/* Crystal */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <img src="/crystal-stewart.jpg" alt="Crystal Stewart, PMP®"
+                className="rounded-2xl shadow-xl w-full object-cover max-h-[500px]" />
+            </div>
+            <div>
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
             <h2 className="text-3xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
@@ -93,12 +98,12 @@ export default function HomePage() {
               U.S. Army veteran. Crystal does not just teach PM — she has lived it, built with it, and now equips
               the next generation of project managers to do the same.
             </p>
-            <div className="flex flex-wrap gap-3 mb-6 justify-center">
+            <div className="flex flex-wrap gap-3 mb-6">
               {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy™ Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
                 <span key={t} className="bg-light-navy border border-navy/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
               ))}
             </div>
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-4">
               <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
                 Crystal's Story
               </Link>
@@ -106,6 +111,7 @@ export default function HomePage() {
                 className="border-2 border-gold text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold hover:text-navy transition-colors">
                 Book a Call
               </a>
+            </div>
             </div>
           </div>
         </div>
