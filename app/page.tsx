@@ -30,41 +30,65 @@ export default function HomePage() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="max-w-3xl">
-            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Project Manage Your Career.
-              <br /><span className="text-gold">Transform Your Future.™</span>
-            </h1>
-            <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 max-w-2xl">
-              PMP® and CAPM® certification training built for career transitioners, corporate teams, and veterans.
-              Mentor-led. PMI-aligned. Delivered by Crystal Stewart — The Project Management Evangelist™.
-            </p>
-            <div className="flex flex-wrap gap-4 mb-10">
-              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-                className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-amber-400 transition-colors text-lg">
-                Book a Free Call
-              </a>
-              <Link href="/programs"
-                className="border-2 border-gold text-gold font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">
-                Explore Programs
-              </Link>
+            {/* Left — Text */}
+            <div>
+              <div className="inline-flex items-center gap-2 bg-gold/20 border border-gold/40 text-gold text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-6">
+                <span className="w-2 h-2 bg-gold rounded-full animate-pulse" />
+                Next Cohort Starting Soon — Limited Spots
+              </div>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                Pass Your PMP®<br />
+                <span className="text-gold">On the First Try.™</span>
+              </h1>
+              <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-6 max-w-2xl">
+                PMP® and CAPM® certification training built for career transitioners, corporate teams, and veterans.
+                Mentor-led. PMI-aligned. Delivered by Crystal Stewart — The Project Management Evangelist™.
+              </p>
+
+              {/* Social proof snippet under hero text */}
+              <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-8 max-w-xl">
+                <p className="text-gray-200 text-sm italic leading-relaxed">
+                  "Her knowledge, training and mentorship helped me to clear my PMP on the very first try!"
+                </p>
+                <p className="text-gold text-xs font-bold mt-2">— Tai Cochran, MA Ed. HD, PMP · CEO, HER PM</p>
+              </div>
+
+              <div className="flex flex-wrap gap-4 mb-8">
+                <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                  className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-amber-400 transition-colors text-lg">
+                  Book a Free Call
+                </a>
+                <Link href="/programs"
+                  className="border-2 border-gold text-gold font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">
+                  Explore Programs
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                {['PMI-Aligned', 'PMP® & CAPM® Prep', 'Veterans Welcome', 'Corporate Packages', 'Virtual + Metro Atlanta'].map(t => (
+                  <span key={t} className="flex items-center gap-1.5 text-sm text-gray-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />{t}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-x-6 gap-y-2">
-              {['PMI-Aligned', 'PMP® & CAPM® Prep', 'Veterans Welcome', 'Corporate Packages', 'Virtual + Metro Atlanta'].map(t => (
-                <span key={t} className="flex items-center gap-1.5 text-sm text-gray-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />{t}
-                </span>
-              ))}
-            </div>
-            </div>
-            {/* Team photo */}
-            <div className="hidden lg:block">
-              <img
-                src="/team-success.jpg"
-                alt="PMP certification team celebrating success"
-                className="rounded-2xl shadow-2xl w-2/5 mx-auto object-cover h-[220px] opacity-90 -mt-24 block"
-              />
+
+            {/* Right — Crystal's photo */}
+            <div className="hidden lg:flex justify-center">
+              <div className="relative">
+                <img
+                  src="/crystal-stewart.jpg"
+                  alt="Crystal Stewart, PMP® — The Project Management Evangelist"
+                  className="rounded-2xl shadow-2xl w-full max-w-sm object-cover h-[480px]"
+                />
+                <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
+                  Crystal Stewart, PMP®
+                </div>
+                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
+                  <p className="font-bold text-gold">87%</p>
+                  <p className="text-xs">First-attempt<br/>pass rate</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -87,36 +111,36 @@ export default function HomePage() {
       {/* Interactive section */}
       <HomeClient programs={PROGRAMS} testimonials={TESTIMONIALS} calendly={CALENDLY} />
 
-      {/* Crystal */}
+      {/* Crystal instructor section */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <img src="/crystal-stewart.jpg" alt="Crystal Stewart, PMP®"
+              <img src="/team-success.jpg" alt="PMP certification team celebrating success"
                 className="rounded-2xl shadow-xl w-full object-cover max-h-[500px]" />
             </div>
             <div>
-            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
-            <h2 className="text-3xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
-              The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy™.
-              U.S. Army veteran. Crystal does not just teach PM — she has lived it, built with it, and now equips
-              the next generation of project managers to do the same.
-            </p>
-            <div className="flex flex-wrap gap-3 mb-6">
-              {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy™ Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
-                <span key={t} className="bg-light-navy border border-navy/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
-              ))}
-            </div>
-            <div className="flex gap-4">
-              <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
-                Crystal's Story
-              </Link>
-              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-                className="border-2 border-gold text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold hover:text-navy transition-colors">
-                Book a Call
-              </a>
-            </div>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
+              <h2 className="text-3xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
+              <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy™.
+                U.S. Army veteran. Crystal does not just teach PM — she has lived it, built with it, and now equips
+                the next generation of project managers to do the same.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-6">
+                {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy™ Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
+                  <span key={t} className="bg-light-navy border border-navy/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
+                ))}
+              </div>
+              <div className="flex gap-4">
+                <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
+                  Crystal's Story
+                </Link>
+                <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                  className="border-2 border-gold text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold hover:text-navy transition-colors">
+                  Book a Call
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -124,9 +148,6 @@ export default function HomePage() {
 
       {/* Veterans */}
       <section className="py-16 bg-navy text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-96 h-96 border-2 border-gold rounded-full translate-x-1/2 -translate-y-1/2" />
-        </div>
         <div className="max-w-4xl mx-auto px-4 text-center relative">
           <div className="text-4xl mb-4">🎖️</div>
           <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
@@ -151,7 +172,10 @@ export default function HomePage() {
       <section className="py-16 bg-gold">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-navy mb-4">Ready to Manage Your Next Chapter?</h2>
-          <p className="text-navy/70 mb-8 text-lg">Tell us where you are and where you want to go. Crystal will match you to the right program in a free 15-minute call.</p>
+          <p className="text-navy/70 mb-4 text-lg">Tell us where you are and where you want to go. Crystal will match you to the right program in a free 15-minute call.</p>
+          <div className="bg-navy/10 rounded-xl p-4 mb-8 max-w-lg mx-auto">
+            <p className="text-navy text-sm font-bold">⚡ Limited spots available — Next cohort starting soon</p>
+          </div>
           <div className="flex flex-wrap gap-4 justify-center">
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
               className="bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
