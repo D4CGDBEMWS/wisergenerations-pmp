@@ -63,7 +63,7 @@ export default function HomePage() {
               <img
                 src="/team-success.jpg"
                 alt="PMP certification team celebrating success"
-                className="rounded-2xl shadow-2xl w-3/4 mx-auto object-cover h-[380px] opacity-90 -mt-24 block"
+                className="rounded-2xl shadow-2xl w-2/5 mx-auto object-cover h-[220px] opacity-90 -mt-24 block"
               />
             </div>
           </div>
