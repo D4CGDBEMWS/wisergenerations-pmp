@@ -34,7 +34,8 @@ export default function HomePage() {
           <div className="absolute bottom-0 left-0 w-64 h-64 border border-gold rounded-full -translate-x-1/2 translate-y-1/2" />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
-          <div className="max-w-3xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="max-w-3xl">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
               Project Manage Your Career.
@@ -60,6 +61,15 @@ export default function HomePage() {
                   <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />{t}
                 </span>
               ))}
+            </div>
+            </div>
+            {/* Team photo */}
+            <div className="hidden lg:block">
+              <img
+                src="/team-success.jpg"
+                alt="PMP certification team celebrating success"
+                className="rounded-2xl shadow-2xl w-full object-cover h-[480px] opacity-90"
+              />
             </div>
           </div>
         </div>
