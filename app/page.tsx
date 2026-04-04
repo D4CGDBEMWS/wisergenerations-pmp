@@ -140,6 +140,43 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Free Guide Lead Magnet */}
+      <section className="py-10 bg-gold">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <p className="text-navy text-sm font-bold uppercase tracking-widest mb-2">Free Download</p>
+              <h2 className="text-2xl font-bold text-navy mb-3">
+                "The PMP® Exam Is Changing July 8, 2026"
+              </h2>
+              <p className="text-navy/80 leading-relaxed mb-4">
+                Get our free 9-page guide covering every domain change, new question format,
+                and why certifying NOW is your smartest career move — before the format shifts.
+              </p>
+              <ul className="space-y-1 mb-4">
+                {['Domain weight shifts & new ECO breakdown', 'New AI & Sustainability content areas', 'Should YOU certify before July 8? Decision table'].map(item => (
+                  <li key={item} className="flex items-center gap-2 text-navy text-sm font-medium">
+                    <span className="font-bold">✓</span> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="text-center">
+              <div className="bg-navy rounded-2xl p-6 mb-4 inline-block w-full">
+                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-1">Free Guide</p>
+                <p className="text-white font-bold text-lg leading-snug mb-1">The PMP® Exam Is Changing</p>
+                <p className="text-gray-400 text-xs mb-3">9-Page PDF · Instant Download</p>
+                <a href="/free-guide"
+                  className="block w-full bg-gold text-navy font-bold py-3 rounded-xl hover:bg-amber-400 transition-colors text-base">
+                  Get the Free Guide →
+                </a>
+              </div>
+              <p className="text-navy/60 text-xs">No spam. Unsubscribe anytime.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Stats */}
       <section className="bg-gold py-10">
         <div className="max-w-5xl mx-auto px-4">
