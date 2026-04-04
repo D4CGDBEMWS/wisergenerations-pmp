@@ -3,7 +3,7 @@ import { PROGRAMS, STATS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
-const CRYSTAL_PHOTO = 'https://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpg'
+const CRYSTAL_PHOTO = 'https://media.licdn.com/dms/image/v2/D4E03AQHtZ_sqstHU_w/profile-displayphoto-scale_400_400/B4EZuaJiIpGoAg-/0/1767817751214?e=1776902400https://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpgv=betahttps://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpgt=4GEelKWuqWIjuVe3ir3StToDShhqeK7W_VVU8sjW8ok'
 
 const TESTIMONIALS = [
   {
