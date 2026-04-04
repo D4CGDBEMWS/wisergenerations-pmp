@@ -28,11 +28,6 @@ export default function HomePage() {
       {/* Hero */}
       <section className="bg-navy text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 right-10 w-96 h-96 border-2 border-gold rounded-full" />
-          <div className="absolute top-20 right-20 w-72 h-72 border border-gold rounded-full" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 border border-gold rounded-full -translate-x-1/2 translate-y-1/2" />
-        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="max-w-3xl">
@@ -68,7 +63,7 @@ export default function HomePage() {
               <img
                 src="/team-success.jpg"
                 alt="PMP certification team celebrating success"
-                className="rounded-2xl shadow-2xl w-full object-cover h-[480px] opacity-90 -mt-16"
+                className="rounded-2xl shadow-2xl w-3/4 mx-auto object-cover h-[380px] opacity-90 -mt-24 block"
               />
             </div>
           </div>
