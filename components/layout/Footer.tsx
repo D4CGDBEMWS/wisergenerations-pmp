@@ -26,6 +26,9 @@ export function Footer() {
               {[['About Crystal', '/about'], ['Contact', '/contact'], ['Enterprise Academy™', 'https://enterpriseacademy.us']].map(([l, h]) => (
                 <a key={h} href={h} className="text-sm text-gray-400 hover:text-gold transition-colors">{l}</a>
               ))}
+              <a href="/free-guide" className="text-sm text-gold font-bold hover:text-amber-400 transition-colors">
+                📥 Free Guide: PMP® Exam Changes 2026
+              </a>
             </div>
           </div>
         </div>
