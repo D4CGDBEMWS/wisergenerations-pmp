@@ -1,77 +1,165 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
+import { PROGRAMS, STATS } from '@/lib/constants'
+import HomeClient from './components/HomeClient'
 
-export const metadata: Metadata = { title: 'About Crystal Stewart — Wiser Generations™' }
+const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CRYSTAL_PHOTO = 'https://media.licdn.com/dms/image/v2/D4E03AQHtZ_sqstHU_w/profile-displayphoto-scale_400_400/B4EZuaJiIpGoAg-/0/1767817751214?e=1776902400https://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpgv=betahttps://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpgt=4GEelKWuqWIjuVe3ir3StToDShhqeK7W_VVU8sjW8ok'
 
-export default function AboutPage() {
+const TESTIMONIALS = [
+  {
+    name: 'Tai Cochran, MA Ed. HD, PMP',
+    role: 'CEO, HER PM | Project Leadership Strategist',
+    quote: 'Crystal is the ultimate trainer! She is a wealth of knowledge and wisdom, truly invested to ensure the success of each of her students. Her knowledge, training and mentorship helped me to clear my PMP on the very first try!',
+  },
+  {
+    name: 'Lynn Fleming MBA, PMP, PMI-ACP, PMI-SP',
+    role: 'Principal Strategic Program Manager',
+    quote: 'Knowledgeable with a sincere concern for each of her pupils, she has a unique way of conveying the concepts regardless of their learning method. After attending her course, I gained confidence within the PMI realm. I highly recommend Crystal\'s services to any organization that desires to improve their PMO.',
+  },
+  {
+    name: 'Erin Sanders, PE, PMP',
+    role: 'Chief Operating Officer',
+    quote: 'Crystal is a project management professional. Her passion for teaching the project management process creates an engaging and exciting classroom. I would recommend Crystal to any organization or individual seeking project management education or PMP Certification.',
+  },
+]
+
+export default function HomePage() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-
-        {/* Left — Content */}
-        <div>
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">About</p>
-          <h1 className="text-4xl font-bold text-navy mb-4">
-            Crystal Stewart, PMP®<br/>
-            <span className="text-2xl text-gold font-medium">The Project Management Evangelist™</span>
-          </h1>
-          <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
-            <p className="text-xl text-gray-600 leading-relaxed">
-              Founder & CEO of Enterprise Academy™. U.S. Army veteran. 20+ years of enterprise transformation experience. Crystal Stewart built Wiser Generations™ because she saw the same gap in every organization she served: brilliant people without a professional framework for executing what matters most.
+    <>
+      {/* Hero */}
+      <section className="bg-navy text-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 right-10 w-96 h-96 border-2 border-gold rounded-full" />
+          <div className="absolute top-20 right-20 w-72 h-72 border border-gold rounded-full" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 border border-gold rounded-full -translate-x-1/2 translate-y-1/2" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
+          <div className="max-w-3xl">
+            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              Project Manage Your Career.
+              <br /><span className="text-gold">Transform Your Future.™</span>
+            </h1>
+            <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 max-w-2xl">
+              PMP® and CAPM® certification training built for career transitioners, corporate teams, and veterans.
+              Mentor-led. PMI-aligned. Delivered by Crystal Stewart — The Project Management Evangelist™.
             </p>
-            <h2 className="text-2xl font-bold text-navy mt-10">The Mission</h2>
-            <p>
-              Project management is not a corporate luxury. It is the professional discipline that separates people who achieve from people who intend to. Crystal's mission is to put that discipline in the hands of every career transitioner, every veteran, every professional who has been building without a blueprint — and show them what becomes possible when they have one.
-            </p>
-            <h2 className="text-2xl font-bold text-navy mt-10">The Ecosystem</h2>
-            <p>
-              Wiser Generations™ is one program within a larger ecosystem — Enterprise Academy™ — which sits under the Kingdom Compassion umbrella. The full vision spans seven pillars: education, community trade, financial empowerment, spiritual formation, publishing, sustainability, and philanthropy. Wiser Generations™ is where adult professionals enter that ecosystem through the credential that changes their career.
-            </p>
-            <div className="bg-navy rounded-xl p-8 text-white mt-10">
-              <p className="text-gold font-bold uppercase text-xs tracking-wider mb-3">Credentials & Background</p>
-              <ul className="space-y-2 text-gray-300 text-sm">
-                {[
-                  'PMP® — Project Management Professional (PMI)',
-                  'U.S. Army Veteran',
-                  'Founder & CEO, Enterprise Academy™',
-                  'Creator, The 7 Project Principles™',
-                  '20+ years enterprise project management',
-                  'Based in Smyrna, GA (Metro Atlanta)',
-                ].map(c => (
-                  <li key={c} className="flex items-center gap-2">
-                    <span className="text-gold">✓</span>{c}
-                  </li>
-                ))}
-              </ul>
+            <div className="flex flex-wrap gap-4 mb-10">
+              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-amber-400 transition-colors text-lg">
+                Book a Free Call
+              </a>
+              <Link href="/programs"
+                className="border-2 border-gold text-gold font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">
+                Explore Programs
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              {['PMI-Aligned', 'PMP® & CAPM® Prep', 'Veterans Welcome', 'Corporate Packages', 'Virtual + Metro Atlanta'].map(t => (
+                <span key={t} className="flex items-center gap-1.5 text-sm text-gray-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />{t}
+                </span>
+              ))}
             </div>
           </div>
-          <div className="mt-12 flex flex-wrap gap-4">
-            <Link href="/programs" className="bg-gold text-white font-bold px-6 py-3 rounded-lg hover:bg-amber-600 transition-colors">Explore Programs</Link>
-            <Link href="/contact" className="border-2 border-navy text-navy font-semibold px-6 py-3 rounded-lg hover:bg-light-navy transition-colors">Contact Crystal</Link>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="bg-gold py-10">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {STATS.map(s => (
+              <div key={s.label}>
+                <p className="text-3xl font-bold text-navy">{s.value}</p>
+                <p className="text-navy/70 text-sm mt-1">{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* Right — Photo */}
-        <div className="sticky top-24">
-          <img
-            src="https://raw.githubusercontent.com/D4CGDBEMWS/wisergenerations-pmp/main/public/crystal-stewart.jpg"
-            alt="Crystal Stewart, PMP® — Founder of Wiser Generations™"
-            className="w-full rounded-2xl shadow-xl object-cover"
-          />
-          <div className="mt-4 bg-gold rounded-xl p-4 text-center">
-            <p className="text-navy font-bold text-sm">Ready to earn your PMP® or CAPM®?</p>
-            <a
-              href="https://calendly.com/space4grace/15min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block mt-2 bg-navy text-white font-bold py-2 rounded-lg hover:bg-blue-900 transition-colors text-sm"
-            >
-              Book a Free Call with Crystal →
+      {/* Interactive section — client component */}
+      <HomeClient programs={PROGRAMS} testimonials={TESTIMONIALS} calendly={CALENDLY} />
+
+      {/* Crystal */}
+      <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <img src={CRYSTAL_PHOTO} alt="Crystal Stewart, PMP®"
+                className="rounded-2xl shadow-xl w-full object-cover max-h-[500px]" />
+            </div>
+            <div>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
+              <h2 className="text-3xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
+              <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy™.
+                U.S. Army veteran. Crystal doesn't just teach PM — she's lived it, built with it, and now equips
+                the next generation of project managers to do the same.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-6">
+                {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy™ Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
+                  <span key={t} className="bg-light-navy border border-navy/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
+                ))}
+              </div>
+              <div className="flex gap-4">
+                <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
+                  Crystal's Story
+                </Link>
+                <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                  className="border-2 border-gold text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold hover:text-navy transition-colors">
+                  Book a Call
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Veterans */}
+      <section className="py-16 bg-navy text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 right-0 w-96 h-96 border-2 border-gold rounded-full translate-x-1/2 -translate-y-1/2" />
+        </div>
+        <div className="max-w-4xl mx-auto px-4 text-center relative">
+          <div className="text-4xl mb-4">🎖️</div>
+          <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
+          <p className="text-gray-300 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
+            You've managed missions under pressure. You've led teams in high-stakes environments.
+            Now translate that experience into a PMP® or CAPM® credential that civilian employers recognize.
+            Veteran-discounted tuition. Veteran peer cohort. VA benefit guidance included.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/veterans" className="bg-gold text-navy font-bold px-8 py-3 rounded-lg hover:bg-amber-400 transition-colors">
+              Veterans Program →
+            </Link>
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+              className="border-2 border-white text-white font-bold px-8 py-3 rounded-lg hover:bg-white/10 transition-colors">
+              Book a Free Call
             </a>
           </div>
         </div>
+      </section>
 
-      </div>
-    </div>
+      {/* CTA */}
+      <section className="py-16 bg-gold">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-navy mb-4">Ready to Manage Your Next Chapter?</h2>
+          <p className="text-navy/70 mb-8 text-lg">Tell us where you are and where you want to go. Crystal will match you to the right program in a free 15-minute call.</p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+              className="bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
+              Book Your Free Call Today
+            </a>
+            <Link href="/programs"
+              className="border-2 border-navy text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors text-lg">
+              Browse Programs
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   )
 }
