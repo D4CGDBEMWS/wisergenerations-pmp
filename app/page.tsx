@@ -43,7 +43,6 @@ export default function HomePage() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left — Text */}
             <div>
               <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
@@ -55,15 +54,12 @@ export default function HomePage() {
                 before new AI content, new question formats, and new uncertainty arrive.
                 Mentor-led. PMI-aligned. Delivered by Crystal Stewart, PMP®.
               </p>
-
-              {/* Social proof snippet */}
               <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-8 max-w-xl">
                 <p className="text-gray-200 text-sm italic leading-relaxed">
                   "Her knowledge, training and mentorship helped me to clear my PMP on the very first try!"
                 </p>
                 <p className="text-gold text-xs font-bold mt-2">— Tai Cochran, MA Ed. HD, PMP · CEO, HER PM</p>
               </div>
-
               <div className="flex flex-wrap gap-4 mb-8">
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
                   className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-amber-400 transition-colors text-lg">
@@ -82,8 +78,6 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-
-            {/* Right — Crystal's photo */}
             <div className="hidden lg:flex justify-center">
               <div className="relative">
                 <img
@@ -104,8 +98,69 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* FREE GUIDE — #2 position, right after hero */}
+      <section className="py-12 bg-white border-b-4 border-gold">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-gold/20 text-gold text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">
+                📥 Free Download — No Credit Card Needed
+              </div>
+              <h2 className="text-3xl font-bold text-navy mb-3">
+                Get the Free Guide:<br/>"The PMP® Exam Is Changing"
+              </h2>
+              <p className="text-gray-600 leading-relaxed mb-5">
+                PMI confirmed the exam changes July 8, 2026. This free 9-page guide breaks down every
+                domain shift, new question type, and new content area — so you can decide your path with confidence.
+              </p>
+              <ul className="space-y-2 mb-6">
+                {[
+                  'Domain weights: People 42%→33%, Business Env 8%→26%',
+                  'New question formats — case sets, graphics, pull-down lists',
+                  'AI & Sustainability — what you need to know',
+                  'Decision table: should YOU certify before July 8?',
+                  'Cohort dates, inclusions & real graduate testimonials',
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
+                    <span className="text-gold font-bold mt-0.5">✓</span> {item}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/free-guide"
+                className="inline-block bg-gold text-navy font-bold px-8 py-4 rounded-xl hover:bg-amber-400 transition-colors text-lg shadow-md">
+                Get the Free Guide →
+              </Link>
+              <p className="text-xs text-gray-400 mt-2">Enter your name & email — instant download. No spam ever.</p>
+            </div>
+            <div className="flex justify-center">
+              <div className="bg-navy rounded-2xl p-8 w-full max-w-sm text-center shadow-2xl">
+                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-2">Free Guide</p>
+                <div className="bg-gold/20 border border-gold/40 rounded-xl p-4 mb-4">
+                  <p className="text-white font-bold text-xl leading-snug mb-1">
+                    The PMP® Exam Is Changing July 8, 2026
+                  </p>
+                  <p className="text-gray-400 text-sm">What Every Aspiring PMP® Needs to Know</p>
+                </div>
+                <div className="space-y-2 text-left mb-6">
+                  {['9 pages of exam intel', 'Domain comparison table', 'New question format guide', 'Decision flowchart', 'Cohort dates & pricing'].map(f => (
+                    <p key={f} className="text-gray-300 text-sm flex items-center gap-2">
+                      <span className="text-gold">✓</span> {f}
+                    </p>
+                  ))}
+                </div>
+                <Link href="/free-guide"
+                  className="block w-full bg-gold text-navy font-bold py-3 rounded-xl hover:bg-amber-400 transition-colors">
+                  Download Free →
+                </Link>
+                <p className="text-gray-500 text-xs mt-3">Instant access · No credit card</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Cohort Countdown */}
-      <section className="py-12 bg-white border-b border-gray-100">
+      <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Act Now</p>
@@ -140,43 +195,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Free Guide Lead Magnet */}
-      <section className="py-10 bg-gold">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <p className="text-navy text-sm font-bold uppercase tracking-widest mb-2">Free Download</p>
-              <h2 className="text-2xl font-bold text-navy mb-3">
-                "The PMP® Exam Is Changing July 8, 2026"
-              </h2>
-              <p className="text-navy/80 leading-relaxed mb-4">
-                Get our free 9-page guide covering every domain change, new question format,
-                and why certifying NOW is your smartest career move — before the format shifts.
-              </p>
-              <ul className="space-y-1 mb-4">
-                {['Domain weight shifts & new ECO breakdown', 'New AI & Sustainability content areas', 'Should YOU certify before July 8? Decision table'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-navy text-sm font-medium">
-                    <span className="font-bold">✓</span> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="text-center">
-              <div className="bg-navy rounded-2xl p-6 mb-4 inline-block w-full">
-                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-1">Free Guide</p>
-                <p className="text-white font-bold text-lg leading-snug mb-1">The PMP® Exam Is Changing</p>
-                <p className="text-gray-400 text-xs mb-3">9-Page PDF · Instant Download</p>
-                <a href="/free-guide"
-                  className="block w-full bg-gold text-navy font-bold py-3 rounded-xl hover:bg-amber-400 transition-colors text-base">
-                  Get the Free Guide →
-                </a>
-              </div>
-              <p className="text-navy/60 text-xs">No spam. Unsubscribe anytime.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Stats */}
       <section className="bg-gold py-10">
         <div className="max-w-5xl mx-auto px-4">
@@ -191,7 +209,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why certify now callout */}
+      {/* Why certify now */}
       <section className="py-12 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
@@ -211,10 +229,21 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+          {/* Mini guide CTA inside this section */}
+          <div className="mt-8 bg-white/10 border border-gold/40 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-gold font-bold mb-1">📥 Not ready to book a call yet?</p>
+              <p className="text-gray-300 text-sm">Download the free guide first. Get all the facts, then decide your path.</p>
+            </div>
+            <Link href="/free-guide"
+              className="shrink-0 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors whitespace-nowrap">
+              Get the Free Guide →
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Interactive section */}
+      {/* Interactive programs + testimonials */}
       <HomeClient programs={PROGRAMS} testimonials={TESTIMONIALS} calendly={CALENDLY} />
 
       {/* Crystal instructor section */}
@@ -281,10 +310,10 @@ export default function HomePage() {
             The current PMP® exam — the one with 5 years of proven prep materials — is only available until July 8.
             Book a free call with Crystal today. She will map out your path to passing before the deadline.
           </p>
-          <div className="bg-navy/10 rounded-xl p-4 mb-8 max-w-lg mx-auto">
+          <div className="bg-navy/10 rounded-xl p-4 mb-6 max-w-lg mx-auto">
             <p className="text-navy text-sm font-bold">⚡ April & May cohorts are filling fast — limited spots remaining</p>
           </div>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center mb-6">
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
               className="bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
               Book Your Free Call Today
@@ -294,6 +323,7 @@ export default function HomePage() {
               View All Programs
             </Link>
           </div>
+          <p className="text-navy/60 text-sm">Not ready to call? <Link href="/free-guide" className="font-bold underline hover:no-underline">Download the free guide first →</Link></p>
         </div>
       </section>
     </>
