@@ -1,297 +1,359 @@
 'use client'
-import { useState, useEffect } from 'react'
+
+import { FormEvent, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 
-const PAYPAL_CLIENT_ID = 'Adm4lG0k4RQBveuuMNO8gvvwUUy-0PCNonB63A7wIBI-7dv5D5sPM9Wd4OBSzdTty0IOXq-WWmS85wy0'
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+    : null
 
-const PLANS = [
-  {
-    id: 'deposit',
-    name: 'Reserve My Spot',
-    price: 297,
-    description: 'Secure your seat now — pay the balance before your cohort starts.',
-    badge: 'Low Commitment',
-    badgeColor: 'bg-blue-100 text-blue-800',
-    features: [
-      'Reserves your cohort seat',
-      'Balance of $1,200 due before start',
-      'Full access once balance is paid',
-      'Refundable if cohort is cancelled',
-    ],
-  },
-  {
-    id: 'full',
-    name: 'Pay in Full',
-    price: 1497,
-    description: 'Best value — full access immediately, no balance due.',
-    badge: 'Most Popular',
-    badgeColor: 'bg-gold text-navy',
-    features: [
-      '36 PMI-required contact hours',
-      'Live weekly sessions + replay access',
-      'Application & audit support',
-      '500+ practice exam questions',
-      'Private cohort community',
-      'Direct access to Crystal, PMP®',
-    ],
-  },
-]
+const PROGRAMS = {
+    'pmp-prep': {
+          id: 'pmp-prep',
+          name: 'PMP® Certification Prep',
+          price: 1497,
+          description: 'Our flagship PMP® prep experience with live instruction, accountability, and application support.',
+    },
+    'capm-launcher': {
+          id: 'capm-launcher',
+          name: 'CAPM® Career Launcher',
+          price: 997,
+          description: 'Foundational project management training for early-career professionals and career changers.',
+    },
+    'veterans-pathway': {
+          id: 'veterans-pathway',
+          name: 'Veterans PM Pathway',
+          price: 797,
+          description: 'A mission-aligned transition pathway designed for veterans moving into project management roles.',
+    },
+} as const
 
-export default function CheckoutPage() {
-  const [selectedPlan, setSelectedPlan] = useState('full')
-  const [step, setStep] = useState<'plan' | 'payment' | 'success'>('plan')
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'paypal'>('stripe')
-  const [loading, setLoading] = useState(false)
-  const [paypalLoaded, setPaypalLoaded] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
+type ProgramId = keyof typeof PROGRAMS
 
-  const plan = PLANS.find(p => p.id === selectedPlan)!
+type CheckoutFormState = {
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    programId: ProgramId
+}
 
-  // Load PayPal SDK
-  useEffect(() => {
-    if (step === 'payment' && paymentMethod === 'paypal' && !paypalLoaded) {
-      const script = document.createElement('script')
-      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`
-      script.onload = () => setPaypalLoaded(true)
-      document.body.appendChild(script)
+function formatPrice(price: number) {
+    return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          maximumFractionDigits: 0,
+    }).format(price)
+}
+
+function createIdempotencyKey() {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+          return crypto.randomUUID()
     }
-  }, [step, paymentMethod, paypalLoaded])
 
-  // Render PayPal buttons
-  useEffect(() => {
-    if (paypalLoaded && paymentMethod === 'paypal' && (window as any).paypal) {
-      const container = document.getElementById('paypal-button-container')
-      if (container) container.innerHTML = ''
-      ;(window as any).paypal.Buttons({
-        createOrder: (_data: any, actions: any) => actions.order.create({
-          purchase_units: [{
-            amount: { value: plan.price.toString() },
-            description: `Wiser Generations - PMP® Prep - ${plan.name}`,
-          }],
-        }),
-        onApprove: async (_data: any, actions: any) => {
-          await actions.order.capture()
-          // Subscribe to Mailchimp
-          await fetch('/api/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ firstName: name.split(' ')[0], email, tag: 'PMP Paid - PayPal' }),
-          })
-          setStep('success')
-        },
-        onError: () => setError('PayPal payment failed. Please try again.'),
-      }).render('#paypal-button-container')
-    }
-  }, [paypalLoaded, paymentMethod, plan])
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
 
-  const handleStripeCheckout = async () => {
-    setLoading(true)
-    setError('')
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: selectedPlan, name, email }),
+function PaymentStep({
+    customerEmail,
+    programName,
+}: {
+    customerEmail: string
+    programName: string
+}) {
+    const stripe = useStripe()
+    const elements = useElements()
+    const [errorMessage, setErrorMessage] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+
+      if (!stripe || !elements) {
+              return
+      }
+
+      setIsSubmitting(true)
+        setErrorMessage('')
+
+      const result = await stripe.confirmPayment({
+              elements,
+              confirmParams: {
+                        receipt_email: customerEmail,
+                        return_url: `${window.location.origin}/thank-you?program=${encodeURIComponent(programName)}`,
+              },
       })
-      const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else throw new Error(data.error || 'Failed to create checkout session')
-    } catch (err: any) {
-      setError(err.message)
-      setLoading(false)
-    }
-  }
 
-  if (step === 'success') {
-    return (
-      <div className="min-h-screen bg-navy flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-10 max-w-lg w-full text-center">
-          <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-3xl font-bold text-navy mb-3">You're In!</h1>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            Welcome to Wiser Generations! A confirmation has been sent to <strong>{email}</strong>.
-            Crystal will be in touch within 24 hours with your next steps.
-          </p>
-          <div className="bg-amber-50 border border-gold rounded-xl p-4 mb-6 text-left">
-            <p className="text-navy font-bold mb-1">⚡ Book Your Kickoff Call</p>
-            <p className="text-gray-600 text-sm">Schedule your onboarding call with Crystal to get your personalized study plan.</p>
-          </div>
-          <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-            className="block w-full bg-gold text-navy font-bold py-4 rounded-xl hover:bg-amber-400 transition-colors text-lg mb-4">
-            Book My Kickoff Call →
-          </a>
-          <Link href="/" className="text-sm text-gray-400 hover:text-navy transition-colors">
-            Return to home
-          </Link>
-        </div>
-      </div>
-    )
+      if (result.error) {
+              setErrorMessage(result.error.message ?? 'Unable to process payment. Please review your details and try again.')
+              setIsSubmitting(false)
+              return
+      }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-navy text-white py-4 px-4 text-center">
-        <p className="text-gold font-bold text-sm">⚡ Limited spots — April & May cohorts filling fast</p>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        <div className="text-center mb-10">
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Enroll Now</p>
-          <h1 className="text-4xl font-bold text-navy mb-3">PMP® Certification Prep</h1>
-          <p className="text-gray-600 text-lg">Delivered by Crystal Stewart, PMP® — Wiser Generations™</p>
-        </div>
-
-        {step === 'plan' && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {PLANS.map(p => (
-                <div key={p.id}
-                  onClick={() => setSelectedPlan(p.id)}
-                  className={`rounded-2xl p-6 border-2 cursor-pointer transition-all ${
-                    selectedPlan === p.id ? 'border-gold shadow-lg bg-white' : 'border-gray-200 bg-white hover:border-gold/50'
-                  }`}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${p.badgeColor}`}>{p.badge}</span>
-                      <h3 className="text-xl font-bold text-navy mt-2">{p.name}</h3>
-                    </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${
-                      selectedPlan === p.id ? 'border-gold bg-gold' : 'border-gray-300'
-                    }`}>
-                      {selectedPlan === p.id && <div className="w-2.5 h-2.5 rounded-full bg-navy" />}
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold text-navy mb-1">${p.price.toLocaleString()}</p>
-                  <p className="text-gray-500 text-sm mb-4">{p.description}</p>
-                  <ul className="space-y-2">
-                    {p.features.map(f => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
-                        <span className="text-gold font-bold mt-0.5">✓</span> {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-            {/* Contact info */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
-              <h3 className="font-bold text-navy mb-4">Your Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" onSubmit={handleSubmit}>
                 <div>
-                  <label className="block text-sm font-bold text-navy mb-1">Full Name</label>
-                  <input type="text" required value={name} onChange={e => setName(e.target.value)}
-                    placeholder="Your full name"
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-gold transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-navy mb-1">Email Address</label>
-                  <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-gold transition-colors" />
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                if (!name || !email) { setError('Please enter your name and email.'); return }
-                setError('')
-                setStep('payment')
-              }}
-              className="w-full bg-gold text-navy font-bold py-4 rounded-xl hover:bg-amber-400 transition-colors text-lg">
-              Continue to Payment →
-            </button>
-            {error && <p className="text-red-500 text-sm text-center mt-3">{error}</p>}
-          </>
-        )}
-
-        {step === 'payment' && (
-          <div className="max-w-lg mx-auto">
-            {/* Order summary */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
-              <h3 className="font-bold text-navy mb-3">Order Summary</h3>
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <div>
-                  <p className="font-bold text-navy">PMP® Certification Prep</p>
-                  <p className="text-gray-500 text-sm">{plan.name}</p>
-                </div>
-                <p className="text-2xl font-bold text-navy">${plan.price.toLocaleString()}</p>
-              </div>
-              <div className="flex justify-between items-center pt-3">
-                <p className="text-gray-500 text-sm">Student: {name}</p>
-                <p className="text-gray-500 text-sm">{email}</p>
-              </div>
-            </div>
-
-            {/* Payment method toggle */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
-              <h3 className="font-bold text-navy mb-4">Payment Method</h3>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <button
-                  onClick={() => setPaymentMethod('stripe')}
-                  className={`py-3 rounded-xl border-2 font-bold text-sm transition-all ${
-                    paymentMethod === 'stripe' ? 'border-gold bg-amber-50 text-navy' : 'border-gray-200 text-gray-600'
-                  }`}>
-                  💳 Credit / Debit Card
-                </button>
-                <button
-                  onClick={() => setPaymentMethod('paypal')}
-                  className={`py-3 rounded-xl border-2 font-bold text-sm transition-all ${
-                    paymentMethod === 'paypal' ? 'border-gold bg-amber-50 text-navy' : 'border-gray-200 text-gray-600'
-                  }`}>
-                  🅿️ PayPal
-                </button>
-              </div>
-
-              {paymentMethod === 'stripe' && (
-                <>
-                  {error && <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-600 text-sm mb-4">{error}</div>}
-                  <button
-                    onClick={handleStripeCheckout}
-                    disabled={loading}
-                    className="w-full bg-navy text-white font-bold py-4 rounded-xl hover:bg-blue-900 transition-colors text-lg disabled:opacity-60">
-                    {loading ? 'Redirecting to secure checkout...' : `Pay $${plan.price.toLocaleString()} with Card →`}
-                  </button>
-                  <p className="text-xs text-gray-400 text-center mt-2">🔒 Secured by Stripe — your card info never touches our servers</p>
-                </>
-              )}
-
-              {paymentMethod === 'paypal' && (
-                <>
-                  {error && <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-600 text-sm mb-4">{error}</div>}
-                  <div id="paypal-button-container" className="min-h-[50px]">
-                    {!paypalLoaded && <p className="text-center text-gray-400 text-sm py-4">Loading PayPal...</p>}
-                  </div>
-                </>
-              )}
-            </div>
-
-            <button onClick={() => setStep('plan')} className="text-sm text-gray-400 hover:text-navy transition-colors">
-              ← Back to plan selection
-            </button>
-          </div>
-        )}
-
-        {/* Trust signals */}
-        <div className="mt-10 flex flex-wrap justify-center gap-8 text-center">
-          {[
-            { icon: '🏆', label: '87% First-Attempt Pass Rate' },
-            { icon: '🔒', label: 'Secure Checkout' },
-            { icon: '🎖️', label: 'Veterans Welcome' },
-            { icon: '📋', label: 'PMI-Aligned' },
-          ].map(item => (
-            <div key={item.label}>
-              <p className="text-2xl mb-1">{item.icon}</p>
-              <p className="text-xs text-gray-500">{item.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
+                        <h2 className="text-2xl font-semibold text-slate-900">Complete your payment</h2>h2>
+                        <p className="mt-2 text-sm text-slate-600">
+                                  Your payment details are processed securely by Stripe using the Payment Element.
+                        </p>p>
+                </div>div>
+        
+              <PaymentElement options={{ layout: 'tabs' }} />
+        
+          {errorMessage ? (
+                  <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{errorMessage}</div>div>
+                ) : null}
+        
+              <button
+                        type="submit"
+                        disabled={!stripe || !elements || isSubmitting}
+                        className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                {isSubmitting ? 'Processing payment…' : 'Pay now'}
+              </button>button>
+        
+              <p className="text-xs leading-5 text-slate-500">
+                      By completing your purchase, you agree to the enrollment terms shared by Wiser Generations.
+              </p>p>
+        </form>form>
+      )
 }
+
+export default function CheckoutPage() {
+    const [form, setForm] = useState<CheckoutFormState>({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          programId: 'pmp-prep',
+    })
+        const [clientSecret, setClientSecret] = useState('')
+            const [formError, setFormError] = useState('')
+                const [isInitializingPayment, setIsInitializingPayment] = useState(false)
+                  
+                    const selectedProgram = useMemo(() => PROGRAMS[form.programId], [form.programId])
+                        const stripeUnavailable = !stripePromise
+                          
+                            function updateField<K extends keyof CheckoutFormState>(key: K, value: CheckoutFormState[K]) {
+                                  setForm((current) => ({ ...current, [key]: value }))
+                            }
+  
+    async function handleContinueToPayment(event: FormEvent<HTMLFormElement>) {
+          event.preventDefault()
+            
+                if (stripeUnavailable) {
+                        setFormError('Stripe is not configured. Add NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY before accepting live payments.')
+                                return
+                }
+      
+          setIsInitializingPayment(true)
+                setFormError('')
+                      setClientSecret('')
+                        
+                            try {
+                                    const response = await fetch('/api/checkout', {
+                                              method: 'POST',
+                                              headers: {
+                                                          'Content-Type': 'application/json',
+                                                          'x-idempotency-key': createIdempotencyKey(),
+                                              },
+                                              body: JSON.stringify({
+                                                          programId: form.programId,
+                                                          customer: {
+                                                                        firstName: form.firstName,
+                                                                        lastName: form.lastName,
+                                                                        email: form.email,
+                                                                        phone: form.phone,
+                                                          },
+                                              }),
+                                    })
+                                      
+                                            const data = await response.json()
+                                              
+                                                    if (!response.ok || !data.client_secret) {
+                                                              throw new Error(data.error ?? 'Unable to initialize payment.')
+                                                    }
+                              
+                                    setClientSecret(data.client_secret)
+                            } catch (error) {
+                                    setFormError(error instanceof Error ? error.message : 'Unable to initialize payment.')
+                            } finally {
+                                    setIsInitializingPayment(false)
+                            }
+    }
+  
+    return (
+          <main className="min-h-screen bg-slate-50 py-12">
+                <div className="mx-auto grid max-w-6xl gap-8 px-4 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+                        <section className="space-y-6">
+                                  <div className="space-y-3">
+                                              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-600">Secure checkout</p>p>
+                                              <h1 className="text-4xl font-semibold tracking-tight text-slate-900">Enroll with confidence</h1>h1>
+                                              <p className="max-w-2xl text-base leading-7 text-slate-600">
+                                                            Choose the program that matches your next milestone. Pricing is validated server-side and payment
+                                                            details stay inside Stripe&apos;s PCI-compliant payment flow.
+                                              </p>p>
+                                  </div>div>
+                        
+                                  <div className="grid gap-4 md:grid-cols-3">
+                                    {Object.values(PROGRAMS).map((program) => {
+                          const selected = program.id === form.programId
+                            
+                                          return (
+                                                            <button
+                                                                                key={program.id}
+                                                                                type="button"
+                                                                                onClick={() => updateField('programId', program.id)}
+                                                                                className={`rounded-2xl border p-5 text-left transition ${
+                                                                                                      selected
+                                                                                                        ? 'border-slate-900 bg-slate-900 text-white shadow-lg'
+                                                                                                        : 'border-slate-200 bg-white text-slate-900 hover:border-slate-300'
+                                                                                }`}
+                                                                              >
+                                                                              <div className="flex items-center justify-between gap-4">
+                                                                                                  <h2 className="text-lg font-semibold">{program.name}</h2>h2>
+                                                                                                  <span
+                                                                                                                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                                                                                                                                                    selected ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'
+                                                                                                                            }`}
+                                                                                                                        >
+                                                                                                    {formatPrice(program.price)}
+                                                                                                    </span>span>
+                                                                              </div>div>
+                                                                              <p className={`mt-3 text-sm leading-6 ${selected ? 'text-slate-100' : 'text-slate-600'}`}>
+                                                                                {program.description}
+                                                                              </p>p>
+                                                            </button>button>
+                                                          )
+                                    })}
+                                  </div>div>
+                        
+                                  <form className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" onSubmit={handleContinueToPayment}>
+                                              <div>
+                                                            <h2 className="text-2xl font-semibold text-slate-900">Student information</h2>h2>
+                                                            <p className="mt-2 text-sm text-slate-600">
+                                                                            We use these details to create your Stripe PaymentIntent and enrollment record.
+                                                            </p>p>
+                                              </div>div>
+                                  
+                                              <div className="grid gap-4 md:grid-cols-2">
+                                                            <label className="space-y-2 text-sm font-medium text-slate-700">
+                                                                            <span>First name</span>span>
+                                                                            <input
+                                                                                                required
+                                                                                                autoComplete="given-name"
+                                                                                                value={form.firstName}
+                                                                                                onChange={(event) => updateField('firstName', event.target.value)}
+                                                                                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                                                                                              />
+                                                            </label>label>
+                                              
+                                                            <label className="space-y-2 text-sm font-medium text-slate-700">
+                                                                            <span>Last name</span>span>
+                                                                            <input
+                                                                                                required
+                                                                                                autoComplete="family-name"
+                                                                                                value={form.lastName}
+                                                                                                onChange={(event) => updateField('lastName', event.target.value)}
+                                                                                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                                                                                              />
+                                                            </label>label>
+                                              </div>div>
+                                  
+                                              <div className="grid gap-4 md:grid-cols-2">
+                                                            <label className="space-y-2 text-sm font-medium text-slate-700">
+                                                                            <span>Email</span>span>
+                                                                            <input
+                                                                                                required
+                                                                                                type="email"
+                                                                                                autoComplete="email"
+                                                                                                value={form.email}
+                                                                                                onChange={(event) => updateField('email', event.target.value)}
+                                                                                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                                                                                              />
+                                                            </label>label>
+                                              
+                                                            <label className="space-y-2 text-sm font-medium text-slate-700">
+                                                                            <span>Phone</span>span>
+                                                                            <input
+                                                                                                required
+                                                                                                type="tel"
+                                                                                                autoComplete="tel"
+                                                                                                value={form.phone}
+                                                                                                onChange={(event) => updateField('phone', event.target.value)}
+                                                                                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                                                                                              />
+                                                            </label>label>
+                                              </div>div>
+                                  
+                                    {formError ? (
+                          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{formError}</div>div>
+                        ) : null}
+                                  
+                                              <button
+                                                              type="submit"
+                                                              disabled={isInitializingPayment}
+                                                              className="w-full rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-70"
+                                                            >
+                                                {isInitializingPayment ? 'Preparing secure payment…' : `Continue to payment for ${formatPrice(selectedProgram.price)}`}
+                                              </button>button>
+                                  </form>form>
+                        </section>section>
+                
+                        <aside className="space-y-6">
+                                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                                              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Selected program</p>p>
+                                              <h2 className="mt-3 text-2xl font-semibold text-slate-900">{selectedProgram.name}</h2>h2>
+                                              <p className="mt-2 text-sm leading-6 text-slate-600">{selectedProgram.description}</p>p>
+                                              <div className="mt-6 flex items-end justify-between gap-4 border-t border-slate-200 pt-6">
+                                                            <div>
+                                                                            <p className="text-sm text-slate-500">Total due today</p>p>
+                                                                            <p className="text-4xl font-semibold tracking-tight text-slate-900">{formatPrice(selectedProgram.price)}</p>p>
+                                                            </div>div>
+                                                            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Stripe secured</span>span>
+                                              </div>div>
+                                  </div>div>
+                        
+                          {clientSecret ? (
+                        <Elements
+                                        stripe={stripePromise}
+                                        options={{
+                                                          clientSecret,
+                                                          appearance: {
+                                                                              theme: 'stripe',
+                                                          },
+                                        }}
+                                      >
+                                      <PaymentStep customerEmail={form.email} programName={selectedProgram.name} />
+                        </Elements>Elements>
+                      ) : (
+                        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm leading-6 text-slate-600 shadow-sm">
+                                      Your secure Stripe Payment Element will appear here after you submit your enrollment details.
+                        </div>div>
+                                  )}
+                        
+                                  <div className="rounded-2xl bg-slate-900 p-6 text-sm leading-6 text-slate-200 shadow-sm">
+                                              <h2 className="text-lg font-semibold text-white">Need help before enrolling?</h2>h2>
+                                              <p className="mt-2">
+                                                            If you have questions about which program is right for you, contact the Wiser Generations team before
+                                                            completing checkout.
+                                              </p>p>
+                                              <div className="mt-4 flex flex-wrap gap-3">
+                                                            <Link href="/contact" className="rounded-full bg-white px-4 py-2 font-semibold text-slate-900">
+                                                                            Contact us
+                                                            </Link>Link>
+                                                            <Link href="/" className="rounded-full border border-white/20 px-4 py-2 font-semibold text-white">
+                                                                            Back to home
+                                                            </Link>Link>
+                                              </div>div>
+                                  </div>div>
+                        </aside>aside>
+                </div>div>
+          </main>main>
+        )
+}
+</div>
