@@ -4,106 +4,105 @@ import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 
 type SubscribeBody = {
-    email?: string
-    firstName?: string
-    lastName?: string
-    tags?: string[]
-    source?: string
+      email?: string
+      firstName?: string
+      lastName?: string
+      tags?: string[]
+      source?: string
 }
 
 function normalizeEmail(value: string) {
-    return value.trim().toLowerCase()
+      return value.trim().toLowerCase()
 }
 
 function isValidEmail(value: string) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 }
 
 function normalizeTag(value: string) {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9_-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+      return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
 function getMailchimpHeaders(apiKey: string) {
-    return {
-          Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
-          'Content-Type': 'application/json',
-    }
+      return {
+              Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
+              'Content-Type': 'application/json',
+      }
 }
 
-export async function POST(req: NextRequest) {
-    try {
-          const body = (await req.json()) as SubscribeBody
-          const email = normalizeEmail(body.email || '')
+export async function POST(request: NextRequest) {
+      try {
+              const apiKey = process.env.MAILCHIMP_API_KEY
+              const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
 
-      if (!isValidEmail(email)) {
-              return NextResponse.json({ error: 'Valid email is required.' }, { status: 400 })
+        if (!apiKey || !audienceId) {
+                  return NextResponse.json({ error: 'Mailchimp is not configured.' }, { status: 500 })
+        }
+
+        const data = (await request.json()) as SubscribeBody
+              const email = normalizeEmail(data.email ?? '')
+
+        if (!isValidEmail(email)) {
+                  return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400 })
+        }
+
+        const firstName = (data.firstName ?? '').trim()
+              const lastName = (data.lastName ?? '').trim()
+              const tags = Array.from(
+                        new Set(
+                                    ['lead', ...(data.tags ?? []), data.source ?? 'website']
+                                      .map((tag) => normalizeTag(String(tag)))
+                                      .filter(Boolean),
+                                  ),
+                      )
+
+        const dataCenter = apiKey.split('-')[1]
+
+        if (!dataCenter) {
+                  return NextResponse.json({ error: 'Mailchimp API key is invalid.' }, { status: 500 })
+        }
+
+        const subscriberHash = createHash('md5').update(email).digest('hex')
+              const memberUrl = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`
+              const headers = getMailchimpHeaders(apiKey)
+
+        const upsertResponse = await fetch(memberUrl, {
+                  method: 'PUT',
+                  headers,
+                  body: JSON.stringify({
+                              email_address: email,
+                              status_if_new: 'subscribed',
+                              status: 'subscribed',
+                              merge_fields: {
+                                            FNAME: firstName,
+                                            LNAME: lastName,
+                              },
+                  }),
+        })
+
+        if (!upsertResponse.ok) {
+                  const errorText = await upsertResponse.text()
+                  return NextResponse.json({ error: 'Unable to save subscriber.', details: errorText }, { status: 502 })
+        }
+
+        if (tags.length > 0) {
+                  const tagsResponse = await fetch(`${memberUrl}/tags`, {
+                              method: 'POST',
+                              headers,
+                              body: JSON.stringify({
+                                            tags: tags.map((name) => ({ name, status: 'active' })),
+                              }),
+                  })
+
+                if (!tagsResponse.ok) {
+                            const errorText = await tagsResponse.text()
+                            return NextResponse.json({ error: 'Subscriber saved but tags could not be applied.', details: errorText }, { status: 502 })
+                }
+        }
+
+        return NextResponse.json({ success: true, email, tags })
+      } catch (error) {
+              console.error('Subscribe route error:', error)
+              return NextResponse.json({ error: 'Unable to process subscription request.' }, { status: 500 })
       }
-
-      const apiKey = process.env.MAILCHIMP_API_KEY
-          const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
-          const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX
-
-      if (!apiKey || !audienceId || !serverPrefix) {
-              console.warn('Mailchimp env vars not set. Skipping subscription for:', email)
-              return NextResponse.json({ success: true, skipped: true })
-      }
-
-      const firstName = body.firstName?.trim() || ''
-          const lastName = body.lastName?.trim() || ''
-          const source = normalizeTag(body.source || 'website') || 'website'
-          const tags = Array.from(
-                  new Set(['wiser-generations', source, ...(body.tags || []).map(normalizeTag)].filter(Boolean))
-                )
-
-      const subscriberHash = createHash('md5').update(email).digest('hex')
-          const baseUrl = `https://${serverPrefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`
-
-      const upsertRes = await fetch(baseUrl, {
-              method: 'PUT',
-              headers: getMailchimpHeaders(apiKey),
-              body: JSON.stringify({
-                        email_address: email,
-                        status_if_new: 'subscribed',
-                        merge_fields: {
-                                    FNAME: firstName,
-                                    LNAME: lastName,
-                        },
-              }),
-      })
-
-      const upsertData = await upsertRes.json()
-
-      if (!upsertRes.ok) {
-              console.error('Mailchimp upsert error:', upsertData)
-              return NextResponse.json({ success: true, warning: 'Email subscription skipped.' })
-      }
-
-      if (tags.length > 0) {
-              const tagsRes = await fetch(`${baseUrl}/tags`, {
-                        method: 'POST',
-                        headers: getMailchimpHeaders(apiKey),
-                        body: JSON.stringify({
-                                    tags: tags.map((name) => ({ name, status: 'active' })),
-                        }),
-              })
-
-            if (!tagsRes.ok) {
-                      const tagsData = await tagsRes.json()
-                      console.error('Mailchimp tag error:', tagsData)
-            }
-      }
-
-      return NextResponse.json({ success: true })
-    } catch (error) {
-          console.error('Subscribe API error:', error)
-          return NextResponse.json({ success: true, warning: 'Email subscription skipped due to error.' })
-    }
-}
-
-export async function GET() {
-    return NextResponse.json({ error: 'Method not allowed.' }, { status: 405 })
 }
