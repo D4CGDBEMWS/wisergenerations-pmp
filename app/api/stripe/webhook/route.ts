@@ -1,70 +1,122 @@
+import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
 export const runtime = 'nodejs'
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || ''
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || ''
+function getEnv(name: string) {
+    const value = process.env[name]
 
-const stripe = stripeSecretKey
-  ? new Stripe(stripeSecretKey, { apiVersion: '2024-06-20' })
-    : null
+  if (!value) {
+        throw new Error(`Missing required environment variable: ${name}`)
+  }
 
-async function syncEnrollment(req: NextRequest, paymentIntent: Stripe.PaymentIntent) {
-    const email = paymentIntent.receipt_email || paymentIntent.metadata.customer_email || ''
-    if (!email) return
-
-  const subscribeUrl = new URL('/api/subscribe', req.url)
-
-  await fetch(subscribeUrl.toString(), {
-        method: 'POST',
-        headers: {
-                'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-                email,
-                firstName: paymentIntent.metadata.customer_first_name || '',
-                lastName: paymentIntent.metadata.customer_last_name || '',
-                source: 'checkout',
-                tags: ['customer', paymentIntent.metadata.program_id || 'paid-enrollment'],
-        }),
-  })
+  return value
 }
 
-export async function POST(req: NextRequest) {
-    if (!stripe || !webhookSecret) {
-          return NextResponse.json({ error: 'Webhook is not configured.' }, { status: 500 })
+function normalizeEmail(value: string) {
+    return value.trim().toLowerCase()
+}
+
+function normalizeTag(value: string) {
+    return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+function getMailchimpHeaders(apiKey: string) {
+    return {
+          Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
+          'Content-Type': 'application/json',
     }
+}
 
-  const signature = req.headers.get('stripe-signature')
-    if (!signature) {
-          return NextResponse.json({ error: 'Missing Stripe signature.' }, { status: 400 })
-    }
+async function upsertMailchimpCustomer(input: {
+    email: string
+    firstName?: string
+    lastName?: string
+    tags: string[]
+}) {
+    const apiKey = getEnv('MAILCHIMP_API_KEY')
+    const audienceId = getEnv('MAILCHIMP_AUDIENCE_ID')
+    const dataCenter = apiKey.split('-')[1]
 
-  try {
-        const payload = await req.text()
-        const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
+  if (!dataCenter) {
+        throw new Error('Invalid Mailchimp API key.')
+  }
 
-      switch (event.type) {
-        case 'payment_intent.succeeded': {
-                  await syncEnrollment(req, event.data.object as Stripe.PaymentIntent)
-                  break
-        }
-        case 'payment_intent.payment_failed': {
-                  console.warn('Payment failed for intent:', (event.data.object as Stripe.PaymentIntent).id)
-                  break
-        }
-        default:
-                  break
+  const email = normalizeEmail(input.email)
+    const subscriberHash = createHash('md5').update(email).digest('hex')
+    const memberUrl = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`
+    const headers = getMailchimpHeaders(apiKey)
+    const tags = Array.from(new Set(input.tags.map(normalizeTag).filter(Boolean)))
+
+  const memberResponse = await fetch(memberUrl, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+                email_address: email,
+                status_if_new: 'subscribed',
+                status: 'subscribed',
+                merge_fields: {
+                          FNAME: input.firstName?.trim() || '',
+                          LNAME: input.lastName?.trim() || '',
+                },
+        }),
+  })
+
+  if (!memberResponse.ok) {
+        throw new Error(`Mailchimp member upsert failed: ${await memberResponse.text()}`)
+  }
+
+  if (tags.length > 0) {
+        const tagsResponse = await fetch(`${memberUrl}/tags`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                          tags: tags.map((name) => ({ name, status: 'active' })),
+                }),
+        })
+
+      if (!tagsResponse.ok) {
+              throw new Error(`Mailchimp tag sync failed: ${await tagsResponse.text()}`)
       }
-
-      return NextResponse.json({ received: true })
-  } catch (error) {
-        console.error('Stripe webhook error:', error)
-        return NextResponse.json({ error: 'Invalid webhook payload.' }, { status: 400 })
   }
 }
 
-export async function GET() {
-    return NextResponse.json({ error: 'Method not allowed.' }, { status: 405 })
+export async function POST(request: NextRequest) {
+    try {
+          const stripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2024-06-20' })
+          const signature = request.headers.get('stripe-signature')
+          const webhookSecret = getEnv('STRIPE_WEBHOOK_SECRET')
+
+      if (!signature) {
+              return NextResponse.json({ error: 'Missing Stripe signature.' }, { status: 400 })
+      }
+
+      const payload = await request.text()
+          const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
+
+      if (event.type === 'payment_intent.succeeded') {
+              const paymentIntent = event.data.object as Stripe.PaymentIntent
+              const email = normalizeEmail(paymentIntent.receipt_email || paymentIntent.metadata.customer_email || '')
+
+            if (email) {
+                      const firstName = paymentIntent.metadata.customer_first_name || ''
+                      const lastName = paymentIntent.metadata.customer_last_name || ''
+                      const programId = paymentIntent.metadata.program_id || 'program'
+                      const programName = paymentIntent.metadata.program_name || programId
+
+                await upsertMailchimpCustomer({
+                            email,
+                            firstName,
+                            lastName,
+                            tags: ['customer', normalizeTag(programId), normalizeTag(programName)],
+                })
+            }
+      }
+
+      return NextResponse.json({ received: true })
+    } catch (error) {
+          console.error('Stripe webhook error:', error)
+          return NextResponse.json({ error: 'Webhook processing failed.' }, { status: 400 })
+    }
 }
