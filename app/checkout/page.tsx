@@ -105,7 +105,7 @@ function PaymentForm({
                       <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                 Payment details
                       </p>
-                      <h2 className="mt-2 text-2xl font-semibold text-slate-900">Complete your enrollment</h2>h2>
+                      <h2 className="mt-2 text-2xl font-semibold text-slate-900">Complete your enrollment</h2>
                       <p className="mt-2 text-sm leading-6 text-slate-600">
                                 Your payment is securely processed by Stripe.
                       </p>
@@ -223,7 +223,7 @@ export default function CheckoutPage() {
                                               </p>
                                               <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
                                                             Enroll in your next project management program
-                                              </h1>h1>
+                                              </h1>
                                               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
                                                             Choose your program, enter your details, and continue to secure Stripe payment.
                                               </p>
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                                                                                               >
                                                                                               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                                                                                                       <div>
-                                                                                                                                                <h2 className="text-xl font-semibold">{program.name}</h2>h2>
+                                                                                                                                                <h2 className="text-xl font-semibold">{program.name}</h2>
                                                                                                                                                 <p
                                                                                                                                                                               className={`mt-2 text-sm leading-6 ${
                                                                                                                                                                                                               isSelected ? 'text-slate-200' : 'text-slate-600'
@@ -396,7 +396,7 @@ export default function CheckoutPage() {
                                                             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                                                             Selected program
                                                             </p>
-                                                            <h2 className="mt-3 text-2xl font-semibold text-slate-900">{selectedProgram.name}</h2>h2>
+                                                            <h2 className="mt-3 text-2xl font-semibold text-slate-900">{selectedProgram.name}</h2>
                                                             <p className="mt-2 text-sm leading-6 text-slate-600">
                                                               {selectedProgram.description}
                                                             </p>
@@ -415,7 +415,7 @@ export default function CheckoutPage() {
                                               </div>
                                   
                                               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                                                            <h3 className="text-lg font-semibold text-slate-900">Need help before enrolling?</h3>h3>
+                                                            <h3 className="text-lg font-semibold text-slate-900">Need help before enrolling?</h3>
                                                             <p className="mt-2 text-sm leading-6 text-slate-600">
                                                                             If you have questions about which program fits best, contact the Wiser Generations team before checking out.
                                                             </p>
