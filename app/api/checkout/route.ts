@@ -106,11 +106,12 @@ export async function POST(req: NextRequest) {
         receipt_email: email,
         description: program.description,
         metadata: {
-          programId,
-          programName: program.name,
-          studentName: name,
-          studentEmail: email,
-          studentPhone: phone,
+          program_id: programId,
+          program_name: program.name,
+          customer_email: email,
+          customer_first_name: body.firstName ?? '',
+          customer_last_name: body.lastName ?? '',
+          customer_phone: phone,
         },
         // Allows card, Apple Pay, Google Pay automatically via Stripe
         automatic_payment_methods: { enabled: true },
