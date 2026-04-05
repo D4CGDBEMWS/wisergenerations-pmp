@@ -1,109 +1,137 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-export const runtime = 'nodejs'
+// ---------------------------------------------------------------------------
+// Stripe server-side client
+// ---------------------------------------------------------------------------
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-06-20',
+})
 
+// ---------------------------------------------------------------------------
+// Program definitions — server is the canonical source of truth for prices.
+// Never trust the client to send the amount.
+// ---------------------------------------------------------------------------
 const PROGRAMS = {
-          'pmp-prep': { name: 'PMP® Certification Prep', price: 1497 },
-          'capm-launcher': { name: 'CAPM® Career Launcher', price: 997 },
-          'veterans-pathway': { name: 'Veterans PM Pathway', price: 797 },
+  'pmp-prep': {
+    name: 'PMP® Certification Prep',
+    amount: 149700, // $1,497.00 in cents
+    description: 'PMP® Certification Prep — Wiser Generations™',
+  },
+  'capm-launcher': {
+    name: 'CAPM® Career Launcher',
+    amount: 99700, // $997.00 in cents
+    description: 'CAPM® Career Launcher — Wiser Generations™',
+  },
+  'veterans-pathway': {
+    name: 'Veterans PM Pathway',
+    amount: 79700, // $797.00 in cents
+    description: 'Veterans PM Pathway — Wiser Generations™',
+  },
 } as const
 
-type CheckoutBody = {
-          programId?: string
-          customer?: {
-            firstName?: string
-            lastName?: string
-            email?: string
-            phone?: string
-          }
-}
+type ProgramId = keyof typeof PROGRAMS
 
-function getEnv(name: string) {
-          const value = process.env[name]
-
-  if (!value) {
-              throw new Error(`Missing required environment variable: ${name}`)
+// ---------------------------------------------------------------------------
+// POST /api/checkout
+// ---------------------------------------------------------------------------
+export async function POST(req: NextRequest) {
+  // ── Validate idempotency key ───────────────────────────────────────────────
+  const idempotencyKey = req.headers.get('x-idempotency-key')
+  if (!idempotencyKey) {
+    return NextResponse.json({ error: 'Missing idempotency key.' }, { status: 400 })
   }
 
-  return value
-}
+  // ── Parse body ────────────────────────────────────────────────────────────
+  let body: {
+    name?: string
+    firstName?: string
+    lastName?: string
+    email?: string
+    phone?: string
+    programId?: string
+  }
 
-function jsonError(error: string, status = 400) {
-          return NextResponse.json({ error }, { status })
-}
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
+  }
 
-function normalizeEmail(value: string) {
-          return value.trim().toLowerCase()
-}
+  const { name, email, phone, programId } = body
 
-export async function POST(request: NextRequest) {
-          try {
-                      const idempotencyKey = request.headers.get('x-idempotency-key')?.trim()
+  // ── Validate required fields ───────────────────────────────────────────────
+  if (!name || !email || !phone || !programId) {
+    return NextResponse.json(
+      { error: 'name, email, phone, and programId are required.' },
+      { status: 400 }
+    )
+  }
 
-            if (!idempotencyKey) {
-                          return jsonError('Missing idempotency key.')
-            }
+  // ── Validate email ─────────────────────────────────────────────────────────
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
+  }
 
-            const stripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2024-06-20' })
-                      const body = (await request.json()) as CheckoutBody
-                      const programId = String(body.programId ?? '') as keyof typeof PROGRAMS
-                      const program = PROGRAMS[programId]
+  // ── Validate program ───────────────────────────────────────────────────────
+  if (!Object.keys(PROGRAMS).includes(programId)) {
+    return NextResponse.json({ error: 'Invalid program selected.' }, { status: 400 })
+  }
 
-            if (!program) {
-                          return jsonError('Invalid program selected.')
-            }
+  const program = PROGRAMS[programId as ProgramId]
 
-            const firstName = String(body.customer?.firstName ?? '').trim()
-                      const lastName = String(body.customer?.lastName ?? '').trim()
-                      const email = normalizeEmail(String(body.customer?.email ?? ''))
-                      const phone = String(body.customer?.phone ?? '').trim()
+  try {
+    // ── Find or create Stripe Customer ─────────────────────────────────────
+    // Reusing an existing customer keeps the Stripe dashboard clean and
+    // allows payment method reuse in the future.
+    const existingCustomers = await stripe.customers.list({ email, limit: 1 })
 
-            if (!firstName || !lastName) {
-                          return jsonError('Customer name is required.')
-            }
+    let customer: Stripe.Customer
 
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                          return jsonError('A valid email is required.')
-            }
+    if (existingCustomers.data.length > 0) {
+      customer = existingCustomers.data[0]
+      // Update name/phone in case they changed
+      customer = await stripe.customers.update(customer.id, { name, phone })
+    } else {
+      customer = await stripe.customers.create({ name, email, phone })
+    }
 
-            if (phone.replace(/\D/g, '').length < 10) {
-                          return jsonError('A valid phone number is required.')
-            }
+    // ── Create PaymentIntent ───────────────────────────────────────────────
+    const paymentIntent = await stripe.paymentIntents.create(
+      {
+        amount: program.amount,
+        currency: 'usd',
+        customer: customer.id,
+        receipt_email: email,
+        description: program.description,
+        metadata: {
+          programId,
+          programName: program.name,
+          studentName: name,
+          studentEmail: email,
+          studentPhone: phone,
+        },
+        // Allows card, Apple Pay, Google Pay automatically via Stripe
+        automatic_payment_methods: { enabled: true },
+      },
+      { idempotencyKey }
+    )
 
-            const paymentIntent = await stripe.paymentIntents.create(
-                    {
-                                    amount: program.price * 100,
-                                    currency: 'usd',
-                                    automatic_payment_methods: { enabled: true },
-                                    receipt_email: email,
-                                    description: `Wiser Generations — ${program.name}`,
-                                    metadata: {
-                                                      program_id: programId,
-                                                      program_name: program.name,
-                                                      program_price: String(program.price),
-                                                      customer_first_name: firstName,
-                                                      customer_last_name: lastName,
-                                                      customer_name: `${firstName} ${lastName}`.trim(),
-                                                      customer_email: email,
-                                                      customer_phone: phone,
-                                                      source: 'checkout',
-                                    },
-                    },
-                    { idempotencyKey },
-                        )
+    return NextResponse.json({ client_secret: paymentIntent.client_secret })
+  } catch (err) {
+    console.error('[/api/checkout] Stripe error:', err)
 
-            if (!paymentIntent.client_secret) {
-                          return jsonError('Unable to initialize payment.', 500)
-            }
+    if (err instanceof Stripe.errors.StripeError) {
+      return NextResponse.json(
+        { error: err.message || 'A payment error occurred.' },
+        { status: 402 }
+      )
+    }
 
-            return NextResponse.json({ client_secret: paymentIntent.client_secret })
-          } catch (error) {
-                      console.error('Checkout API error:', error)
-                      return jsonError('Unable to create payment intent.', 500)
-          }
-}
-
-export async function GET() {
-          return NextResponse.json({ error: 'Method not allowed.' }, { status: 405 })
+    return NextResponse.json(
+      { error: 'An unexpected error occurred. Please try again.' },
+      { status: 500 }
+    )
+  }
 }
