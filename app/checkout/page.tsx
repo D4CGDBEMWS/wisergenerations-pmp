@@ -104,12 +104,12 @@ function PaymentForm({
               <div className="mb-6">
                       <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                 Payment details
-                      </p>p>
+                      </p>
                       <h2 className="mt-2 text-2xl font-semibold text-slate-900">Complete your enrollment</h2>h2>
                       <p className="mt-2 text-sm leading-6 text-slate-600">
                                 Your payment is securely processed by Stripe.
-                      </p>p>
-              </div>div>
+                      </p>
+              </div>
         
               <form onSubmit={handleSubmit} className="space-y-6">
                       <PaymentElement />
@@ -117,7 +117,7 @@ function PaymentForm({
                 {errorMessage ? (
                     <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                       {errorMessage}
-                    </div>div>
+                    </div>
                   ) : null}
               
                       <button
@@ -126,9 +126,9 @@ function PaymentForm({
                                   className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
                         {isSubmitting ? 'Processing payment…' : `Pay for ${programName}`}
-                      </button>button>
-              </form>form>
-        </div>div>
+                      </button>
+              </form>
+        </div>
       )
 }
 
@@ -220,14 +220,14 @@ export default function CheckoutPage() {
                                   <div>
                                               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                                             Secure checkout
-                                              </p>p>
+                                              </p>
                                               <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
                                                             Enroll in your next project management program
                                               </h1>h1>
                                               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
                                                             Choose your program, enter your details, and continue to secure Stripe payment.
-                                              </p>p>
-                                  </div>div>
+                                              </p>
+                                  </div>
                         
                                   <div className="flex gap-3">
                                               <Link
@@ -235,22 +235,22 @@ export default function CheckoutPage() {
                                                               className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
                                                             >
                                                             Back home
-                                              </Link>Link>
+                                              </Link>
                                               <Link
                                                               href="/contact"
                                                               className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100"
                                                             >
                                                             Contact us
-                                              </Link>Link>
-                                  </div>div>
-                        </div>div>
+                                              </Link>
+                                  </div>
+                        </div>
                 
                         <section className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
                                   <div className="space-y-8">
                                               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                                                             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                                                             Choose a program
-                                                            </p>p>
+                                                            </p>
                                               
                                                             <div className="mt-6 grid gap-4">
                                                               {Object.values(PROGRAMS).map((program) => {
@@ -276,8 +276,8 @@ export default function CheckoutPage() {
                                                                                                                                                                                                             }`}
                                                                                                                                                                             >
                                                                                                                                                   {program.description}
-                                                                                                                                                  </p>p>
-                                                                                                                        </div>div>
+                                                                                                                                                  </p>
+                                                                                                                        </div>
                                                                                               
                                                                                                                       <div
                                                                                                                                                   className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold ${
@@ -287,23 +287,23 @@ export default function CheckoutPage() {
                                                                                                                                                     }`}
                                                                                                                                                 >
                                                                                                                         {formatPrice(program.price)}
-                                                                                                                        </div>div>
-                                                                                                </div>div>
-                                                                        </button>button>
+                                                                                                                        </div>
+                                                                                                </div>
+                                                                        </button>
                                                                       )
                                                               })}
-                                                            </div>div>
-                                              </div>div>
+                                                            </div>
+                                              </div>
                                   
                                               <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                                                             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                                                             Student information
-                                                            </p>p>
+                                                            </p>
                                               
                                                             <form onSubmit={handleContinue} className="mt-6 space-y-5">
                                                                             <div className="grid gap-4 md:grid-cols-2">
                                                                                               <label className="space-y-2 text-sm font-medium text-slate-700">
-                                                                                                                  <span>First name</span>span>
+                                                                                                                  <span>First name</span>
                                                                                                                   <input
                                                                                                                                           required
                                                                                                                                           type="text"
@@ -312,10 +312,10 @@ export default function CheckoutPage() {
                                                                                                                                           onChange={(event) => updateField('firstName', event.target.value)}
                                                                                                                                           className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
                                                                                                                                         />
-                                                                                                </label>label>
+                                                                                                </label>
                                                                             
                                                                                               <label className="space-y-2 text-sm font-medium text-slate-700">
-                                                                                                                  <span>Last name</span>span>
+                                                                                                                  <span>Last name</span>
                                                                                                                   <input
                                                                                                                                           required
                                                                                                                                           type="text"
@@ -324,12 +324,12 @@ export default function CheckoutPage() {
                                                                                                                                           onChange={(event) => updateField('lastName', event.target.value)}
                                                                                                                                           className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
                                                                                                                                         />
-                                                                                                </label>label>
-                                                                            </div>div>
+                                                                                                </label>
+                                                                            </div>
                                                             
                                                                             <div className="grid gap-4 md:grid-cols-2">
                                                                                               <label className="space-y-2 text-sm font-medium text-slate-700">
-                                                                                                                  <span>Email</span>span>
+                                                                                                                  <span>Email</span>
                                                                                                                   <input
                                                                                                                                           required
                                                                                                                                           type="email"
@@ -338,10 +338,10 @@ export default function CheckoutPage() {
                                                                                                                                           onChange={(event) => updateField('email', event.target.value)}
                                                                                                                                           className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
                                                                                                                                         />
-                                                                                                </label>label>
+                                                                                                </label>
                                                                             
                                                                                               <label className="space-y-2 text-sm font-medium text-slate-700">
-                                                                                                                  <span>Phone</span>span>
+                                                                                                                  <span>Phone</span>
                                                                                                                   <input
                                                                                                                                           required
                                                                                                                                           type="tel"
@@ -350,13 +350,13 @@ export default function CheckoutPage() {
                                                                                                                                           onChange={(event) => updateField('phone', event.target.value)}
                                                                                                                                           className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
                                                                                                                                         />
-                                                                                                </label>label>
-                                                                            </div>div>
+                                                                                                </label>
+                                                                            </div>
                                                             
                                                               {formError ? (
                               <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                                 {formError}
-                              </div>div>
+                              </div>
                             ) : null}
                                                             
                                                                             <button
@@ -367,9 +367,9 @@ export default function CheckoutPage() {
                                                                               {isInitializingPayment
                                                                                                     ? 'Preparing secure payment…'
                                                                                                     : `Continue to payment for ${formatPrice(selectedProgram.price)}`}
-                                                                            </button>button>
-                                                            </form>form>
-                                              </section>section>
+                                                                            </button>
+                                                            </form>
+                                              </section>
                                   
                                     {clientSecret ? (
                           stripePromise ? (
@@ -378,66 +378,66 @@ export default function CheckoutPage() {
                                                                                     customerEmail={form.email}
                                                                                     programName={selectedProgram.name}
                                                                                   />
-                                            </Elements>Elements>
+                                            </Elements>
                                           ) : (
                                             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
                                                               Stripe is not configured yet. Add `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` to enable payments.
-                                            </div>div>
+                                            </div>
                                           )
                         ) : (
                           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600">
                                           Complete your student information above to load the secure payment form.
-                          </div>div>
+                          </div>
                                               )}
-                                  </div>div>
+                                  </div>
                         
                                   <aside className="space-y-6">
                                               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                                                             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                                                                             Selected program
-                                                            </p>p>
+                                                            </p>
                                                             <h2 className="mt-3 text-2xl font-semibold text-slate-900">{selectedProgram.name}</h2>h2>
                                                             <p className="mt-2 text-sm leading-6 text-slate-600">
                                                               {selectedProgram.description}
-                                                            </p>p>
+                                                            </p>
                                               
                                                             <div className="mt-6 flex items-end justify-between gap-4 border-t border-slate-200 pt-6">
                                                                             <div>
-                                                                                              <p className="text-sm text-slate-500">Total due today</p>p>
+                                                                                              <p className="text-sm text-slate-500">Total due today</p>
                                                                                               <p className="text-4xl font-semibold tracking-tight text-slate-900">
                                                                                                 {formatPrice(selectedProgram.price)}
-                                                                                                </p>p>
-                                                                            </div>div>
+                                                                                                </p>
+                                                                            </div>
                                                                             <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
                                                                                               Stripe secured
-                                                                            </span>span>
-                                                            </div>div>
-                                              </div>div>
+                                                                            </span>
+                                                            </div>
+                                              </div>
                                   
                                               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                                                             <h3 className="text-lg font-semibold text-slate-900">Need help before enrolling?</h3>h3>
                                                             <p className="mt-2 text-sm leading-6 text-slate-600">
                                                                             If you have questions about which program fits best, contact the Wiser Generations team before checking out.
-                                                            </p>p>
+                                                            </p>
                                                             <div className="mt-4 flex flex-wrap gap-3">
                                                                             <Link
                                                                                                 href="/contact"
                                                                                                 className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
                                                                                               >
                                                                                               Contact support
-                                                                            </Link>Link>
+                                                                            </Link>
                                                                             <Link
                                                                                                 href="/"
                                                                                                 className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
                                                                                               >
                                                                                               Return home
-                                                                            </Link>Link>
-                                                            </div>div>
-                                              </div>div>
-                                  </aside>aside>
-                        </section>section>
-                </section>section>
-          </main>main>
+                                                                            </Link>
+                                                            </div>
+                                              </div>
+                                  </aside>
+                        </section>
+                </section>
+          </main>
         )
 }
 </div>
