@@ -1,32 +1,36 @@
 'use client'
 
-import { FormEvent, useMemo, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import Link from 'next/link'
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 
-const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
-    : null
+const stripePromise =
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+      : null
 
 const PROGRAMS = {
     'pmp-prep': {
           id: 'pmp-prep',
           name: 'PMP® Certification Prep',
           price: 1497,
-          description: 'Our flagship PMP® prep experience with live instruction, accountability, and application support.',
+          description:
+                  'Our flagship PMP® prep experience with live instruction, accountability, and application support.',
     },
     'capm-launcher': {
           id: 'capm-launcher',
           name: 'CAPM® Career Launcher',
           price: 997,
-          description: 'Foundational project management training for early-career professionals and career changers.',
+          description:
+                  'Foundational project management training for early-career professionals and career changers.',
     },
     'veterans-pathway': {
           id: 'veterans-pathway',
           name: 'Veterans PM Pathway',
           price: 797,
-          description: 'A mission-aligned transition pathway designed for veterans moving into project management roles.',
+          description:
+                  'A mission-aligned transition pathway designed for veterans moving into project management roles.',
     },
 } as const
 
@@ -56,7 +60,7 @@ function createIdempotencyKey() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
 
-function PaymentStep({
+function PaymentForm({
     customerEmail,
     programName,
 }: {
@@ -89,7 +93,6 @@ function PaymentStep({
       if (result.error) {
               setErrorMessage(result.error.message ?? 'Unable to process payment. Please review your details and try again.')
               setIsSubmitting(false)
-              return
       }
   }
 
@@ -115,10 +118,6 @@ function PaymentStep({
                       >
                 {isSubmitting ? 'Processing payment…' : 'Pay now'}
               </button>button>
-        
-              <p className="text-xs leading-5 text-slate-500">
-                      By completing your purchase, you agree to the enrollment terms shared by Wiser Generations.
-              </p>p>
         </form>form>
       )
 }
@@ -135,7 +134,7 @@ export default function CheckoutPage() {
             const [formError, setFormError] = useState('')
                 const [isInitializingPayment, setIsInitializingPayment] = useState(false)
                   
-                    const selectedProgram = useMemo(() => PROGRAMS[form.programId], [form.programId])
+                    const selectedProgram = PROGRAMS[form.programId]
                         const stripeUnavailable = !stripePromise
                           
                             function updateField<K extends keyof CheckoutFormState>(key: K, value: CheckoutFormState[K]) {
@@ -194,8 +193,7 @@ export default function CheckoutPage() {
                                               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-600">Secure checkout</p>p>
                                               <h1 className="text-4xl font-semibold tracking-tight text-slate-900">Enroll with confidence</h1>h1>
                                               <p className="max-w-2xl text-base leading-7 text-slate-600">
-                                                            Choose the program that matches your next milestone. Pricing is validated server-side and payment
-                                                            details stay inside Stripe&apos;s PCI-compliant payment flow.
+                                                            Choose the program that matches your next milestone. Pricing is validated server-side and payment details stay inside Stripe&apos;s PCI-compliant flow.
                                               </p>p>
                                   </div>div>
                         
@@ -216,11 +214,7 @@ export default function CheckoutPage() {
                                                                               >
                                                                               <div className="flex items-center justify-between gap-4">
                                                                                                   <h2 className="text-lg font-semibold">{program.name}</h2>h2>
-                                                                                                  <span
-                                                                                                                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                                                                                                                                                    selected ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'
-                                                                                                                            }`}
-                                                                                                                        >
+                                                                                                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${selected ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'}`}>
                                                                                                     {formatPrice(program.price)}
                                                                                                     </span>span>
                                                                               </div>div>
@@ -309,26 +303,24 @@ export default function CheckoutPage() {
                                               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Selected program</p>p>
                                               <h2 className="mt-3 text-2xl font-semibold text-slate-900">{selectedProgram.name}</h2>h2>
                                               <p className="mt-2 text-sm leading-6 text-slate-600">{selectedProgram.description}</p>p>
+                                  
                                               <div className="mt-6 flex items-end justify-between gap-4 border-t border-slate-200 pt-6">
                                                             <div>
                                                                             <p className="text-sm text-slate-500">Total due today</p>p>
                                                                             <p className="text-4xl font-semibold tracking-tight text-slate-900">{formatPrice(selectedProgram.price)}</p>p>
                                                             </div>div>
-                                                            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Stripe secured</span>span>
+                                                            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                                                            Stripe secured
+                                                            </span>span>
                                               </div>div>
                                   </div>div>
                         
-                          {clientSecret ? (
+                          {clientSecret && stripePromise ? (
                         <Elements
                                         stripe={stripePromise}
-                                        options={{
-                                                          clientSecret,
-                                                          appearance: {
-                                                                              theme: 'stripe',
-                                                          },
-                                        }}
+                                        options={{ clientSecret, appearance: { theme: 'stripe' } }}
                                       >
-                                      <PaymentStep customerEmail={form.email} programName={selectedProgram.name} />
+                                      <PaymentForm customerEmail={form.email} programName={selectedProgram.name} />
                         </Elements>Elements>
                       ) : (
                         <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm leading-6 text-slate-600 shadow-sm">
@@ -339,8 +331,7 @@ export default function CheckoutPage() {
                                   <div className="rounded-2xl bg-slate-900 p-6 text-sm leading-6 text-slate-200 shadow-sm">
                                               <h2 className="text-lg font-semibold text-white">Need help before enrolling?</h2>h2>
                                               <p className="mt-2">
-                                                            If you have questions about which program is right for you, contact the Wiser Generations team before
-                                                            completing checkout.
+                                                            If you have questions about which program is right for you, contact the Wiser Generations team before completing checkout.
                                               </p>p>
                                               <div className="mt-4 flex flex-wrap gap-3">
                                                             <Link href="/contact" className="rounded-full bg-white px-4 py-2 font-semibold text-slate-900">
