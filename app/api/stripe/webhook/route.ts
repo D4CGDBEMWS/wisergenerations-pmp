@@ -84,7 +84,7 @@ async function upsertMailchimpCustomer(input: {
 
 export async function POST(request: NextRequest) {
     try {
-          const stripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2024-06-20' })
+          const stripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2025-08-27.basil' })
           const signature = request.headers.get('stripe-signature')
           const webhookSecret = getEnv('STRIPE_WEBHOOK_SECRET')
 

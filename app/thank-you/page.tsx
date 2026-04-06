@@ -23,7 +23,7 @@ async function getEnrollment(paymentIntentId?: string) {
   }
 
   try {
-    const stripe = new Stripe(stripeSecretKey, { apiVersion: '2024-06-20' })
+    const stripe = new Stripe(stripeSecretKey, { apiVersion: '2025-08-27.basil' })
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 
     if (paymentIntent.status !== 'succeeded') {

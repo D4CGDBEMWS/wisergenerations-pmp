@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
 // ---------------------------------------------------------------------------
-// Stripe server-side client
-// ---------------------------------------------------------------------------
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
-})
-
-// ---------------------------------------------------------------------------
 // Program definitions — server is the canonical source of truth for prices.
 // Never trust the client to send the amount.
 // ---------------------------------------------------------------------------
@@ -82,6 +75,10 @@ export async function POST(req: NextRequest) {
   const program = PROGRAMS[programId as ProgramId]
 
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-08-27.basil',
+    })
+
     // ── Find or create Stripe Customer ─────────────────────────────────────
     // Reusing an existing customer keeps the Stripe dashboard clean and
     // allows payment method reuse in the future.
@@ -126,7 +123,9 @@ export async function POST(req: NextRequest) {
     if (err instanceof Stripe.errors.StripeError) {
       return NextResponse.json(
         { error: err.message || 'A payment error occurred.' },
-        { status: 402 }
+        {
+          
+          status: 402 }
       )
     }
 
