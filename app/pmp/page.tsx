@@ -77,32 +77,43 @@ export default function PMPPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-navy text-white py-20">
+      <section className="bg-navy text-white py-20 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">
-            PMP® Certification Prep
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Earn Your PMP®.<br />
-            <span className="text-gold">Lead With Credentials.</span>
-          </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mb-8">
-            Instructor-led PMP® training designed for working professionals, career transitioners, and leaders ready to make their experience official. PMI-aligned. Exam-focused. Career-transforming.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/enroll"
-              className="bg-gold text-navy font-bold py-4 px-8 rounded-xl text-center hover:bg-yellow-400 transition-colors"
-            >
-              Enroll Now
-            </Link>
-            <Link
-              href="/programs"
-              className="border-2 border-white text-white font-bold py-4 px-8 rounded-xl text-center hover:bg-white hover:text-navy transition-colors"
-            >
-              View All Programs
-            </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">
+                PMP® Certification Prep
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                Earn Your PMP®.<br />
+                <span className="text-gold">Lead With Credentials.</span>
+              </h1>
+              <p className="text-xl text-gray-300 max-w-2xl mb-8">
+                Instructor-led PMP® training designed for working professionals, career transitioners, and leaders ready to make their experience official. PMI-aligned. Exam-focused. Career-transforming.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/enroll"
+                  className="bg-gold text-navy font-bold py-4 px-8 rounded-xl text-center hover:bg-yellow-400 transition-colors"
+                >
+                  Enroll Now
+                </Link>
+                <Link
+                  href="/programs"
+                  className="border-2 border-white text-white font-bold py-4 px-8 rounded-xl text-center hover:bg-white hover:text-navy transition-colors"
+                >
+                  View All Programs
+                </Link>
+              </div>
+            </div>
+            <div className="hidden lg:flex justify-center">
+              <img
+                src="/pexels-rdne-7092460.jpg"
+                alt="Project management professionals collaborating"
+                className="rounded-2xl shadow-2xl w-full max-w-md object-cover h-[480px]"
+              />
+            </div>
           </div>
         </div>
       </section>
