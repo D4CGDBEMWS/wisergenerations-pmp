@@ -182,10 +182,10 @@ export default function HomePage() {
                 <p className={`text-sm font-bold mb-4 ${c.status === 'urgent' ? 'text-red-600' : 'text-amber-700'}`}>
                   ⚡ {c.examBy}
                 </p>
-                <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                <Link href="/checkout"
                   className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors">
                   Reserve My Spot
-                </a>
+                </Link>
               </div>
             ))}
           </div>
