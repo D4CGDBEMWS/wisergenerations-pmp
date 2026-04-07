@@ -99,13 +99,16 @@ export async function POST(req: NextRequest) {
   const fromAddress = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev'
 
   if (!apiKey) {
-    // In development without Resend configured, log and return success so the
-    // UI flow can be tested. Same pattern used by /api/free-guide.
-    console.warn('[/api/contact] RESEND_API_KEY not set — skipping send. Submission was:', {
-      name,
-      email,
-      subject,
-      message,
+    // In development without Resend configured, log a redacted notice and
+    // return success so the UI flow can be tested. Same pattern used by
+    // /api/free-guide. We deliberately do NOT log the visitor's name, email,
+    // subject, or message body — those are PII and would otherwise end up in
+    // Vercel function logs / log aggregators every time Resend is missing.
+    console.warn('[/api/contact] RESEND_API_KEY not set — submission accepted but not delivered. Fields present:', {
+      hasName: name.length > 0,
+      hasEmail: email.length > 0,
+      hasSubject: subject.length > 0,
+      messageLength: message.length,
     })
     return NextResponse.json({ ok: true })
   }
