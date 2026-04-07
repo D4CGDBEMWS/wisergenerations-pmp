@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 // ---------------------------------------------------------------------------
 // POST /api/free-guide
@@ -11,6 +12,12 @@ import { NextRequest, NextResponse } from 'next/server'
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
+  const originBlock = checkOrigin(req)
+  if (originBlock) return originBlock
+
+  const rateBlock = rateLimit(req, 'free-guide', { limit: 5, windowMs: 60_000 })
+  if (rateBlock) return rateBlock
+
   let body: { firstName?: string; email?: string }
 
   try {

@@ -1,5 +1,7 @@
+import { randomUUID } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 // ---------------------------------------------------------------------------
 // Program definitions — server is the canonical source of truth for prices.
@@ -29,11 +31,22 @@ type ProgramId = keyof typeof PROGRAMS
 // POST /api/checkout
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
+  // ── Origin & rate-limit guards ────────────────────────────────────────────
+  const originBlock = checkOrigin(req)
+  if (originBlock) return originBlock
+
+  const rateBlock = rateLimit(req, 'checkout', { limit: 5, windowMs: 60_000 })
+  if (rateBlock) return rateBlock
+
   // ── Validate idempotency key ───────────────────────────────────────────────
-  const idempotencyKey = req.headers.get('x-idempotency-key')
-  if (!idempotencyKey) {
+  // SECURITY: the client-supplied key is used only as a *suffix* and is
+  // namespaced by a server-generated UUID, so a malicious caller cannot
+  // collide with another caller's PaymentIntent by replaying the same key.
+  const clientKey = req.headers.get('x-idempotency-key')
+  if (!clientKey || clientKey.length > 128) {
     return NextResponse.json({ error: 'Missing idempotency key.' }, { status: 400 })
   }
+  const idempotencyKey = `${randomUUID()}-${clientKey}`
 
   // ── Parse body ────────────────────────────────────────────────────────────
   let body: {
