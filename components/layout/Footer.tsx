@@ -15,7 +15,7 @@ export function Footer() {
           <div>
             <p className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-3">Programs</p>
             <div className="flex flex-col gap-2">
-              {[['PMP® Prep', '/pmp'], ['CAPM® Career Launcher', '/capm'], ['Corporate Training', '/corporate'], ['Veterans Pathway', '/veterans']].map(([l, h]) => (
+              {[['PMP® Prep', '/pmp'], ['Corporate Training', '/corporate'], ['Veterans Pathway', '/veterans']].map(([l, h]) => (
                 <Link key={h} href={h} className="text-sm text-gray-400 hover:text-gold transition-colors">{l}</Link>
               ))}
             </div>

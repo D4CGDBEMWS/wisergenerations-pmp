@@ -92,22 +92,24 @@ export async function POST(req: NextRequest) {
       apiVersion: '2025-08-27.basil',
     })
 
-    // ── Find or create Stripe Customer ─────────────────────────────────────
-    // Reusing an existing customer keeps the Stripe dashboard clean and
-    // allows payment method reuse in the future.
+    // ── Create Stripe Customer ─────────────────────────────────────────────
+    // We deliberately do NOT call stripe.customers.list({ email }) before
+    // creating, even though that would let us reuse an existing customer
+    // record across repeat purchases. The reason is privacy:
     //
-    // SECURITY: this endpoint is unauthenticated, so we must NOT trust the
-    // submitted name/phone to overwrite an existing customer record — that
-    // would let any attacker rewrite arbitrary Stripe customer details just
-    // by knowing the email. We only set name/phone when CREATING a new
-    // customer; for an existing one we reuse it as-is and pass the
-    // submitted values via PaymentIntent metadata only.
-    const existingCustomers = await stripe.customers.list({ email, limit: 1 })
-
-    const customer: Stripe.Customer =
-      existingCustomers.data.length > 0
-        ? existingCustomers.data[0]
-        : await stripe.customers.create({ name, email, phone })
+    // The conditional "list-then-create" pattern produces a measurable
+    // timing difference between "this email exists in our Stripe account"
+    // (one extra API call) and "this email is new" (two API calls). That
+    // difference is observable from the outside and turns the unauthenticated
+    // checkout endpoint into an enumeration oracle — anyone could probe
+    // whether a given email has ever bought from us.
+    //
+    // Always creating a fresh customer eliminates the oracle. The trade-off
+    // is that repeat purchasers will produce duplicate Customer rows in the
+    // Stripe dashboard, which is cosmetic only — the dashboard already
+    // groups by email when filtering, and the webhook still finds the right
+    // customer via paymentIntent.customer.
+    const customer = await stripe.customers.create({ name, email, phone })
 
     // ── Create PaymentIntent ───────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create(

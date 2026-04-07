@@ -32,9 +32,21 @@ export default function CheckoutSuccessPage() {
   )
 }
 
+// decodeURIComponent throws on malformed input (e.g. ?program=%E0%A4%A),
+// which would crash the entire success page render. Anyone can craft such a
+// URL and link it to a customer to break this page. Wrap and fall back.
+function safeDecode(value: string, fallback: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return fallback
+  }
+}
+
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams()
-  const programName = searchParams.get('program') ?? 'your program'
+  const rawProgram = searchParams.get('program') ?? 'your program'
+  const programName = safeDecode(rawProgram, 'your program')
   const paymentIntentClientSecret = searchParams.get('payment_intent_client_secret')
 
   const [status, setStatus] = useState<PaymentStatus>('loading')
@@ -101,7 +113,7 @@ function CheckoutSuccessContent() {
             </div>
             <h1 className="text-3xl font-semibold text-slate-900">You're enrolled!</h1>
             <p className="mt-3 text-base text-slate-600">
-              Welcome to <strong>{decodeURIComponent(programName)}</strong>. A confirmation and
+              Welcome to <strong>{programName}</strong>. A confirmation and
               receipt have been sent to your email address.
             </p>
             <p className="mt-2 text-sm text-slate-500">
