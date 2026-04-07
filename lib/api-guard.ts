@@ -1,13 +1,14 @@
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 import { NextRequest, NextResponse } from 'next/server'
 
 // ---------------------------------------------------------------------------
 // Lightweight request guards for unauthenticated POST routes.
 //
-// These are intentionally dependency-free so they run on Vercel serverless
-// without any external store. The rate limiter is BEST-EFFORT only: it uses
-// a per-instance in-memory Map, so a warm instance will throttle bursts from
-// the same IP, but it does NOT coordinate across instances. Move to Upstash
-// Ratelimit (or similar) when you need hard guarantees.
+// rateLimit() prefers Upstash Ratelimit (coordinated across all serverless
+// instances) when UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN are set.
+// Otherwise it falls back to a per-instance in-memory token bucket so the
+// site still has *some* protection in environments without Upstash.
 // ---------------------------------------------------------------------------
 
 /**
@@ -49,44 +50,99 @@ export function checkOrigin(req: NextRequest): NextResponse | null {
 }
 
 // ---------------------------------------------------------------------------
-// In-memory token bucket. Keyed by `${routeId}:${ip}`.
+// Rate limiter — Upstash when configured, in-memory fallback otherwise.
 // ---------------------------------------------------------------------------
-type Bucket = { count: number; resetAt: number }
-const buckets = new Map<string, Bucket>()
-
 function getClientIp(req: NextRequest): string {
   const xff = req.headers.get('x-forwarded-for')
   if (xff) return xff.split(',')[0]!.trim()
   return req.headers.get('x-real-ip') ?? 'unknown'
 }
 
-/**
- * Returns null if the request is within the limit, or a 429 NextResponse if
- * it should be rejected.
- */
-export function rateLimit(
-  req: NextRequest,
+const upstashConfigured =
+  !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN
+
+const upstashRedis = upstashConfigured ? Redis.fromEnv() : null
+const upstashLimiters = new Map<string, Ratelimit>()
+
+function getUpstashLimiter(routeId: string, limit: number, windowMs: number) {
+  if (!upstashRedis) return null
+  const cacheKey = `${routeId}:${limit}:${windowMs}`
+  let limiter = upstashLimiters.get(cacheKey)
+  if (!limiter) {
+    limiter = new Ratelimit({
+      redis: upstashRedis,
+      limiter: Ratelimit.slidingWindow(limit, `${windowMs} ms`),
+      analytics: false,
+      prefix: `wg:rl:${routeId}`,
+    })
+    upstashLimiters.set(cacheKey, limiter)
+  }
+  return limiter
+}
+
+// In-memory fallback bucket. Keyed by `${routeId}:${ip}`.
+type Bucket = { count: number; resetAt: number }
+const memoryBuckets = new Map<string, Bucket>()
+
+function memoryRateLimit(
   routeId: string,
-  opts: { limit: number; windowMs: number }
-): NextResponse | null {
-  const ip = getClientIp(req)
+  ip: string,
+  limit: number,
+  windowMs: number
+): { ok: boolean; retryAfter: number } {
   const key = `${routeId}:${ip}`
   const now = Date.now()
+  const existing = memoryBuckets.get(key)
 
-  const existing = buckets.get(key)
   if (!existing || existing.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + opts.windowMs })
-    return null
+    memoryBuckets.set(key, { count: 1, resetAt: now + windowMs })
+    return { ok: true, retryAfter: 0 }
   }
 
-  if (existing.count >= opts.limit) {
-    const retryAfter = Math.ceil((existing.resetAt - now) / 1000)
-    return NextResponse.json(
-      { error: 'Too many requests. Please try again shortly.' },
-      { status: 429, headers: { 'Retry-After': String(retryAfter) } }
-    )
+  if (existing.count >= limit) {
+    return { ok: false, retryAfter: Math.ceil((existing.resetAt - now) / 1000) }
   }
 
   existing.count += 1
+  return { ok: true, retryAfter: 0 }
+}
+
+/**
+ * Returns null if the request is within the limit, or a 429 NextResponse if
+ * it should be rejected. Uses Upstash when configured, in-memory fallback
+ * otherwise.
+ */
+export async function rateLimit(
+  req: NextRequest,
+  routeId: string,
+  opts: { limit: number; windowMs: number }
+): Promise<NextResponse | null> {
+  const ip = getClientIp(req)
+  const limiter = getUpstashLimiter(routeId, opts.limit, opts.windowMs)
+
+  if (limiter) {
+    try {
+      const result = await limiter.limit(ip)
+      if (!result.success) {
+        const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000))
+        return NextResponse.json(
+          { error: 'Too many requests. Please try again shortly.' },
+          { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+        )
+      }
+      return null
+    } catch (err) {
+      // Upstash outage → fall through to in-memory so we still throttle.
+      console.error('[api-guard] Upstash rate limit failed, falling back:', err)
+    }
+  }
+
+  const result = memoryRateLimit(routeId, ip, opts.limit, opts.windowMs)
+  if (!result.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again shortly.' },
+      { status: 429, headers: { 'Retry-After': String(result.retryAfter) } }
+    )
+  }
   return null
 }

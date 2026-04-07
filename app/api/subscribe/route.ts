@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       const originBlock = checkOrigin(request)
       if (originBlock) return originBlock
 
-      const rateBlock = rateLimit(request, 'subscribe', { limit: 5, windowMs: 60_000 })
+      const rateBlock = await rateLimit(request, 'subscribe', { limit: 5, windowMs: 60_000 })
       if (rateBlock) return rateBlock
 
       try {

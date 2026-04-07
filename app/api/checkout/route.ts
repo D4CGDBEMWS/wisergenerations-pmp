@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   const originBlock = checkOrigin(req)
   if (originBlock) return originBlock
 
-  const rateBlock = rateLimit(req, 'checkout', { limit: 5, windowMs: 60_000 })
+  const rateBlock = await rateLimit(req, 'checkout', { limit: 5, windowMs: 60_000 })
   if (rateBlock) return rateBlock
 
   // ── Validate idempotency key ───────────────────────────────────────────────
