@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import SocialIcons from './SocialIcons'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
@@ -46,6 +47,8 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link href="/contact" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Contact</Link>
+            {/* Social icons — white in nav, hidden on mobile */}
+            <SocialIcons variant="white" className="hidden md:flex" />
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
               className="bg-gold text-navy font-bold px-4 py-2 rounded-lg hover:bg-amber-400 transition-colors text-sm">
               Get Started

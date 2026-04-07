@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import NewsletterSignup from '@/components/layout/NewsletterSignup'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wisergenerations.com'),
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-1">{children}</main>
+        <NewsletterSignup />
         <Footer />
       </body>
     </html>
