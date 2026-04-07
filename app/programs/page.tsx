@@ -51,8 +51,8 @@ export default function ProgramsPage() {
                   )}
                 </div>
                 <div className="space-y-3">
-                  <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors">Learn More</a>
-                  <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="block w-full border-2 border-gold text-gold font-bold py-3 rounded-xl text-center hover:bg-light-gold transition-colors">Get Started</a>
+                  <Link href="/checkout" className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors">Learn More</Link>
+                  <Link href="/checkout" className="block w-full border-2 border-gold text-gold font-bold py-3 rounded-xl text-center hover:bg-light-gold transition-colors">Get Started</Link>
                 </div>
               </div>
             </div>

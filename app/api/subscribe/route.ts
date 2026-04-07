@@ -1,5 +1,6 @@
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -31,6 +32,12 @@ function getMailchimpHeaders(apiKey: string) {
 }
 
 export async function POST(request: NextRequest) {
+      const originBlock = checkOrigin(request)
+      if (originBlock) return originBlock
+
+      const rateBlock = await rateLimit(request, 'subscribe', { limit: 5, windowMs: 60_000 })
+      if (rateBlock) return rateBlock
+
       try {
               const apiKey = process.env.MAILCHIMP_API_KEY
               const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
@@ -82,7 +89,8 @@ export async function POST(request: NextRequest) {
 
         if (!upsertResponse.ok) {
                   const errorText = await upsertResponse.text()
-                  return NextResponse.json({ error: 'Unable to save subscriber.', details: errorText }, { status: 502 })
+                  console.error('[/api/subscribe] Mailchimp upsert failed:', errorText)
+                  return NextResponse.json({ error: 'Unable to save subscriber.' }, { status: 502 })
         }
 
         if (tags.length > 0) {
@@ -96,7 +104,8 @@ export async function POST(request: NextRequest) {
 
                 if (!tagsResponse.ok) {
                             const errorText = await tagsResponse.text()
-                            return NextResponse.json({ error: 'Subscriber saved but tags could not be applied.', details: errorText }, { status: 502 })
+                            console.error('[/api/subscribe] Mailchimp tag sync failed:', errorText)
+                            return NextResponse.json({ error: 'Subscriber saved but tags could not be applied.' }, { status: 502 })
                 }
         }
 
