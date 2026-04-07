@@ -82,17 +82,19 @@ export async function POST(req: NextRequest) {
     // ── Find or create Stripe Customer ─────────────────────────────────────
     // Reusing an existing customer keeps the Stripe dashboard clean and
     // allows payment method reuse in the future.
+    //
+    // SECURITY: this endpoint is unauthenticated, so we must NOT trust the
+    // submitted name/phone to overwrite an existing customer record — that
+    // would let any attacker rewrite arbitrary Stripe customer details just
+    // by knowing the email. We only set name/phone when CREATING a new
+    // customer; for an existing one we reuse it as-is and pass the
+    // submitted values via PaymentIntent metadata only.
     const existingCustomers = await stripe.customers.list({ email, limit: 1 })
 
-    let customer: Stripe.Customer
-
-    if (existingCustomers.data.length > 0) {
-      customer = existingCustomers.data[0]
-      // Update name/phone in case they changed
-      customer = await stripe.customers.update(customer.id, { name, phone })
-    } else {
-      customer = await stripe.customers.create({ name, email, phone })
-    }
+    const customer: Stripe.Customer =
+      existingCustomers.data.length > 0
+        ? existingCustomers.data[0]
+        : await stripe.customers.create({ name, email, phone })
 
     // ── Create PaymentIntent ───────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create(
