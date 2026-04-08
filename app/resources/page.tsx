@@ -67,16 +67,31 @@ const RESOURCES: Resource[] = [
     badge: 'Member bonus',
   },
   {
+    title: 'Career Transition Roadmap',
+    description:
+      'A 5-phase, 12-month plan for transitioning into PM from any background. Action items, timelines, and salary benchmarks.',
+    href: '/resources/career-transition',
+    badge: 'New',
+  },
+  {
+    title: 'PMP® PDU Resources',
+    description:
+      'How to earn the 60 PDUs needed to renew your PMP® every 3 years — including 6 free PDU sources.',
+    href: '/resources/pdu-resources',
+    badge: 'For PMPs',
+  },
+  {
+    title: 'Wiser Generations™ Blog',
+    description:
+      'Weekly articles on PMP® prep, career transition, veterans, and corporate training. Subscribe for launch.',
+    href: '/resources/blog',
+    badge: 'Coming soon',
+  },
+  {
     title: 'Veterans PM Pathway',
     description:
       'Resources tailored to veterans translating military experience into project management roles.',
     href: '/veterans',
-  },
-  {
-    title: 'Career Transition Roadmap',
-    description:
-      'How to move from your current role into a PM career — timeline, certifications, and portfolio tips.',
-    href: '/about',
   },
   {
     title: 'Corporate Team Training',

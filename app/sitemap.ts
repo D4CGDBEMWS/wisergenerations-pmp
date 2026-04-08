@@ -16,6 +16,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/resources/practice-questions`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/resources/itto-cheat-sheet`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/resources/pm-templates`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/resources/career-transition`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/resources/pdu-resources`, lastModified: new Date(), priority: 0.7 },
+    { url: `${base}/resources/blog`, lastModified: new Date(), priority: 0.6 },
     { url: `${base}/free-guide`, lastModified: new Date(), priority: 0.8 },
   ]
 }
