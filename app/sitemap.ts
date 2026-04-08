@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/resources/pmp-formulas`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/resources/practice-questions`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/resources/itto-cheat-sheet`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/resources/pm-templates`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/free-guide`, lastModified: new Date(), priority: 0.8 },
   ]
 }

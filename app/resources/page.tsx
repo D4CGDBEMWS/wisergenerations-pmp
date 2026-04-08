@@ -60,6 +60,13 @@ const RESOURCES: Resource[] = [
     badge: 'New',
   },
   {
+    title: 'Branded PM Templates (Agile + Waterfall)',
+    description:
+      '13+ branded PM templates — Project Charter, Risk Register, Sprint Planner, and more. Free with Study Access.',
+    href: '/resources/pm-templates',
+    badge: 'Member bonus',
+  },
+  {
     title: 'Veterans PM Pathway',
     description:
       'Resources tailored to veterans translating military experience into project management roles.',

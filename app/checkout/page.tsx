@@ -112,6 +112,7 @@ const STUDY_ACCESS_INCLUDED = [
   'Practice question bank with explanations',
   'Monthly live Q&A office hours',
   'Private study community access',
+  '🎁 Branded PM templates (Agile + Waterfall) — new template every month',
   'Cancel anytime — no contract',
 ] as const
 
@@ -172,6 +173,27 @@ function StudyAccessCard() {
           Get instant access to the Wiser Generations™ self-study library and monthly office
           hours. Cancel anytime.
         </p>
+      </div>
+
+      {/* Templates perk highlight */}
+      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-100/60 p-4">
+        <span aria-hidden className="text-2xl">🎁</span>
+        <div className="flex-1 text-sm">
+          <p className="font-bold text-slate-900">
+            Bonus: branded PM templates every month
+          </p>
+          <p className="mt-1 text-slate-700">
+            13+ Agile &amp; Waterfall templates (Project Charter, Risk Register, Sprint Planner,
+            Retrospective Board, and more) — plus a fresh new template delivered to your inbox on
+            the 1st of every month.{' '}
+            <a
+              href="/resources/pm-templates"
+              className="font-bold text-amber-800 underline hover:text-amber-900"
+            >
+              See the library →
+            </a>
+          </p>
+        </div>
       </div>
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
