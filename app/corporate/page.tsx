@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TrustSignals from '@/components/marketing/TrustSignals'
 
 export const metadata: Metadata = {
   title: 'Corporate Training — PMP® & CAPM® for Teams | Wiser Generations',
@@ -117,6 +118,9 @@ export default function CorporatePage() {
           </div>
         </div>
       </section>
+
+      {/* Trust signals strip — corporate-focused headline */}
+      <TrustSignals headline="Trusted by corporate L&D teams and PM leaders" />
 
       {/* Benefits Bar */}
       <section className="bg-gold py-10">

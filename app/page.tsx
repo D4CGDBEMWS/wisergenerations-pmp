@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { PROGRAMS, STATS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
+import TrustSignals from '@/components/marketing/TrustSignals'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
@@ -97,6 +98,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Trust signals strip */}
+      <TrustSignals />
 
       {/* FREE GUIDE — #2 position, right after hero */}
       <section className="py-12 bg-white border-b-4 border-gold">

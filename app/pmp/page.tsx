@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TrustSignals from '@/components/marketing/TrustSignals'
 
 export const metadata: Metadata = {
   title: 'PMP® Certification Prep — Wiser Generations',
@@ -117,6 +118,9 @@ export default function PMPPage() {
           </div>
         </div>
       </section>
+
+      {/* Trust signals strip */}
+      <TrustSignals />
 
       {/* Outcomes Bar */}
       <section className="bg-gold py-10">

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import TrustSignals from '@/components/marketing/TrustSignals'
 
 export const metadata: Metadata = {
   title: 'Veterans PM Pathway — PMP® & CAPM® for Military Veterans',
@@ -45,6 +46,9 @@ export default function VeteransPage() {
       </section>
 
 
+
+      {/* Trust signals strip — veteran-focused headline */}
+      <TrustSignals headline="Veteran-built. Mission-tested. Trusted nationwide." />
 
       {/* Translation */}
       <section className="py-16 bg-light-navy">
