@@ -48,8 +48,9 @@ const RESOURCES: Resource[] = [
   {
     title: 'PMP® Practice Questions',
     description:
-      'Sample PMP® exam questions with full answer explanations to gauge your readiness.',
-    href: '/checkout',
+      '8 free sample PMP® exam questions with full answer explanations to gauge your readiness.',
+    href: '/resources/practice-questions',
+    badge: 'Free',
   },
   {
     title: 'Veterans PM Pathway',

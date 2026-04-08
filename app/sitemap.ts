@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/enroll`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/resources`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/resources/pmp-formulas`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/resources/practice-questions`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/free-guide`, lastModified: new Date(), priority: 0.8 },
   ]
 }
