@@ -50,10 +50,10 @@ export default function Navbar() {
             <Link href="/contact" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Contact</Link>
             {/* Social icons — white in nav, hidden on mobile */}
             <SocialIcons variant="white" className="hidden md:flex" />
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+            <Link href="/checkout"
               className="bg-gold text-navy font-bold px-4 py-2 rounded-lg hover:bg-amber-400 transition-colors text-sm">
               Get Started
-            </a>
+            </Link>
           </div>
 
           {/* Mobile menu button */}

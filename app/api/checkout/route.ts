@@ -1,5 +1,7 @@
+import { randomUUID } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 // ---------------------------------------------------------------------------
 // Program definitions — server is the canonical source of truth for prices.
@@ -29,11 +31,22 @@ type ProgramId = keyof typeof PROGRAMS
 // POST /api/checkout
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
+  // ── Origin & rate-limit guards ────────────────────────────────────────────
+  const originBlock = checkOrigin(req)
+  if (originBlock) return originBlock
+
+  const rateBlock = await rateLimit(req, 'checkout', { limit: 5, windowMs: 60_000 })
+  if (rateBlock) return rateBlock
+
   // ── Validate idempotency key ───────────────────────────────────────────────
-  const idempotencyKey = req.headers.get('x-idempotency-key')
-  if (!idempotencyKey) {
+  // SECURITY: the client-supplied key is used only as a *suffix* and is
+  // namespaced by a server-generated UUID, so a malicious caller cannot
+  // collide with another caller's PaymentIntent by replaying the same key.
+  const clientKey = req.headers.get('x-idempotency-key')
+  if (!clientKey || clientKey.length > 128) {
     return NextResponse.json({ error: 'Missing idempotency key.' }, { status: 400 })
   }
+  const idempotencyKey = `${randomUUID()}-${clientKey}`
 
   // ── Parse body ────────────────────────────────────────────────────────────
   let body: {
@@ -82,17 +95,19 @@ export async function POST(req: NextRequest) {
     // ── Find or create Stripe Customer ─────────────────────────────────────
     // Reusing an existing customer keeps the Stripe dashboard clean and
     // allows payment method reuse in the future.
+    //
+    // SECURITY: this endpoint is unauthenticated, so we must NOT trust the
+    // submitted name/phone to overwrite an existing customer record — that
+    // would let any attacker rewrite arbitrary Stripe customer details just
+    // by knowing the email. We only set name/phone when CREATING a new
+    // customer; for an existing one we reuse it as-is and pass the
+    // submitted values via PaymentIntent metadata only.
     const existingCustomers = await stripe.customers.list({ email, limit: 1 })
 
-    let customer: Stripe.Customer
-
-    if (existingCustomers.data.length > 0) {
-      customer = existingCustomers.data[0]
-      // Update name/phone in case they changed
-      customer = await stripe.customers.update(customer.id, { name, phone })
-    } else {
-      customer = await stripe.customers.create({ name, email, phone })
-    }
+    const customer: Stripe.Customer =
+      existingCustomers.data.length > 0
+        ? existingCustomers.data[0]
+        : await stripe.customers.create({ name, email, phone })
 
     // ── Create PaymentIntent ───────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create(

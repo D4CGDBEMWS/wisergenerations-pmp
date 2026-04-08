@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import TrustSignals from '@/components/marketing/TrustSignals'
 import Faq from '@/components/marketing/Faq'
 
@@ -67,7 +68,7 @@ export default function VeteransPage() {
             certification that civilian employers recognize — and respect.
           </p>
           <div className="flex flex-wrap gap-4">
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="bg-gold text-white font-bold px-8 py-4 rounded-lg hover:bg-amber-600 transition-colors text-lg">Start Your Pathway</a>
+            <Link href="/checkout" className="bg-gold text-white font-bold px-8 py-4 rounded-lg hover:bg-amber-600 transition-colors text-lg">Start Your Pathway</Link>
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="border-2 border-white text-white font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">Talk to Crystal</a>
           </div>
         </div>
@@ -166,7 +167,7 @@ export default function VeteransPage() {
         <div className="max-w-xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold text-navy mb-4">Start Your Veterans Pathway</h2>
           <p className="text-gray-600 mb-6">Tell us your branch, your timeline, and your goal. We'll take it from there.</p>
-          <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Apply Now →</a>
+          <Link href="/checkout" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Apply Now →</Link>
         </div>
       </section>
     </div>
