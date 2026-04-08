@@ -36,6 +36,7 @@ export default function Navbar() {
             <Link href="/pmp" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">PMP® Prep</Link>
             <Link href="/veterans" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Veterans</Link>
             <Link href="/corporate" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Corporate</Link>
+            <Link href="/resources" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Resources</Link>
             <Link href="/about" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">About</Link>
             {/* FREE GUIDE — highlighted in nav */}
             <Link href="/free-guide"
@@ -77,6 +78,7 @@ export default function Navbar() {
               { href: '/pmp', label: 'PMP® Prep' },
               { href: '/veterans', label: 'Veterans' },
               { href: '/corporate', label: 'Corporate' },
+              { href: '/resources', label: 'Resources' },
               { href: '/about', label: 'About' },
               { href: '/contact', label: 'Contact' },
             ].map(item => (

@@ -26,7 +26,7 @@ export function Footer() {
           <div>
             <p className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-3">Company</p>
             <div className="flex flex-col gap-2">
-              {[['About Crystal', '/about'], ['Contact', '/contact'], ['Enterprise Academy™', 'https://enterpriseacademy.us']].map(([l, h]) => (
+              {[['About Crystal', '/about'], ['Resources', '/resources'], ['Contact', '/contact'], ['Enterprise Academy™', 'https://enterpriseacademy.us']].map(([l, h]) => (
                 <a key={h} href={h} className="text-sm text-gray-400 hover:text-gold transition-colors">{l}</a>
               ))}
               <a href="/free-guide" className="text-sm text-gold font-bold hover:text-amber-400 transition-colors">
