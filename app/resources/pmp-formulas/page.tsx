@@ -232,7 +232,17 @@ export default function PmpFormulasPage() {
         {/* Related resources */}
         <section className="mt-16">
           <h2 className="text-2xl font-bold text-slate-900">Related resources</h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            <Link
+              href="/resources/itto-cheat-sheet"
+              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-gold hover:shadow-md"
+            >
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Reference</p>
+              <h3 className="mt-2 text-lg font-bold text-slate-900">PMP® ITTO Cheat Sheet</h3>
+              <p className="mt-2 text-sm text-slate-600">
+                The 10 PMI® knowledge areas plus the patterns that beat memorization.
+              </p>
+            </Link>
             <Link
               href="/free-guide"
               className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-gold hover:shadow-md"

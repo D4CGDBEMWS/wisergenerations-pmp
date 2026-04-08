@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import TrustSignals from '@/components/marketing/TrustSignals'
+import Faq from '@/components/marketing/Faq'
 
 export const metadata: Metadata = {
   title: 'Veterans PM Pathway — PMP® & CAPM® for Military Veterans',
@@ -7,6 +8,33 @@ export const metadata: Metadata = {
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
+
+const VETERANS_FAQ = [
+  {
+    q: 'Can I use my GI Bill® or VA education benefits for this program?',
+    a: 'Wiser Generations™ is not currently a GI Bill® approved facility, so direct VA tuition payment isn\u2019t available. However, many veterans use TA, employer L&D budgets, VR&E (Chapter 31) sponsorship, or workforce development grants. We provide a tuition justification letter and itemized invoice you can submit, and we walk every veteran through the available options during onboarding.',
+  },
+  {
+    q: 'Should I pursue PMP® or CAPM® first as a transitioning veteran?',
+    a: 'It depends on your service experience. If you led teams, ran missions, or managed operations for 36+ months as an E-5 or above (or as an officer), your experience usually qualifies you directly for PMP®. If you\u2019re newer to leadership or don\u2019t yet have documented "project leadership" hours, CAPM® is the faster on-ramp and PMP® comes next. Crystal will help you decide on a free 15-min call.',
+  },
+  {
+    q: 'How does my MOS / rate / AFSC translate to project management?',
+    a: 'Almost every military role maps to PM competencies. Logistics, signal, ops, engineering, aviation maintenance, supply, intel — all involve scope, schedule, cost, risk, communications, and stakeholder management. Our Military-to-PM Skills Translation Guide maps your specific experience into PMI® language so you can use it on your application and resume.',
+  },
+  {
+    q: 'I\u2019m still on active duty / in the Reserves. Can I still enroll?',
+    a: 'Yes. Many of our veteran students are still in uniform — active, Guard, or Reserve — and use the program to prep for their next chapter. Sessions are virtual and recorded so you can keep up around training, drill weekends, and deployments.',
+  },
+  {
+    q: 'Do you have a veteran-only cohort or do I study with civilians?',
+    a: 'Both. We run a veteran peer cohort each quarter where you\u2019ll study alongside other transitioning service members who understand your background and communication style. You can also join our standard mentor-led cohort if the timing works better — many veterans choose this for the broader networking.',
+  },
+  {
+    q: 'How long until I\u2019m exam-ready and certified?',
+    a: 'Most veterans go from enrollment to exam-ready in 10–14 weeks. Your military experience usually accelerates the People and Process domains. We schedule weekly check-ins so you stay on track even when life — or duty — gets in the way.',
+  },
+] as const
 
 // U.S. Army public domain photos (no copyright restrictions)
 const ARMY_PHOTOS = {
@@ -130,6 +158,9 @@ export default function VeteransPage() {
           <p className="text-gold font-bold">— Crystal Stewart, PMP® · U.S. Army Veteran</p>
         </div>
       </section>
+
+      {/* FAQ — emits FAQPage JSON-LD for Google rich snippets */}
+      <Faq items={VETERANS_FAQ} heading="Veterans Pathway FAQ" />
 
       <section className="py-12 bg-light-gold">
         <div className="max-w-xl mx-auto px-4 text-center">

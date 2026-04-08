@@ -53,6 +53,13 @@ const RESOURCES: Resource[] = [
     badge: 'Free',
   },
   {
+    title: 'PMP® ITTO Cheat Sheet',
+    description:
+      'Inputs, Tools & Techniques, and Outputs across the 10 PMI® knowledge areas — patterns, not memorization.',
+    href: '/resources/itto-cheat-sheet',
+    badge: 'New',
+  },
+  {
     title: 'Veterans PM Pathway',
     description:
       'Resources tailored to veterans translating military experience into project management roles.',
