@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import SocialIcons from './SocialIcons'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
@@ -35,6 +36,7 @@ export default function Navbar() {
             <Link href="/pmp" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">PMP® Prep</Link>
             <Link href="/veterans" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Veterans</Link>
             <Link href="/corporate" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Corporate</Link>
+            <Link href="/resources" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Resources</Link>
             <Link href="/about" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">About</Link>
             {/* FREE GUIDE — highlighted in nav */}
             <Link href="/free-guide"
@@ -46,6 +48,8 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link href="/contact" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">Contact</Link>
+            {/* Social icons — white in nav, hidden on mobile */}
+            <SocialIcons variant="white" className="hidden md:flex" />
             <Link href="/checkout"
               className="bg-gold text-navy font-bold px-4 py-2 rounded-lg hover:bg-amber-400 transition-colors text-sm">
               Get Started
@@ -74,6 +78,7 @@ export default function Navbar() {
               { href: '/pmp', label: 'PMP® Prep' },
               { href: '/veterans', label: 'Veterans' },
               { href: '/corporate', label: 'Corporate' },
+              { href: '/resources', label: 'Resources' },
               { href: '/about', label: 'About' },
               { href: '/contact', label: 'Contact' },
             ].map(item => (

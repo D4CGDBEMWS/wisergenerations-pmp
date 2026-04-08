@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import SocialIcons from './SocialIcons'
 
 export function Footer() {
   return (
@@ -11,6 +12,8 @@ export function Footer() {
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">PMP® and CAPM® certification training for career transitioners, corporate teams, and veterans. PMI-aligned. Mentor-led. Results-driven.</p>
             <p className="text-gold text-sm mt-4 font-medium">Smyrna, GA (Metro Atlanta) · Virtual Nationwide</p>
             <a href="mailto:info@wisergenerations.com" className="text-gray-400 text-sm mt-2 block hover:text-gold transition-colors">info@wisergenerations.com</a>
+            {/* Social icons — gold in footer */}
+            <SocialIcons variant="gold" className="mt-4" />
           </div>
           <div>
             <p className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-3">Programs</p>
@@ -23,7 +26,7 @@ export function Footer() {
           <div>
             <p className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-3">Company</p>
             <div className="flex flex-col gap-2">
-              {[['About Crystal', '/about'], ['Contact', '/contact'], ['Enterprise Academy™', 'https://enterpriseacademy.us']].map(([l, h]) => (
+              {[['About Crystal', '/about'], ['Resources', '/resources'], ['Contact', '/contact'], ['Enterprise Academy™', 'https://enterpriseacademy.us']].map(([l, h]) => (
                 <a key={h} href={h} className="text-sm text-gray-400 hover:text-gold transition-colors">{l}</a>
               ))}
               <a href="/free-guide" className="text-sm text-gold font-bold hover:text-amber-400 transition-colors">

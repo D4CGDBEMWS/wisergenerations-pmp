@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TrustSignals from '@/components/marketing/TrustSignals'
+import Faq from '@/components/marketing/Faq'
 
 export const metadata: Metadata = {
   title: 'PMP® Certification Prep — Wiser Generations',
@@ -73,6 +75,37 @@ const OUTCOMES = [
   { stat: '100%', label: 'PMI Exam Content Outline (ECO) aligned' },
 ]
 
+const PMP_FAQ = [
+  {
+    q: 'Am I eligible to sit for the PMP® exam?',
+    a: 'PMI® requires a 4-year degree plus 36 months of project leadership experience and 35 contact hours of project management education — OR a high school diploma plus 60 months of leadership experience and 35 contact hours. Our PMP® Accelerator includes the 35 contact hours and we walk you through the application process, including how to document your experience correctly.',
+  },
+  {
+    q: 'How long does it take to prepare for the PMP® exam?',
+    a: 'Most of our students go from enrollment to exam-ready in about 12 weeks, studying 8–12 hours per week. Working professionals with prior PM experience often move faster; career transitioners may take longer. We build a personalized study plan with you during onboarding.',
+  },
+  {
+    q: 'What is the PMP® exam pass rate for Wiser Generations™ students?',
+    a: 'Our students have an 87% first-attempt pass rate. The global average for first-attempt PMP® takers is significantly lower, which is why mentor-led prep, accountability, and full-length practice exams matter — and why we include all three in our Accelerator program.',
+  },
+  {
+    q: 'What happens if I don\u2019t pass on the first try?',
+    a: 'You retain access to your full course materials, practice exams, and community for re-take preparation. We also schedule a debrief with Crystal to identify weak areas and build a focused 2–4 week re-test plan. PMI® allows up to 3 attempts within one eligibility year.',
+  },
+  {
+    q: 'Is your curriculum aligned to the 2026 PMP® exam changes?',
+    a: 'Yes. PMI® updates the PMP® Exam Content Outline (ECO) periodically, and our curriculum is built directly from the current ECO. The 2026 update emphasizes AI in project management, sustainability, and value delivery — topics we now cover explicitly. See our free PMP® Exam Changes 2026 guide for details.',
+  },
+  {
+    q: 'Can I pay in installments or does my employer reimburse?',
+    a: 'Yes to both. We offer payment plans on the Accelerator program, and we provide a tuition justification letter and itemized invoice you can submit to your employer for L&D reimbursement. Many corporate L&D programs cover 100% of professional certification training.',
+  },
+  {
+    q: 'What\u2019s the difference between PMP® and CAPM®?',
+    a: 'PMP® is for experienced project managers (3–5+ years of leadership experience required) and is the industry gold standard. CAPM® is the entry-level credential — no PM experience required, just 23 hours of project management education. If you\u2019re new to PM, start with CAPM® or our Veterans Pathway. If you have experience, go straight to PMP®.',
+  },
+] as const
+
 export default function PMPPage() {
   return (
     <div>
@@ -117,6 +150,9 @@ export default function PMPPage() {
           </div>
         </div>
       </section>
+
+      {/* Trust signals strip */}
+      <TrustSignals />
 
       {/* Outcomes Bar */}
       <section className="bg-gold py-10">
@@ -233,6 +269,9 @@ export default function PMPPage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ — emits FAQPage JSON-LD for Google rich snippets */}
+      <Faq items={PMP_FAQ} heading="PMP® Prep FAQ" />
 
       {/* CTA */}
       <section className="bg-navy text-white py-16">
