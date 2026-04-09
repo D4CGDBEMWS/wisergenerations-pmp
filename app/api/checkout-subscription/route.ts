@@ -45,6 +45,16 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: email || undefined,
       allow_promotion_codes: true,
+      // Require full billing address at checkout. This is needed for:
+      //   1. Mailchimp's ADDRESS merge field validation — Mailchimp rejects
+      //      contact updates with an incomplete ADDRESS, and we map Stripe's
+      //      address into Mailchimp on the webhook.
+      //   2. Future tax compliance if/when we start charging state sales tax.
+      //   3. Sending branded PM templates as shipped merch (a likely future
+      //      use case for the $47/mo tier).
+      // Stripe Checkout's address form is optimized for conversion and has
+      // browser autofill, so the friction impact on signup rate is minimal.
+      billing_address_collection: 'required',
       success_url: `${origin}/checkout/success?tier=study&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout?canceled=1`,
       subscription_data: {
