@@ -55,7 +55,12 @@ async function upsertMailchimpCustomer(input: {
         body: JSON.stringify({
                 email_address: email,
                 status_if_new: 'subscribed',
-                status: 'subscribed',
+                // Do NOT force `status: 'subscribed'` on existing members —
+                // Mailchimp returns HTTP 400 "Member In Compliance State"
+                // when you try to force-set status on a member that's
+                // already subscribed (or was previously unsubscribed).
+                // `status_if_new` is the correct field for an upsert: it
+                // only sets status when creating a new member.
                 merge_fields: {
                           FNAME: input.firstName?.trim() || '',
                           LNAME: input.lastName?.trim() || '',
@@ -64,7 +69,10 @@ async function upsertMailchimpCustomer(input: {
   })
 
   if (!memberResponse.ok) {
-        throw new Error(`Mailchimp member upsert failed: ${await memberResponse.text()}`)
+        const responseText = await memberResponse.text()
+        throw new Error(
+              `Mailchimp member upsert failed (${memberResponse.status}): ${responseText}`
+        )
   }
 
   if (tags.length > 0) {
@@ -230,7 +238,26 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ received: true })
     } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          const isSignatureError =
+                message.toLowerCase().includes('signature') ||
+                message.toLowerCase().includes('webhook secret')
+
           console.error('Stripe webhook error:', error)
-          return NextResponse.json({ error: 'Webhook processing failed.' }, { status: 400 })
+
+          // Surface the real error in the response body so it shows up
+          // directly in the Stripe dashboard's Event deliveries → Response
+          // section. Previously this returned a generic "Webhook processing
+          // failed." message that forced debuggers to dig through Vercel
+          // function logs.
+          //
+          // We use 400 for signature/verification errors (Stripe won't retry
+          // those — they're permanent config mismatches) and 500 for
+          // downstream failures like Mailchimp outages (Stripe WILL retry,
+          // giving us a chance to recover without losing the event).
+          return NextResponse.json(
+                { error: message },
+                { status: isSignatureError ? 400 : 500 }
+          )
     }
 }
