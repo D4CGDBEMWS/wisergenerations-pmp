@@ -29,11 +29,60 @@ function getMailchimpHeaders(apiKey: string) {
     }
 }
 
+// Mailchimp's ADDRESS merge field expects this exact shape. When the
+// audience has an ADDRESS field (even if it's not marked required), Mailchimp
+// validates any update to mean the address must be "complete" — i.e. addr1,
+// city, state, zip, and country must all be non-empty strings. Partial
+// addresses are rejected with HTTP 400 "Your merge fields were invalid".
+type MailchimpAddress = {
+    addr1: string
+    addr2: string
+    city: string
+    state: string
+    zip: string
+    country: string
+}
+
+// Convert a Stripe Checkout Session address into Mailchimp's ADDRESS merge
+// field shape. Returns null if the address is incomplete so callers can
+// safely omit the field rather than sending partial data that Mailchimp will
+// reject. (We set billing_address_collection: 'required' on the Checkout
+// Session so new subscribers always provide a complete address, but we still
+// guard against edge cases like partial legacy data.)
+function stripeAddressToMailchimp(
+    address: Stripe.Address | null | undefined
+): MailchimpAddress | null {
+    if (!address) return null
+
+  const addr1 = address.line1?.trim() || ''
+    const city = address.city?.trim() || ''
+    const state = address.state?.trim() || ''
+    const zip = address.postal_code?.trim() || ''
+    const country = address.country?.trim() || ''
+
+  // All five required sub-fields must be non-empty for Mailchimp's ADDRESS
+  // validator to accept the write. If any are missing, return null and the
+  // caller will skip the ADDRESS merge field entirely.
+  if (!addr1 || !city || !state || !zip || !country) {
+        return null
+  }
+
+  return {
+        addr1,
+        addr2: address.line2?.trim() || '',
+        city,
+        state,
+        zip,
+        country,
+  }
+}
+
 async function upsertMailchimpCustomer(input: {
     email: string
     firstName?: string
     lastName?: string
     tags: string[]
+    address?: MailchimpAddress | null
 }) {
     const apiKey = getEnv('MAILCHIMP_API_KEY')
     const audienceId = getEnv('MAILCHIMP_AUDIENCE_ID')
@@ -49,6 +98,17 @@ async function upsertMailchimpCustomer(input: {
     const headers = getMailchimpHeaders(apiKey)
     const tags = Array.from(new Set(input.tags.map(normalizeTag).filter(Boolean)))
 
+  // Only include the ADDRESS merge field when we have a complete address.
+  // Mailchimp rejects updates that touch the ADDRESS field with incomplete
+  // data, even when the field is not marked "required" in audience settings.
+  const mergeFields: Record<string, string | MailchimpAddress> = {
+        FNAME: input.firstName?.trim() || '',
+        LNAME: input.lastName?.trim() || '',
+  }
+  if (input.address) {
+        mergeFields.ADDRESS = input.address
+  }
+
   const memberResponse = await fetch(memberUrl, {
         method: 'PUT',
         headers,
@@ -61,10 +121,7 @@ async function upsertMailchimpCustomer(input: {
                 // already subscribed (or was previously unsubscribed).
                 // `status_if_new` is the correct field for an upsert: it
                 // only sets status when creating a new member.
-                merge_fields: {
-                          FNAME: input.firstName?.trim() || '',
-                          LNAME: input.lastName?.trim() || '',
-                },
+                merge_fields: mergeFields,
         }),
   })
 
@@ -190,10 +247,19 @@ export async function POST(request: NextRequest) {
                             const fullName = session.customer_details?.name
                             const { firstName, lastName } = splitFullName(fullName)
 
+                      // Map Stripe's billing address into Mailchimp's ADDRESS
+                      // merge field. Returns null if the address is incomplete,
+                      // in which case the ADDRESS field is omitted from the
+                      // Mailchimp PUT rather than sending partial data.
+                      const address = stripeAddressToMailchimp(
+                                  session.customer_details?.address
+                      )
+
                       await upsertMailchimpCustomer({
                                   email,
                                   firstName,
                                   lastName,
+                                  address,
                                   tags: [
                                               'customer',
                                               'subscriber',
