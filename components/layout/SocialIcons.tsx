@@ -20,7 +20,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: 'LinkedIn',
-    href: 'https://www.linkedin.com/company/wisergenerations',
+    href: 'https://www.linkedin.com/company/wiser-generations',
     Icon: LinkedInIcon,
   },
   {
