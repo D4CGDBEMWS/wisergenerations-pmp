@@ -13,7 +13,7 @@ const CALENDLY = 'https://calendly.com/space4grace/15min'
 const VETERANS_FAQ = [
   {
     q: 'Can I use my GI Bill® or VA education benefits for this program?',
-    a: 'Wiser Generations™ is not currently a GI Bill® approved facility, so direct VA tuition payment isn\u2019t available. However, many veterans use TA, employer L&D budgets, VR&E (Chapter 31) sponsorship, or workforce development grants. We provide a tuition justification letter and itemized invoice you can submit, and we walk every veteran through the available options during onboarding.',
+    a: 'Wiser Generations Int’l™ is not currently a GI Bill® approved facility, so direct VA tuition payment isn\u2019t available. However, many veterans use TA, employer L&D budgets, VR&E (Chapter 31) sponsorship, or workforce development grants. We provide a tuition justification letter and itemized invoice you can submit, and we walk every veteran through the available options during onboarding.',
   },
   {
     q: 'Should I pursue PMP® or CAPM® first as a transitioning veteran?',

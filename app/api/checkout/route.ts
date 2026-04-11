@@ -11,17 +11,17 @@ const PROGRAMS = {
   'pmp-prep': {
     name: 'PMP® Certification Prep',
     amount: 149700, // $1,497.00 in cents
-    description: 'PMP® Certification Prep — Wiser Generations™',
+    description: 'PMP® Certification Prep — Wiser Generations Int’l™',
   },
   'capm-launcher': {
     name: 'CAPM® Career Launcher',
     amount: 99700, // $997.00 in cents
-    description: 'CAPM® Career Launcher — Wiser Generations™',
+    description: 'CAPM® Career Launcher — Wiser Generations Int’l™',
   },
   'veterans-pathway': {
     name: 'Veterans PM Pathway',
     amount: 79700, // $797.00 in cents
-    description: 'Veterans PM Pathway — Wiser Generations™',
+    description: 'Veterans PM Pathway — Wiser Generations Int’l™',
   },
 } as const
 

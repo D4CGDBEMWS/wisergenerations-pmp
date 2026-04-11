@@ -3,12 +3,12 @@ import Link from 'next/link'
 import BlogLaunchSignup from '@/components/marketing/BlogLaunchSignup'
 
 export const metadata: Metadata = {
-  title: 'Wiser Generations™ Blog — PMP®, Career Transition, Veterans',
+  title: 'Wiser Generations Int’l™ Blog — PMP®, Career Transition, Veterans',
   description:
     'Crystal Stewart\u2019s upcoming blog covering PMP® exam prep, career transition, veterans pathways, and corporate training. Subscribe for launch.',
   alternates: { canonical: '/resources/blog' },
   openGraph: {
-    title: 'Wiser Generations™ Blog',
+    title: 'Wiser Generations Int’l™ Blog',
     description:
       'PMP® exam prep, career transition, and veterans PM resources from Crystal Stewart.',
     url: 'https://wisergenerations.com/resources/blog',
@@ -100,13 +100,13 @@ export default function BlogStubPage() {
       <section className="bg-navy text-white">
         <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-            Wiser Generations™ Blog
+            Wiser Generations Int’l™ Blog
           </p>
           <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
             New posts launching soon
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-7 text-gray-300">
-            Crystal Stewart and the Wiser Generations™ team are publishing weekly articles on
+            Crystal Stewart and the Wiser Generations Int’l™ team are publishing weekly articles on
             PMP® exam prep, career transition, veterans pathways, and corporate training. Drop
             your email and we&rsquo;ll notify you the moment the first post lands.
           </p>

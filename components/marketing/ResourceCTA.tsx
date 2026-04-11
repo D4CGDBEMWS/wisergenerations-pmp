@@ -14,7 +14,7 @@ type Variant = 'soft' | 'hard'
 const COPY: Record<Variant, { eyebrow: string; title: string; body: string; cta: string; href: string }> = {
   soft: {
     eyebrow: 'Want more PMP study tools?',
-    title: 'Start Wiser Generations™ Study Access — $47/month',
+    title: 'Start Wiser Generations Int’l™ Study Access — $47/month',
     body:
       'Self-paced PMP® / CAPM® study library, practice question bank, monthly office hours, and private community. Cancel anytime.',
     cta: 'Start Study Access →',
@@ -24,7 +24,7 @@ const COPY: Record<Variant, { eyebrow: string; title: string; body: string; cta:
     eyebrow: 'Ready for live mentor coaching?',
     title: 'Enroll in the full PMP® Certification Prep program',
     body:
-      'Mentor-led cohort instruction, 1:1 application support, and personalized exam-readiness coaching from Crystal Stewart and the Wiser Generations™ team.',
+      'Mentor-led cohort instruction, 1:1 application support, and personalized exam-readiness coaching from Crystal Stewart and the Wiser Generations Int’l™ team.',
     cta: 'See full programs →',
     href: '/checkout#full-programs',
   },

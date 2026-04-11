@@ -5,10 +5,10 @@ import ResourceCTA from '@/components/marketing/ResourceCTA'
 export const metadata: Metadata = {
   title: 'PMP® Resource Center — Free Guides, Formulas & Study Tools',
   description:
-    'Free PMP® and CAPM® study resources from Wiser Generations™: exam change guides, formula references, practice questions, and study plans for career transitioners and veterans.',
+    'Free PMP® and CAPM® study resources from Wiser Generations Int’l™: exam change guides, formula references, practice questions, and study plans for career transitioners and veterans.',
   alternates: { canonical: '/resources' },
   openGraph: {
-    title: 'PMP® Resource Center — Wiser Generations™',
+    title: 'PMP® Resource Center — Wiser Generations Int’l™',
     description:
       'Free PMP® study resources, formula references, exam change guides, and practice questions.',
     url: 'https://wisergenerations.com/resources',
@@ -81,7 +81,7 @@ const RESOURCES: Resource[] = [
     badge: 'For PMPs',
   },
   {
-    title: 'Wiser Generations™ Blog',
+    title: 'Wiser Generations Int’l™ Blog',
     description:
       'Weekly articles on PMP® prep, career transition, veterans, and corporate training. Subscribe for launch.',
     href: '/resources/blog',
@@ -115,7 +115,7 @@ export default function ResourcesPage() {
       <section className="bg-navy text-white">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-            Wiser Generations™ Resource Center
+            Wiser Generations Int’l™ Resource Center
           </p>
           <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
             Free PMP® study tools, guides, and exam resources
@@ -279,7 +279,7 @@ export default function ResourcesPage() {
 const FAQ = [
   {
     q: 'Are these PMP® resources really free?',
-    a: 'Yes. Every guide and reference page on this hub is free. Wiser Generations™ Study Access ($47/month) and our full mentor-led programs are paid options for students who want deeper practice questions, live coaching, and accountability.',
+    a: 'Yes. Every guide and reference page on this hub is free. Wiser Generations Int’l™ Study Access ($47/month) and our full mentor-led programs are paid options for students who want deeper practice questions, live coaching, and accountability.',
   },
   {
     q: 'Do I need to be a PMI® member to use these resources?',
@@ -287,7 +287,7 @@ const FAQ = [
   },
   {
     q: 'How do these resources compare to a full PMP® course?',
-    a: 'These free resources are great for building foundational knowledge. A full mentor-led course like our PMP® Certification Prep adds live instruction, application support, practice exams, and personalized coaching from Crystal Stewart and the Wiser Generations™ team.',
+    a: 'These free resources are great for building foundational knowledge. A full mentor-led course like our PMP® Certification Prep adds live instruction, application support, practice exams, and personalized coaching from Crystal Stewart and the Wiser Generations Int’l™ team.',
   },
   {
     q: 'Can corporate teams use these for L&D?',

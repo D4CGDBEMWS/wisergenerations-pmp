@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Enroll — Wiser Generations™',
+  title: 'Enroll — Wiser Generations Int’l™',
   description: 'Choose your PMP® or CAPM® certification program and book a free discovery call with Crystal Stewart.',
 }
 

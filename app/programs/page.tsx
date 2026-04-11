@@ -4,7 +4,7 @@ import { PROGRAMS } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'Programs — PMP®, CAPM®, Corporate & Veterans',
-  description: 'PMP® prep, CAPM® career launcher, corporate team training, and veterans PM pathway. Find your certification program at Wiser Generations™.',
+  description: 'PMP® prep, CAPM® career launcher, corporate team training, and veterans PM pathway. Find your certification program at Wiser Generations Int’l™.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'

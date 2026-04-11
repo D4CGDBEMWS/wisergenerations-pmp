@@ -5,8 +5,8 @@ import Stripe from 'stripe'
 export const runtime = 'nodejs'
 
 export const metadata: Metadata = {
-  title: 'Enrollment Confirmed | Wiser Generations™',
-  description: 'Your Wiser Generations enrollment has been confirmed.',
+  title: 'Enrollment Confirmed | Wiser Generations Int’l™',
+  description: 'Your Wiser Generations Int’l enrollment has been confirmed.',
 }
 
 type Props = {
@@ -37,7 +37,7 @@ async function getEnrollment(paymentIntentId?: string) {
 
     return {
       name,
-      program: paymentIntent.metadata.program_name || 'Wiser Generations Program',
+      program: paymentIntent.metadata.program_name || 'Wiser Generations Int’l Program',
       email: paymentIntent.receipt_email || paymentIntent.metadata.customer_email || '',
     }
   } catch (error) {
@@ -57,7 +57,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
             <div className="grid h-9 w-9 place-items-center rounded bg-[#c9a84c] text-sm font-bold text-[#0a1628]">
               WG
             </div>
-            <span className="font-semibold tracking-wide">Wiser Generations™</span>
+            <span className="font-semibold tracking-wide">Wiser Generations Int’l™</span>
           </Link>
           <span className="text-sm text-gray-300">Enrollment confirmed</span>
         </div>

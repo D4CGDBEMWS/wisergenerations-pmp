@@ -202,7 +202,7 @@ function CheckoutSuccessContent() {
 
 // ---------------------------------------------------------------------------
 // StudyAccessSuccess — dedicated post-subscription welcome view for the
-// $47/mo Wiser Generations™ Study Access tier. Highlights the monthly PM
+// $47/mo Wiser Generations Int’l™ Study Access tier. Highlights the monthly PM
 // templates perk and points members to the templates landing page.
 // ---------------------------------------------------------------------------
 function StudyAccessSuccess() {
@@ -217,7 +217,7 @@ function StudyAccessSuccess() {
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">
-                Wiser Generations™ Study Access
+                Wiser Generations Int’l™ Study Access
               </p>
               <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                 You&rsquo;re in. Welcome to Study Access.
@@ -237,7 +237,7 @@ function StudyAccessSuccess() {
               Branded PM templates — Agile &amp; Waterfall
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-700">
-              As a Study Access member, you get a fresh Wiser Generations™ branded PM template
+              As a Study Access member, you get a fresh Wiser Generations Int’l™ branded PM template
               every month — Project Charter, Sprint Planner, Risk Register, RACI matrix, and
               more. <strong>This month&rsquo;s template will land in your inbox within 24 hours.</strong>
             </p>
