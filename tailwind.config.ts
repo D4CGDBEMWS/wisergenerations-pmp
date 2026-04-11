@@ -5,7 +5,7 @@ const config: Config = {
     extend: {
       colors: {
         navy: '#1B2A4A',
-        gold: '#C8962E',
+        gold: '#C9A84C',
         'light-navy': '#E8EDF5',
         'light-gold': '#FBF5E8',
         teal: '#156082',
