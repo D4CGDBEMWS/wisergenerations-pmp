@@ -26,7 +26,7 @@ const BADGES: { label: string; sub: string; Icon: ComponentType<SVGProps<SVGSVGE
 
 export default function TrustSignals({
   variant = 'light',
-  headline = 'Why students and corporate teams trust Wiser Generations™',
+  headline = 'Why students and corporate teams trust Wiser Generations Int’l™',
 }: {
   variant?: Variant
   headline?: string

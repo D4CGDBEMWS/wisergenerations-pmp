@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = { title: 'About Crystal Stewart — Wiser Generations™' }
+export const metadata: Metadata = { title: 'About Crystal Stewart — Wiser Generations Int’l™' }
 
 export default function AboutPage() {
   return (
@@ -17,7 +17,7 @@ export default function AboutPage() {
           </h1>
           <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
             <p className="text-xl text-gray-600 leading-relaxed">
-              Founder & CEO of Enterprise Academy™. U.S. Army veteran. 20+ years of enterprise transformation experience. Crystal Stewart built Wiser Generations™ because she saw the same gap in every organization she served: brilliant people without a professional framework for executing what matters most.
+              Founder & CEO of Enterprise Academy™. U.S. Army veteran. 20+ years of enterprise transformation experience. Crystal Stewart built Wiser Generations Int’l™ because she saw the same gap in every organization she served: brilliant people without a professional framework for executing what matters most.
             </p>
             <h2 className="text-2xl font-bold text-navy mt-10">The Mission</h2>
             <p>
@@ -25,7 +25,7 @@ export default function AboutPage() {
             </p>
             <h2 className="text-2xl font-bold text-navy mt-10">The Ecosystem</h2>
             <p>
-              Wiser Generations™ is one program within a larger ecosystem — Enterprise Academy™ — which sits under the Kingdom Compassion umbrella. The full vision spans seven pillars: education, community trade, financial empowerment, spiritual formation, publishing, sustainability, and philanthropy. Wiser Generations™ is where adult professionals enter that ecosystem through the credential that changes their career.
+              Wiser Generations Int’l™ is one program within a larger ecosystem — Enterprise Academy™ — which sits under the Kingdom Compassion umbrella. The full vision spans seven pillars: education, community trade, financial empowerment, spiritual formation, publishing, sustainability, and philanthropy. Wiser Generations Int’l™ is where adult professionals enter that ecosystem through the credential that changes their career.
             </p>
             <div className="bg-navy rounded-xl p-8 text-white mt-10">
               <p className="text-gold font-bold uppercase text-xs tracking-wider mb-3">Credentials & Background</p>
@@ -55,7 +55,7 @@ export default function AboutPage() {
         <div className="sticky top-24">
           <img
             src="/crystal-stewart.jpg"
-            alt="Crystal Stewart, PMP® — Founder of Wiser Generations™"
+            alt="Crystal Stewart, PMP® — Founder of Wiser Generations Int’l™"
             className="w-full rounded-2xl shadow-xl object-cover"
           />
           <div className="mt-4 bg-gold rounded-xl p-4 text-center">

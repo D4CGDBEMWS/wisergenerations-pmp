@@ -3,7 +3,7 @@ import Link from 'next/link'
 import TrustSignals from '@/components/marketing/TrustSignals'
 
 export const metadata: Metadata = {
-  title: 'Corporate Training — PMP® & CAPM® for Teams | Wiser Generations',
+  title: 'Corporate Training — PMP® & CAPM® for Teams | Wiser Generations Int’l',
   description: 'Upskill your project management teams with PMI-aligned corporate training. Group rates, custom delivery, and measurable results for organizations of all sizes.',
 }
 

@@ -5,10 +5,10 @@ import Faq from '@/components/marketing/Faq'
 export const metadata: Metadata = {
   title: 'Free Branded PM Templates — Agile & Waterfall',
   description:
-    'Wiser Generations™ branded project management templates for Agile and Waterfall teams. Free monthly templates included with every $47/month Study Access subscription.',
+    'Wiser Generations Int’l™ branded project management templates for Agile and Waterfall teams. Free monthly templates included with every $47/month Study Access subscription.',
   alternates: { canonical: '/resources/pm-templates' },
   openGraph: {
-    title: 'Branded PM Templates — Wiser Generations™',
+    title: 'Branded PM Templates — Wiser Generations Int’l™',
     description:
       'Agile and Waterfall PM templates included free with every Study Access subscription.',
     url: 'https://wisergenerations.com/resources/pm-templates',
@@ -131,7 +131,7 @@ const AGILE_TEMPLATES: Template[] = [
 const TEMPLATES_FAQ = [
   {
     q: 'How do I get the templates?',
-    a: 'Subscribe to Wiser Generations™ Study Access ($47/month). The first template arrives in your inbox within 24 hours, and a fresh template is delivered on the 1st of each month for as long as your subscription is active.',
+    a: 'Subscribe to Wiser Generations Int’l™ Study Access ($47/month). The first template arrives in your inbox within 24 hours, and a fresh template is delivered on the 1st of each month for as long as your subscription is active.',
   },
   {
     q: 'What format are the templates in?',
@@ -166,14 +166,14 @@ export default function PmTemplatesPage() {
               ⭐ Member Bonus
             </span>
             <span className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-              Wiser Generations™ Templates
+              Wiser Generations Int’l™ Templates
             </span>
           </div>
           <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
             Branded PM templates for Agile &amp; Waterfall — free with Study Access
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-7 text-gray-300">
-            Get a fresh Wiser Generations™ branded project management template every month —
+            Get a fresh Wiser Generations Int’l™ branded project management template every month —
             Project Charter, Risk Register, Sprint Planner, Retrospective Board, and more.
             Included free with every $47/month Study Access subscription.
           </p>
@@ -286,10 +286,10 @@ export default function PmTemplatesPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'CreativeWork',
-            name: 'Wiser Generations™ PM Templates',
+            name: 'Wiser Generations Int’l™ PM Templates',
             description:
-              'Branded project management templates for Agile and Waterfall teams, delivered monthly to Wiser Generations™ Study Access subscribers.',
-            provider: { '@type': 'Organization', name: 'Wiser Generations™' },
+              'Branded project management templates for Agile and Waterfall teams, delivered monthly to Wiser Generations Int’l™ Study Access subscribers.',
+            provider: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
             offers: {
               '@type': 'Offer',
               price: '47.00',

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     'How to earn the 60 PDUs required to maintain your PMP® credential. Free PDU sources, the Talent Triangle breakdown, and how to log them in PMI® CCRS.',
   alternates: { canonical: '/resources/pdu-resources' },
   openGraph: {
-    title: 'PMP® PDU Resources — Wiser Generations™',
+    title: 'PMP® PDU Resources — Wiser Generations Int’l™',
     description:
       'Free guide to earning the 60 PDUs you need to renew your PMP® credential.',
     url: 'https://wisergenerations.com/resources/pdu-resources',
@@ -258,7 +258,7 @@ export default function PduResourcesPage() {
             Need a structured PDU source?
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-            Wiser Generations™ Study Access — $47/month
+            Wiser Generations Int’l™ Study Access — $47/month
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-700">
             Our monthly office hours, study library content, and PM template walkthroughs are
@@ -329,7 +329,7 @@ export default function PduResourcesPage() {
               <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Hub</p>
               <h3 className="mt-2 text-lg font-bold text-slate-900">All free PMP® resources</h3>
               <p className="mt-2 text-sm text-slate-600">
-                Browse every guide, reference, and tool from Wiser Generations™.
+                Browse every guide, reference, and tool from Wiser Generations Int’l™.
               </p>
             </Link>
           </div>
@@ -349,8 +349,8 @@ export default function PduResourcesPage() {
             headline: 'How to earn your 60 PMP® PDUs every 3 years',
             description:
               'Free guide to the PMI® Talent Triangle, free PDU sources, and how to log PDUs in CCRS.',
-            author: { '@type': 'Organization', name: 'Wiser Generations™' },
-            publisher: { '@type': 'Organization', name: 'Wiser Generations™' },
+            author: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
+            publisher: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
             mainEntityOfPage: 'https://wisergenerations.com/resources/pdu-resources',
           }),
         }}

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-export const metadata: Metadata = { title: 'Contact — Wiser Generations™' }
+export const metadata: Metadata = { title: 'Contact — Wiser Generations Int’l™' }
 export default function ContactPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

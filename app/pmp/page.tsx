@@ -4,7 +4,7 @@ import TrustSignals from '@/components/marketing/TrustSignals'
 import Faq from '@/components/marketing/Faq'
 
 export const metadata: Metadata = {
-  title: 'PMP® Certification Prep — Wiser Generations',
+  title: 'PMP® Certification Prep — Wiser Generations Int’l',
   description: 'Earn your PMP® credential with instructor-led training built for working professionals. PMI-aligned curriculum, exam prep, and ongoing coaching.',
 }
 
@@ -85,7 +85,7 @@ const PMP_FAQ = [
     a: 'Most of our students go from enrollment to exam-ready in about 12 weeks, studying 8–12 hours per week. Working professionals with prior PM experience often move faster; career transitioners may take longer. We build a personalized study plan with you during onboarding.',
   },
   {
-    q: 'What is the PMP® exam pass rate for Wiser Generations™ students?',
+    q: 'What is the PMP® exam pass rate for Wiser Generations Int’l™ students?',
     a: 'Our students have an 87% first-attempt pass rate. The global average for first-attempt PMP® takers is significantly lower, which is why mentor-led prep, accountability, and full-length practice exams matter — and why we include all three in our Accelerator program.',
   },
   {
@@ -247,10 +247,10 @@ export default function PMPPage() {
         </div>
       </section>
 
-      {/* Why Wiser Generations */}
+      {/* Why Wiser Generations Int’l */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-navy mb-4">Why Wiser Generations?</h2>
+          <h2 className="text-3xl font-bold text-navy mb-4">Why Wiser Generations Int’l?</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-10">
             We don't just teach you to pass an exam — we help you become the kind of project leader organizations trust with their most important work.
           </p>

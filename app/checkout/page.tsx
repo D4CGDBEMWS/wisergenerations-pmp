@@ -160,7 +160,7 @@ function StudyAccessCard() {
 
       <div className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-amber-700">
-          Wiser Generations™ Study Access
+          Wiser Generations Int’l™ Study Access
         </p>
         <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
           Study month-to-month
@@ -170,7 +170,7 @@ function StudyAccessCard() {
           <span className="text-base font-medium text-slate-600">/month · recurring</span>
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Get instant access to the Wiser Generations™ self-study library and monthly office
+          Get instant access to the Wiser Generations Int’l™ self-study library and monthly office
           hours. Cancel anytime.
         </p>
       </div>
@@ -473,7 +473,7 @@ export default function CheckoutPage() {
               Secure checkout
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
-              Choose how you want to study with Wiser Generations™
+              Choose how you want to study with Wiser Generations Int’l™
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
               Start month-to-month with Study Access, or enroll in a full mentor-led program below.
@@ -497,7 +497,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* ──────────────────────────────────────────────────────────────── */}
-        {/* SECTION 1 — Wiser Generations™ Study Access ($47/month)        */}
+        {/* SECTION 1 — Wiser Generations Int’l™ Study Access ($47/month)        */}
         {/* ──────────────────────────────────────────────────────────────── */}
         <StudyAccessCard />
 
@@ -720,7 +720,7 @@ export default function CheckoutPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900">Need help before enrolling?</h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                If you have questions about which program fits best, contact the Wiser Generations
+                If you have questions about which program fits best, contact the Wiser Generations Int’l
                 team before checking out.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">

@@ -6,10 +6,10 @@ import Faq from '@/components/marketing/Faq'
 export const metadata: Metadata = {
   title: 'PMP® ITTO Cheat Sheet — Inputs, Tools, Techniques & Outputs',
   description:
-    'Free PMP® ITTO cheat sheet from Wiser Generations™. Common inputs, tools and techniques, and outputs across the 10 PMI® knowledge areas — with memory tricks and patterns.',
+    'Free PMP® ITTO cheat sheet from Wiser Generations Int’l™. Common inputs, tools and techniques, and outputs across the 10 PMI® knowledge areas — with memory tricks and patterns.',
   alternates: { canonical: '/resources/itto-cheat-sheet' },
   openGraph: {
-    title: 'PMP® ITTO Cheat Sheet — Wiser Generations™',
+    title: 'PMP® ITTO Cheat Sheet — Wiser Generations Int’l™',
     description:
       'Free PMP® ITTO cheat sheet covering the 10 knowledge areas, common inputs/outputs, and memory tricks.',
     url: 'https://wisergenerations.com/resources/itto-cheat-sheet',
@@ -156,7 +156,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What\u2019s the fastest way to learn ITTOs without burning out?',
-    a: 'Group ITTOs by knowledge area, learn the patterns (common inputs, common tools, common outputs), and drill scenario questions instead of flashcards. Wiser Generations™ Study Access ($47/month) includes a structured ITTO drill module that takes 2–3 weeks instead of months.',
+    a: 'Group ITTOs by knowledge area, learn the patterns (common inputs, common tools, common outputs), and drill scenario questions instead of flashcards. Wiser Generations Int’l™ Study Access ($47/month) includes a structured ITTO drill module that takes 2–3 weeks instead of months.',
   },
 ] as const
 
@@ -368,8 +368,8 @@ export default function IttoCheatSheetPage() {
             headline: 'The PMP® ITTO cheat sheet — patterns, not memorization',
             description:
               'Free PMP® ITTO reference covering the 10 knowledge areas, common inputs/tools/outputs, and 5 patterns to answer ITTO questions without rote memorization.',
-            author: { '@type': 'Organization', name: 'Wiser Generations™' },
-            publisher: { '@type': 'Organization', name: 'Wiser Generations™' },
+            author: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
+            publisher: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
             mainEntityOfPage: 'https://wisergenerations.com/resources/itto-cheat-sheet',
           }),
         }}

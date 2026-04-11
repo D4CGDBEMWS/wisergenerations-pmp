@@ -25,7 +25,7 @@ export default function Navbar() {
               <span className="text-navy font-bold text-xs">WG</span>
             </div>
             <div className="hidden sm:block">
-              <p className="text-white font-bold text-sm leading-tight">Wiser Generations™</p>
+              <p className="text-white font-bold text-sm leading-tight">Wiser Generations Int’l™</p>
               <p className="text-gold text-xs leading-tight">Enterprise Academy™</p>
             </div>
           </Link>

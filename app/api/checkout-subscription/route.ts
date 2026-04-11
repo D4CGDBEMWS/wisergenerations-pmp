@@ -6,7 +6,7 @@ export const runtime = 'nodejs'
 // ---------------------------------------------------------------------------
 // POST /api/checkout-subscription
 // Creates a Stripe Checkout Session in `subscription` mode for the
-// $47/month Wiser Generations™ Study Access tier.
+// $47/month Wiser Generations Int’l™ Study Access tier.
 // Uses the price configured via NEXT_PUBLIC_STRIPE_STUDY_PRICE_ID.
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     'Free roadmap for transitioning into project management from any career background. Timeline, certifications, portfolio building, and how to land your first PM role.',
   alternates: { canonical: '/resources/career-transition' },
   openGraph: {
-    title: 'Career Transition to PM — Wiser Generations™',
+    title: 'Career Transition to PM — Wiser Generations Int’l™',
     description:
       'A practical, step-by-step roadmap for moving into project management — from any background.',
     url: 'https://wisergenerations.com/resources/career-transition',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 // ---------------------------------------------------------------------------
 // Career Transition pillar page — third high-value SEO target
-// Focuses on Wiser Generations™' primary audience: working professionals
+// Focuses on Wiser Generations Int’l™' primary audience: working professionals
 // switching careers into PM. Funnels into Study Access ($47/mo) for the
 // study materials and the full programs for live mentor support.
 // ---------------------------------------------------------------------------
@@ -138,8 +138,8 @@ const FAQ_ITEMS = [
     a: 'Yes — and we strongly recommend it. Quitting before you have a PM offer puts you in a weaker negotiating position. Study evenings and weekends, build your portfolio at your current job, and only resign once you\u2019ve signed an offer.',
   },
   {
-    q: 'How does Wiser Generations™ help with this specifically?',
-    a: 'Crystal Stewart spent 20+ years in enterprise PM before founding Wiser Generations™ — she\u2019s coached hundreds of career transitioners through this exact path. Our PMP® and CAPM® programs include resume review, interview prep, application support, and mentor coaching specifically for people switching careers, not just exam prep.',
+    q: 'How does Wiser Generations Int’l™ help with this specifically?',
+    a: 'Crystal Stewart spent 20+ years in enterprise PM before founding Wiser Generations Int’l™ — she\u2019s coached hundreds of career transitioners through this exact path. Our PMP® and CAPM® programs include resume review, interview prep, application support, and mentor coaching specifically for people switching careers, not just exam prep.',
   },
 ] as const
 
@@ -309,7 +309,7 @@ export default function CareerTransitionPage() {
               name: p.title,
               text: p.body,
             })),
-            provider: { '@type': 'Organization', name: 'Wiser Generations™' },
+            provider: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
           }),
         }}
       />

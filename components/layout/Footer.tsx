@@ -7,7 +7,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <p className="text-gold font-bold text-lg">Wiser Generations™</p>
+            <p className="text-gold font-bold text-lg">Wiser Generations Int’l™</p>
             <p className="text-gray-300 text-sm mt-1 mb-4">An Enterprise Academy™ Program</p>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">PMP® and CAPM® certification training for career transitioners, corporate teams, and veterans. PMI-aligned. Mentor-led. Results-driven.</p>
             <p className="text-gold text-sm mt-4 font-medium">Smyrna, GA (Metro Atlanta) · Virtual Nationwide</p>
@@ -41,7 +41,7 @@ export function Footer() {
             <a href="https://www.pmi.org" target="_blank" rel="noopener noreferrer" className="text-gray-500 text-xs hover:text-gold transition-colors">pmi.org</a>
           </div>
           <p className="text-white text-center leading-relaxed" style={{fontSize: '8px'}}>
-            "PMI", "PMP", "CAPM", "PMI-ACP", "PMI-RMP", "PMI-SP", "PMI-PBA", "PMBOK", "PM Network", "Project Management Journal", "PMI Today" and the PMI logo are registered marks of the Project Management Institute, Inc. Wiser Generations™ is an independent training provider and is not affiliated with, endorsed by, or sponsored by the Project Management Institute, Inc.
+            "PMI", "PMP", "CAPM", "PMI-ACP", "PMI-RMP", "PMI-SP", "PMI-PBA", "PMBOK", "PM Network", "Project Management Journal", "PMI Today" and the PMI logo are registered marks of the Project Management Institute, Inc. Wiser Generations Int’l™ is an independent training provider and is not affiliated with, endorsed by, or sponsored by the Project Management Institute, Inc.
           </p>
         </div>
       </div>

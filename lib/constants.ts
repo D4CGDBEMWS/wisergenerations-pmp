@@ -1,4 +1,4 @@
-export const SITE_NAME = 'Wiser Generations™'
+export const SITE_NAME = 'Wiser Generations Int’l™'
 export const SITE_URL = 'https://wisergenerations.com'
 export const TAGLINE = 'Project Manage Your Career. Transform Your Future.™'
 export const FOUNDER = 'Crystal Stewart, PMP®'
