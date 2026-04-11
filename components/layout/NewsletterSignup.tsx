@@ -40,7 +40,7 @@ export default function NewsletterSignup() {
       }
 
       setStatus('success')
-      setMessage('You\u2019re subscribed! Check your inbox for confirmation.')
+      setMessage('\u2713 You\u2019re in! Check your inbox for a welcome from Crystal.')
       setEmail('')
     } catch {
       setStatus('error')
@@ -54,13 +54,13 @@ export default function NewsletterSignup() {
         <div className="grid gap-8 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-gold text-xs font-bold uppercase tracking-[0.18em]">
-              Stay in the loop
+              Free Weekly Insights
             </p>
             <h2 className="mt-2 text-2xl sm:text-3xl font-bold leading-tight">
-              PMP® tips, exam updates, and study resources — straight to your inbox.
+              PM Tips from Crystal &mdash; Straight to Your Inbox
             </h2>
             <p className="mt-3 text-sm text-gray-300 max-w-md">
-              Monthly newsletter from Wiser Generations™. No spam. Unsubscribe anytime.
+              Exam tips, cohort announcements, and real-world PM wisdom. No spam. Unsubscribe anytime.
             </p>
           </div>
 
