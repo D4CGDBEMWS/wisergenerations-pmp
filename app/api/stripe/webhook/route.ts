@@ -149,7 +149,7 @@ async function upsertMailchimpCustomer(input: {
 
 // Removes (deactivates) tags from a Mailchimp subscriber. Used when a Study
 // Access subscription is canceled — the customer stays on the list, but the
-// "study-access" / "active-subscriber" tags are deactivated so they stop
+// "study-access" / "subscription-active" tags are deactivated so they stop
 // receiving the monthly templates drip.
 async function deactivateMailchimpTags(input: { email: string; tags: string[] }) {
     const apiKey = getEnv('MAILCHIMP_API_KEY')
@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
                                   tags: [
                                               'customer',
                                               'subscriber',
-                                              'active-subscriber',
+                                              'subscription-active',
                                               normalizeTag(tier),
                                               'pm-templates-monthly',
                                   ],
@@ -274,7 +274,7 @@ export async function POST(request: NextRequest) {
 
       // ─────────────────────────────────────────────────────────────────
       // 3. Subscription cancellations
-      //    Deactivate the active-subscriber and pm-templates-monthly tags
+      //    Deactivate the subscription-active and pm-templates-monthly tags
       //    so the templates drip stops. Customer stays on the audience.
       // ─────────────────────────────────────────────────────────────────
       if (event.type === 'customer.subscription.deleted') {
@@ -293,7 +293,7 @@ export async function POST(request: NextRequest) {
                             if (email) {
                                         await deactivateMailchimpTags({
                                                     email,
-                                                    tags: ['active-subscriber', 'pm-templates-monthly'],
+                                                    tags: ['subscription-active', 'pm-templates-monthly'],
                                           })
                                   }
                   }
