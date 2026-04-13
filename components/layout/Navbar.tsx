@@ -1,11 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import SocialIcons from './SocialIcons'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
 const navLinks = [
   { label: 'Programs', href: '/programs' },
+  { label: 'PMP® Prep', href: '/pmp' },
   { label: 'About', href: '/about' },
   { label: 'Veterans', href: '/veterans' },
   { label: 'Corporate', href: '/corporate' },
@@ -30,47 +32,53 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center">
-              <span className="text-navy font-bold text-sm">WG</span>
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
+              <span className="text-navy font-bold text-xs">WG</span>
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-white font-bold text-sm leading-tight">Wiser Generations Int&apos;l™</p>
+              <p className="text-gold text-xs leading-tight">Enterprise Academy™</p>
             </div>
           </Link>
 
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-300 hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-gray-300 hover:text-gold text-sm font-medium transition-colors"
               >
                 {link.label}
               </Link>
             ))}
-          </div>
-
-          {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+            {/* FREE GUIDE highlighted in nav */}
             <Link
               href="/free-guide"
-              className="text-gray-300 hover:text-gold text-sm font-medium transition-colors"
+              className="flex items-center gap-1.5 text-gold border border-gold/50 hover:bg-gold/10 text-sm font-bold px-3 py-1.5 rounded-lg transition-colors"
             >
-              Free Guide
+              📥 Free Guide
             </Link>
+          </div>
+
+          {/* Desktop CTA + Social Icons */}
+          <div className="hidden md:flex items-center gap-3">
+            <SocialIcons variant="white" className="hidden lg:flex" />
             <a
               href={CALENDLY}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gold text-navy font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-400 transition-colors"
+              className="bg-gold text-navy font-bold px-4 py-2 rounded-lg hover:bg-amber-400 transition-colors text-sm"
             >
-              Book a Call
+              Get Started
             </a>
           </div>
 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden text-gray-300 hover:text-white p-2"
+            className="md:hidden text-gray-300 hover:text-white p-2"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,33 +94,33 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="lg:hidden bg-navy border-t border-white/10">
-          <div className="px-4 py-4 space-y-1">
+        <div className="md:hidden bg-navy border-t border-navy-light">
+          <div className="px-4 pt-2 pb-4 space-y-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
+                className="block text-gray-300 hover:text-gold py-2 text-sm font-medium transition-colors"
                 onClick={() => setIsOpen(false)}
-                className="block text-gray-300 hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
-              <Link
-                href="/free-guide"
-                onClick={() => setIsOpen(false)}
-                className="block text-gray-300 hover:text-gold px-3 py-2 text-sm font-medium transition-colors"
-              >
-                Free Guide
-              </Link>
+            <Link
+              href="/free-guide"
+              className="flex items-center gap-1.5 text-gold text-sm font-bold py-2"
+              onClick={() => setIsOpen(false)}
+            >
+              📥 Free Guide
+            </Link>
+            <div className="pt-2 border-t border-gray-700">
               <a
                 href={CALENDLY}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gold text-navy font-bold px-4 py-3 rounded-lg text-sm hover:bg-yellow-400 transition-colors text-center"
+                className="block w-full bg-gold text-navy font-bold px-4 py-2 rounded-lg text-center text-sm hover:bg-amber-400 transition-colors"
               >
-                Book a Free Strategy Call
+                Book a Free Call
               </a>
             </div>
           </div>
