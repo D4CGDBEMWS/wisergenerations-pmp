@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import SocialIcons from './SocialIcons'
 
 export function Footer() {
   return (
@@ -109,7 +110,8 @@ export function Footer() {
             </div>
           </div>
 
-        </div>
+  
+              <SocialIcons variant="gold" className="mt-4" />      </div>
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8">
