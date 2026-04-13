@@ -12,6 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/guarantee`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/faq`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/webinars`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/exam-simulator`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/flashcards`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/blog`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/blog/pmp-exam-changes-july-2026`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/blog/capm-vs-pmp-which-certification`, lastModified: new Date(), priority: 0.7 },
