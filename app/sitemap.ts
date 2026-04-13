@@ -20,5 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/resources/pdu-resources`, lastModified: new Date(), priority: 0.7 },
     { url: `${base}/resources/blog`, lastModified: new Date(), priority: 0.6 },
     { url: `${base}/free-guide`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/privacy-policy`, lastModified: new Date(), priority: 0.3 },
+    { url: `${base}/terms`, lastModified: new Date(), priority: 0.3 },
   ]
 }
