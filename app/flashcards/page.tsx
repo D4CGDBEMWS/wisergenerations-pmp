@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { glossaryTerms, type GlossaryCategory } from '@/lib/glossary'
+import type { GlossaryCategory } from '@/lib/glossary'
+import { glossaryTerms } from '@/lib/glossary'
 
 const CATEGORIES: (GlossaryCategory | 'All')[] = [
   'All', 'Core Concepts', 'Scheduling', 'Cost & Value', 'Risk', 'Quality', 'Agile', 'Stakeholder & Communication', 'Procurement', 'Integration'
