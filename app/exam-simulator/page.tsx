@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { examQuestions, type Question, type Domain } from '@/lib/exam-questions'
+import type { Question, Domain } from '@/lib/exam-questions'
+import { examQuestions } from '@/lib/exam-questions'
 
 type Mode = 'home' | 'exam' | 'review' | 'results'
 
