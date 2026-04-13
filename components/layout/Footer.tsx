@@ -7,18 +7,27 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <p className="text-gold font-bold text-lg">Wiser Generations Int’l™</p>
-            <p className="text-gray-300 text-sm mt-1 mb-4">An Enterprise Academy™ Program</p>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">PMP® and CAPM® certification training for career transitioners, corporate teams, and veterans. PMI-aligned. Mentor-led. Results-driven.</p>
+            <p className="text-gold font-bold text-lg">Wiser Generations Int&apos;l</p>
+            <p className="text-gray-300 text-sm mt-1 mb-4">An Enterprise Academy Program</p>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+              PMP and CAPM certification training for career transitioners, corporate teams, and veterans.
+              PMI-aligned. Mentor-led. Results-driven.
+            </p>
             <p className="text-gold text-sm mt-4 font-medium">Smyrna, GA (Metro Atlanta) · Virtual Nationwide</p>
-            <a href="mailto:info@wisergenerations.com" className="text-gray-400 text-sm mt-2 block hover:text-gold transition-colors">info@wisergenerations.com</a>
-            {/* Social icons — gold in footer */}
+            <a href="mailto:info@wisergenerations.com" className="text-gray-400 text-sm mt-2 block hover:text-gold transition-colors">
+              info@wisergenerations.com
+            </a>
             <SocialIcons variant="gold" className="mt-4" />
           </div>
           <div>
             <p className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-3">Programs</p>
             <div className="flex flex-col gap-2">
-              {[['PMP® Prep', '/pmp'], ['CAPM® Career Launcher', '/capm'], ['Corporate Training', '/corporate'], ['Veterans Pathway', '/veterans']].map(([l, h]) => (
+              {[
+                ['PMP Prep', '/pmp'],
+                ['CAPM Career Launcher', '/capm'],
+                ['Corporate Training', '/corporate'],
+                ['Veterans Pathway', '/veterans'],
+              ].map(([l, h]) => (
                 <Link key={h} href={h} className="text-sm text-gray-400 hover:text-gold transition-colors">{l}</Link>
               ))}
             </div>
@@ -26,22 +35,42 @@ export function Footer() {
           <div>
             <p className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-3">Company</p>
             <div className="flex flex-col gap-2">
-              {[['About Crystal', '/about'], ['Resources', '/resources'], ['Contact', '/contact'], ['Enterprise Academy™', 'https://enterpriseacademy.us']].map(([l, h]) => (
+              {[
+                ['About Crystal', '/about'],
+                ['Resources', '/resources'],
+                ['Contact', '/contact'],
+                ['Enterprise Academy', 'https://enterpriseacademy.us'],
+              ].map(([l, h]) => (
                 <a key={h} href={h} className="text-sm text-gray-400 hover:text-gold transition-colors">{l}</a>
               ))}
               <a href="/free-guide" className="text-sm text-gold font-bold hover:text-amber-400 transition-colors">
-                📥 Free Guide: PMP® Exam Changes 2026
+                Free Guide: PMP Exam Changes 2026
               </a>
             </div>
           </div>
         </div>
         <div className="border-t border-gray-700 mt-10 pt-6 flex flex-col gap-3">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-xs">© {new Date().getFullYear()} Enterprise Academy™. All rights reserved.</p>
-            <a href="https://www.pmi.org" target="_blank" rel="noopener noreferrer" className="text-gray-500 text-xs hover:text-gold transition-colors">pmi.org</a>
+            <p className="text-gray-500 text-xs">
+              &copy; {new Date().getFullYear()} Enterprise Academy. All rights reserved.
+            </p>
+            <div className="flex gap-4 items-center flex-wrap justify-center">
+              <Link href="/privacy-policy" className="text-gray-500 text-xs hover:text-gold transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-gray-500 text-xs hover:text-gold transition-colors">
+                Terms of Service
+              </Link>
+              <a href="https://www.pmi.org" target="_blank" rel="noopener noreferrer" className="text-gray-500 text-xs hover:text-gold transition-colors">
+                pmi.org
+              </a>
+            </div>
           </div>
-          <p className="text-white text-center leading-relaxed" style={{fontSize: '8px'}}>
-            "PMI", "PMP", "CAPM", "PMI-ACP", "PMI-RMP", "PMI-SP", "PMI-PBA", "PMBOK", "PM Network", "Project Management Journal", "PMI Today" and the PMI logo are registered marks of the Project Management Institute, Inc. Wiser Generations Int’l™ is an independent training provider and is not affiliated with, endorsed by, or sponsored by the Project Management Institute, Inc.
+          <p className="text-gray-600 text-center leading-relaxed" style={{ fontSize: '8px' }}>
+            &quot;PMI&quot;, &quot;PMP&quot;, &quot;CAPM&quot;, &quot;PMI-ACP&quot;, &quot;PMI-RMP&quot;, &quot;PMI-SP&quot;, &quot;PMI-PBA&quot;, &quot;PMBOK&quot;, &quot;PM Network&quot;,
+            &quot;Project Management Journal&quot;, &quot;PMI Today&quot; and the PMI logo are registered marks of the Project
+            Management Institute, Inc. Wiser Generations Int&apos;l is an independent training provider and is not
+            affiliated with, endorsed by, or sponsored by the Project Management Institute, Inc.
           </p>
         </div>
       </div>
