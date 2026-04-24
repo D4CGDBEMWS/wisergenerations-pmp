@@ -47,7 +47,7 @@ export default function FreeGuidePage() {
       <nav className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-slate-900">
-            ← Wiser Generations™
+            ← Wiser Generations Int’l™
           </Link>
         </div>
       </nav>

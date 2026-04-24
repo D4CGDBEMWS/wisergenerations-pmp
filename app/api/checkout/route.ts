@@ -11,17 +11,17 @@ const PROGRAMS = {
   'pmp-prep': {
     name: 'PMP® Certification Prep',
     amount: 149700, // $1,497.00 in cents
-    description: 'PMP® Certification Prep — Wiser Generations™',
+    description: 'PMP® Certification Prep — Wiser Generations Int’l™',
   },
   'capm-launcher': {
     name: 'CAPM® Career Launcher',
     amount: 99700, // $997.00 in cents
-    description: 'CAPM® Career Launcher — Wiser Generations™',
+    description: 'CAPM® Career Launcher — Wiser Generations Int’l™',
   },
   'veterans-pathway': {
     name: 'Veterans PM Pathway',
     amount: 79700, // $797.00 in cents
-    description: 'Veterans PM Pathway — Wiser Generations™',
+    description: 'Veterans PM Pathway — Wiser Generations Int’l™',
   },
 } as const
 
@@ -87,29 +87,48 @@ export async function POST(req: NextRequest) {
 
   const program = PROGRAMS[programId as ProgramId]
 
+  // Fail fast (and clearly) when the secret key is missing instead of letting
+  // the Stripe SDK throw an opaque error deeper in the call stack.
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+  if (!stripeSecretKey) {
+    console.error('[/api/checkout] STRIPE_SECRET_KEY is not set')
+    return NextResponse.json(
+      { error: 'Payments are not configured. Please contact support.' },
+      { status: 500 }
+    )
+  }
+
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2025-08-27.basil',
     })
 
-    // ── Find or create Stripe Customer ─────────────────────────────────────
-    // Reusing an existing customer keeps the Stripe dashboard clean and
-    // allows payment method reuse in the future.
+    // ── Create Stripe Customer ─────────────────────────────────────────────
+    // We deliberately do NOT call stripe.customers.list({ email }) before
+    // creating, even though that would let us reuse an existing customer
+    // record across repeat purchases. The reason is privacy:
     //
-    // SECURITY: this endpoint is unauthenticated, so we must NOT trust the
-    // submitted name/phone to overwrite an existing customer record — that
-    // would let any attacker rewrite arbitrary Stripe customer details just
-    // by knowing the email. We only set name/phone when CREATING a new
-    // customer; for an existing one we reuse it as-is and pass the
-    // submitted values via PaymentIntent metadata only.
-    const existingCustomers = await stripe.customers.list({ email, limit: 1 })
-
-    const customer: Stripe.Customer =
-      existingCustomers.data.length > 0
-        ? existingCustomers.data[0]
-        : await stripe.customers.create({ name, email, phone })
+    // The conditional "list-then-create" pattern produces a measurable
+    // timing difference between "this email exists in our Stripe account"
+    // (one extra API call) and "this email is new" (two API calls). That
+    // difference is observable from the outside and turns the unauthenticated
+    // checkout endpoint into an enumeration oracle — anyone could probe
+    // whether a given email has ever bought from us.
+    //
+    // Always creating a fresh customer eliminates the oracle. The trade-off
+    // is that repeat purchasers will produce duplicate Customer rows in the
+    // Stripe dashboard, which is cosmetic only — the dashboard already
+    // groups by email when filtering, and the webhook still finds the right
+    // customer via paymentIntent.customer.
+    const customer = await stripe.customers.create({ name, email, phone })
 
     // ── Create PaymentIntent ───────────────────────────────────────────────
+    // SECURITY: PaymentIntent.metadata is for non-sensitive identifiers only.
+    // It surfaces in every webhook event for this PI's lifecycle, the Stripe
+    // dashboard search/filter UI, and all CSV exports. We do NOT put the
+    // customer's email, phone, or name here — those live on the Customer
+    // object (created above) and the webhook reads them from there via
+    // stripe.customers.retrieve(paymentIntent.customer).
     const paymentIntent = await stripe.paymentIntents.create(
       {
         amount: program.amount,
@@ -120,10 +139,6 @@ export async function POST(req: NextRequest) {
         metadata: {
           program_id: programId,
           program_name: program.name,
-          customer_email: email,
-          customer_first_name: body.firstName ?? '',
-          customer_last_name: body.lastName ?? '',
-          customer_phone: phone,
         },
         // Allows card, Apple Pay, Google Pay automatically via Stripe
         automatic_payment_methods: { enabled: true },
@@ -133,14 +148,23 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ client_secret: paymentIntent.client_secret })
   } catch (err) {
+    // Always log the real error server-side for debugging.
     console.error('[/api/checkout] Stripe error:', err)
+
+    // Never reflect raw Stripe error messages to the client. They can leak
+    // account-state details (rate-limit info, restricted-key warnings,
+    // internal IDs). Map known categories to safe, user-facing messages.
+    if (err instanceof Stripe.errors.StripeCardError) {
+      return NextResponse.json(
+        { error: 'Your card was declined. Please try a different payment method.' },
+        { status: 402 }
+      )
+    }
 
     if (err instanceof Stripe.errors.StripeError) {
       return NextResponse.json(
-        { error: err.message || 'A payment error occurred.' },
-        {
-          
-          status: 402 }
+        { error: 'We could not initialise your payment. Please try again in a moment.' },
+        { status: 502 }
       )
     }
 

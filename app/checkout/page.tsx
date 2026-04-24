@@ -105,6 +105,162 @@ function Spinner() {
 }
 
 // ---------------------------------------------------------------------------
+// StudyAccessCard — $47/month recurring tier (Stripe Checkout subscription)
+// ---------------------------------------------------------------------------
+const STUDY_ACCESS_INCLUDED = [
+  'Self-paced PMP® / CAPM® study library',
+  'Practice question bank with explanations',
+  'Monthly live Q&A office hours',
+  'Private study community access',
+  '🎁 Branded PM templates (Agile + Waterfall) — new template every month',
+  'Cancel anytime — no contract',
+] as const
+
+const STUDY_ACCESS_NOT_INCLUDED = [
+  'Live mentor-led cohort instruction',
+  '1:1 application & audit support',
+  'Personalized exam-readiness coaching',
+  'Certificate of completion',
+] as const
+
+function StudyAccessCard() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleStart() {
+    setIsLoading(true)
+    setError('')
+    try {
+      const response = await fetch('/api/checkout-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok || !data?.url) {
+        setError(data?.error || 'Could not start Study Access checkout. Please try again.')
+        setIsLoading(false)
+        return
+      }
+      window.location.href = data.url
+    } catch {
+      setError('Something went wrong. Please try again.')
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl border-2 border-amber-400 bg-gradient-to-br from-white to-amber-50 p-8 shadow-lg">
+      {/* Most Flexible badge */}
+      <div className="absolute right-6 top-6">
+        <span className="inline-flex items-center gap-1 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-sm">
+          ★ Most Flexible
+        </span>
+      </div>
+
+      <div className="max-w-3xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-amber-700">
+          Wiser Generations Int’l™ Study Access
+        </p>
+        <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          Study month-to-month
+        </h2>
+        <div className="mt-3 flex items-baseline gap-2">
+          <span className="text-5xl font-bold tracking-tight text-slate-900">$47</span>
+          <span className="text-base font-medium text-slate-600">/month · recurring</span>
+        </div>
+        <p className="mt-3 text-sm leading-6 text-slate-600">
+          Get instant access to the Wiser Generations Int’l™ self-study library and monthly office
+          hours. Cancel anytime.
+        </p>
+      </div>
+
+      {/* Templates perk highlight */}
+      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-100/60 p-4">
+        <span aria-hidden className="text-2xl">🎁</span>
+        <div className="flex-1 text-sm">
+          <p className="font-bold text-slate-900">
+            Bonus: branded PM templates every month
+          </p>
+          <p className="mt-1 text-slate-700">
+            13+ Agile &amp; Waterfall templates (Project Charter, Risk Register, Sprint Planner,
+            Retrospective Board, and more) — plus a fresh new template delivered to your inbox on
+            the 1st of every month.{' '}
+            <a
+              href="/resources/pm-templates"
+              className="font-bold text-amber-800 underline hover:text-amber-900"
+            >
+              See the library →
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 grid gap-8 md:grid-cols-2">
+        {/* Included */}
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+            What&apos;s included
+          </p>
+          <ul className="mt-3 space-y-2">
+            {STUDY_ACCESS_INCLUDED.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-slate-800">
+                <span aria-hidden className="mt-0.5 text-emerald-600">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Not included */}
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Not included
+          </p>
+          <ul className="mt-3 space-y-2">
+            {STUDY_ACCESS_NOT_INCLUDED.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-slate-400 line-through">
+                <span aria-hidden className="mt-0.5">×</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Upsell nudge */}
+      <div className="mt-6 rounded-xl border border-amber-200 bg-amber-100/60 px-4 py-3 text-sm text-slate-800">
+        <strong className="font-semibold">Want live mentorship and accountability?</strong>{' '}
+        Our full PMP®, CAPM®, and Veterans programs below include cohort coaching and 1:1
+        support. <a href="#full-programs" className="font-semibold text-amber-700 underline">See full programs ↓</a>
+      </div>
+
+      {error ? (
+        <div role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={handleStart}
+        disabled={isLoading}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-4 text-base font-bold text-slate-950 shadow-sm transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-8"
+      >
+        {isLoading ? (
+          <>
+            <Spinner />
+            Starting Study Access…
+          </>
+        ) : (
+          'Start Study Access — $47/month'
+        )}
+      </button>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // PaymentForm
 // ---------------------------------------------------------------------------
 function PaymentForm({
@@ -317,10 +473,10 @@ export default function CheckoutPage() {
               Secure checkout
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
-              Enroll in your next project management program
+              Choose how you want to study with Wiser Generations Int’l™
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-              Choose your program, enter your details, and continue to secure Stripe payment.
+              Start month-to-month with Study Access, or enroll in a full mentor-led program below.
             </p>
           </div>
 
@@ -338,6 +494,34 @@ export default function CheckoutPage() {
               Contact us
             </Link>
           </div>
+        </div>
+
+        {/* ──────────────────────────────────────────────────────────────── */}
+        {/* SECTION 1 — Wiser Generations Int’l™ Study Access ($47/month)        */}
+        {/* ──────────────────────────────────────────────────────────────── */}
+        <StudyAccessCard />
+
+        {/* ──────────────────────────────────────────────────────────────── */}
+        {/* DIVIDER + SECTION 2 header                                      */}
+        {/* ──────────────────────────────────────────────────────────────── */}
+        <div className="my-12 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            or
+          </span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <div id="full-programs" className="mb-8 scroll-mt-24">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Full Programs
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+            One-Time Investment
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            Mentor-led cohorts with live instruction, accountability, and application support.
+          </p>
         </div>
 
         <section className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
@@ -536,7 +720,7 @@ export default function CheckoutPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900">Need help before enrolling?</h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                If you have questions about which program fits best, contact the Wiser Generations
+                If you have questions about which program fits best, contact the Wiser Generations Int’l
                 team before checking out.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
