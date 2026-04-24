@@ -1,6 +1,4 @@
-'use client'
 import type { Metadata } from 'next'
-import { trackEvent } from '@/components/Analytics'
 
 export const metadata: Metadata = {
   title: "Fractional PM Leadership | Enterprise Academy™ Pods",
@@ -46,6 +44,7 @@ const HOW_WE_START = [
 export default function PodsPage() {
   return (
     <>
+    <script dangerouslySetInnerHTML={{ __html: `if(typeof gtag==='function'){gtag('event','pod_discovery_click')}` }} />
       {/* Hero */}
       <section className="bg-navy text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
@@ -178,7 +177,7 @@ export default function PodsPage() {
           </p>
           <p className="text-gray-500 text-sm">
             Questions?{' '}
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('pod_discovery_click')} className="text-gold font-bold hover:underline">
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="text-gold font-bold hover:underline">
               Schedule a 30-minute discovery call
             </a>{' '}
             — no commitment required.
