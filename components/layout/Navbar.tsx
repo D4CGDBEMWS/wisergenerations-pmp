@@ -6,6 +6,7 @@ const CALENDLY = 'https://calendly.com/space4grace/15min'
 
 const navLinks = [
   { label: 'Programs', href: '/programs' },
+  { label: 'WIOA', href: '/wioa' },
   { label: 'About', href: '/about' },
   { label: 'Veterans', href: '/veterans' },
   { label: 'Corporate', href: '/corporate' },
