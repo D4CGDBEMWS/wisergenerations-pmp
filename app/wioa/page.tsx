@@ -11,6 +11,7 @@ const MAIL = 'mailto:info@wisergenerations.com'
 export default function WioaPage() {
   return (
     <div>
+      <script dangerouslySetInnerHTML={{ __html: `if(typeof gtag==='function'){gtag('event','wioa_contact')}` }} />
       {/* Hero */}
       <section className="relative bg-navy text-white py-24">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />

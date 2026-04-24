@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { trackEvent } from '@/components/Analytics'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
@@ -51,7 +52,7 @@ export default function Navbar() {
             <Link href="/free-guide" className="text-gray-300 hover:text-gold text-sm font-medium transition-colors">
               Free Guide
             </Link>
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
               className="bg-gold text-navy font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-400 transition-colors">
               Book a Call
             </a>
@@ -84,7 +85,7 @@ export default function Navbar() {
                 className="block text-gray-300 hover:text-gold px-3 py-2 text-sm font-medium transition-colors">
                 Free Guide
               </Link>
-              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+              <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
                 className="bg-gold text-navy font-bold px-4 py-3 rounded-lg text-sm hover:bg-yellow-400 transition-colors text-center">
                 Book a Free Strategy Call
               </a>

@@ -1,11 +1,13 @@
+'use client'
 import type { Metadata } from 'next'
+import { trackEvent } from '@/components/Analytics'
 
 export const metadata: Metadata = {
   title: "Fractional PM Leadership | Enterprise Academy™ Pods",
   description: "Fractional senior project management for growing teams. Starting at $5,000/month, 3-month minimum. LIAP™ framework. Delivered by Crystal Stewart and vetted pod leaders.",
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const WHO_ITS_FOR = [
   {
@@ -176,7 +178,7 @@ export default function PodsPage() {
           </p>
           <p className="text-gray-500 text-sm">
             Questions?{' '}
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="text-gold font-bold hover:underline">
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('pod_discovery_click')} className="text-gold font-bold hover:underline">
               Schedule a 30-minute discovery call
             </a>{' '}
             — no commitment required.
