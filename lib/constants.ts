@@ -140,7 +140,7 @@ export const PROGRAMS = [
 
 export const STATS = [
   { value: '20+', label: 'Years Enterprise PM Experience' },
-  { value: '93%', label: 'Student Pass Rate' },
+  { value: 'Pass', label: 'Guarantee — We coach you until you pass' },
   { value: '500+', label: 'Professionals Trained' },
   { value: '100%', label: 'PMI-Aligned Curriculum' },
   ]
