@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { PROGRAMS, STATS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
+import TrustSignals from '@/components/marketing/TrustSignals'
 
 const CALENDLY = 'https://calendly.com/space4grace/15min'
 
@@ -23,8 +24,8 @@ const TESTIMONIALS = [
 ]
 
 const COHORTS = [
-  { name: 'April Accelerator', dates: 'April 14 – June 30, 2026', spots: 8, status: 'filling', examBy: 'Exam by July 8 — beat the change!' },
-  { name: 'May Fast Track', dates: 'May 5 – June 23, 2026', spots: 4, status: 'urgent', examBy: 'Last cohort before July 8 deadline' },
+  { name: 'April Accelerator', dates: 'April 14 – June 30, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
+  { name: 'May Fast Track', dates: 'May 5 – June 23, 2026', spots: 4, status: 'urgent', examBy: 'Last cohort before July 8 deadline — enroll now!' },
 ]
 
 export default function HomePage() {
@@ -44,7 +45,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations™</p>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations Int’l™</p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
                 <span className="text-gold">Before the Exam Changes.™</span>
@@ -97,6 +98,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Trust signals strip */}
+      <TrustSignals />
 
       {/* FREE GUIDE — #2 position, right after hero */}
       <section className="py-12 bg-white border-b-4 border-gold">
@@ -169,23 +173,29 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {COHORTS.map((c) => (
-              <div key={c.name} className={`rounded-2xl p-6 border-2 ${c.status === 'urgent' ? 'border-red-400 bg-red-50' : 'border-gold bg-amber-50'}`}>
+              <div key={c.name} className={`rounded-2xl p-6 border-2 ${c.status === 'closed' ? 'border-gray-300 bg-gray-100 opacity-75' : c.status === 'urgent' ? 'border-red-400 bg-red-50' : 'border-gold bg-amber-50'}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="font-bold text-navy text-lg">{c.name}</h3>
                     <p className="text-gray-600 text-sm">{c.dates}</p>
                   </div>
-                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${c.status === 'urgent' ? 'bg-red-500 text-white' : 'bg-gold text-navy'}`}>
-                    {c.spots} spots left
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${c.status === 'closed' ? 'bg-gray-400 text-white' : c.status === 'urgent' ? 'bg-red-500 text-white' : 'bg-gold text-navy'}`}>
+                    {c.status === 'closed' ? 'Closed' : c.spots + ' spots left'}
                   </span>
                 </div>
-                <p className={`text-sm font-bold mb-4 ${c.status === 'urgent' ? 'text-red-600' : 'text-amber-700'}`}>
+                <p className={`text-sm font-bold mb-4 ${c.status === 'closed' ? 'text-gray-500' : c.status === 'urgent' ? 'text-red-600' : 'text-amber-700'}`}>
                   ⚡ {c.examBy}
                 </p>
-                <Link href="/checkout"
-                  className="block w-full bg-navy text-white font-bold py-3 rounded-xl text-center hover:bg-blue-900 transition-colors">
-                  Reserve My Spot
-                </Link>
+                {c.status === 'closed' ? (
+                  <p className="block w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-xl text-center cursor-not-allowed text-sm text-center">
+                    ✓ Class Full — Enrollment Closed
+                  </p>
+                ) : (
+                  <Link href="/checkout"
+                    className={`block w-full font-bold py-3 rounded-xl text-center transition-colors ${c.status === 'urgent' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-navy text-white hover:bg-blue-900'}`}>
+                    {c.status === 'urgent' ? '🔥 Enroll Now — Only ' + c.spots + ' Spots Left!' : 'Reserve My Spot'}
+                  </Link>
+                )}
               </div>
             ))}
           </div>

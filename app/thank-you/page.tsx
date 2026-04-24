@@ -5,8 +5,6 @@ import Stripe from 'stripe'
 export const runtime = 'nodejs'
 
 export const metadata: Metadata = {
-  title: 'Enrollment Confirmed | Wiser Generations™',
-  description: 'Your Wiser Generations enrollment has been confirmed.',
   // SECURITY: this page can be reached with a payment_intent query param.
   // PaymentIntent IDs are practically unguessable, but we still want this
   // page kept out of search engines, link previews, and Googlebot caches.
@@ -16,6 +14,8 @@ export const metadata: Metadata = {
     nocache: true,
     googleBot: { index: false, follow: false, noimageindex: true },
   },
+  title: 'Enrollment Confirmed | Wiser Generations Int’l™',
+  description: 'Your Wiser Generations Int’l enrollment has been confirmed.',
 }
 
 type Props = {
@@ -64,7 +64,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
             <div className="grid h-9 w-9 place-items-center rounded bg-[#c9a84c] text-sm font-bold text-[#0a1628]">
               WG
             </div>
-            <span className="font-semibold tracking-wide">Wiser Generations™</span>
+            <span className="font-semibold tracking-wide">Wiser Generations Int’l™</span>
           </Link>
           <span className="text-sm text-gray-300">Enrollment confirmed</span>
         </div>
