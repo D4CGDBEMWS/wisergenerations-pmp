@@ -11,17 +11,17 @@ const PROGRAMS = {
   'pmp-prep': {
     name: 'PMP® Certification Prep',
     amount: 149700, // $1,497.00 in cents
-    description: 'PMP® Certification Prep — Wiser Generations™',
+    description: 'PMP® Certification Prep — Wiser Generations Int’l™',
   },
   'capm-launcher': {
     name: 'CAPM® Career Launcher',
     amount: 99700, // $997.00 in cents
-    description: 'CAPM® Career Launcher — Wiser Generations™',
+    description: 'CAPM® Career Launcher — Wiser Generations Int’l™',
   },
   'veterans-pathway': {
     name: 'Veterans PM Pathway',
     amount: 79700, // $797.00 in cents
-    description: 'Veterans PM Pathway — Wiser Generations™',
+    description: 'Veterans PM Pathway — Wiser Generations Int’l™',
   },
 } as const
 
@@ -87,8 +87,19 @@ export async function POST(req: NextRequest) {
 
   const program = PROGRAMS[programId as ProgramId]
 
+  // Fail fast (and clearly) when the secret key is missing instead of letting
+  // the Stripe SDK throw an opaque error deeper in the call stack.
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+  if (!stripeSecretKey) {
+    console.error('[/api/checkout] STRIPE_SECRET_KEY is not set')
+    return NextResponse.json(
+      { error: 'Payments are not configured. Please contact support.' },
+      { status: 500 }
+    )
+  }
+
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2025-08-27.basil',
     })
 
@@ -135,14 +146,23 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ client_secret: paymentIntent.client_secret })
   } catch (err) {
+    // Always log the real error server-side for debugging.
     console.error('[/api/checkout] Stripe error:', err)
+
+    // Never reflect raw Stripe error messages to the client. They can leak
+    // account-state details (rate-limit info, restricted-key warnings,
+    // internal IDs). Map known categories to safe, user-facing messages.
+    if (err instanceof Stripe.errors.StripeCardError) {
+      return NextResponse.json(
+        { error: 'Your card was declined. Please try a different payment method.' },
+        { status: 402 }
+      )
+    }
 
     if (err instanceof Stripe.errors.StripeError) {
       return NextResponse.json(
-        { error: err.message || 'A payment error occurred.' },
-        {
-          
-          status: 402 }
+        { error: 'We could not initialise your payment. Please try again in a moment.' },
+        { status: 502 }
       )
     }
 

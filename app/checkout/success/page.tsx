@@ -48,13 +48,23 @@ function CheckoutSuccessContent() {
   const rawProgram = searchParams.get('program') ?? 'your program'
   const programName = safeDecode(rawProgram, 'your program')
   const paymentIntentClientSecret = searchParams.get('payment_intent_client_secret')
+  // New: Study Access subscription flow uses ?tier=study&session_id=...
+  const tier = searchParams.get('tier')
+  const isStudyAccess = tier === 'study'
 
   const [status, setStatus] = useState<PaymentStatus>('loading')
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    // Stripe appends ?payment_intent_client_secret=... to the return_url.
-    // We use it to retrieve the PaymentIntent and confirm its status.
+    // Subscription mode: Stripe Checkout already verified the payment server-side
+    // before redirecting here. No client-side verification needed.
+    if (isStudyAccess) {
+      setStatus('succeeded')
+      return
+    }
+
+    // One-time program flow: Stripe appends ?payment_intent_client_secret=... to
+    // the return_url. We use it to retrieve the PaymentIntent and confirm status.
     if (!paymentIntentClientSecret || !stripePromise) {
       // No secret means the user navigated here directly — treat as success
       // display (they may have bookmarked the URL after a real payment).
@@ -85,7 +95,12 @@ function CheckoutSuccessContent() {
         }
       })
     })
-  }, [paymentIntentClientSecret])
+  }, [paymentIntentClientSecret, isStudyAccess])
+
+  // Study Access (subscription) success view — different copy + templates perk
+  if (isStudyAccess && status === 'succeeded') {
+    return <StudyAccessSuccess />
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-16">
@@ -192,6 +207,119 @@ function CheckoutSuccessContent() {
             </div>
           </>
         )}
+      </div>
+    </main>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// StudyAccessSuccess — dedicated post-subscription welcome view for the
+// $47/mo Wiser Generations Int’l™ Study Access tier. Highlights the monthly PM
+// templates perk and points members to the templates landing page.
+// ---------------------------------------------------------------------------
+function StudyAccessSuccess() {
+  return (
+    <main className="min-h-screen bg-slate-50 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl">
+        {/* Welcome card */}
+        <div className="overflow-hidden rounded-3xl border-2 border-amber-400 bg-gradient-to-br from-white to-amber-50 p-10 shadow-lg">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-400 text-2xl">
+              ⭐
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">
+                Wiser Generations Int’l™ Study Access
+              </p>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                You&rsquo;re in. Welcome to Study Access.
+              </h1>
+              <p className="mt-3 text-base leading-7 text-slate-700">
+                Your $47/month subscription is active. A confirmation receipt is on its way to
+                your inbox from Stripe.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-100/60 p-6">
+            <p className="text-xs font-bold uppercase tracking-wider text-amber-800">
+              🎁 Your member bonus this month
+            </p>
+            <h2 className="mt-2 text-xl font-bold text-slate-900">
+              Branded PM templates — Agile &amp; Waterfall
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              As a Study Access member, you get a fresh Wiser Generations Int’l™ branded PM template
+              every month — Project Charter, Sprint Planner, Risk Register, RACI matrix, and
+              more. <strong>This month&rsquo;s template will land in your inbox within 24 hours.</strong>
+            </p>
+            <Link
+              href="/resources/pm-templates"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800"
+            >
+              See the full template library →
+            </Link>
+          </div>
+        </div>
+
+        {/* What happens next */}
+        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-900">What happens next</h2>
+          <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-800">1</span>
+              <span>
+                <strong>Welcome email (within minutes):</strong> Stripe receipt + access to your
+                Study Access library and community.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-800">2</span>
+              <span>
+                <strong>Templates email (within 24 hours):</strong> This month&rsquo;s branded PM
+                template, ready to use on your next project.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-800">3</span>
+              <span>
+                <strong>Monthly cadence:</strong> A new template drops on the 1st of each month
+                for as long as your subscription is active.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-800">4</span>
+              <span>
+                <strong>Need more?</strong> Upgrade to live mentor coaching anytime — your
+                Study Access tuition counts toward a full program.
+              </span>
+            </li>
+          </ol>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Link
+            href="/resources"
+            className="rounded-lg bg-amber-500 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-amber-400"
+          >
+            Browse free resources
+          </Link>
+          <Link
+            href="/contact"
+            className="rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-slate-400"
+          >
+            Contact support
+          </Link>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-slate-500">
+          Manage or cancel your subscription anytime by replying to your Stripe receipt or
+          contacting{' '}
+          <a href="mailto:info@wisergenerations.com" className="underline hover:text-slate-700">
+            info@wisergenerations.com
+          </a>
+          .
+        </p>
       </div>
     </main>
   )
