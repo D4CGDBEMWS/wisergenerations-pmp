@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     }
 
     const OUTCOMES = [
-      { stat: '93%', label: 'Student pass rate' },
+      { stat: '87%', label: 'First-attempt pass rate' },
         { stat: '35', label: 'PMI contact hours included — no extra cost' },
           { stat: '12 wks', label: 'Average time from enrollment to exam-ready' },
             { stat: '100%', label: 'PMI Exam Content Outline (ECO) aligned' },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
                                     },
                                       {
                                           q: 'What is the PMP® exam pass rate for Wiser Generations Int\'l™ students?',
-                                              a: 'Our students have a 93% pass rate. The global average for first-attempt PMP® takers is significantly lower, which is why mentor-led prep, accountability, and full-length practice exams matter.',
+                                              a: '87% of our students pass on the first attempt — well above the PMI global average. And if you need a second attempt, Professional and Executive tier students are covered by our pass guarantee: we coach you until you pass.',
                                                 },
                                                   {
                                                       q: 'What happens if I don\'t pass on the first try?',
