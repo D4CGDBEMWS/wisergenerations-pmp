@@ -64,8 +64,14 @@ export async function POST(req: NextRequest) {
     )
 
     if (!res.ok) {
+      // ConvertKit's error responses typically echo the email address back as
+      // part of the body. Logging the full response would put PII into Vercel
+      // function logs on every failed signup, so we log only structural info.
       const data = await res.json().catch(() => null)
-      console.error('[/api/free-guide] ConvertKit error:', data)
+      console.error('[/api/free-guide] ConvertKit error:', {
+        status: res.status,
+        message: typeof data?.message === 'string' ? data.message : null,
+      })
       return NextResponse.json(
         { error: 'Could not subscribe. Please try again.' },
         { status: 502 }
