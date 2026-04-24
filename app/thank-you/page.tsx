@@ -58,6 +58,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <script dangerouslySetInnerHTML={{ __html: `if(typeof gtag==='function'){gtag('event','enrollment_complete')}` }} />
       <header className="bg-[#0a1628] px-6 py-4 text-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">

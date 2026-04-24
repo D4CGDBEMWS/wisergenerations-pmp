@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import NewsletterSignup from '@/components/layout/NewsletterSignup'
 import CookieBanner from '@/components/CookieBanner'
+import Analytics from '@/components/Analytics'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wisergenerations.com'),
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
+        <Analytics />
         <Navbar />
         <main className="flex-1">{children}</main>
         <NewsletterSignup />

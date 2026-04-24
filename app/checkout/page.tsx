@@ -4,6 +4,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 're
 import Link from 'next/link'
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
+import { trackEvent } from '@/components/Analytics'
 
 // ---------------------------------------------------------------------------
 // Stripe — only initialise once, at module level (correct pattern).
@@ -38,7 +39,7 @@ const PROGRAMS = {
   'veterans-pathway': {
     id: 'veterans-pathway',
     name: 'Veterans PM Pathway',
-    price: 797,
+    price: 1800,
     description:
       'A mission-aligned transition pathway designed for veterans moving into project management roles.',
   },
@@ -352,6 +353,7 @@ function PaymentForm({
 // CheckoutPage
 // ---------------------------------------------------------------------------
 export default function CheckoutPage() {
+  useEffect(() => { trackEvent('checkout_start') }, [])
   const [form, setForm] = useState<CheckoutFormState>({
     firstName: '',
     lastName: '',

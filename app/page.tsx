@@ -50,6 +50,7 @@ export default function HomePage() {
                 Pass Your PMP®<br />
                 <span className="text-gold">Before the Exam Changes.™</span>
               </h1>
+              <p className="text-gray-400 text-base italic mb-6">And when the exam changes, we&apos;ll be the first provider built 8th-edition-native from the ground up.</p>
               <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-6 max-w-2xl">
                 The PMP® exam gets a major overhaul on July 8, 2026. Certify now on 5 years of proven materials —
                 before new AI content, new question formats, and new uncertainty arrive.
@@ -249,6 +250,24 @@ export default function HomePage() {
               className="shrink-0 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors whitespace-nowrap">
               Get the Free Guide →
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* What Happens After July 8? */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Looking Beyond July 8</p>
+            <h2 className="text-3xl font-bold text-navy mb-4">What Happens After July 8?</h2>
+          </div>
+          <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
+            <p>When the PMP exam transitions to PMBOK&reg; 8 on July 9, 2026, most providers will be retrofitting their 7th-edition content&mdash;updating slide decks and hoping students don&apos;t notice the legacy framework underneath.</p>
+            <p>Enterprise Academy is rebuilding from the ground up for PMBOK 8. Every module, every practice question, every case scenario. Built 8th-edition-native from day one.</p>
+            <p>If you&apos;re choosing a provider for post-July 2026 exam prep, the question isn&apos;t who has the biggest brand. It&apos;s who rebuilt versus retrofitted.</p>
+          </div>
+          <div className="mt-10 text-center">
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="inline-block bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">Reserve Your Spot in the First 8th-Edition-Native Cohort</a>
           </div>
         </div>
       </section>

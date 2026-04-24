@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
+import { trackEvent } from '@/components/Analytics'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -35,6 +36,7 @@ export default function FreeGuidePage() {
       }
 
       setFormState('success')
+      trackEvent('free_guide_download')
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setFormState('error')
