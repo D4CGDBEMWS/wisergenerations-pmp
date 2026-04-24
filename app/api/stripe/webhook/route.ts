@@ -211,13 +211,39 @@ export async function POST(request: NextRequest) {
       // ─────────────────────────────────────────────────────────────────
       if (event.type === 'payment_intent.succeeded') {
               const paymentIntent = event.data.object as Stripe.PaymentIntent
-              const email = normalizeEmail(paymentIntent.receipt_email || paymentIntent.metadata.customer_email || '')
+              const programId = paymentIntent.metadata.program_id || 'program'
+              const programName = paymentIntent.metadata.program_name || programId
 
-            if (email) {
-                      const firstName = paymentIntent.metadata.customer_first_name || ''
-                      const lastName = paymentIntent.metadata.customer_last_name || ''
-                      const programId = paymentIntent.metadata.program_id || 'program'
-                      const programName = paymentIntent.metadata.program_name || programId
+              // SECURITY: customer email/name no longer come from PaymentIntent
+              // metadata (which would surface in every event payload and the
+              // Stripe dashboard search). We retrieve the Customer record on
+              // demand and read identity fields from there.
+              let customerEmail = paymentIntent.receipt_email || ''
+              let customerName = ''
+
+              if (paymentIntent.customer && typeof paymentIntent.customer === 'string') {
+                      try {
+                                const customer = await stripe.customers.retrieve(paymentIntent.customer)
+                                if (!customer.deleted) {
+                                            customerEmail = customer.email || customerEmail
+                                            customerName = customer.name || ''
+                                }
+                      } catch (err) {
+                                console.error('[stripe webhook] customer retrieve failed:', err)
+                      }
+              }
+
+              const email = normalizeEmail(customerEmail)
+
+              if (email) {
+                      // Stripe stores name as a single string. Split on the first
+                      // space for Mailchimp's FNAME / LNAME merge fields. Edge
+                      // cases like "Maria de la Cruz" become FNAME="Maria",
+                      // LNAME="de la Cruz", which is acceptable for marketing.
+                      const trimmed = customerName.trim()
+                      const firstSpace = trimmed.indexOf(' ')
+                      const firstName = firstSpace === -1 ? trimmed : trimmed.slice(0, firstSpace)
+                      const lastName = firstSpace === -1 ? '' : trimmed.slice(firstSpace + 1)
 
                 await upsertMailchimpCustomer({
                             email,

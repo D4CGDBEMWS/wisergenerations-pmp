@@ -123,6 +123,12 @@ export async function POST(req: NextRequest) {
     const customer = await stripe.customers.create({ name, email, phone })
 
     // ── Create PaymentIntent ───────────────────────────────────────────────
+    // SECURITY: PaymentIntent.metadata is for non-sensitive identifiers only.
+    // It surfaces in every webhook event for this PI's lifecycle, the Stripe
+    // dashboard search/filter UI, and all CSV exports. We do NOT put the
+    // customer's email, phone, or name here — those live on the Customer
+    // object (created above) and the webhook reads them from there via
+    // stripe.customers.retrieve(paymentIntent.customer).
     const paymentIntent = await stripe.paymentIntents.create(
       {
         amount: program.amount,
@@ -133,10 +139,6 @@ export async function POST(req: NextRequest) {
         metadata: {
           program_id: programId,
           program_name: program.name,
-          customer_email: email,
-          customer_first_name: body.firstName ?? '',
-          customer_last_name: body.lastName ?? '',
-          customer_phone: phone,
         },
         // Allows card, Apple Pay, Google Pay automatically via Stripe
         automatic_payment_methods: { enabled: true },
