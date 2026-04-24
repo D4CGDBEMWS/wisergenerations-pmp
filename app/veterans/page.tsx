@@ -116,7 +116,7 @@ export default function VeteransPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-2xl font-bold text-navy mb-2">Veterans PM Pathway — What's Included</h2>
-              <p className="text-gold font-medium mb-8">Starting from $797 · Veteran discount applied at enrollment</p>
+              <p className="text-gold font-medium mb-8">From $1,800 (Professional tier with veteran discount) · Veteran discount applied at enrollment</p>
               <div className="space-y-5">
                 {[
                   { icon: '📋', title: 'Military-to-PM Skills Translation Guide', body: 'A personalized document mapping your MOS/rate and service experience to PMI competency areas. Use this in interviews and on your resume.' },
