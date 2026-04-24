@@ -18,7 +18,7 @@ type Variant = 'light' | 'navy'
 const BADGES: { label: string; sub: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }[] = [
   { label: 'PMI® Aligned', sub: 'Curriculum & contact hours', Icon: ShieldIcon },
   { label: 'Veteran Owned', sub: 'U.S. Army veteran founder', Icon: StarIcon },
-  { label: '93% Pass Rate', sub: 'First-attempt PMP®', Icon: TrophyIcon },
+  { label: '87% Pass Rate', sub: 'First-attempt PMP®', Icon: TrophyIcon },
   { label: '20+ Years', sub: 'Enterprise PM experience', Icon: ClockIcon },
   { label: 'Mentor-Led', sub: 'Live cohorts + 1:1 support', Icon: UsersIcon },
   { label: 'Metro Atlanta + Virtual', sub: 'Nationwide delivery', Icon: PinIcon },
