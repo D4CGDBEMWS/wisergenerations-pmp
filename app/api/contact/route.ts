@@ -3,6 +3,15 @@ import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
+// ---------------------------------------------------------------------------
+// Strips HTML tags and trims a string field.
+// Prevents HTML/script injection from being forwarded to email or Mailchimp.
+// ---------------------------------------------------------------------------
+function sanitize(value: unknown): string {
+  if (typeof value !== 'string') return ''
+  return value.replace(/<[^>]*>/g, '').trim()
+}
+
 export async function POST(request: NextRequest) {
   const originBlock = checkOrigin(request)
   if (originBlock) return originBlock
@@ -12,7 +21,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const data = await request.json()
-    const { name, email, subject, message } = data
+
+    const name = sanitize(data.name)
+    const email = sanitize(data.email)
+    const subject = sanitize(data.subject)
+    const message = sanitize(data.message)
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Name, email, and message are required.' }, { status: 400 })
@@ -23,15 +36,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400 })
     }
 
-    // Send via Mailchimp transactional / Resend / or forward as a Mailchimp campaign
-    // For now, log it and return success so the UI works.
-    // TODO: wire up a transactional email provider (Resend, SendGrid, etc.) using
-    //       CONTACT_EMAIL_API_KEY env var when available.
     console.log('[/api/contact] New message:', { name, email, subject, message })
 
-    // If Mailchimp API key is available, also add them as a lead
     const apiKey = process.env.MAILCHIMP_API_KEY
     const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
+
     if (apiKey && audienceId) {
       const { createHash } = await import('crypto')
       const dc = apiKey.split('-')[1]
