@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'One or more fields are too long.' }, { status: 400 })
   }
 
-  const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email)) {
     return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
   }
@@ -110,8 +110,7 @@ export async function POST(req: NextRequest) {
     const safeName    = escapeHtml(name)
     const safeEmail   = escapeHtml(email)
     const safeSubject = escapeHtml(subject || '(no subject)')
-    const safeMessage = escapeHtml(message).replace(/
-/g, '<br>')
+    const safeMessage = escapeHtml(message).replace(/\n/g, '<br>')
 
     const { error } = await resend.emails.send({
       from:    `Wiser Generations Contact <${fromAddress}>`,
