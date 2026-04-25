@@ -5,8 +5,17 @@ import Stripe from 'stripe'
 export const runtime = 'nodejs'
 
 export const metadata: Metadata = {
-  title: 'Enrollment Confirmed | Wiser Generations™',
-  description: 'Your Wiser Generations enrollment has been confirmed.',
+  // SECURITY: this page can be reached with a payment_intent query param.
+  // PaymentIntent IDs are practically unguessable, but we still want this
+  // page kept out of search engines, link previews, and Googlebot caches.
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false, noimageindex: true },
+  },
+  title: 'Enrollment Confirmed | Wiser Generations Int’l™',
+  description: 'Your Wiser Generations Int’l enrollment has been confirmed.',
 }
 
 type Props = {
@@ -30,15 +39,13 @@ async function getEnrollment(paymentIntentId?: string) {
       return null
     }
 
-    const name =
-      paymentIntent.metadata.customer_name ||
-      `${paymentIntent.metadata.customer_first_name || ''} ${paymentIntent.metadata.customer_last_name || ''}`.trim() ||
-      'Student'
-
+    // SECURITY: do not return name or email from this server function.
+    // The page used to render them, but anyone with the URL (browser
+    // history, screenshots, referrer leaks, support tickets) would then
+    // see the buyer's identity. The receipt email is sent separately by
+    // Stripe; the user already knows their own name.
     return {
-      name,
       program: paymentIntent.metadata.program_name || 'Wiser Generations Program',
-      email: paymentIntent.receipt_email || paymentIntent.metadata.customer_email || '',
     }
   } catch (error) {
     console.error('Thank-you lookup error:', error)
@@ -51,13 +58,14 @@ export default async function ThankYouPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <script dangerouslySetInnerHTML={{ __html: `if(typeof gtag==='function'){gtag('event','enrollment_complete')}` }} />
       <header className="bg-[#0a1628] px-6 py-4 text-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded bg-[#c9a84c] text-sm font-bold text-[#0a1628]">
               WG
             </div>
-            <span className="font-semibold tracking-wide">Wiser Generations™</span>
+            <span className="font-semibold tracking-wide">Wiser Generations Int’l™</span>
           </Link>
           <span className="text-sm text-gray-300">Enrollment confirmed</span>
         </div>
@@ -71,18 +79,16 @@ export default async function ThankYouPage({ searchParams }: Props) {
             </div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#c9a84c]">Thank you</p>
             <h1 className="mt-3 text-3xl font-bold text-[#0a1628] sm:text-4xl">
-              {enrollment ? `${enrollment.name}, you're officially enrolled.` : 'Your payment was received.'}
+              {enrollment ? "You're officially enrolled." : 'Your payment was received.'}
             </h1>
             <p className="mt-4 text-base text-gray-600 sm:text-lg">
               {enrollment
                 ? `You have been enrolled in ${enrollment.program}.`
                 : 'We are verifying your enrollment details now. If you just completed payment, this page may update after a short refresh.'}
             </p>
-            {enrollment?.email && (
-              <p className="mt-3 text-sm text-gray-500">
-                Confirmation and receipt sent to {enrollment.email}
-              </p>
-            )}
+            <p className="mt-3 text-sm text-gray-500">
+              A confirmation and receipt have been sent to the email address on file.
+            </p>
           </div>
 
           <div className="mt-10 grid gap-6 text-left md:grid-cols-2">

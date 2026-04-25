@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import ContactForm from './ContactForm'
 
-export const metadata: Metadata = { title: 'Contact — Wiser Generations™' }
+export const metadata: Metadata = {
+  title: 'Contact — Wiser Generations™',
+}
 
 export default function ContactPage() {
   return (
@@ -11,14 +13,15 @@ export default function ContactPage() {
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Contact</p>
           <h1 className="text-3xl font-bold text-navy mb-4">Talk to Crystal</h1>
           <p className="text-gray-600 leading-relaxed mb-8">
-            Questions about certification pathways, corporate packages, veteran benefits, or
-            scheduling — Crystal or a team member responds within 2 business days.
+            Questions about certification pathways, corporate packages, veteran
+            benefits, or scheduling — Crystal or a team member responds within 2
+            business days.
           </p>
           <div className="space-y-4">
             {[
-              ['Email', 'info@wisergenerations.com'],
+              ['Email',    'info@wisergenerations.com'],
               ['Location', 'Smyrna, GA (Metro Atlanta)'],
-              ['Virtual', 'Nationwide via Zoom'],
+              ['Virtual',  'Nationwide via Zoom'],
             ].map(([label, value]) => (
               <div key={label}>
                 <p className="text-xs text-gold font-bold uppercase tracking-wider">{label}</p>
