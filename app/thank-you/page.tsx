@@ -19,9 +19,10 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  searchParams?: {
+  // Next.js 15+: searchParams is now a Promise.
+  searchParams?: Promise<{
     payment_intent?: string
-  }
+  }>
 }
 
 async function getEnrollment(paymentIntentId?: string) {
@@ -54,7 +55,8 @@ async function getEnrollment(paymentIntentId?: string) {
 }
 
 export default async function ThankYouPage({ searchParams }: Props) {
-  const enrollment = await getEnrollment(searchParams?.payment_intent)
+  const resolvedSearchParams = (await searchParams) ?? {}
+  const enrollment = await getEnrollment(resolvedSearchParams.payment_intent)
 
   return (
     <div className="min-h-screen bg-gray-50">
