@@ -1,72 +1,153 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Resend } from 'resend'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
 // ---------------------------------------------------------------------------
-// Strips HTML tags and trims a string field.
-// Prevents HTML/script injection from being forwarded to email or Mailchimp.
+// POST /api/contact
+//
+// Receives a contact-form submission, validates it, and emails it into the
+// info@wisergenerations.com inbox via Resend.
+//
+// Required env vars:
+//   RESEND_API_KEY      -- from https://resend.com (free tier 3,000/mo)
+//   CONTACT_TO_EMAIL    -- destination inbox (defaults to info@wisergenerations.com)
+//   CONTACT_FROM_EMAIL  -- verified sender on your Resend domain
+//                         (defaults to onboarding@resend.dev for first-run testing)
+//
+// In development without RESEND_API_KEY set we log the submission and return
+// success so the UI flow can be tested without the integration.
 // ---------------------------------------------------------------------------
-function sanitize(value: unknown): string {
-  if (typeof value !== 'string') return ''
-  return value.replace(/<[^>]*>/g, '').trim()
+
+const NAME_MAX    = 120
+const EMAIL_MAX   = 254
+const SUBJECT_MAX = 200
+const MESSAGE_MAX = 5_000
+
+function sanitize(value: string): string {
+  return value.replace(/<[^>]*>/g, '')
 }
 
-export async function POST(request: NextRequest) {
-  const originBlock = checkOrigin(request)
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+export async function POST(req: NextRequest) {
+  const originBlock = checkOrigin(req)
   if (originBlock) return originBlock
 
-  const rateBlock = await rateLimit(request, 'contact', { limit: 5, windowMs: 60_000 })
+  const rateBlock = await rateLimit(req, 'contact', { limit: 3, windowMs: 5 * 60_000 })
   if (rateBlock) return rateBlock
 
+  let body: {
+    name?: string
+    email?: string
+    subject?: string
+    message?: string
+    company?: string
+  }
+
   try {
-    const data = await request.json()
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
+  }
 
-    const name = sanitize(data.name)
-    const email = sanitize(data.email)
-    const subject = sanitize(data.subject)
-    const message = sanitize(data.message)
+  if (body.company && body.company.trim().length > 0) {
+    console.warn('[/api/contact] honeypot tripped, dropping submission')
+    return NextResponse.json({ ok: true })
+  }
 
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: 'Name, email, and message are required.' }, { status: 400 })
+  const name    = sanitize((body.name    ?? '').trim())
+  const email   = sanitize((body.email   ?? '').trim())
+  const subject = sanitize((body.subject ?? '').trim())
+  const message = sanitize((body.message ?? '').trim())
+
+  if (!name || !email || !message) {
+    return NextResponse.json(
+      { error: 'Name, email, and message are required.' },
+      { status: 400 }
+    )
+  }
+
+  if (
+    name.length    > NAME_MAX    ||
+    email.length   > EMAIL_MAX   ||
+    subject.length > SUBJECT_MAX ||
+    message.length > MESSAGE_MAX
+  ) {
+    return NextResponse.json({ error: 'One or more fields are too long.' }, { status: 400 })
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
+  }
+
+  const apiKey      = process.env.RESEND_API_KEY
+  const toAddress   = process.env.CONTACT_TO_EMAIL   || 'info@wisergenerations.com'
+  const fromAddress = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev'
+
+  if (!apiKey) {
+    console.warn('[/api/contact] RESEND_API_KEY not set — submission accepted but not delivered.', {
+      hasName: name.length > 0,
+      hasEmail: email.length > 0,
+      hasSubject: subject.length > 0,
+      messageLength: message.length,
+    })
+    return NextResponse.json({ ok: true })
+  }
+
+  try {
+    const resend = new Resend(apiKey)
+
+    const safeName    = escapeHtml(name)
+    const safeEmail   = escapeHtml(email)
+    const safeSubject = escapeHtml(subject || '(no subject)')
+    const safeMessage = escapeHtml(message).replace(/\n/g, '<br>')
+
+    const { error } = await resend.emails.send({
+      from:    `Wiser Generations Contact <${fromAddress}>`,
+      to:      [toAddress],
+      replyTo: email,
+      subject: subject ? `[Contact] ${subject}` : `[Contact] New message from ${name}`,
+      text: `From: ${name} <${email}>
+Subject: ${subject || '(no subject)'}
+
+${message}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; max-width: 560px;">
+          <h2 style="color:#0a1628;margin:0 0 16px;">New contact form submission</h2>
+          <p style="margin:4px 0;"><strong>From:</strong> ${safeName} &lt;${safeEmail}&gt;</p>
+          <p style="margin:4px 0;"><strong>Subject:</strong> ${safeSubject}</p>
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;">
+          <div style="white-space:pre-wrap;line-height:1.5;color:#1e293b;">${safeMessage}</div>
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;">
+          <p style="font-size:12px;color:#64748b;">Reply directly to this email to respond.</p>
+        </div>
+      `,
+    })
+
+    if (error) {
+      console.error('[/api/contact] Resend error:', error)
+      return NextResponse.json(
+        { error: 'Could not send your message. Please try again or email info@wisergenerations.com directly.' },
+        { status: 502 }
+      )
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400 })
-    }
-
-    console.log('[/api/contact] New message:', { name, email, subject, message })
-
-    const apiKey = process.env.MAILCHIMP_API_KEY
-    const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
-
-    if (apiKey && audienceId) {
-      const { createHash } = await import('crypto')
-      const dc = apiKey.split('-')[1]
-      if (dc) {
-        const hash = createHash('md5').update(email.toLowerCase()).digest('hex')
-        const url = `https://${dc}.api.mailchimp.com/3.0/lists/${audienceId}/members/${hash}`
-        await fetch(url, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email_address: email.toLowerCase(),
-            status_if_new: 'subscribed',
-            status: 'subscribed',
-            merge_fields: { FNAME: name.split(' ')[0] || '', LNAME: name.split(' ').slice(1).join(' ') || '' },
-            tags: [{ name: 'contact-form', status: 'active' }],
-          }),
-        }).catch((err) => console.error('[/api/contact] Mailchimp upsert error:', err))
-      }
-    }
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('[/api/contact] Error:', error)
-    return NextResponse.json({ error: 'Unable to send your message. Please try again.' }, { status: 500 })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('[/api/contact] Unexpected error:', err)
+    return NextResponse.json(
+      { error: 'An unexpected error occurred. Please try again.' },
+      { status: 500 }
+    )
   }
 }
