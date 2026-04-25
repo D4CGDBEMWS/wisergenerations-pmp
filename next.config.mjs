@@ -5,7 +5,7 @@
 // Added 2026-04-25 after live header audit confirmed none were present.
 // ---------------------------------------------------------------------------
 const securityHeaders = [
-  // Prevent clickjacking — blocks the site being embedded in iframes elsewhere
+  // Prevent clickjacking
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   // Prevent MIME-type sniffing
   { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -15,10 +15,7 @@ const securityHeaders = [
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   // Disable unused browser features
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-  // Content-Security-Policy — explicitly permits all third-party origins used
-  // by this site (GA4, Stripe, Calendly, Google Fonts). Everything else blocked.
-  // NOTE: 'unsafe-inline' for scripts is required by Next.js inline scripts
-  // and for style-src by Tailwind CSS runtime injection.
+  // Content-Security-Policy
   {
     key: 'Content-Security-Policy',
     value: [
@@ -45,19 +42,6 @@ const nextConfig = {
       },
     ]
   },
-  images: {
-    domains: ['images.unsplash.com', 'res.cloudinary.com'],
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-}
-
-export default nextConfig/** @type {import('next').NextConfig} */
-const nextConfig = {
   images: {
     domains: ['images.unsplash.com', 'res.cloudinary.com'],
   },
