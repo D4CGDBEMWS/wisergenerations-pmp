@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { trackEvent } from '@/components/Analytics'
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const navLinks = [
   { label: 'Programs', href: '/programs' },
