@@ -3,7 +3,7 @@ import { PROGRAMS, STATS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
 import TrustSignals from '@/components/marketing/TrustSignals'
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const TESTIMONIALS = [
   {
