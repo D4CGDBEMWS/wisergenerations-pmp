@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     email?: string
     subject?: string
     message?: string
-    company?: string
+    _hp?: string
   }
 
   try {
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
   }
 
-  if (body.company && body.company.trim().length > 0) {
+  if (body._hp && body._hp.trim().length > 0) {
     console.warn('[/api/contact] honeypot tripped, dropping submission')
     return NextResponse.json({ ok: true })
   }

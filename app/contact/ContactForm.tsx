@@ -10,7 +10,7 @@ export default function ContactForm() {
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
   // Honeypot — must stay empty. Real users won't see it; bots will fill it.
-  const [company, setCompany] = useState('')
+  const [_hp, setHp] = useState('')
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -35,7 +35,7 @@ export default function ContactForm() {
           email: email.trim(),
           subject: subject.trim(),
           message: message.trim(),
-          company,
+          _hp,
         }),
       })
 
@@ -85,13 +85,12 @@ export default function ContactForm() {
         {/* Honeypot field — visually hidden, accessible-hidden, and tab-skipped. */}
         <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
           <label>
-            Company
-            <input
+              <input
               type="text"
               tabIndex={-1}
               autoComplete="off"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
+              value={_hp}
+              onChange={(e) => setHp(e.target.value)}
             />
           </label>
         </div>
