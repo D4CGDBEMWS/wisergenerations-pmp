@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'CAPM or PMP? Learn the key differences in eligibility requirements, cost, salary impact, and career outcomes — and how to decide which PMI certification makes sense for where you are right now.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 export default function CapmVsPmpPost() {
   return (
