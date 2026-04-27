@@ -73,8 +73,8 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         email_address: email,
-        status_if_new: 'subscribed',
-        status: 'subscribed',
+        status_if_new: 'pending',
+        status: 'pending',
         tags: tags.map((tag) => ({ name: tag, status: 'active' })),
       }),
     })
