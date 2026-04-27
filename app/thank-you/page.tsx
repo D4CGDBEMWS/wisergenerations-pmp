@@ -110,7 +110,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
                 Choose a convenient time to connect with Crystal and map out your certification plan.
               </p>
               <a
-                href="https://calendly.com/space4grace/15min"
+                href="https://calendly.com/space4grace/30min-pod"
                 target="_blank"
                 rel="noreferrer"
                 className="mt-6 inline-flex rounded-xl bg-[#c9a84c] px-5 py-3 font-semibold text-[#0a1628] transition hover:bg-[#b8963e]"
