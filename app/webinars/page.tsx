@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Join Crystal Stewart, PMP for free monthly webinars and live Q&A sessions on PMP certification, exam changes, career transitions, and project management strategy.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const upcomingWebinars = [
   {
