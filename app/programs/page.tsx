@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     description: 'PMP® prep, CAPM® career launcher, corporate team training, and veterans PM pathway. Find your certification program at Wiser Generations Int\'l™.',
     }
 
-    const CALENDLY = 'https://calendly.com/space4grace/15min'
+    const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
     type Tier = {
       id: string
