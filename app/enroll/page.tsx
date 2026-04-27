@@ -127,7 +127,7 @@ export default function EnrollPage() {
             </div>
             <div className="rounded-2xl overflow-hidden border-2 border-gray-100 shadow-sm">
               <iframe
-                src="https://calendly.com/space4grace/15min"
+                src="https://calendly.com/space4grace/30min-pod"
                 width="100%"
                 height="700"
                 frameBorder="0"
