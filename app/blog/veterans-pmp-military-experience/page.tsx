@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Military experience translates directly to PMP eligibility. Learn how to document your service for the PMI application, which roles qualify, and how the veteran cohort experience works.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 export default function VeteransPmpPost() {
   return (
