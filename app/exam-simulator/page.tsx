@@ -301,7 +301,7 @@ export default function ExamSimulator() {
             <div className="bg-navy text-white rounded-2xl p-6 text-center">
               <p className="text-lg font-bold mb-2">Want more support?</p>
               <p className="text-gray-300 text-sm mb-4">Book a free strategy call with Crystal to discuss your path to certification.</p>
-              <a href="https://calendly.com/space4grace/15min" target="_blank" rel="noopener noreferrer"
+              <a href="https://calendly.com/space4grace/30min-pod" target="_blank" rel="noopener noreferrer"
                 className="bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-yellow-400 inline-block">
                 Book a Free Call
               </a>

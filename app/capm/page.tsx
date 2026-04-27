@@ -25,7 +25,7 @@ export default function CAPMPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="https://calendly.com/space4grace/15min"
+              href="https://calendly.com/space4grace/30min-pod"
               className="inline-block rounded-xl bg-gold px-8 py-4 text-base font-bold text-navy transition hover:bg-amber-400"
             >
               Book a Free Strategy Call
@@ -106,7 +106,7 @@ export default function CAPMPage() {
             </Link>
             <p className="mt-4 text-center text-xs text-gray-400">
               Not sure yet?{' '}
-              <Link href="https://calendly.com/space4grace/15min" className="text-gold hover:underline">
+              <Link href="https://calendly.com/space4grace/30min-pod" className="text-gold hover:underline">
                 Book a free call first
               </Link>
             </p>
@@ -147,7 +147,7 @@ export default function CAPMPage() {
           </div>
           <p className="mt-6 text-center text-gray-500 text-sm">
             Not sure which is right for you?{' '}
-            <Link href="https://calendly.com/space4grace/15min" className="text-gold hover:underline font-medium">
+            <Link href="https://calendly.com/space4grace/30min-pod" className="text-gold hover:underline font-medium">
               Book a free call
             </Link>{' '}
             and Crystal will help you decide.
@@ -165,7 +165,7 @@ export default function CAPMPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="https://calendly.com/space4grace/15min"
+              href="https://calendly.com/space4grace/30min-pod"
               className="rounded-xl bg-gold px-8 py-4 text-base font-bold text-navy transition hover:bg-amber-400"
             >
               Book a Free Call

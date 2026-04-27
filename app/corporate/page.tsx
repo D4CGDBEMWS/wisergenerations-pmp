@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Custom PMP and CAPM training for corporate teams. PMI-aligned curriculum tailored to your industry, delivered virtually or on-site in Metro Atlanta. Volume pricing for 5+ employees.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const benefits = [
   {

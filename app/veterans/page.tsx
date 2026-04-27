@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition, peer cohort, VA benefit guidance. Enterprise Academy™.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const VETERANS_FAQ = [
   {

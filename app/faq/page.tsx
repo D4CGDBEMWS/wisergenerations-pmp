@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Answers to the most common questions about PMP and CAPM certification prep, exam eligibility, payment plans, veterans benefits, and the Wiser Generations program.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const faqCategories = [
   {

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Meet Crystal Stewart, PMP — U.S. Army veteran, enterprise PM leader, and founder of Enterprise Academy. 20+ years of real-world project management experience, now teaching the next generation.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const milestones = [
   {

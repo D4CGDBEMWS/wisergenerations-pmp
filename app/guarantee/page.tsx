@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Complete your PMP or CAPM prep with Crystal Stewart and pass — or restudy free. Our pass guarantee reflects confidence in the curriculum and commitment to your success.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const included = [
   {

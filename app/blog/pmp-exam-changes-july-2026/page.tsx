@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'PMI confirmed major changes to the PMP exam effective July 8, 2026. New domain weights, AI and sustainability content, new question formats. Here is what every aspiring PMP needs to know.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 export default function PmpExamChangesPost() {
   return (
