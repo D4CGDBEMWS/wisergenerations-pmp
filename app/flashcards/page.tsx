@@ -266,7 +266,7 @@ export default function FlashcardsPage() {
         )}
         <div className="mt-10 flex flex-col sm:flex-row gap-4">
           <Link href="/exam-simulator" className="flex-1 bg-navy text-white font-bold py-4 rounded-xl text-center hover:bg-navy/80 transition-colors">Exam Simulator</Link>
-          <a href="https://calendly.com/space4grace/15min" target="_blank" rel="noopener noreferrer"
+          <a href="https://calendly.com/space4grace/30min-pod" target="_blank" rel="noopener noreferrer"
             className="flex-1 bg-gold text-navy font-bold py-4 rounded-xl text-center hover:bg-yellow-400 transition-colors">
             Book a Free Call
           </a>
