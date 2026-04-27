@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Does the PMP certification actually pay off? We break down the salary data, career outcomes, and return on investment for PMP certification in 2026.',
 }
 
-const CALENDLY = 'https://calendly.com/space4grace/15min'
+const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 export default function PmpSalaryRoiPost() {
   return (
