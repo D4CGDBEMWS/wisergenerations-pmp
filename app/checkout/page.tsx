@@ -39,7 +39,7 @@ const PROGRAMS = {
   'veterans-pathway': {
     id: 'veterans-pathway',
     name: 'Veterans PM Pathway',
-    price: 1800,
+    price: 797,
     description:
       'A mission-aligned transition pathway designed for veterans moving into project management roles.',
   },
