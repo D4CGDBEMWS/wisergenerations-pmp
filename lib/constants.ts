@@ -3,7 +3,7 @@ export const SITE_URL = 'https://wisergenerations.com'
 export const TAGLINE = 'Project Manage Your Career. Transform Your Future.™'
 export const FOUNDER = 'Crystal Stewart, PMP®'
 export const FOUNDER_TITLE = 'The Project Management Evangelist™'
-export const COMPANY = 'Enterprise Academy™'
+export const COMPANY = 'Enterprise Ahcademy™'
 
 // ---------------------------------------------------------------------------
 // PRICING TIERS — single source of truth for all pricing across the site.
@@ -132,7 +132,7 @@ export const PROGRAMS = [
         audience: 'Military veterans transitioning to civilian careers',
         description: 'You already lead projects under pressure. Now translate your military experience into the PM credential employers recognize. Structured for the way veterans learn and lead.',
         features: ['Military-to-PM skills translation guide', 'PMP® or CAPM® prep (your choice)', 'VA benefit compatibility guidance', 'Veteran peer cohort', 'Employer introduction program', 'Veteran discount applied'],
-        price: 1800,
+        price: 797,
         badge: 'Veteran Discount Applied',
         color: 'border-green-600',
   },
