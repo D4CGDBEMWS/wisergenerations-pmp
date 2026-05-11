@@ -410,7 +410,7 @@ export const examQuestions: Question[] = [
   },
   {
     id: 34, domain: 'Business Environment', difficulty: 'Hard',
-    question: 'A company is experiencing significant organizational change during a project. What is the PM's BEST approach?',
+    question: 'A company is experiencing significant organizational change during a project. What is the PM\'s BEST approach?',
     options: [
       'Pause the project until the change is complete',
       'Engage stakeholders proactively and adjust the project approach to accommodate the change',
