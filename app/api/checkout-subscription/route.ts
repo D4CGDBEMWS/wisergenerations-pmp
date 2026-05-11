@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
 // ---------------------------------------------------------------------------
 // POST /api/checkout-subscription
 // Creates a Stripe Checkout Session in `subscription` mode for the
-// $47/month Wiser Generations Int’l™ Study Access tier.
+// $47/month Wiser Generations Int'l™ Study Access tier.
 // Uses the price configured via NEXT_PUBLIC_STRIPE_STUDY_PRICE_ID.
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
+  const originBlock = checkOrigin(req)
+  if (originBlock) return originBlock
+
+  const rateBlock = await rateLimit(req, 'checkout-subscription', { limit: 5, windowMs: 60_000 })
+  if (rateBlock) return rateBlock
+
   const priceId = process.env.NEXT_PUBLIC_STRIPE_STUDY_PRICE_ID
   const secretKey = process.env.STRIPE_SECRET_KEY
 
@@ -45,15 +52,6 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: email || undefined,
       allow_promotion_codes: true,
-      // Require full billing address at checkout. This is needed for:
-      //   1. Mailchimp's ADDRESS merge field validation — Mailchimp rejects
-      //      contact updates with an incomplete ADDRESS, and we map Stripe's
-      //      address into Mailchimp on the webhook.
-      //   2. Future tax compliance if/when we start charging state sales tax.
-      //   3. Sending branded PM templates as shipped merch (a likely future
-      //      use case for the $47/mo tier).
-      // Stripe Checkout's address form is optimized for conversion and has
-      // browser autofill, so the friction impact on signup rate is minimal.
       billing_address_collection: 'required',
       success_url: `${origin}/checkout/success?tier=study&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout?canceled=1`,
