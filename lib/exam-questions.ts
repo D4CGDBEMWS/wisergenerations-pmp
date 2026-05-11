@@ -1,3 +1,4 @@
+// PMP exam questions data
 export type Domain = 'People' | 'Process' | 'Business Environment'
 export type Difficulty = 'Easy' | 'Medium' | 'Hard'
 
