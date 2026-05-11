@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
+import { trackEvent } from '@/components/Analytics'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -35,6 +36,7 @@ export default function FreeGuidePage() {
       }
 
       setFormState('success')
+      trackEvent('free_guide_download')
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setFormState('error')
@@ -47,7 +49,7 @@ export default function FreeGuidePage() {
       <nav className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-slate-900">
-            ← Wiser Generations™
+            ← Wiser Generations Int’l™
           </Link>
         </div>
       </nav>
@@ -126,7 +128,7 @@ export default function FreeGuidePage() {
                     View Programs →
                   </Link>
                   <Link
-                    href="https://calendly.com/space4grace/15min"
+                    href="https://calendly.com/space4grace/30min-pod"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:border-slate-400"
@@ -205,7 +207,7 @@ export default function FreeGuidePage() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm text-slate-500">
             Ready to certify before July 8?{' '}
-            <Link href="https://calendly.com/space4grace/15min" className="font-semibold text-slate-900 underline underline-offset-2">
+            <Link href="https://calendly.com/space4grace/30min-pod" className="font-semibold text-slate-900 underline underline-offset-2">
               Book a free 15-minute strategy call with Crystal →
             </Link>
           </p>

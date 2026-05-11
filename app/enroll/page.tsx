@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Enroll — Wiser Generations™',
+  title: 'Enroll — Wiser Generations Int’l™',
   description: 'Choose your PMP® or CAPM® certification program and book a free discovery call with Crystal Stewart.',
 }
 
@@ -127,7 +127,7 @@ export default function EnrollPage() {
             </div>
             <div className="rounded-2xl overflow-hidden border-2 border-gray-100 shadow-sm">
               <iframe
-                src="https://calendly.com/space4grace/15min"
+                src="https://calendly.com/space4grace/30min-pod"
                 width="100%"
                 height="700"
                 frameBorder="0"

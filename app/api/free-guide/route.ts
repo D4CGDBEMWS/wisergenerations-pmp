@@ -1,16 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 // ---------------------------------------------------------------------------
 // POST /api/free-guide
 // Subscribes the user to ConvertKit and triggers the PDF delivery sequence.
 //
-// ConvertKit setup steps (see clicks guide):
-//   1. Create a Form in ConvertKit → copy the Form ID into CONVERTKIT_FORM_ID
+// ConvertKit setup steps:
+//   1. Create a Form in ConvertKit → copy the Form ID into CONVERT_KIT_FORM_ID
 //   2. Create an API key → copy into CONVERTKIT_API_KEY
 //   3. Create an Automation: trigger = "subscribes to form" → send email with PDF link
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
+  const originBlock = checkOrigin(req)
+  if (originBlock) return originBlock
+
+  const rateBlock = await rateLimit(req, 'free-guide', { limit: 5, windowMs: 60_000 })
+  if (rateBlock) return rateBlock
+
   let body: { firstName?: string; email?: string }
 
   try {
@@ -31,7 +38,7 @@ export async function POST(req: NextRequest) {
   }
 
   const apiKey = process.env.CONVERTKIT_API_KEY
-  const formId = process.env.CONVERTKIT_FORM_ID
+  const formId = process.env.CONVERT_KIT_FORM_ID
 
   if (!apiKey || !formId) {
     // In development without ConvertKit configured, log and return success
@@ -57,8 +64,14 @@ export async function POST(req: NextRequest) {
     )
 
     if (!res.ok) {
+      // ConvertKit's error responses typically echo the email address back as
+      // part of the body. Logging the full response would put PII into Vercel
+      // function logs on every failed signup, so we log only structural info.
       const data = await res.json().catch(() => null)
-      console.error('[/api/free-guide] ConvertKit error:', data)
+      console.error('[/api/free-guide] ConvertKit error:', {
+        status: res.status,
+        message: typeof data?.message === 'string' ? data.message : null,
+      })
       return NextResponse.json(
         { error: 'Could not subscribe. Please try again.' },
         { status: 502 }

@@ -130,7 +130,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
                   ) : (
                     <p className="text-navy font-bold text-lg">Custom Pricing</p>
                   )}
-                  <a href={calendly} target="_blank" rel="noopener noreferrer"
+                  <a href="/checkout"
                     className="bg-navy text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-900 transition-colors text-sm">
                     Learn More →
                   </a>
