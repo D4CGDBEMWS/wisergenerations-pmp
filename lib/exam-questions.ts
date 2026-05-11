@@ -1,3 +1,4 @@
+// PMP exam questions data
 export type Domain = 'People' | 'Process' | 'Business Environment'
 export type Difficulty = 'Easy' | 'Medium' | 'Hard'
 
@@ -410,7 +411,7 @@ export const examQuestions: Question[] = [
   },
   {
     id: 34, domain: 'Business Environment', difficulty: 'Hard',
-    question: 'A company is experiencing significant organizational change during a project. What is the PM's BEST approach?',
+    question: 'A company is experiencing significant organizational change during a project. What is the PM\'s BEST approach?',
     options: [
       'Pause the project until the change is complete',
       'Engage stakeholders proactively and adjust the project approach to accommodate the change',
@@ -462,7 +463,7 @@ export const examQuestions: Question[] = [
     options: [
       'A single large project with many tasks',
       'A group of related projects managed in a coordinated way to obtain benefits',
-      'The organization's collection of all active projects',
+      'The organization\'s collection of all active projects',
       'A set of templates used across all projects'
     ],
     correct: 1,

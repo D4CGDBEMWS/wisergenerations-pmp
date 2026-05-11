@@ -25,13 +25,14 @@ export default function Analytics() {
 }
 
 // ─── Conversion event helper ─────────────────────────────────────────────────
-// Usage: import { trackEvent } from '@/components/Analytics'
-//        trackEvent('checkout_start')
+type WindowWithGtag = Window & { gtag?: (...args: unknown[]) => void }
+
 export function trackEvent(
   eventName: string,
   params?: Record<string, string | number | boolean>
 ) {
   if (typeof window === 'undefined') return
-  if (typeof (window as Window & { gtag?: Function }).gtag !== 'function') return
-  ;(window as Window & { gtag: Function }).gtag('event', eventName, params ?? {})
+  const w = window as WindowWithGtag
+  if (typeof w.gtag !== 'function') return
+  w.gtag('event', eventName, params ?? {})
 }
