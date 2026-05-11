@@ -208,7 +208,7 @@ export default function FreeGuidePage() {
           <p className="text-sm text-slate-500">
             Ready to certify before July 8?{' '}
             <Link href="https://calendly.com/space4grace/30min-pod" className="font-semibold text-slate-900 underline underline-offset-2">
-              Book a free 15-minute strategy call with Crystal →
+              Book a free 30-minute strategy call with Crystal →
             </Link>
           </p>
         </div>

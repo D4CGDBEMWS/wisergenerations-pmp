@@ -3,7 +3,7 @@ export const SITE_URL = 'https://wisergenerations.com'
 export const TAGLINE = 'Project Manage Your Career. Transform Your Future.™'
 export const FOUNDER = 'Crystal Stewart, PMP®'
 export const FOUNDER_TITLE = 'The Project Management Evangelist™'
-export const COMPANY = 'Enterprise Ahcademy™'
+export const COMPANY = 'Enterprise Academy™'
 
 // ---------------------------------------------------------------------------
 // PRICING TIERS — single source of truth for all pricing across the site.
