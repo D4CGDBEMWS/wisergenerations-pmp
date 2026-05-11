@@ -462,7 +462,7 @@ export const examQuestions: Question[] = [
     options: [
       'A single large project with many tasks',
       'A group of related projects managed in a coordinated way to obtain benefits',
-      'The organization's collection of all active projects',
+      'The organization\'s collection of all active projects',
       'A set of templates used across all projects'
     ],
     correct: 1,
