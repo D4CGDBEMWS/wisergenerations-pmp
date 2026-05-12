@@ -25,7 +25,7 @@ const TESTIMONIALS = [
 
 const COHORTS = [
   { name: 'April Accelerator', dates: 'April 14 – June 30, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
-  { name: 'May Fast Track', dates: 'May 5 – June 23, 2026', spots: 4, status: 'urgent', examBy: 'Last cohort before July 8 deadline — enroll now!' },
+  { name: 'May Fast Track', dates: 'June 8 – June 26, 2026', spots: 4, status: 'urgent', examBy: 'Last cohort before July 8 deadline — enroll now!' },
 ]
 
 export default function HomePage() {
