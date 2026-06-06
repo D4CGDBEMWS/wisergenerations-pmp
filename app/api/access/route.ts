@@ -32,14 +32,17 @@ export async function POST(req: NextRequest) {
       line_items: [{
         price_data: {
           currency: 'usd',
-          product_data: { name: 'PMP Study Access Package', description: 'Lifetime access to PMP Exam Simulator and PMBOK Flashcards.' },
-          unit_amount: 4700,
+          product_data: {
+            name: 'PMP Practice Studio',
+            description: 'Lifetime access to 694 practice questions, full-length 200-question mock exam, ITTO flashcards, and PMBOK glossary.',
+          },
+          unit_amount: 7900, // $79.00 one-time
         },
         quantity: 1,
       }],
       success_url: siteUrl + '/access/success?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: siteUrl + '/access',
-      metadata: { email, product: 'study-access' },
+      metadata: { email, product: 'pmp-practice-studio' },
     })
     return NextResponse.json({ url: session.url })
   } catch (err) {

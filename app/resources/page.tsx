@@ -123,7 +123,7 @@ export default function ResourcesPage() {
           <p className="mt-4 max-w-2xl text-base leading-7 text-gray-300">
             Everything we use with our students — from exam change guides to formula references —
             available free. When you&rsquo;re ready for live coaching, our Study Access subscription
-            ($47/month) and full mentor-led programs are one click away.
+            ($49/month) and full mentor-led programs are one click away.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -279,7 +279,7 @@ export default function ResourcesPage() {
 const FAQ = [
   {
     q: 'Are these PMP® resources really free?',
-    a: 'Yes. Every guide and reference page on this hub is free. Wiser Generations Int’l™ Study Access ($47/month) and our full mentor-led programs are paid options for students who want deeper practice questions, live coaching, and accountability. The PMP Practice Studio (694 questions + mock exam) is also available as a one-time $47 purchase at /access.',
+    a: 'Yes. Every guide and reference page on this hub is free. Wiser Generations Int’l™ Study Access ($49/month) and our full mentor-led programs are paid options for students who want deeper practice questions, live coaching, and accountability. The PMP Practice Studio (694 questions + mock exam) is also available as a one-time $79 purchase at /access.',
   },
   {
     q: 'Do I need to be a PMI® member to use these resources?',
