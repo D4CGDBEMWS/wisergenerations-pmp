@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  PMP PRACTICE STUDIO — PLACEHOLDER
+  ============================================================
+
+  ACTION REQUIRED (one-time manual step):
+
+  Replace this entire file with the contents of your local:
+    PMP_Practice_Studio (5).html
+
+  Make exactly ONE change before committing:
+    Find the line (approx. line 1370):
+      const EMAIL_ENDPOINT = "";
+    Change it to:
+      const EMAIL_ENDPOINT = "/api/lead";
+
+  Git commands:
+    git fetch origin
+    git checkout feature/practice-studio
+    cp "/path/to/PMP_Practice_Studio (5).html" public/studio/pmp-practice-studio.html
+    # then open and change EMAIL_ENDPOINT as above
+    git add public/studio/pmp-practice-studio.html
+    git commit -m "Add PMP Practice Studio HTML (694q + mock exam + ITTO + glossary)"
+    git push origin feature/practice-studio
+
+  Why /api/lead instead of /api/subscribe?
+    /api/lead is a thin proxy on this repo that forwards to /api/subscribe
+    (Mailchimp), so the studio stays decoupled from the internals.
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PMP Practice Studio — placeholder</title>
+</head>
+<body>
+  <p>
+    This is a placeholder. Upload the real
+    <code>pmp-practice-studio.html</code> as described in the comment above.
+  </p>
+</body>
+</html>
