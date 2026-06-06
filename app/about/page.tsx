@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -74,16 +75,57 @@ export default function AboutPage() {
 
       {/* Hero */}
       <section className="bg-navy text-white py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">About Crystal Stewart, PMP</p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            The Project Management Evangelist
-          </h1>
-          <p className="text-gray-300 text-xl leading-relaxed max-w-3xl mx-auto">
-            20+ years of enterprise transformation. U.S. Army veteran. Founder of Enterprise Academy.
-            Crystal does not just teach PM — she has lived it, built with it, and now equips the next
-            generation of project managers to do the same.
-          </p>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Text */}
+            <div className="text-center md:text-left">
+              <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">About Crystal Stewart, PMP</p>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                The Project Management Evangelist
+              </h1>
+              <p className="text-gray-300 text-xl leading-relaxed">
+                20+ years of enterprise transformation. U.S. Army veteran. Founder of Enterprise Academy.
+                Crystal does not just teach PM — she has lived it, built with it, and now equips the next
+                generation of project managers to do the same.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4 justify-center md:justify-start">
+                <a
+                  href={CALENDLY}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-yellow-400 transition-colors"
+                >
+                  Book a Free Strategy Call
+                </a>
+                <Link
+                  href="/programs"
+                  className="border-2 border-gold text-gold font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors"
+                >
+                  View Programs
+                </Link>
+              </div>
+            </div>
+            {/* Photo */}
+            <div className="flex justify-center md:justify-end">
+              <div className="relative">
+                <Image
+                  src="/crystal-about.jpg"
+                  alt="Crystal Stewart, PMP — The Project Management Evangelist"
+                  width={420}
+                  height={520}
+                  className="rounded-2xl shadow-2xl object-cover"
+                  priority
+                />
+                <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
+                  Crystal Stewart, PMP®
+                </div>
+                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
+                  <p className="font-bold text-gold">87%</p>
+                  <p className="text-xs">First-attempt<br/>pass rate</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -243,7 +285,7 @@ export default function AboutPage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold text-navy mb-4">Ready to Work With Crystal?</h2>
           <p className="text-gray-600 mb-8 text-lg">
-            Book a free 15-minute strategy call. Crystal will map out your path to PMP or CAPM
+            Book a free strategy call. Crystal will map out your path to PMP or CAPM
             certification — based on your schedule, your background, and your goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
