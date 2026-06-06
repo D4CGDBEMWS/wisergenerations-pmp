@@ -3,7 +3,6 @@ import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
-h
 // ---------------------------------------------------------------------------
 // POST /api/checkout-subscription
 // Creates a Stripe Checkout Session in `subscription` mode for the
