@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
+import { verifyTurnstile } from '@/lib/turnstile'
 
 // ---------------------------------------------------------------------------
 // POST /api/subscribe
@@ -8,9 +9,10 @@ import { checkOrigin, rateLimit } from '@/lib/api-guard'
 // the subscriber based on the source (newsletter, practice-questions, etc.).
 //
 // Required env vars:
-//   MAILCHIMP_API_KEY     -- from Mailchimp account → Extras → API Keys
-//   MAILCHIMP_AUDIENCE_ID -- from Mailchimp → Audience → Settings → Audience name and defaults
-//   MAILCHIMP_DC          -- data center prefix, e.g. "us21" (from API key suffix after the dash)
+// MAILCHIMP_API_KEY -- from Mailchimp account -> Extras -> API Keys
+// MAILCHIMP_AUDIENCE_ID -- from Mailchimp -> Audience -> Settings
+// MAILCHIMP_DC -- data center prefix, e.g. "us21" (from API key suffix)
+// TURNSTILE_SECRET_KEY -- from Cloudflare Turnstile dashboard
 //
 // In development without these vars set we log and return success so the UI
 // flow can be tested without the integration.
@@ -25,11 +27,22 @@ export async function POST(req: NextRequest) {
   const rateBlock = await rateLimit(req, 'subscribe', { limit: 5, windowMs: 60_000 })
   if (rateBlock) return rateBlock
 
-  let body: { email?: string; tags?: string[]; source?: string }
+  let body: { email?: string; tags?: string[]; source?: string; turnstileToken?: string }
   try {
     body = await req.json()
   } catch {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
+  }
+
+  // ---------------------------------------------------------------------------
+  // Turnstile CAPTCHA verification
+  // ---------------------------------------------------------------------------
+  const turnstileResult = await verifyTurnstile(body.turnstileToken, req)
+  if (!turnstileResult.success) {
+    return NextResponse.json(
+      { error: 'Security check failed. Please refresh and try again.' },
+      { status: 400 }
+    )
   }
 
   const email = (body.email ?? '').trim().toLowerCase()
@@ -58,43 +71,34 @@ export async function POST(req: NextRequest) {
   }
 
   // Mailchimp uses MD5 hash of lowercase email as subscriber ID
-  // Using PUT (upsert) handles existing subscribers gracefully
   const crypto = await import('crypto')
-  const subscriberHash = crypto.createHash('md5').update(email).digest('hex')
+  const emailHash = crypto.createHash('md5').update(email).digest('hex')
 
-  const url = `https://${dc}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`
+  const url = `https://${dc}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`
+
+  const payload = {
+    email_address: email,
+    status_if_new: 'pending',
+    status: 'pending',
+    tags,
+  }
 
   try {
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        email_address: email,
-        status_if_new: 'pending',
-        status: 'pending',
-        tags: tags.map((tag) => ({ name: tag, status: 'active' })),
-      }),
+      body: JSON.stringify(payload),
     })
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => null)
-      if (res.status === 400 && data?.title === 'Invalid Resource') {
-        return NextResponse.json(
-          { error: 'That email address is not valid.' },
-          { status: 400 }
-        )
-      }
-      console.error('[/api/subscribe] Mailchimp error:', {
-        status: res.status,
-        title: data?.title ?? null,
-        detail: data?.detail ?? null,
-      })
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null)
+      console.error('[/api/subscribe] Mailchimp error:', errorData)
       return NextResponse.json(
-        { error: 'Could not sign you up. Please try again.' },
-        { status: 502 }
+        { error: 'Could not subscribe. Please try again later.' },
+        { status: 500 }
       )
     }
 
