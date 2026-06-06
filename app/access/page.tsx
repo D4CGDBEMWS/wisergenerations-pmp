@@ -27,7 +27,7 @@ export default function AccessPage() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4">PMP Practice Studio<br /><span className="text-yellow-400">694 Questions + Mock Exam</span></h1>
         <p className="text-xl text-gray-300 mb-6 max-w-2xl mx-auto">694 practice questions, a full-length 200-question timed mock exam, ITTO flashcards, and a glossary — all in one tool built for the PMP exam.</p>
         <div className="flex items-center justify-center gap-4">
-          <span className="text-5xl font-bold text-yellow-400">$47</span>
+          <span className="text-5xl font-bold text-yellow-400">$79</span>
           <div className="text-left"><div className="text-gray-400 line-through">$97</div><div className="text-green-400 font-semibold">One-time · Lifetime access</div></div>
         </div>
       </section>
@@ -46,7 +46,7 @@ export default function AccessPage() {
               {error && <p className="text-red-600 text-sm">{error}</p>}
               <button type="submit" disabled={loading}
                 className="w-full bg-yellow-400 hover:bg-yellow-300 text-[#0a1628] font-bold py-4 rounded-xl text-lg transition-colors disabled:opacity-60">
-                {loading ? 'Redirecting...' : 'Get Access for $47'}
+                {loading ? 'Redirecting...' : 'Get Access for $79'}
               </button>
               <p className="text-center text-xs text-gray-500">Secure checkout by Stripe. 30-day money-back guarantee.</p>
             </form>
@@ -63,7 +63,7 @@ export default function AccessPage() {
               ['ITTO Flashcards', '40 ITTO process flashcards + a 30-term PMBOK glossary, with flip-cards and category filters.'],
               ['Unlimited Retakes', 'Questions shuffle every session so you learn concepts, not just answers.'],
               ['Lifetime Access', 'One-time payment. Access forever including all future content updates.'],
-              ['Credit Toward Full Program', '$47 is credited if you later enroll in the full PMP Prep coaching program.'],
+              ['Credit Toward Full Program', '$79 is credited if you later enroll in the full PMP Prep coaching program.'],
             ].map(([t, d]) => (
               <div key={t} className="flex gap-4 items-start p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
                 <div className="w-2 h-2 rounded-full bg-yellow-400 mt-2 flex-shrink-0" />
@@ -77,7 +77,7 @@ export default function AccessPage() {
       <section className="py-12 px-4 bg-[#0a1628] text-white text-center">
         <h2 className="text-2xl font-bold mb-2">30-Day Money-Back Guarantee</h2>
         <p className="text-gray-300 mb-6">Not satisfied within 30 days? Email info@wisergenerations.com for a full refund. No questions asked.</p>
-        <a href="#checkout" className="inline-block bg-yellow-400 hover:bg-yellow-300 text-[#0a1628] font-bold py-4 px-10 rounded-xl text-lg">Get Access for $47</a>
+        <a href="#checkout" className="inline-block bg-yellow-400 hover:bg-yellow-300 text-[#0a1628] font-bold py-4 px-10 rounded-xl text-lg">Get Access for $79</a>
       </section>
     </main>
   )
