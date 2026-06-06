@@ -23,12 +23,12 @@ export default function AccessPage() {
   return (
     <main className="min-h-screen bg-white">
       <section className="bg-[#0a1628] text-white py-16 px-4 text-center">
-        <span className="inline-block bg-yellow-400 text-[#0a1628] text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase">Study Access Package</span>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">PMP Study Tools<br /><span className="text-yellow-400">Exam Simulator + Flashcards</span></h1>
-        <p className="text-xl text-gray-300 mb-6 max-w-2xl mx-auto">Interactive tools built for the current PMP exam. Practice smarter and pass faster.</p>
+        <span className="inline-block bg-yellow-400 text-[#0a1628] text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase">PMP Practice Studio</span>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">PMP Practice Studio<br /><span className="text-yellow-400">694 Questions + Mock Exam</span></h1>
+        <p className="text-xl text-gray-300 mb-6 max-w-2xl mx-auto">694 practice questions, a full-length 200-question timed mock exam, ITTO flashcards, and a glossary — all in one tool built for the PMP exam.</p>
         <div className="flex items-center justify-center gap-4">
           <span className="text-5xl font-bold text-yellow-400">$47</span>
-          <div className="text-left"><div className="text-gray-400 line-through">$97</div><div className="text-green-400 font-semibold">One-time - Lifetime access</div></div>
+          <div className="text-left"><div className="text-gray-400 line-through">$97</div><div className="text-green-400 font-semibold">One-time · Lifetime access</div></div>
         </div>
       </section>
 
@@ -58,8 +58,9 @@ export default function AccessPage() {
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-[#0a1628]">What is included:</h2>
             {[
-              ['PMP Exam Simulator', '40+ practice questions across all 3 ECO domains with explanations and timed mode.'],
-              ['PMBOK Flashcards', '85+ terms with flip-cards, mastery tracking, search, and category filters.'],
+              ['PMP Exam Simulator', '694 practice questions across all 3 ECO domains, every question with a full rationale. Shuffle mode and topic filter included.'],
+              ['Full-Length Mock Exam', '200-question timed mock exam (230 minutes) with a question navigator — mirrors the real PMP exam experience.'],
+              ['ITTO Flashcards', '40 ITTO process flashcards + a 30-term PMBOK glossary, with flip-cards and category filters.'],
               ['Unlimited Retakes', 'Questions shuffle every session so you learn concepts, not just answers.'],
               ['Lifetime Access', 'One-time payment. Access forever including all future content updates.'],
               ['Credit Toward Full Program', '$47 is credited if you later enroll in the full PMP Prep coaching program.'],
