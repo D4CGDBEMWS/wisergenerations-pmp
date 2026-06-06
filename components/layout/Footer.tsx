@@ -53,6 +53,7 @@ export function Footer() {
               {[
                 { label: 'Free PMP Guide', href: '/free-guide' },
                 { label: 'Exam Simulator', href: '/exam-simulator' },
+{ label: 'Try Free Practice Questions →', href: '/free-practice' },
                 { label: 'PMBOK Flashcards', href: '/flashcards' },
                 { label: 'Blog & Insights', href: '/blog' },
                 { label: 'Free Webinars', href: '/webinars' },
