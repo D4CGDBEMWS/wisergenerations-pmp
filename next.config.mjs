@@ -27,7 +27,7 @@ const nextConfig = {
               "img-src 'self' data: https://js.stripe.com https://images.unsplash.com https://res.cloudinary.com",
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.stripe.com https://*.supabase.co https://challenges.cloudflare.com",
-              "frame-src https://js.stripe.com https://calendly.com https://challenges.cloudflare.com",
+              "frame-src 'self' https://js.stripe.com https://calendly.com https://challenges.cloudflare.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
