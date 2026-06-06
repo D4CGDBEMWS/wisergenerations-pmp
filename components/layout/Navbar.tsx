@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -27,6 +28,12 @@ const mobileExtraLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
+
+  // Hide the CTA buttons when the visitor is already on the free-practice page —
+  // "Try Free Practice" would link back to the current page, and "Book a Call"
+  // pulls focus away from someone who's mid-session.
+  const hideCTAs = pathname === '/free-practice'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -55,22 +62,24 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop CTAs */}
-          <div className="hidden lg:flex items-center gap-3">
-            {/* Low-friction CTA — no commitment */}
-            <Link
-              href="/free-practice"
-              onClick={() => trackEvent('try_free_practice_click')}
-              className="border border-gold/60 text-gold hover:bg-gold/10 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
-            >
-              Try Free Practice →
-            </Link>
-            {/* Primary CTA */}
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
-              className="bg-gold text-navy font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-400 transition-colors whitespace-nowrap">
-              Book a Call
-            </a>
-          </div>
+          {/* Desktop CTAs — hidden on /free-practice */}
+          {!hideCTAs && (
+            <div className="hidden lg:flex items-center gap-3">
+              {/* Low-friction CTA — no commitment */}
+              <Link
+                href="/free-practice"
+                onClick={() => trackEvent('try_free_practice_click')}
+                className="border border-gold/60 text-gold hover:bg-gold/10 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
+              >
+                Try Free Practice →
+              </Link>
+              {/* Primary CTA */}
+              <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
+                className="bg-gold text-navy font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-400 transition-colors whitespace-nowrap">
+                Book a Call
+              </a>
+            </div>
+          )}
 
           {/* Mobile hamburger */}
           <button onClick={() => setIsOpen(!isOpen)}
@@ -107,16 +116,19 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
-              <Link href="/free-practice" onClick={() => setIsOpen(false)}
-                className="block border border-gold/60 text-gold px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
-                Try Free Practice Questions →
-              </Link>
-              <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
-                className="bg-gold text-navy font-bold px-4 py-3 rounded-lg text-sm hover:bg-yellow-400 transition-colors text-center">
-                Book a Free Strategy Call
-              </a>
-            </div>
+            {/* Mobile CTAs — hidden on /free-practice */}
+            {!hideCTAs && (
+              <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+                <Link href="/free-practice" onClick={() => setIsOpen(false)}
+                  className="block border border-gold/60 text-gold px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
+                  Try Free Practice Questions →
+                </Link>
+                <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
+                  className="bg-gold text-navy font-bold px-4 py-3 rounded-lg text-sm hover:bg-yellow-400 transition-colors text-center">
+                  Book a Free Strategy Call
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
