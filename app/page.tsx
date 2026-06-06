@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { PROGRAMS, STATS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
 import TrustSignals from '@/components/marketing/TrustSignals'
@@ -45,7 +46,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations Int’l™</p>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations Int'l™</p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
                 <span className="text-gold">Before the Exam Changes.™</span>
@@ -103,7 +104,7 @@ export default function HomePage() {
       {/* Trust signals strip */}
       <TrustSignals />
 
-      {/* FREE GUIDE — #2 position, right after hero */}
+      {/* FREE GUIDE */}
       <section className="py-12 bg-white border-b-4 border-gold">
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
@@ -206,9 +207,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-gold py-10">
-        <div className="max-w-5xl mx-auto px-4">
+      {/* Stats — with subtle background image overlay */}
+      <section
+        className="bg-gold py-10 relative overflow-hidden"
+        style={{
+          backgroundImage: 'url(/veterans-classroom.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Gold overlay so text stays readable */}
+        <div className="absolute inset-0 bg-gold/90" />
+        <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {STATS.map(s => (
               <div key={s.label}>
@@ -240,7 +250,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          {/* Mini guide CTA inside this section */}
           <div className="mt-8 bg-white/10 border border-gold/40 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <p className="text-gold font-bold mb-1">📥 Not ready to book a call yet?</p>
@@ -310,23 +319,41 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Veterans */}
-      <section className="py-16 bg-navy text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="text-4xl mb-4">🎖️</div>
-          <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
-          <p className="text-gray-300 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
-            You have managed missions under pressure. Now translate that into a PMP® credential before the exam changes.
-            Veteran-discounted tuition. Veteran peer cohort. VA benefit guidance included.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/veterans" className="bg-gold text-navy font-bold px-8 py-3 rounded-lg hover:bg-amber-400 transition-colors">
-              Veterans Program →
-            </Link>
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-              className="border-2 border-white text-white font-bold px-8 py-3 rounded-lg hover:bg-white/10 transition-colors">
-              Book a Free Call
-            </a>
+      {/* Veterans — with photo */}
+      <section className="py-16 bg-navy text-white relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Text */}
+            <div>
+              <div className="text-4xl mb-4">🎖️</div>
+              <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
+              <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                You have managed missions under pressure. Now translate that into a PMP® credential before the exam changes.
+                Veteran-discounted tuition. Veteran peer cohort. VA benefit guidance included.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/veterans" className="bg-gold text-navy font-bold px-8 py-3 rounded-lg hover:bg-amber-400 transition-colors">
+                  Veterans Program →
+                </Link>
+                <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                  className="border-2 border-white text-white font-bold px-8 py-3 rounded-lg hover:bg-white/10 transition-colors">
+                  Book a Free Call
+                </a>
+              </div>
+            </div>
+            {/* Photo */}
+            <div className="flex justify-center md:justify-end">
+              <div className="relative w-full max-w-md">
+                <Image
+                  src="/veterans-classroom.jpg"
+                  alt="Military veterans learning project management in a classroom"
+                  width={480}
+                  height={320}
+                  className="rounded-2xl shadow-2xl object-cover w-full"
+                />
+                <div className="absolute inset-0 rounded-2xl ring-2 ring-gold/40" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
