@@ -106,7 +106,7 @@ function Spinner() {
 }
 
 // ---------------------------------------------------------------------------
-// StudyAccessCard — $47/month recurring tier (Stripe Checkout subscription)
+// StudyAccessCard — $49/month recurring tier (Stripe Checkout subscription)
 // ---------------------------------------------------------------------------
 const STUDY_ACCESS_INCLUDED = [
   'Self-paced PMP® / CAPM® study library',
@@ -167,8 +167,8 @@ function StudyAccessCard() {
           Study month-to-month
         </h2>
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-5xl font-bold tracking-tight text-slate-900">$47</span>
-          <span className="text-base font-medium text-slate-600">/month · recurring</span>
+          <span className="text-5xl font-bold tracking-tight text-slate-900">$49</span>
+          <span · recurring</span>
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600">
           Get instant access to the Wiser Generations Int’l™ self-study library and monthly office
@@ -254,7 +254,7 @@ function StudyAccessCard() {
             Starting Study Access…
           </>
         ) : (
-          'Start Study Access — $47/month'
+          'Start Study Access — $49/month'
         )}
       </button>
     </div>
@@ -499,7 +499,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* ──────────────────────────────────────────────────────────────── */}
-        {/* SECTION 1 — Wiser Generations Int’l™ Study Access ($47/month)        */}
+        {/* SECTION 1 — Wiser Generations Int’l™ Study Access ($49/month)        */}
         {/* ──────────────────────────────────────────────────────────────── */}
         <StudyAccessCard />
 
