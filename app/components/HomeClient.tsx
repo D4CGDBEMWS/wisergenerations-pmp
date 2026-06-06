@@ -45,6 +45,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
   const [activeAudience, setActiveAudience] = useState('all')
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setShowStickyBar(window.scrollY > 500)
@@ -53,11 +54,12 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
   }, [])
 
   useEffect(() => {
+    if (isPaused) return
     const timer = setInterval(() => {
       setActiveTestimonial(prev => (prev + 1) % testimonials.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [testimonials.length])
+  }, [testimonials.length, isPaused])
 
   const filteredPrograms = activeAudience === 'all'
     ? programs
@@ -90,7 +92,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
           <div className="text-center mb-10">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Find Your Program</p>
             <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Who Are You?</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">Select your situation and we'll show you the right program.</p>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">Select your situation and we&apos;ll show you the right program.</p>
           </div>
 
           <div className="flex flex-wrap gap-3 justify-center mb-10">
@@ -141,29 +143,72 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-16 bg-light-navy">
+      {/* Testimonials Carousel */}
+      <section
+        className="py-16 bg-light-navy"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-8">What Students Say</p>
-          <div className="relative min-h-[180px]">
+          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">What Students Say</p>
+          <h2 className="text-2xl font-bold text-navy mb-10">Graduates Speak for Themselves</h2>
+
+          {/* Carousel container — fixed height prevents layout shift */}
+          <div className="relative overflow-hidden" style={{ minHeight: '220px' }}>
             {testimonials.map((t, i) => (
-              <div key={i} className={`transition-all duration-500 absolute inset-0 ${i === activeTestimonial ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                <blockquote className="text-xl md:text-2xl font-medium text-navy leading-relaxed mb-4">
-                  "{t.quote}"
+              <div
+                key={i}
+                className="absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ease-in-out px-4"
+                style={{
+                  opacity: i === activeTestimonial ? 1 : 0,
+                  transform: i === activeTestimonial ? 'translateY(0)' : 'translateY(20px)',
+                  pointerEvents: i === activeTestimonial ? 'auto' : 'none',
+                }}
+              >
+                <blockquote className="text-xl md:text-2xl font-medium text-navy leading-relaxed mb-5">
+                  &ldquo;{t.quote}&rdquo;
                 </blockquote>
-                <p className="text-gold font-bold">{t.name}</p>
-                <p className="text-gray-500 text-sm">{t.role}</p>
+                <p className="text-gold font-bold text-lg">{t.name}</p>
+                <p className="text-gray-500 text-sm mt-1">{t.role}</p>
               </div>
             ))}
           </div>
-          <div className="flex gap-2 justify-center mt-8">
+
+          {/* Dot navigation */}
+          <div className="flex gap-3 justify-center mt-10">
             {testimonials.map((_, i) => (
-              <button key={i} onClick={() => setActiveTestimonial(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${i === activeTestimonial ? 'bg-navy scale-125' : 'bg-gray-300'}`} />
+              <button
+                key={i}
+                onClick={() => { setActiveTestimonial(i); setIsPaused(true); setTimeout(() => setIsPaused(false), 8000); }}
+                aria-label={`Show testimonial ${i + 1}`}
+                className={`rounded-full transition-all duration-300 ${
+                  i === activeTestimonial
+                    ? 'w-8 h-3 bg-navy'
+                    : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
+                }`}
+              />
             ))}
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-6 max-w-xs mx-auto h-0.5 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              key={activeTestimonial}
+              className="h-full bg-gold rounded-full"
+              style={{
+                animation: isPaused ? 'none' : 'progress 5s linear forwards',
+              }}
+            />
           </div>
         </div>
       </section>
+
+      <style jsx>{`
+        @keyframes progress {
+          from { width: 0% }
+          to { width: 100% }
+        }
+      `}</style>
     </>
   )
 }
