@@ -29,6 +29,30 @@ const COHORTS = [
   { name: 'May Fast Track', dates: 'June 8 – June 26, 2026', spots: 4, status: 'urgent', examBy: 'Last cohort before July 8 deadline — enroll now!' },
 ]
 
+const HOW_IT_WORKS = [
+  {
+    step: '01',
+    icon: '📞',
+    title: 'Book a Free Strategy Call',
+    desc: 'Tell Crystal where you are and where you want to go. She will map your fastest path to PMP or CAPM certification — no pressure, no pitch.',
+    cta: { label: 'Book Your Call →', href: CALENDLY, external: true },
+  },
+  {
+    step: '02',
+    icon: '📋',
+    title: 'Get Your Custom Study Plan',
+    desc: 'Based on your schedule, background, and exam date, Crystal builds a personalized roadmap. Live cohort sessions, practice exams, and 1:1 support included.',
+    cta: null,
+  },
+  {
+    step: '03',
+    icon: '🏆',
+    title: 'Pass Your PMP® Exam',
+    desc: 'Show up on exam day with confidence. Our 87% first-attempt pass rate and Pass Guarantee mean we are invested in your success just as much as you are.',
+    cta: { label: 'Try Free Practice Questions →', href: '/free-practice', external: false },
+  },
+]
+
 export default function HomePage() {
   return (
     <>
@@ -63,17 +87,25 @@ export default function HomePage() {
                 </p>
                 <p className="text-gold text-xs font-bold mt-2">— Tai Cochran, MA Ed. HD, PMP · CEO, HER PM</p>
               </div>
-              <div className="flex flex-wrap gap-4 mb-8">
+              {/* Audience-segmented CTAs */}
+              <div className="flex flex-wrap gap-4 mb-6">
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
                   className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-amber-400 transition-colors text-lg">
-                  Book a Free Strategy Call
+                  I&apos;m an Individual →
                 </a>
-                <Link href="/programs"
+                <Link href="/corporate"
                   className="border-2 border-gold text-gold font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">
-                  View Programs
+                  I&apos;m a Corporate Team →
                 </Link>
               </div>
-              <div className="flex flex-wrap gap-x-6 gap-y-2">
+              {/* Low-friction secondary option */}
+              <p className="text-gray-400 text-sm">
+                Not ready to call?{' '}
+                <Link href="/free-practice" className="text-gold underline hover:no-underline font-semibold">
+                  Try free practice questions first →
+                </Link>
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6">
                 {['PMI-Aligned', 'PMP® & CAPM® Prep', 'Veterans Welcome', 'Corporate Packages', 'Virtual + Metro Atlanta'].map(t => (
                   <span key={t} className="flex items-center gap-1.5 text-sm text-gray-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />{t}
@@ -103,6 +135,72 @@ export default function HomePage() {
 
       {/* Trust signals strip */}
       <TrustSignals />
+
+      {/* ── HOW IT WORKS ── */}
+      <section className="py-16 bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">Simple Process</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-navy">How It Works</h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Three steps from where you are today to PMP® certified.</p>
+          </div>
+
+          <div className="relative">
+            {/* Connector line — desktop only */}
+            <div className="hidden md:block absolute top-12 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-0.5 bg-gold/30 z-0" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+              {HOW_IT_WORKS.map((s, i) => (
+                <div key={s.step} className="flex flex-col items-center text-center">
+                  {/* Step circle */}
+                  <div className="relative mb-6">
+                    <div className="w-24 h-24 rounded-full bg-navy border-4 border-gold flex flex-col items-center justify-center shadow-lg">
+                      <span className="text-3xl">{s.icon}</span>
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gold flex items-center justify-center shadow">
+                      <span className="text-navy font-bold text-xs">{i + 1}</span>
+                    </div>
+                  </div>
+                  {/* Content */}
+                  <h3 className="text-lg font-bold text-navy mb-3">{s.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4">{s.desc}</p>
+                  {s.cta && (
+                    s.cta.external ? (
+                      <a href={s.cta.href} target="_blank" rel="noopener noreferrer"
+                        className="inline-block bg-gold text-navy font-bold px-5 py-2.5 rounded-lg hover:bg-amber-400 transition-colors text-sm">
+                        {s.cta.label}
+                      </a>
+                    ) : (
+                      <Link href={s.cta.href}
+                        className="inline-block border-2 border-navy text-navy font-bold px-5 py-2.5 rounded-lg hover:bg-navy hover:text-white transition-colors text-sm">
+                        {s.cta.label}
+                      </Link>
+                    )
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Social proof nudge below steps */}
+          <div className="mt-10 bg-navy/5 border border-navy/10 rounded-2xl p-6 text-center">
+            <p className="text-navy font-semibold text-lg">
+              <span className="text-gold font-bold">87%</span> of students pass on their first attempt.{' '}
+              <span className="text-gold font-bold">Pass Guarantee</span> included — we coach you until you pass.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center mt-4">
+              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                className="bg-gold text-navy font-bold px-8 py-3 rounded-lg hover:bg-amber-400 transition-colors">
+                Book a Free Strategy Call
+              </a>
+              <Link href="/free-practice"
+                className="border-2 border-navy text-navy font-bold px-8 py-3 rounded-lg hover:bg-navy hover:text-white transition-colors">
+                Try Free Practice First
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* FREE GUIDE */}
       <section className="py-12 bg-white border-b-4 border-gold">
@@ -189,7 +287,7 @@ export default function HomePage() {
                   ⚡ {c.examBy}
                 </p>
                 {c.status === 'closed' ? (
-                  <p className="block w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-xl text-center cursor-not-allowed text-sm text-center">
+                  <p className="block w-full bg-gray-300 text-gray-500 font-bold py-3 rounded-xl text-center cursor-not-allowed text-sm">
                     ✓ Class Full — Enrollment Closed
                   </p>
                 ) : (
@@ -207,16 +305,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats — with subtle background image overlay */}
+      {/* Stats bar with background */}
       <section
         className="bg-gold py-10 relative overflow-hidden"
-        style={{
-          backgroundImage: 'url(/veterans-classroom.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
+        style={{ backgroundImage: 'url(/veterans-classroom.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        {/* Gold overlay so text stays readable */}
         <div className="absolute inset-0 bg-gold/90" />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -276,7 +369,10 @@ export default function HomePage() {
             <p>If you&apos;re choosing a provider for post-July 2026 exam prep, the question isn&apos;t who has the biggest brand. It&apos;s who rebuilt versus retrofitted.</p>
           </div>
           <div className="mt-10 text-center">
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="inline-block bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">Reserve Your Spot in the First 8th-Edition-Native Cohort</a>
+            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+              className="inline-block bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
+              Reserve Your Spot in the First 8th-Edition-Native Cohort
+            </a>
           </div>
         </div>
       </section>
@@ -307,7 +403,7 @@ export default function HomePage() {
               </div>
               <div className="flex gap-4">
                 <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
-                  Crystal's Story
+                  Crystal&apos;s Story
                 </Link>
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
                   className="border-2 border-gold text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold hover:text-navy transition-colors">
@@ -323,7 +419,6 @@ export default function HomePage() {
       <section className="py-16 bg-navy text-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Text */}
             <div>
               <div className="text-4xl mb-4">🎖️</div>
               <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
@@ -341,7 +436,6 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            {/* Photo */}
             <div className="flex justify-center md:justify-end">
               <div className="relative w-full max-w-md">
                 <Image
@@ -379,7 +473,10 @@ export default function HomePage() {
               View All Programs
             </Link>
           </div>
-          <p className="text-navy/60 text-sm">Not ready to call? <Link href="/free-guide" className="font-bold underline hover:no-underline">Download the free guide first →</Link></p>
+          <p className="text-navy/60 text-sm">
+            Not ready to call?{' '}
+            <Link href="/free-guide" className="font-bold underline hover:no-underline">Download the free guide first →</Link>
+          </p>
         </div>
       </section>
     </>
