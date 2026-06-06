@@ -168,7 +168,7 @@ function StudyAccessCard() {
         </h2>
         <div className="mt-3 flex items-baseline gap-2">
           <span className="text-5xl font-bold tracking-tight text-slate-900">$49</span>
-          <span · recurring</span>
+          <span className="text-base font-medium text-slate-600">/month · recurring</span>
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600">
           Get instant access to the Wiser Generations Int’l™ self-study library and monthly office
