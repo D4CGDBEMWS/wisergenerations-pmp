@@ -494,7 +494,7 @@ export default function HomePage() {
       {/* Final CTA */}
       <section className="py-16 bg-gold">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">The Exam Changed.<br className=\"hidden md:block\" /> Your Opportunity Hasn’t.</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">The Exam Changed. Your Opportunity Hasn’t.</h2>
           <p className="text-navy/70 mb-4 text-lg">
             Enterprise Academy™ is rebuilding from the ground up for PMBOK® 8 — the only provider built 8th-edition-native.
             Book a free call with Crystal today. She will map your fastest path to certified.
