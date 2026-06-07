@@ -75,11 +75,11 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
           <p className="text-white font-medium text-sm hidden sm:block">Ready to earn your PMP® or CAPM®?</p>
           <div className="flex gap-3 w-full sm:w-auto">
             <a href={calendly} target="_blank" rel="noopener noreferrer"
-              className="flex-1 sm:flex-none bg-gold text-navy font-bold px-6 py-2 rounded-lg hover:bg-amber-400 transition-colors text-sm text-center">
+              className="flex-1 sm:flex-none bg-gold text-navy font-bold px-6 py-2.5 rounded-lg hover:bg-amber-400 transition-colors text-sm text-center shadow-md">
               Book a Free Call →
             </a>
             <a href="/programs"
-              className="flex-1 sm:flex-none border border-white text-white font-medium px-6 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm text-center">
+              className="flex-1 sm:flex-none border border-white/40 text-white/60 font-normal px-5 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm text-center">
               View Programs
             </a>
           </div>
@@ -118,6 +118,11 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
                 <div className="text-4xl mb-4">{p.icon}</div>
                 <h3 className="text-xl font-bold text-navy mb-1">{p.name}</h3>
                 <p className="text-gold text-sm font-medium mb-3">{p.audience}</p>
+                {/* Outcome headline — per-card aspirational promise */}
+                {p.id === 'pmp' && <p className="text-navy font-bold text-base mb-2">Earn your credential. Advance your career.</p>}
+                {p.id === 'capm-adult' && <p className="text-navy font-bold text-base mb-2">Land your first PM role — fast.</p>}
+                {p.id === 'veterans' && <p className="text-navy font-bold text-base mb-2">Your military leadership. Now certified.</p>}
+                {p.id === 'corporate' && <p className="text-navy font-bold text-base mb-2">Elevate your team. Standardize excellence.</p>}
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">{p.description}</p>
                 <ul className="space-y-1 mb-6">
                   {p.features.slice(0, 4).map(f => (
@@ -145,13 +150,13 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
 
       {/* Testimonials Carousel */}
       <section
-        className="py-16 bg-light-navy"
+        className="py-20 bg-slate-50"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">What Students Say</p>
-          <h2 className="text-2xl font-bold text-navy mb-10">Graduates Speak for Themselves</h2>
+          <h2 className="text-3xl font-bold text-navy mb-10">Graduates Speak for Themselves</h2>
 
           {/* Carousel container — fixed height prevents layout shift */}
           <div className="relative overflow-hidden" style={{ minHeight: '220px' }}>
@@ -165,8 +170,9 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
                   pointerEvents: i === activeTestimonial ? 'auto' : 'none',
                 }}
               >
-                <blockquote className="text-xl md:text-2xl font-medium text-navy leading-relaxed mb-5">
-                  &ldquo;{t.quote}&rdquo;
+                <div className="text-5xl text-gold/30 font-serif leading-none mb-2">&ldquo;</div>
+                <blockquote className="text-lg md:text-xl font-medium text-navy leading-relaxed mb-5 max-w-2xl mx-auto">
+                  {t.quote}
                 </blockquote>
                 <p className="text-gold font-bold text-lg">{t.name}</p>
                 <p className="text-gray-500 text-sm mt-1">{t.role}</p>
