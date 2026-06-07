@@ -66,13 +66,13 @@ export default function HomePage() {
       </div>
 
       {/* Hero */}
-      <section className="bg-navy text-white relative overflow-hidden">
+      <section className="bg-navy text-white relative overflow-hidden pb-16 lg:pb-0">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-28 relative">
+          <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
               <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations Int'l™</p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
                 <span className="text-gold">Built for PMBOK® 8.™</span>
               </h1>
@@ -82,6 +82,23 @@ export default function HomePage() {
                 8th-edition-native content from day one — new AI &amp; sustainability modules, new question
                 formats, and new case scenarios. Mentor-led. PMI-aligned. Crystal Stewart, PMP®.
               </p>
+              {/* Stat strip — social proof immediately under headline */}
+              <div className="flex flex-wrap gap-6 mb-6">
+                <div className="flex flex-col">
+                  <span className="text-4xl font-bold text-gold leading-none">87%</span>
+                  <span className="text-gray-400 text-xs mt-1">First-attempt pass rate</span>
+                </div>
+                <div className="w-px bg-white/20 hidden sm:block" />
+                <div className="flex flex-col">
+                  <span className="text-4xl font-bold text-gold leading-none">500+</span>
+                  <span className="text-gray-400 text-xs mt-1">Professionals trained</span>
+                </div>
+                <div className="w-px bg-white/20 hidden sm:block" />
+                <div className="flex flex-col">
+                  <span className="text-4xl font-bold text-gold leading-none">20+</span>
+                  <span className="text-gray-400 text-xs mt-1">Years enterprise PM</span>
+                </div>
+              </div>
               <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-8 max-w-xl">
                 <p className="text-gray-200 text-sm italic leading-relaxed">
                   "Her knowledge, training and mentorship helped me to clear my PMP on the very first try!"
@@ -114,12 +131,12 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <div className="hidden lg:flex justify-center">
+            <div className="flex justify-center order-first lg:order-last">
               <div className="relative">
                 <img
                   src="/crystal-stewart.jpg"
                   alt="Crystal Stewart, PMP® — The Project Management Evangelist"
-                  className="rounded-2xl shadow-2xl w-full max-w-sm object-cover h-[480px]"
+                  className="rounded-2xl shadow-2xl w-full max-w-xs lg:max-w-sm object-cover h-[280px] lg:h-[480px]"
                 />
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
@@ -198,6 +215,27 @@ export default function HomePage() {
                 className="border-2 border-navy text-navy font-bold px-8 py-3 rounded-lg hover:bg-navy hover:text-white transition-colors">
                 Try Free Practice First
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* DISPLAY STAT — typographic anchor between How It Works and Free Guide */}
+      <section className="py-16 bg-navy text-center overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+            <div>
+              <p className="text-8xl md:text-9xl font-bold text-gold leading-none tabular-nums">87%</p>
+              <p className="text-white text-lg font-semibold mt-2">first-attempt pass rate</p>
+            </div>
+            <div className="hidden md:block w-px h-24 bg-white/20" />
+            <div className="text-left max-w-sm">
+              <p className="text-2xl font-bold text-white mb-2">Pass Guarantee included.</p>
+              <p className="text-gray-300 leading-relaxed">We coach you until you pass — no extra charge, no fine print. Our 87% first-attempt rate means most students never need it.</p>
+              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+                className="inline-block mt-4 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors">
+                Book a Free Strategy Call →
+              </a>
             </div>
           </div>
         </div>
@@ -325,20 +363,20 @@ export default function HomePage() {
       </section>
 
       {/* Why certify now */}
-      <section className="py-12 bg-navy text-white">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-2">Why Choose Enterprise Academy for PMBOK® 8?</h2>
+      <section className="py-16 bg-navy text-white">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-2">Why Choose Enterprise Academy for PMBOK® 8?</h2>
             <p className="text-gray-400 text-sm">The exam changed July 8. Here is why 8th-edition-native prep matters.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
             {[
               { icon: '📚', title: '8th-Edition Native', desc: 'Every module, question, and case scenario built for PMBOK® 8 from day one — not retrofitted 7th-edition content.' },
               { icon: '🎯', title: 'New Format Ready', desc: 'AI, sustainability, case sets, graphics, and pull-down list questions — built in from the start, not bolted on.' },
               { icon: '🏆', title: 'Same Credential', desc: 'A PMP® earned after July 8 carries the same global recognition and salary impact. Enterprise Academy gets you there faster.' },
             ].map(item => (
-              <div key={item.title} className="bg-white/10 rounded-xl p-6">
-                <p className="text-3xl mb-3">{item.icon}</p>
+              <div key={item.title} className="bg-white/10 hover:bg-white/15 transition-colors rounded-2xl p-8 border border-white/10">
+                <p className="text-4xl mb-4">{item.icon}</p>
                 <h3 className="font-bold text-gold mb-2">{item.title}</h3>
                 <p className="text-gray-300 text-sm leading-relaxed">{item.desc}</p>
               </div>
@@ -391,7 +429,7 @@ export default function HomePage() {
             </div>
             <div>
               <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
-              <h2 className="text-3xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
+              <h2 className="text-4xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-6">
                 The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy™.
                 U.S. Army veteran. Crystal does not just teach PM — she has lived it, built with it, and now equips
@@ -456,7 +494,7 @@ export default function HomePage() {
       {/* Final CTA */}
       <section className="py-16 bg-gold">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-navy mb-4">The Exam Changed. Your Opportunity Hasn’t.</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">The Exam Changed.<br className=\"hidden md:block\" /> Your Opportunity Hasn’t.</h2>
           <p className="text-navy/70 mb-4 text-lg">
             Enterprise Academy™ is rebuilding from the ground up for PMBOK® 8 — the only provider built 8th-edition-native.
             Book a free call with Crystal today. She will map your fastest path to certified.
