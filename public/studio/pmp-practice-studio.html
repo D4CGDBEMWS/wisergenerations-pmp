@@ -206,6 +206,43 @@ footer.foot b{color:var(--accent);font-family:'Spline Sans Mono',monospace;lette
 .mgrid-btn.cur{outline:2px solid var(--accent);outline-offset:1px}
 .flagbtn{font-family:inherit;font-size:13px;font-weight:600;border:1px solid var(--gold);background:#fff;color:#8a6d00;padding:9px 14px;border-radius:10px;cursor:pointer}
 .flagbtn.on{background:var(--gold);color:#2a2102}
+
+/* ===== new-format styles (case sets + drag-drop) ===== */
+.case-scenario{background:#f3f5fc;border-left:4px solid var(--c,#15225a);padding:14px 16px;border-radius:8px;margin:6px 0 14px;font-size:15px;line-height:1.5}
+.case-scenario .case-lbl{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6b7785;font-weight:700;margin-bottom:6px}
+.case-progress{font-size:13px;color:#6b7785;margin:4px 0 10px}
+.case-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#d7dce8;margin-right:5px}
+.case-dot.done{background:#67986e}.case-dot.cur{background:var(--navy,#15225a)}
+.match-wrap{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 4px}
+.match-row{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:10px;align-items:stretch}
+.match-left{background:#eef1f8;border-radius:8px;padding:10px 12px;font-weight:600;font-size:14px;display:flex;align-items:center}
+.match-left.sel{outline:2px solid var(--navy,#15225a)}
+.match-slot{min-height:46px;border:1.5px dashed #c3cadb;border-radius:8px;padding:8px 10px;font-size:13.5px;display:flex;align-items:center;background:#fff;cursor:pointer}
+.match-slot.filled{border-style:solid;border-color:#bcc6dd;background:#f7f9fd}
+.match-slot.correct{border-color:#67986e;background:#eef6ef}
+.match-slot.wrong{border-color:#c0556a;background:#fbeef0}
+.match-slot.over{border-color:var(--navy,#15225a);background:#eef1f8}
+.match-bank{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.match-chip{background:#fff;border:1.5px solid #bcc6dd;border-radius:20px;padding:7px 13px;font-size:13.5px;cursor:grab;user-select:none}
+.match-chip.sel{outline:2px solid var(--navy,#15225a);background:#eef1f8}
+.match-chip.dragging{opacity:.5}
+.match-chip.used{display:none}
+
+
+/* ===== domain-grouped topic picker ===== */
+.domwrap{margin-bottom:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.domhead{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.domhead .dnm{font-weight:700;font-size:14px}
+.domhead .dct{font-size:12px;opacity:.85}
+.domhead .spacer{margin-left:auto;display:flex;align-items:center;gap:10px}
+.domhead .selall{font-family:inherit;font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;background:#fff;cursor:pointer}
+.domhead .chev{font-size:12px}
+.dombody{padding:10px 12px;background:#fff}
+.topicsearch{width:100%;font-family:inherit;font-size:14px;padding:10px 12px 10px 36px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:8px;box-sizing:border-box}
+.searchrow{position:relative;margin-bottom:10px}
+.searchrow .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px}
+.domnote{font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.4}
+
 </style>
 </head>
 <body>
@@ -290,6 +327,238 @@ const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.f
 
 /* topics + banks */
 const Q = DATA.questions;
+/* ===== ECO domain grouping (AUTHORED / review-pending mapping) ===== */
+const DOMAIN_MAP = {"Benefits & Business Documents (§4)": "Initiating", "Funding Proposals & Funding Strategy (§4)": "Initiating", "Principles, Mindset & Performance Domains (§3)": "Initiating", "Enterprise Environmental Factors & Final Report (§4)": "Initiating", "Scenario · Determine appropriate project methodology/methods and practices": "Initiating", "Scenario · Negotiate project agreements": "Initiating", "Scenario · Build a team": "Initiating", "Activity Dependencies (§5)": "Planning", "Agile Release Planning & Estimating (§5)": "Planning", "Analogous & Bottom-Up Estimating (§5)": "Planning", "Assumption Analysis & Audits (§5)": "Planning", "Backlog Management, Refinement & Benchmarking (§5)": "Planning", "Backlogs & Estimates (§4)": "Planning", "Brainstorming & Idea Generation (§5)": "Planning", "Branch and Bound, Charts & Diagrams (§5)": "Planning", "COCOMO & Contingent Response Strategies (§5)": "Planning", "Cost Aggregation & Cost-Benefit Analysis (§5)": "Planning", "Cost, Configuration & Communications Plans (§4)": "Planning", "Critical Chain Method & CCPM (§5)": "Planning", "Critical Path Method (§5)": "Planning", "Decision Trees & Expected Monetary Value (§5)": "Planning", "Decision-Making & Decision Tree Analysis (§5)": "Planning", "Decomposition, Rolling Wave & the 100% Rule (§5)": "Planning", "Estimates, Forecasts & Deliverables (§4)": "Planning", "Estimation Techniques & Expert Judgment (§5)": "Planning", "Financial Management Plan (§4)": "Planning", "More Brainstorming Techniques (§5)": "Planning", "The Tailoring Process & Suggestions (§3)": "Planning", "Work Breakdown Structure & Decomposition (§5)": "Planning", "Tools & Techniques: Leads & Lags → Project Canvas (§5)": "Planning", "Scenario · Integrate project planning activities": "Planning", "Scenario · Plan and manage budget and resources": "Planning", "Scenario · Plan and manage procurement": "Planning", "Scenario · Plan and manage schedule": "Planning", "Scenario · Plan and manage scope": "Planning", "Scenario · Assess and manage risks": "Planning", "AI, Machine Learning & Emerging Tech (§5)": "Executing", "Active Listening, Affinity & After-Action Reviews (§5)": "Executing", "Coaching, Colocation & Communication Competence (§5)": "Executing", "Communication Methods (§5)": "Executing", "Communication Models (§5)": "Executing", "Communication Requirements, Skills & Styles (§5)": "Executing", "Communication Technology (§5)": "Executing", "Conflict Management (§5)": "Executing", "Cultural Awareness & Customer Talks (§5)": "Executing", "Daily Coordination Meeting (§5)": "Executing", "Deliverables, Activities & Agreements (§4)": "Executing", "Design Thinking & Distributed Leadership (§5)": "Executing", "Emotional Intelligence (§5)": "Executing", "Facilitation, Feedback & Financing (§5)": "Executing", "Interactive Communication Model (§5)": "Executing", "Management & Leadership Structures (§5)": "Executing", "Tools & Techniques: Training → What-if (§5)": "Executing", "Scenario · Address and remove impediments for the team": "Executing", "Scenario · Empower team members and stakeholders": "Executing", "Scenario · Engage stakeholders": "Executing", "Scenario · Lead the project team": "Executing", "Scenario · Manage conflict": "Executing", "Scenario · Mentor relevant stakeholders": "Executing", "Scenario · Support team performance": "Executing", "Scenario · Support organizational change": "Executing", "Change Control Tools & Checklists (§5)": "Monitoring & Controlling", "Change Requests, Changes & Logs (§4)": "Monitoring & Controlling", "Continuous Improvement & Control Charts (§5)": "Monitoring & Controlling", "Cost of Quality (§5)": "Monitoring & Controlling", "Data Analysis, Gathering & Representation (§5)": "Monitoring & Controlling", "Document Analysis (§5)": "Monitoring & Controlling", "Earned Value & Formulas (§5)": "Monitoring & Controlling", "Earned Value Analysis (§5)": "Monitoring & Controlling", "Financial Plan: EVM Rules & Reporting (§4)": "Monitoring & Controlling", "Critical Thinking (§5)": "Monitoring & Controlling", "Project Management Offices (Appendix X2)": "Monitoring & Controlling", "Tools & Techniques: Dashboards → Schedule Network (§5)": "Monitoring & Controlling", "Tools & Techniques: Flowcharts → Conflict Mgmt (§5)": "Monitoring & Controlling", "Tools & Techniques: Risk Responses, SWOT, Testing, TOC (§5)": "Monitoring & Controlling", "Tools & Techniques: Sensitivity → Storytelling (§5)": "Monitoring & Controlling", "Scenario · Manage project changes": "Monitoring & Controlling", "Scenario · Plan and manage project compliance": "Monitoring & Controlling", "Scenario · Plan and manage quality of products/deliverables": "Monitoring & Controlling", "Scenario · Support project governance": "Monitoring & Controlling", "Scenario · Evaluate and address external business environment changes": "Monitoring & Controlling", "Scenario · Plan and manage project/phase closure or transitions": "Closing", "Scenario · Evaluate and deliver project benefits and value": "Closing", "Scenario · Help ensure value-based delivery": "Closing"};
+const TOPIC_RENAME = {"Tools & Techniques: Dashboards → Schedule Network (§5)": "More Tools & Techniques (D–S)", "Tools & Techniques: Flowcharts → Conflict Mgmt (§5)": "More Tools & Techniques (A–C)", "Tools & Techniques: Leads & Lags → Project Canvas (§5)": "More Tools & Techniques (L–P)", "Tools & Techniques: Risk Responses, SWOT, Testing, TOC (§5)": "More Tools & Techniques (R–T)", "Tools & Techniques: Sensitivity → Storytelling (§5)": "More Tools & Techniques (Se–St)", "Tools & Techniques: Training → What-if (§5)": "More Tools & Techniques (T–W)"};
+const DOMAIN_ORDER = ["Initiating","Planning","Executing","Monitoring & Controlling","Closing"];
+const DOMAIN_STYLE = {
+  "Initiating":{c:"#185FA5",bg:"#E6F1FB",icon:""},
+  "Planning":{c:"#534AB7",bg:"#EEEDFE",icon:""},
+  "Executing":{c:"#0F6E56",bg:"#E1F5EE",icon:""},
+  "Monitoring & Controlling":{c:"#854F0B",bg:"#FAEEDA",icon:""},
+  "Closing":{c:"#993C1D",bg:"#FAECE7",icon:""}
+};
+const CARD_DEFS = [{"name": "Business Case, Benefits & Funding", "fa": "Initiating", "topics": ["Benefits & Business Documents (§4)", "Funding Proposals & Funding Strategy (§4)", "Enterprise Environmental Factors & Final Report (§4)"]}, {"name": "Principles & Methodology Selection", "fa": "Initiating", "topics": ["Principles, Mindset & Performance Domains (§3)", "Scenario · Determine appropriate project methodology/methods and practices"]}, {"name": "Charter, Agreements & Team Formation", "fa": "Initiating", "topics": ["Scenario · Negotiate project agreements", "Scenario · Build a team"]}, {"name": "Schedule & Activities", "fa": "Planning", "topics": ["Activity Dependencies (§5)", "Critical Path Method (§5)", "Critical Chain Method & CCPM (§5)", "Agile Release Planning & Estimating (§5)", "Tools & Techniques: Leads & Lags → Project Canvas (§5)", "Scenario · Plan and manage schedule"]}, {"name": "Estimating & Cost Planning", "fa": "Planning", "topics": ["Analogous & Bottom-Up Estimating (§5)", "Estimation Techniques & Expert Judgment (§5)", "COCOMO & Contingent Response Strategies (§5)", "Cost Aggregation & Cost-Benefit Analysis (§5)", "Cost, Configuration & Communications Plans (§4)", "Financial Management Plan (§4)", "Backlogs & Estimates (§4)", "Estimates, Forecasts & Deliverables (§4)", "Scenario · Plan and manage budget and resources"]}, {"name": "Scope & Decomposition", "fa": "Planning", "topics": ["Work Breakdown Structure & Decomposition (§5)", "Decomposition, Rolling Wave & the 100% Rule (§5)", "Backlog Management, Refinement & Benchmarking (§5)", "Scenario · Plan and manage scope"]}, {"name": "Risk & Decision Analysis", "fa": "Planning", "topics": ["Decision Trees & Expected Monetary Value (§5)", "Decision-Making & Decision Tree Analysis (§5)", "Branch and Bound, Charts & Diagrams (§5)", "Assumption Analysis & Audits (§5)", "Scenario · Assess and manage risks"]}, {"name": "Requirements & Ideation", "fa": "Planning", "topics": ["Brainstorming & Idea Generation (§5)", "More Brainstorming Techniques (§5)"]}, {"name": "Tailoring & Integrated Planning", "fa": "Planning", "topics": ["The Tailoring Process & Suggestions (§3)", "Scenario · Integrate project planning activities"]}, {"name": "Communication", "fa": "Executing", "topics": ["Communication Methods (§5)", "Communication Models (§5)", "Communication Requirements, Skills & Styles (§5)", "Communication Technology (§5)", "Interactive Communication Model (§5)"]}, {"name": "Leading & Developing the Team", "fa": "Executing", "topics": ["Active Listening, Affinity & After-Action Reviews (§5)", "Coaching, Colocation & Communication Competence (§5)", "Emotional Intelligence (§5)", "Management & Leadership Structures (§5)", "Design Thinking & Distributed Leadership (§5)", "Daily Coordination Meeting (§5)", "Scenario · Lead the project team", "Scenario · Support team performance", "Scenario · Empower team members and stakeholders", "Scenario · Address and remove impediments for the team"]}, {"name": "Conflict & Stakeholders", "fa": "Executing", "topics": ["Conflict Management (§5)", "Cultural Awareness & Customer Talks (§5)", "Facilitation, Feedback & Financing (§5)", "Scenario · Manage conflict", "Scenario · Engage stakeholders", "Scenario · Mentor relevant stakeholders"]}, {"name": "Delivery, AI & Emerging Tech", "fa": "Executing", "topics": ["AI, Machine Learning & Emerging Tech (§5)", "Deliverables, Activities & Agreements (§4)", "Tools & Techniques: Training → What-if (§5)", "Scenario · Support organizational change"]}, {"name": "Earned Value & Performance", "fa": "Monitoring & Controlling", "topics": ["Earned Value & Formulas (§5)", "Earned Value Analysis (§5)", "Financial Plan: EVM Rules & Reporting (§4)", "Tools & Techniques: Dashboards → Schedule Network (§5)"]}, {"name": "Quality & Continuous Improvement", "fa": "Monitoring & Controlling", "topics": ["Cost of Quality (§5)", "Continuous Improvement & Control Charts (§5)", "Scenario · Plan and manage quality of products/deliverables"]}, {"name": "Change & Configuration Control", "fa": "Monitoring & Controlling", "topics": ["Change Control Tools & Checklists (§5)", "Change Requests, Changes & Logs (§4)", "Scenario · Manage project changes"]}, {"name": "Data Analysis & Critical Thinking", "fa": "Monitoring & Controlling", "topics": ["Data Analysis, Gathering & Representation (§5)", "Document Analysis (§5)", "Critical Thinking (§5)"]}, {"name": "Tools & Techniques Library", "fa": "Monitoring & Controlling", "topics": ["Tools & Techniques: Flowcharts → Conflict Mgmt (§5)", "Tools & Techniques: Risk Responses, SWOT, Testing, TOC (§5)", "Tools & Techniques: Sensitivity → Storytelling (§5)"]}, {"name": "Compliance & Governance", "fa": "Monitoring & Controlling", "topics": ["Project Management Offices (Appendix X2)", "Scenario · Plan and manage project compliance", "Scenario · Support project governance", "Scenario · Evaluate and address external business environment changes", "Scenario · Plan and manage procurement"]}, {"name": "Closure, Benefits & Value Delivery", "fa": "Closing", "topics": ["Scenario · Plan and manage project/phase closure or transitions", "Scenario · Evaluate and deliver project benefits and value", "Scenario · Help ensure value-based delivery"]}];
+function domainOf(t){ return DOMAIN_MAP[t] || "Planning"; }
+function topicDisplay(t){ return (TOPIC_RENAME[t] || t).replace(/ \(§.*?\)/,'').replace(/ \(Appendix.*?\)/,''); }
+let openDomains = {Initiating:false,Planning:false,Executing:false,"Monitoring & Controlling":false,Closing:false};
+let topicQuery = "";
+
+/* ===== NEW-FORMAT ITEMS (case sets + drag-drop matching) =====
+   Authored, review-pending. Injected into practice pool; case sub-questions
+   also feed the mock. Each item carries provenance per the standing rule. */
+const NEWFORMATS = [
+  {
+    type:"case", topic:"Case Set — Procurement & Risk", domain:"Process",
+    authored:true, approved:true,
+    scenario:"Your organization is launching a customer-portal project. The scope is well defined and unlikely to change. Partway through, a specialized security module is needed that your team cannot build, so you must engage an outside seller. During delivery, the seller's first module fails the agreed acceptance criteria, and a competitor simultaneously releases a similar portal that shifts market expectations.",
+    items:[
+      {q:"For the well-defined, low-uncertainty core scope delivered internally, which contract posture toward any internal charge-back or fixed commitment best matches the situation?",
+       opts:["A fixed-price posture, since scope is clear and stable","A cost-reimbursable posture, since scope is uncertain","Time and materials, since the team is unsure of effort","No commitment, since internal work needs none"],a:0,
+       why:"Well-defined, stable scope favors a fixed-price posture — the cost risk sits with the performer and requirements won't churn.",src:"Plan and manage procurement"},
+      {q:"For the specialized security module that must be procured externally, what should happen BEFORE soliciting sellers?",
+       opts:["Sign with a preferred vendor to save time","Define requirements and a procurement strategy, including how sellers will be evaluated","Let sellers propose whatever scope they prefer","Begin building internally and procure later"],a:1,
+       why:"Clear requirements and evaluation criteria must precede solicitation so bids are comparable and defensible.",src:"Plan and manage procurement"},
+      {q:"The seller's first module fails the agreed acceptance criteria. What should the PM do FIRST?",
+       opts:["Accept it to preserve the relationship","Review the contract terms and acceptance criteria, then formally communicate the gap to the seller","Terminate the contract immediately","Fix it internally and absorb the cost"],a:1,
+       why:"Go to the contract first: compare the deliverable to agreed criteria and formally address the gap per the agreement before drastic action.",src:"Plan and manage procurement"},
+      {q:"The competitor's launch shifts market expectations mid-project. What is the BEST response?",
+       opts:["Ignore external events and focus on execution","Evaluate the impact on the business case and engage the sponsor on whether to adapt scope or priorities","Immediately copy the competitor's features","Halt the project pending market research"],a:1,
+       why:"Monitoring the external environment and reassessing the business case keeps the project aligned to value.",src:"Evaluate and address external business environment changes"},
+      {q:"If the security module's scope were instead highly uncertain and likely to evolve, which contract type would fit best?",
+       opts:["Firm-fixed-price","Cost-reimbursable (e.g., CPFF/CPIF)","A unit-price catalog","A fixed-price-incentive ceiling"],a:1,
+       why:"Uncertain or evolving scope favors cost-reimbursable, where the buyer carries cost risk because requirements can't be pinned down up front.",src:"Plan and manage procurement"}
+    ]
+  },
+  {
+    type:"case", topic:"Case Set — Leading an Adaptive Team", domain:"People",
+    authored:true, approved:true,
+    scenario:"You take over a newly formed, fully remote agile team spread across four time zones. The team hasn't agreed how decisions get made, two senior engineers are already clashing, velocity has dropped for three sprints, and morale seems low. Leadership is pressuring the team to commit to a fixed scope and a fixed date for a full year of work.",
+    items:[
+      {q:"The team hasn't agreed how decisions are made and is already clashing. What should you do FIRST?",
+       opts:["Escalate the conflict to the sponsor","Make the calls yourself to keep momentum","Facilitate the team in establishing ground rules and a decision-making approach","Document the conflict and proceed"],a:2,
+       why:"A forming/storming team needs clarity on how it will work together; facilitating ground rules builds ownership before escalation or unilateral decisions.",src:"Lead the project team"},
+      {q:"Velocity has dropped for three straight sprints with low morale. What is the BEST action?",
+       opts:["Increase the sprint commitment to push recovery","Facilitate a focused retrospective to surface and address root causes","Replace the slower team members","Report the decline to stakeholders as a schedule risk"],a:1,
+       why:"A sustained velocity drop with low morale signals systemic causes a focused retrospective can surface and the team can act on.",src:"Support team performance"},
+      {q:"The remote team across four time zones feels disconnected. What should you do?",
+       opts:["Require a daily synchronous standup at one fixed time","Establish working agreements, rotate meeting times fairly, and add asynchronous channels","Split into co-located sub-teams","Reduce meeting frequency to avoid conflicts"],a:1,
+       why:"Distributed teams need intentional agreements and a fair synchronous/asynchronous blend that shares the burden of inconvenient times.",src:"Lead the project team"},
+      {q:"Leadership wants a fixed scope AND fixed date for a year of adaptive work. What should you advise?",
+       opts:["Commit to both to satisfy leadership","Refuse to plan beyond the next iteration","Explain the tradeoff and propose fixing date and resources while keeping scope adaptive","Convert the whole project to predictive planning"],a:2,
+       why:"In adaptive work, time and cost are fixed while scope flexes; educating leadership enables a realistic commitment.",src:"Plan and manage scope"},
+      {q:"One senior engineer publicly dismisses a junior member's idea and the junior goes quiet. What is the BEST action?",
+       opts:["Speak privately with the senior engineer about their impact and coach on inclusive behavior","Reassign the junior member to solo work","Raise it with the whole team in the next meeting","Note it and wait to see if it recurs"],a:0,
+       why:"Addressing the behavior privately at its source protects psychological safety without public escalation.",src:"Support team performance"}
+    ]
+  },
+  {
+    type:"match", topic:"Drag & Drop — Contract Types & Risk", domain:"Process",
+    authored:true, approved:true,
+    prompt:"Match each contract type to who carries the cost risk / when it fits. Drag a right-side answer onto each contract, or tap a contract then tap an answer.",
+    left:[
+      {id:"ffp", text:"Firm-fixed-price (FFP)"},
+      {id:"cpff", text:"Cost-plus-fixed-fee (CPFF)"},
+      {id:"cpif", text:"Cost-plus-incentive-fee (CPIF)"},
+      {id:"tm", text:"Time & materials (T&M)"}
+    ],
+    right:[
+      {id:"ffp", text:"One fixed price — seller bears cost risk; best for well-defined scope"},
+      {id:"cpff", text:"Costs reimbursed plus a fixed fee — buyer bears cost risk; for uncertain scope"},
+      {id:"cpif", text:"Costs reimbursed plus a fee that flexes with meeting cost targets"},
+      {id:"tm", text:"Rates × hours — hybrid for unknown scope or quick starts; often capped"}
+    ],
+    why:"Risk shifts buyer→seller across the spectrum: cost-reimbursable (buyer risk) → T&M → fixed-price (seller risk). FFP suits clear scope; cost-plus suits uncertainty; CPIF ties fee to cost performance; T&M fills the gap when scope isn't yet defined.",
+    src:"Plan and manage procurement — contract families"
+  },
+  {
+    type:"match", topic:"Drag & Drop — Risk Response Strategies", domain:"Process",
+    authored:true, approved:true,
+    prompt:"Match each risk response to its meaning. Drag a right-side answer onto each strategy, or tap a strategy then tap an answer.",
+    left:[
+      {id:"avoid", text:"Avoid (threat)"},
+      {id:"transfer", text:"Transfer (threat)"},
+      {id:"mitigate", text:"Mitigate (threat)"},
+      {id:"exploit", text:"Exploit (opportunity)"},
+      {id:"escalate", text:"Escalate (both)"}
+    ],
+    right:[
+      {id:"avoid", text:"Eliminate the threat entirely (e.g., remove the risky scope)"},
+      {id:"transfer", text:"Shift the impact to a third party (e.g., insurance)"},
+      {id:"mitigate", text:"Reduce probability or impact to an acceptable level"},
+      {id:"exploit", text:"Make the opportunity 100% certain to occur"},
+      {id:"escalate", text:"Hand to a higher authority — beyond the team's control"}
+    ],
+    why:"Threat responses: avoid, transfer, mitigate, escalate, accept. Opportunity responses: exploit, share, enhance, escalate, accept. Exploit makes an opportunity certain; enhance only increases its likelihood. Escalate and accept appear in both lists.",
+    src:"Assess and manage risks — response strategies"
+  }
+];
+
+/* merge new-format items into the practice pool data + topic indexes */
+(function(){
+  NEWFORMATS.forEach(it=>{ if(!DATA.topicColor[it.topic]) DATA.topicColor[it.topic] = (it.type==="match"?"#7a4ba0":"#2f6c8f"); Q.push(it); });
+})();
+/* ---- case-set renderer (practice) ---- */
+let _caseState=null;
+function renderCase(){
+  const item=pool[pos];
+  if(!_caseState||_caseState.item!==item){ _caseState={item, idx:0, correct:0, done:false}; }
+  const st=_caseState, sub=item.items[st.idx], c=DATA.topicColor[item.topic]||"#2f6c8f";
+  st._answered=false;
+  $("#pbar").style.width=(pos/pool.length*100)+"%";
+  const dots=item.items.map((_,i)=>`<span class="case-dot ${i<st.idx?'done':(i===st.idx?'cur':'')}"></span>`).join("");
+  const order=shuffle([0,1,2,3]);
+  const optHTML=order.map((oi,k)=>`<button class="opt" data-oi="${oi}"><span class="key">${LETTERS[k]}</span><span>${sub.opts[oi]}</span></button>`).join("");
+  const stem=sub.q.replace(/\b(FIRST|BEST|NEXT|NOT|EXCEPT|MOST|LEAST)\b/g,"<b>$1</b>");
+  $("#qhost").innerHTML=`
+   <div class="examcard" style="--c:${c}">
+     <div class="q-meta"><span class="q-topic">${item.topic.replace(/Case Set — /,'Case · ')}</span>
+       <span class="q-prog">Set ${pos+1} / ${pool.length} · Score ${score}</span></div>
+     ${(item.authored&&!item.approved)?'<span class="review-flag">Practice item · instructor review pending</span>':''}
+     <div class="case-scenario" style="--c:${c}"><span class="case-lbl">Scenario</span>${item.scenario}</div>
+     <div class="case-progress">${dots} &nbsp;Question ${st.idx+1} of ${item.items.length}</div>
+     <p class="q-stem">${stem}</p>
+     <div class="opts">${optHTML}</div>
+     <div class="explain" id="explain"></div>
+     <div class="exam-foot"><button class="btn" id="nextBtn" disabled>${st.idx+1<item.items.length?'Next in set →':(pos+1<pool.length?'Next →':'See results →')}</button><span class="scoreline" id="sl"></span></div>
+   </div>`;
+  $("#qhost").querySelectorAll(".opt").forEach(o=>o.onclick=()=>pickCase(o));
+  $("#nextBtn").onclick=()=>{
+    if(st.idx+1<item.items.length){ st.idx++; renderCase(); }
+    else { if(!emailUnlocked && answeredCount>=FREE_LIMIT){ renderEmailGate(); return; }
+           if(pos+1<pool.length){pos++; _caseState=null; renderQ();} else showResults(); }
+  };
+}
+function pickCase(btn){
+  if(_caseState._answered)return; _caseState._answered=true;
+  const item=_caseState.item, sub=item.items[_caseState.idx], chosen=+btn.dataset.oi;
+  $("#qhost").querySelectorAll(".opt").forEach(o=>{o.disabled=true;const oi=+o.dataset.oi;
+    if(oi===sub.a)o.classList.add("correct");else if(oi===chosen)o.classList.add("wrong");});
+  const right=chosen===sub.a; if(right)_caseState.correct++;
+  const ex=$("#explain"); ex.innerHTML=`<b>${right?'Correct.':'Not quite.'}</b> ${sub.why}${sub.src?`<span class="src">Reference · ${sub.src}</span>`:''}`; ex.classList.add("show");
+  $("#nextBtn").disabled=false;
+  // when the last sub-question is answered, the case scores once toward the session
+  if(_caseState.idx+1===item.items.length){
+    const allRight=_caseState.correct===item.items.length;
+    if(allRight) score++; else missed.push(item);
+    answeredCount++;
+    $("#sl").textContent=`Set: ${_caseState.correct}/${item.items.length}`;
+  }
+}
+/* ---- drag-drop matching renderer (practice) ---- */
+function renderMatch(){
+  const item=pool[pos], c=DATA.topicColor[item.topic]||"#7a4ba0";
+  $("#pbar").style.width=(pos/pool.length*100)+"%";
+  const placed={};           // leftId -> rightId
+  let sel=null, selKind=null; // tap-to-place selection
+  const rightShuf=shuffle(item.right.slice());
+  $("#qhost").innerHTML=`
+   <div class="examcard" style="--c:${c}">
+     <div class="q-meta"><span class="q-topic">${item.topic.replace(/Drag & Drop — /,'Match · ')}</span>
+       <span class="q-prog">Item ${pos+1} / ${pool.length} · Score ${score}</span></div>
+     ${(item.authored&&!item.approved)?'<span class="review-flag">Practice item · instructor review pending</span>':''}
+     <p class="q-stem">${item.prompt}</p>
+     <div class="match-wrap" id="mzone">${item.left.map(l=>`
+       <div class="match-row"><div class="match-left" data-l="${l.id}">${l.text}</div>
+       <div class="match-slot" data-slot="${l.id}">Drop or tap an answer…</div></div>`).join("")}</div>
+     <div class="match-bank" id="mbank">${rightShuf.map(r=>`<div class="match-chip" draggable="true" data-r="${r.id}">${r.text}</div>`).join("")}</div>
+     <div class="explain" id="explain"></div>
+     <div class="exam-foot"><button class="btn" id="checkBtn">Check answers</button>
+       <button class="btn" id="nextBtn" style="display:none">${pos+1<pool.length?'Next →':'See results →'}</button>
+       <span class="scoreline" id="sl"></span></div>
+   </div>`;
+  const slots=()=>$("#qhost").querySelectorAll(".match-slot");
+  const chips=()=>$("#qhost").querySelectorAll(".match-chip");
+  function chipText(rid){const r=item.right.find(x=>x.id===rid);return r?r.text:"";}
+  function place(lid,rid){
+    // if rid already placed elsewhere, clear that
+    Object.keys(placed).forEach(k=>{if(placed[k]===rid)delete placed[k];});
+    placed[lid]=rid; refresh();
+  }
+  function clearSlot(lid){ delete placed[lid]; refresh(); }
+  function refresh(){
+    slots().forEach(s=>{const lid=s.dataset.slot;const rid=placed[lid];
+      if(rid){s.textContent=chipText(rid);s.classList.add("filled");}
+      else{s.textContent="Drop or tap an answer…";s.classList.remove("filled");}
+      s.classList.remove("over");});
+    const used=new Set(Object.values(placed));
+    chips().forEach(ch=>ch.classList.toggle("used",used.has(ch.dataset.r)));
+  }
+  // drag events
+  $("#qhost").querySelectorAll(".match-chip").forEach(ch=>{
+    ch.addEventListener("dragstart",e=>{e.dataTransfer.setData("text",ch.dataset.r);ch.classList.add("dragging");});
+    ch.addEventListener("dragend",()=>ch.classList.remove("dragging"));
+    ch.addEventListener("click",()=>{ // tap-to-select
+      if(sel===ch.dataset.r&&selKind==="chip"){sel=null;selKind=null;ch.classList.remove("sel");return;}
+      chips().forEach(x=>x.classList.remove("sel")); $("#qhost").querySelectorAll(".match-left").forEach(x=>x.classList.remove("sel"));
+      sel=ch.dataset.r; selKind="chip"; ch.classList.add("sel");
+    });
+  });
+  slots().forEach(s=>{
+    s.addEventListener("dragover",e=>{e.preventDefault();s.classList.add("over");});
+    s.addEventListener("dragleave",()=>s.classList.remove("over"));
+    s.addEventListener("drop",e=>{e.preventDefault();const rid=e.dataTransfer.getData("text");place(s.dataset.slot,rid);});
+    s.addEventListener("click",()=>{
+      if(selKind==="chip"&&sel){place(s.dataset.slot,sel);sel=null;selKind=null;chips().forEach(x=>x.classList.remove("sel"));}
+      else if(placed[s.dataset.slot]){clearSlot(s.dataset.slot);} // tap filled slot to clear
+    });
+  });
+  refresh();
+  $("#checkBtn").onclick=()=>{
+    if(Object.keys(placed).length<item.left.length){ $("#sl").textContent="Place all answers first."; return; }
+    let correct=0;
+    slots().forEach(s=>{const lid=s.dataset.slot;const ok=placed[lid]===lid; // pair ids match by design
+      s.classList.add(ok?"correct":"wrong"); if(ok)correct++;});
+    chips().forEach(ch=>{ch.setAttribute("draggable","false");ch.style.cursor="default";ch.onclick=null;});
+    const allRight=correct===item.left.length;
+    if(allRight)score++; else missed.push(item);
+    answeredCount++;
+    const ex=$("#explain"); ex.innerHTML=`<b>${allRight?'All correct.':correct+' of '+item.left.length+' correct.'}</b> ${item.why}${item.src?`<span class="src">Reference · ${item.src}</span>`:''}`; ex.classList.add("show");
+    $("#checkBtn").style.display="none"; $("#nextBtn").style.display="";
+    $("#nextBtn").onclick=()=>{ if(!emailUnlocked && answeredCount>=FREE_LIMIT){renderEmailGate();return;}
+      if(pos+1<pool.length){pos++;renderQ();}else showResults(); };
+  };
+}
 $("#totalBadge").textContent = Q.length + " practice questions";
 
 const TOPICS = [];
@@ -325,7 +594,7 @@ let pool = [], pos = 0, score = 0, answered = false, missed = [];
 */
 const FREE_LIMIT = 3;                 // free questions before the email gate
 const PROGRAMS_URL = "/programs";     // end-of-sample conversion target
-const EMAIL_ENDPOINT = "/api/lead";            // <<< DEV: put your list/API endpoint here (POST {email}). Leave "" to skip network + just unlock.
+const EMAIL_ENDPOINT = "";            // <<< DEV: put your list/API endpoint here (POST {email}). Leave "" to skip network + just unlock.
 const STUDENT_MODE = (typeof window!=="undefined" && window.STUDENT_MODE===true) ||
                      new URLSearchParams(location.search).get("full")==="1";
 let emailUnlocked = STUDENT_MODE;     // students start unlocked
@@ -333,19 +602,43 @@ let answeredCount = 0;                // counts questions answered this session 
 
 function renderSetup(){
   const host = $("#practiceSetup");
-  const banks = Object.keys(banksOf);
-  let topicCards = "";
-  banks.forEach(b=>{
-    const label = DATA.bankLabel[b] || b;
-    topicCards += `<div class="lab" style="margin-top:14px">${label}</div><div class="topicgrid">`;
-    TOPICS.filter(t=>banksOf[b].has(t)).forEach(t=>{
-      const c = DATA.topicColor[t];
-      const n = Q.filter(q=>q.topic===t).length;
-      const on = pickedTopics.has(t);
-      topicCards += `<button class="topicpick" data-topic="${encodeURIComponent(t)}" aria-pressed="${on}" style="--c:${c}">
-        <span class="dot"></span><span class="tn">${t.replace(/ \(§.*?\)/,'')}</span><span class="qc">${n}</span></button>`;
+  const qn = topicQuery.trim().toLowerCase();
+  const countQ = t => Q.filter(q=>q.topic===t).length;
+  let topicCards = `
+    <div class="searchrow"><span class="si">&#128269;</span>
+      <input class="topicsearch" id="topicSearch" type="text" placeholder="Search topics…" value="${topicQuery.replace(/"/g,'&quot;')}"></div>
+    <p class="domnote">Topics are grouped by the five process groups (focus areas) to mirror the project lifecycle — some tools apply across more than one.</p>`;
+  DOMAIN_ORDER.forEach(dom=>{
+    const domCards = CARD_DEFS.filter(cd=>cd.fa===dom);
+    const matches = domCards.filter(cd=> !qn || cd.name.toLowerCase().includes(qn) || cd.topics.some(t=>topicDisplay(t).toLowerCase().includes(qn)));
+    if(qn && matches.length===0) return;
+    const st = DOMAIN_STYLE[dom];
+    const cardQ = cd => cd.topics.reduce((s,t)=>s+countQ(t),0);
+    const totalQ = domCards.reduce((s,cd)=>s+cardQ(cd),0);
+    const isOpen = openDomains[dom] || qn.length>0;
+    const cardSelected = cd => cd.topics.every(t=>pickedTopics.has(t));
+    const selCount = matches.filter(cardSelected).length;
+    const allSel = matches.length>0 && selCount===matches.length;
+    let cards = "";
+    matches.forEach(cd=>{
+      const on = cardSelected(cd);
+      const idx = CARD_DEFS.indexOf(cd);
+      cards += `<button class="topicpick" data-card="${idx}" aria-pressed="${on}" style="--c:${st.c}">
+        <span class="dot"></span><span class="tn">${cd.name}</span><span class="qc">${cardQ(cd)}</span></button>`;
     });
-    topicCards += `</div>`;
+    topicCards += `
+     <div class="domwrap">
+       <div class="domhead" data-dom="${encodeURIComponent(dom)}" style="background:${st.bg}">
+         <span style="width:11px;height:11px;border-radius:50%;background:${st.c};display:inline-block;flex:none"></span>
+         <span class="dnm" style="color:${st.c}">${dom}</span>
+         <span class="dct" style="color:${st.c}">${domCards.length} topics · ${totalQ} questions</span>
+         <span class="spacer">
+           <button class="selall" data-domsel="${encodeURIComponent(dom)}" style="border:1.5px solid ${st.c};color:${st.c}">${allSel?'Clear group':'Select all'}</button>
+           <span class="chev" style="color:${st.c}">${isOpen?'&#9650;':'&#9660;'}</span>
+         </span>
+       </div>
+       ${isOpen?`<div class="dombody"><div class="topicgrid" style="max-height:none;margin:0">${cards}</div></div>`:``}
+     </div>`;
   });
   host.innerHTML = `
    <div class="setup">
@@ -377,9 +670,27 @@ function renderSetup(){
   host.querySelectorAll("#scopeSeg button").forEach(b=>b.onclick=()=>{scope=b.dataset.scope;renderSetup();});
   host.querySelectorAll("#lenSeg button").forEach(b=>b.onclick=()=>{qlen=+b.dataset.len;renderSetup();});
   host.querySelectorAll(".topicpick").forEach(b=>b.onclick=()=>{
-    const t=decodeURIComponent(b.dataset.topic);
-    if(pickedTopics.has(t))pickedTopics.delete(t); else pickedTopics.add(t);
+    const cd=CARD_DEFS[+b.dataset.card];
+    const on=cd.topics.every(t=>pickedTopics.has(t));
+    cd.topics.forEach(t=> on?pickedTopics.delete(t):pickedTopics.add(t));
     renderSetup();
+  });
+  const ts=host.querySelector("#topicSearch");
+  if(ts) ts.oninput=()=>{ topicQuery=ts.value; renderSetup();
+    const el=$("#topicSearch"); if(el){ el.focus(); el.setSelectionRange(el.value.length,el.value.length); } };
+  host.querySelectorAll(".domhead").forEach(h=>h.onclick=(e)=>{
+    if(e.target.closest(".selall")) return;
+    const d=decodeURIComponent(h.dataset.dom); openDomains[d]=!openDomains[d]; renderSetup();
+  });
+  host.querySelectorAll(".selall").forEach(b=>b.onclick=(e)=>{
+    e.stopPropagation();
+    const d=decodeURIComponent(b.dataset.domsel);
+    const qn=topicQuery.trim().toLowerCase();
+    const domCards=CARD_DEFS.filter(cd=>cd.fa===d)
+      .filter(cd=> !qn || cd.name.toLowerCase().includes(qn) || cd.topics.some(t=>topicDisplay(t).toLowerCase().includes(qn)));
+    const allSel=domCards.length>0 && domCards.every(cd=>cd.topics.every(t=>pickedTopics.has(t)));
+    domCards.forEach(cd=>cd.topics.forEach(t=>allSel?pickedTopics.delete(t):pickedTopics.add(t)));
+    openDomains[d]=true; renderSetup();
   });
   const sa=host.querySelector("#selAll"), sn=host.querySelector("#selNone");
   if(sa)sa.onclick=()=>{TOPICS.forEach(t=>pickedTopics.add(t));renderSetup();};
@@ -419,6 +730,8 @@ function renderQ(){
   if(!emailUnlocked && answeredCount>=FREE_LIMIT){ renderEmailGate(); return; }
   answered=false;
   const q=pool[pos];
+  if(q && q.type==="case"){ return renderCase(); }
+  if(q && q.type==="match"){ return renderMatch(); }
   const c=DATA.topicColor[q.topic];
   $("#pbar").style.width = (pos/pool.length*100)+"%";
   const order=shuffle([0,1,2,3]);
@@ -653,8 +966,17 @@ function renderMockSetup(){
    </div>`;
   $("#mockStart").onclick=startMock;
 }
+function expandForMock(arr){
+  const out=[];
+  arr.forEach(it=>{
+    if(it.type==="match") return;               // matches excluded from timed mock
+    if(it.type==="case"){ it.items.forEach(s=>out.push(Object.assign({},s,{domain:it.domain,authored:true,approved:it.approved===true}))); return; }
+    out.push(it);
+  });
+  return out;
+}
 function startMock(){
-  mpool=shuffle(MOCK.slice());
+  mpool=shuffle(expandForMock(MOCK.slice().concat(NEWFORMATS)));
   // pre-shuffle option order per question, stored so it's stable during the exam
   mpool.forEach(q=>{ q._order=shuffle([0,1,2,3]); });
   mpos=0; mAnswers=new Array(mpool.length).fill(null); mFlags=new Array(mpool.length).fill(false);
