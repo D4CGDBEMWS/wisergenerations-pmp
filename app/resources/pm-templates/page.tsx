@@ -5,7 +5,7 @@ import Faq from '@/components/marketing/Faq'
 export const metadata: Metadata = {
   title: 'Free Branded PM Templates — Agile & Waterfall',
   description:
-    'Wiser Generations Int’l branded project management templates for Agile and Waterfall teams. Free monthly templates included with every $47/month Study Access subscription.',
+    'Wiser Generations Int’l branded project management templates for Agile and Waterfall teams. Free monthly templates included with every $49/month Study Access subscription.',
   alternates: { canonical: '/resources/pm-templates' },
   openGraph: {
     title: 'Branded PM Templates — Wiser Generations Int’l',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 // ---------------------------------------------------------------------------
 // PM Templates landing page
-// Promotes the monthly templates perk for Study Access ($47/mo) subscribers.
+// Promotes the monthly templates perk for Study Access ($49/mo) subscribers.
 // All templates are listed publicly so visitors can see exactly what they
 // get; downloads are gated behind subscription (delivered via Mailchimp drip
 // triggered by the "pm-templates-monthly" tag the webhook applies).
@@ -131,7 +131,7 @@ const AGILE_TEMPLATES: Template[] = [
 const TEMPLATES_FAQ = [
   {
     q: 'How do I get the templates?',
-    a: 'Subscribe to Wiser Generations Int’l Study Access ($47/month). The first template arrives in your inbox within 24 hours, and a fresh template is delivered on the 1st of each month for as long as your subscription is active.',
+    a: 'Subscribe to Wiser Generations Int’l Study Access ($49/month). The first template arrives in your inbox within 24 hours, and a fresh template is delivered on the 1st of each month for as long as your subscription is active.',
   },
   {
     q: 'What format are the templates in?',
@@ -175,14 +175,14 @@ export default function PmTemplatesPage() {
           <p className="mt-4 max-w-3xl text-base leading-7 text-gray-300">
             Get a fresh Wiser Generations Int’l branded project management template every month —
             Project Charter, Risk Register, Sprint Planner, Retrospective Board, and more.
-            Included free with every $47/month Study Access subscription.
+            Included free with every $49/month Study Access subscription.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/checkout"
               className="rounded-lg bg-gold px-6 py-3 text-base font-bold text-navy transition hover:bg-amber-400"
             >
-              Start Study Access — $47/month →
+              Start Study Access — $49/month →
             </Link>
             <Link
               href="#templates"
@@ -256,7 +256,7 @@ export default function PmTemplatesPage() {
               Get all 13 templates — and a fresh one every month
             </p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Start Study Access — $47/month
+              Start Study Access — $49/month
             </h2>
             <p className="mt-3 text-base leading-7 text-slate-700">
               Self-paced PMP®/CAPM® study library, practice question bank, monthly office
@@ -267,7 +267,7 @@ export default function PmTemplatesPage() {
               href="/checkout"
               className="mt-6 inline-flex items-center justify-center rounded-xl bg-amber-500 px-8 py-4 text-base font-bold text-slate-950 shadow-sm transition hover:bg-amber-400"
             >
-              Start Study Access — $47/month →
+              Start Study Access — $49/month →
             </Link>
             <p className="mt-3 text-xs text-slate-500">
               Secure checkout via Stripe. First template arrives within 24 hours.

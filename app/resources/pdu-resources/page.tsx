@@ -258,7 +258,7 @@ export default function PduResourcesPage() {
             Need a structured PDU source?
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-            Wiser Generations Int’l Study Access — $47/month
+            Wiser Generations Int’l Study Access — $49/month
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-700">
             Our monthly office hours, study library content, and PM template walkthroughs are
@@ -270,7 +270,7 @@ export default function PduResourcesPage() {
             href="/checkout"
             className="mt-5 inline-flex items-center justify-center rounded-xl bg-amber-500 px-6 py-3 text-sm font-bold text-slate-950 shadow-sm transition hover:bg-amber-400"
           >
-            Start Study Access — $47/month →
+            Start Study Access — $49/month →
           </Link>
         </section>
 

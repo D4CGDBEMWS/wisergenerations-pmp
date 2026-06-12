@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 // ---------------------------------------------------------------------------
 // Career Transition pillar page — third high-value SEO target
 // Focuses on Wiser Generations Int’l' primary audience: working professionals
-// switching careers into PM. Funnels into Study Access ($47/mo) for the
+// switching careers into PM. Funnels into Study Access ($49/mo) for the
 // study materials and the full programs for live mentor support.
 // ---------------------------------------------------------------------------
 

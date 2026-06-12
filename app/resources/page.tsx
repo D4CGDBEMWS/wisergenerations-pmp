@@ -278,7 +278,7 @@ export default function ResourcesPage() {
 const FAQ = [
   {
     q: 'Are these PMP® resources really free?',
-    a: 'Yes. Every guide and reference page on this hub is free. Wiser Generations Int’l Study Access ($49/month) and our full mentor-led programs are paid options for students who want deeper practice questions, live coaching, and accountability. The PMP® Practice Studio (694 questions + mock exam) is also available as a one-time $79 purchase at /access.',
+    a: 'Yes. Every guide and reference page on this hub is free. Wiser Generations Int’l Study Access ($49/month) and our full mentor-led programs are paid options for students who want deeper practice questions, live coaching, and accountability. The PMP® Practice Studio (694 questions + mock exam) is included with Study Access at /access.',
   },
   {
     q: 'Do I need to be a PMI® member to use these resources?',

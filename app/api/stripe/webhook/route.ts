@@ -255,7 +255,7 @@ export async function POST(request: NextRequest) {
       }
 
       // ─────────────────────────────────────────────────────────────────
-      // 2. Study Access subscription signups ($47/mo)
+      // 2. Study Access subscription signups ($49/mo)
       //    Fires once when the Stripe Checkout Session in subscription
       //    mode completes. Tags the customer so the Mailchimp drip with
       //    monthly PM templates kicks in.

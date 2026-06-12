@@ -83,15 +83,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Valid email required.' }, { status: 400 })
     }
 
-    // Verify purchase in Stripe
+    // Verify access in Stripe. Access is granted to:
+    //   1. Active $49/mo Study Access subscribers (current model), OR
+    //   2. Legacy one-time Study Access purchasers (grandfathered).
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-08-27.basil' })
+
+    // 1) Active subscription for this email
+    let hasActiveSubscription = false
+    const customers = await stripe.customers.list({ email, limit: 10 })
+    for (const customer of customers.data) {
+      const subs = await stripe.subscriptions.list({ customer: customer.id, status: 'active', limit: 5 })
+      if (subs.data.length > 0) { hasActiveSubscription = true; break }
+    }
+
+    // 2) Legacy one-time purchase (grandfathered). Match either metadata tag
+    //    used by past one-time checkouts.
     const sessions = await stripe.checkout.sessions.list({ limit: 100 })
-    const hasPurchased = sessions.data.some(
-      s => s.customer_email === email && s.payment_status === 'paid' && s.metadata?.product === 'study-access'
+    const hasLegacyPurchase = sessions.data.some(
+      s => s.customer_email === email &&
+        s.payment_status === 'paid' &&
+        (s.metadata?.product === 'study-access' || s.metadata?.product === 'pmp-practice-studio')
     )
 
+    const hasAccess = hasActiveSubscription || hasLegacyPurchase
+
     // Always return ok to prevent email enumeration
-    if (hasPurchased) {
+    if (hasAccess) {
       const token = crypto.randomBytes(32).toString('hex')
       const expires = Date.now() + 15 * 60 * 1000
       tokenStore.set(token, { email, expires })

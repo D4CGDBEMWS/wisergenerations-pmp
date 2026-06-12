@@ -21,7 +21,7 @@ const PROGRAMS = {
   },
   'veterans-pathway': {
     name: 'Veterans PM Pathway',
-    amount: 79700,
+    amount: 79900,
     description: "Veterans PM Pathway \u2014 Wiser Generations Int\u2019l\u2122",
   },
 } as const

@@ -44,7 +44,7 @@ export default function AccessLoginPage() {
         <div className="text-center mb-8">
           <div className="text-5xl mb-4">🔑</div>
           <h1 className="text-3xl font-bold text-[#0a1628] mb-2">Sign In to Study Tools</h1>
-          <p className="text-gray-600">Enter the email you used to purchase the Study Access Package.</p>
+          <p className="text-gray-600">Enter the email from your Study Access subscription and we&apos;ll send you a sign-in link.</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -61,7 +61,7 @@ export default function AccessLoginPage() {
           </form>
           <div className="mt-6 text-center text-sm text-gray-600">
             Do not have access yet?{' '}
-            <Link href="/access" className="text-yellow-600 font-semibold hover:underline">Get the $47 Study Package</Link>
+            <Link href="/access" className="text-yellow-600 font-semibold hover:underline">Start Study Access — $49/month</Link>
           </div>
         </div>
       </div>

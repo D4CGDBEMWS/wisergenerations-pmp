@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 // ---------------------------------------------------------------------------
 // PMP® Formulas — SEO pillar page targeting "PMP formulas" / "PMP cheat sheet"
-// long-tail searches.  No gating; CTAs funnel into Study Access ($47/mo).
+// long-tail searches.  No gating; CTAs funnel into Study Access ($49/mo).
 // ---------------------------------------------------------------------------
 
 type Formula = {

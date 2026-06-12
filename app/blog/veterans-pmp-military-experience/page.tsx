@@ -105,7 +105,7 @@ export default function VeteransPmpPost() {
             Veterans have access to multiple funding pathways for PM certification prep.
             Employer tuition assistance is common for veterans in the federal contracting space.
             Some veterans explore VET TEC for tech-adjacent training programs.
-            The veteran discount at Wiser Generations brings program tuition to $797 — making it
+            The veteran discount at Wiser Generations brings program tuition to $799 — making it
             one of the most accessible PMP prep options available.
           </p>
           <p className="text-gray-700 leading-relaxed mb-6">

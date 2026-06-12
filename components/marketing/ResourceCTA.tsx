@@ -3,7 +3,7 @@ import Link from 'next/link'
 // ---------------------------------------------------------------------------
 // ResourceCTA — reusable upsell banner used on every /resources/* page.
 //
-//   <ResourceCTA variant="soft" />  → Study Access $47/mo nudge
+//   <ResourceCTA variant="soft" />  → Study Access $49/mo nudge
 //   <ResourceCTA variant="hard" />  → Full PMP® Prep program nudge
 //
 // Both variants link into the existing /checkout flow.
@@ -14,7 +14,7 @@ type Variant = 'soft' | 'hard'
 const COPY: Record<Variant, { eyebrow: string; title: string; body: string; cta: string; href: string }> = {
   soft: {
     eyebrow: 'Want more PMP study tools?',
-    title: 'Start Wiser Generations Int’l Study Access — $47/month',
+    title: 'Start Wiser Generations Int’l Study Access — $49/month',
     body:
       'Self-paced PMP® / CAPM® study library, practice question bank, monthly office hours, and private community. Cancel anytime.',
     cta: 'Start Study Access →',

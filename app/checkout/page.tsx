@@ -19,7 +19,7 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 // Programs — single source of truth for names AND prices.
 // Prices should ultimately come from the backend/CMS (fix #8), but until
 // that migration happens these values are at least consistent with the
-// /programs page ($899 PMP®, $599 CAPM®, $797 Veterans).
+// /programs page ($899 PMP®, $599 CAPM®, $799 Veterans).
 // ---------------------------------------------------------------------------
 const PROGRAMS = {
   'pmp-prep': {
@@ -39,7 +39,7 @@ const PROGRAMS = {
   'veterans-pathway': {
     id: 'veterans-pathway',
     name: 'Veterans PM Pathway',
-    price: 797,
+    price: 799,
     description:
       'A mission-aligned transition pathway designed for veterans moving into project management roles.',
   },

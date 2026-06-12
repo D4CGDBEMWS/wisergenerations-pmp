@@ -331,7 +331,7 @@ const FAQ = [
   },
   {
     q: 'How many practice questions should I do before the real PMP® exam?',
-    a: 'Most students who pass the PMP® on the first try complete 1,000–2,000 practice questions during prep, scoring 75–80%+ on full-length mocks before testing. Wiser Generations Int’l Study Access ($47/month) includes a much larger question bank with detailed explanations.',
+    a: 'Most students who pass the PMP® on the first try complete 1,000–2,000 practice questions during prep, scoring 75–80%+ on full-length mocks before testing. Wiser Generations Int’l Study Access ($49/month) includes a much larger question bank with detailed explanations.',
   },
   {
     q: 'Are the explanations enough to learn from, or do I need a course?',
