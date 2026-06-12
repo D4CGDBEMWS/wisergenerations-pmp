@@ -125,6 +125,8 @@ export default function CorporatePage() {
                                                       />
                         </div>
         </div>
+    </div>
+    </section>
 
       <section className="bg-gold py-8 px-4">
         <div className="max-w-5xl mx-auto">
