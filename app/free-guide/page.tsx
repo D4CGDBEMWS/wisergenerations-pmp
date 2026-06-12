@@ -64,14 +64,14 @@ export default function FreeGuidePage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-5xl">
-              The PMP® Exam Is Changing<br />
-              <span className="text-amber-500">July 8, 2026</span>
+              The 2026 PMP® Exam, Decoded<br />
+              <span className="text-amber-500">Pass It on Your First Try.</span>
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-600">
-              PMI confirmed a major exam overhaul. This free 9-page guide breaks down every
-              domain change, new question format, and explains why certifying NOW is your
-              smartest career move — before the format shifts.
+              PMI overhauled the PMP exam in 2026 — new domain weights, AI and sustainability
+              content, and new question formats. This free 9-page guide breaks down exactly
+              what&apos;s on the current exam and how to prepare to pass on your first attempt.
             </p>
 
             <ul className="mt-8 space-y-4">
@@ -79,8 +79,8 @@ export default function FreeGuidePage() {
                 'Domain weight shifts & new ECO breakdown',
                 'New AI & Sustainability content areas explained',
                 'New question formats and what they mean for your prep',
-                'Decision table: should YOU certify before July 8?',
-                'Current exam vs. new exam — side-by-side comparison',
+                'A clear study plan for the updated exam',
+                'What actually changed — old format vs. current format, side by side',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-slate-700">
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
@@ -146,7 +146,7 @@ export default function FreeGuidePage() {
                     </div>
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Free Guide</p>
-                      <p className="text-sm font-semibold text-slate-900">The PMP® Exam Is Changing · 9-Page PDF</p>
+                      <p className="text-sm font-semibold text-slate-900">The 2026 PMP® Exam Guide · 9-Page PDF</p>
                     </div>
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export default function FreeGuidePage() {
       <section className="border-t border-slate-200 bg-white px-4 py-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm text-slate-500">
-            Ready to certify before July 8?{' '}
+            Ready to pass on your first try?{' '}
             <Link href="https://calendly.com/space4grace/30min-pod" className="font-semibold text-slate-900 underline underline-offset-2">
               Book a free 30-minute strategy call with Crystal →
             </Link>

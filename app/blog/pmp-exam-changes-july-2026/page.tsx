@@ -38,14 +38,13 @@ export default function PmpExamChangesPost() {
           <div className="bg-gold/20 border-l-4 border-gold rounded-r-xl p-6 mb-10">
             <p className="font-bold text-navy text-lg mb-2">The short version:</p>
             <p className="text-navy">
-              PMI is making significant changes to the PMP exam effective July 8, 2026. Domain weights shift,
-              new question types are added, and AI and sustainability content enters the exam for the first time.
-              If you are considering the PMP, certifying before July 8 means using five years of proven prep materials
-              on a known, stable exam format.
+              PMI made significant changes to the PMP exam effective July 8, 2026. Domain weights shifted,
+              new question types were added, and AI and sustainability content entered the exam for the first time.
+              Here&apos;s exactly what changed — and how to prepare to pass the current exam on your first attempt.
             </p>
           </div>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">What PMI Is Changing</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">What PMI Changed</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             PMI periodically updates the PMP exam to reflect how project management is actually practiced.
             The July 8, 2026 change is one of the more significant updates in recent years — touching domain weights,
@@ -54,15 +53,15 @@ export default function PmpExamChangesPost() {
 
           <h3 className="text-xl font-bold text-navy mt-8 mb-3">Domain Weight Shifts</h3>
           <p className="text-gray-700 leading-relaxed mb-4">
-            The three domains of the PMP exam are People, Process, and Business Environment. Their weights are changing:
+            The three domains of the PMP exam are People, Process, and Business Environment. Their weights changed:
           </p>
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden">
               <thead>
                 <tr className="bg-navy text-white">
                   <th className="text-left p-4 font-semibold">Domain</th>
+                  <th className="text-left p-4 font-semibold">Previous Weight</th>
                   <th className="text-left p-4 font-semibold">Current Weight</th>
-                  <th className="text-left p-4 font-semibold">New Weight</th>
                   <th className="text-left p-4 font-semibold">Change</th>
                 </tr>
               </thead>
@@ -96,8 +95,8 @@ export default function PmpExamChangesPost() {
 
           <h3 className="text-xl font-bold text-navy mt-8 mb-3">New Question Formats</h3>
           <p className="text-gray-700 leading-relaxed mb-4">
-            The current PMP exam uses multiple-choice, drag-and-drop, matching, and hotspot questions.
-            The July 2026 update introduces new formats:
+            Earlier PMP exams used multiple-choice, drag-and-drop, matching, and hotspot questions.
+            The 2026 update added new formats:
           </p>
           <ul className="space-y-3 mb-6">
             {[
@@ -120,53 +119,36 @@ export default function PmpExamChangesPost() {
           <p className="text-gray-700 leading-relaxed mb-6">
             For the first time, the PMP exam will include content on artificial intelligence in project management
             and sustainability considerations in project delivery. These are first-generation content areas —
-            meaning there are limited proven study materials for them right now.
-            For candidates certifying before July 8, none of this content appears on the exam.
+            meaning there are still limited proven study materials for them.
+            Because these are newer content areas, current, up-to-date preparation matters more than ever.
           </p>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Should You Certify Before July 8?</h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            The decision depends on your timeline and situation. Here is how to think about it:
-          </p>
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-              <h4 className="font-bold text-green-800 mb-3">Certify Before July 8 If:</h4>
-              <ul className="space-y-2 text-green-700 text-sm">
-                <li>You can realistically complete 36 hours of education and prep in time</li>
-                <li>You want to use proven, five-year-tested study materials</li>
-                <li>You prefer a known, stable exam format</li>
-                <li>You are already tracking toward eligibility</li>
-              </ul>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-              <h4 className="font-bold text-blue-800 mb-3">Wait If:</h4>
-              <ul className="space-y-2 text-blue-700 text-sm">
-                <li>Your experience documentation is not ready</li>
-                <li>You cannot realistically prepare before July</li>
-                <li>Your organization prefers the updated curriculum</li>
-                <li>The new content areas align better with your work</li>
-              </ul>
-            </div>
-          </div>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">What This Means for Your Prep</h2>
           <p className="text-gray-700 leading-relaxed mb-6">
-            A PMP earned in June 2026 and one earned in September 2026 carry exactly the same credential.
-            Same letters after your name. Same salary impact. Same global recognition. The only difference is
-            what you studied and how certain you are of the exam format.
+            A PMP is a PMP — same letters after your name, same salary impact, same global recognition,
+            regardless of which version of the exam you sit. What matters is that you pass. The 2026 changes
+            simply mean your prep has to match the current exam: the heavier Business Environment domain,
+            the new question formats, and the AI and sustainability content areas.
+          </p>
+          <p className="text-gray-700 leading-relaxed mb-6">
+            That is exactly what mentor-led, up-to-date preparation is for. Studying from outdated materials —
+            or trying to self-pace through first-generation content with few proven resources — is where most
+            first-attempt failures come from.
           </p>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">What This Means for Current Cohorts</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">How Wiser Generations Prepares You</h2>
           <p className="text-gray-700 leading-relaxed mb-6">
-            Wiser Generations Int&apos;l is running April and May cohorts specifically designed to get students
-            exam-ready before July 8. The April cohort runs through June 30. The May cohort ends June 23.
-            Both are built to get you to the exam before the deadline — with Crystal&apos;s full mentor support
-            and the pass guarantee behind you.
+            Our cohorts are fully updated for the current exam — covering the new domain weights, the new question
+            formats, and the AI and sustainability content. Every cohort is built to get you exam-ready with
+            Crystal&apos;s full mentor support and the pass guarantee behind you, so you walk in prepared to pass
+            on your first try.
           </p>
 
           <div className="bg-navy text-white rounded-2xl p-8 mt-10">
-            <h3 className="text-xl font-bold mb-4">Ready to Certify Before July 8?</h3>
+            <h3 className="text-xl font-bold mb-4">Ready to Pass the Current PMP® Exam?</h3>
             <p className="text-gray-300 mb-6">
-              Book a free strategy call with Crystal. She will walk you through the April or May cohort schedule,
-              confirm your eligibility, and map your path to the exam before the format changes.
+              Book a free strategy call with Crystal. She will walk you through the current cohort schedule,
+              confirm your eligibility, and map your path to passing on your first attempt.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a href={CALENDLY} target="_blank" rel="noopener noreferrer"

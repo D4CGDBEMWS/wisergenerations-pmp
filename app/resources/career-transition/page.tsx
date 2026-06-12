@@ -263,7 +263,7 @@ export default function CareerTransitionPage() {
               <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Free guide</p>
               <h3 className="mt-2 text-lg font-bold text-slate-900">PMP® Exam Changes 2026</h3>
               <p className="mt-2 text-sm text-slate-600">
-                Critical reading if you&rsquo;re planning to certify before July 8, 2026.
+                Essential reading on what changed on the current PMP® exam.
               </p>
             </Link>
             <Link

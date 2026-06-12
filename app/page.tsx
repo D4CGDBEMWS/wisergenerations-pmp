@@ -24,16 +24,28 @@ const TESTIMONIALS = [
   },
 ]
 
-const COHORTS = [
-  { name: 'April Accelerator', dates: 'April 14 – June 30, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
-  { name: 'May Fast Track', dates: 'June 8 – June 26, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
-  { name: 'Fall 2026 Cohort', dates: 'September 2026', spots: 20, status: 'open', examBy: 'Enrolling now — reserve your spot' },
-]
+// Cohorts roll automatically every 2 months so the schedule never goes stale.
+// Pure server-side date math (no user input) — revalidated daily via ISR below.
+function getUpcomingCohorts() {
+  const fmt = (d: Date) => d.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+  const now = new Date()
+  // Next cohort opens the month after this one; the following runs two months later.
+  const first = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+  const second = new Date(now.getFullYear(), now.getMonth() + 3, 1)
+  return [
+    { name: `${fmt(first)} Cohort`, dates: fmt(first), label: fmt(first), spots: 12, status: 'open', examBy: 'Enrolling now — reserve your seat' },
+    { name: `${fmt(second)} Cohort`, dates: fmt(second), label: fmt(second), spots: 20, status: 'open', examBy: 'Planning ahead? Reserve your seat early' },
+  ]
+}
+
+// Refresh the rolling cohort schedule (and any date-derived content) once a day.
+export const revalidate = 86400
 
 export default function HomePage() {
+  const COHORTS = getUpcomingCohorts()
   return (
     <>
-      {/* Post-July-8 Banner */}
+      {/* Top announcement banner */}
       <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
         🎯 Mentor-led PMP® &amp; CAPM® prep with an 87% first-attempt pass rate.{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
@@ -47,7 +59,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-28 relative">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Wiser Generations Int'l</p>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Wiser Generations Int&apos;l</p>
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
                 <span className="text-gold">On the First Try.™</span>
@@ -143,7 +155,7 @@ export default function HomePage() {
           <img
             src="/HowWeDoIt_process_light.png"
             alt="How we do it: Learn, Practice, Certified, Get Job-Ready"
-            className="block w-full max-w-[1100px] h-auto mx-auto"
+            className="block w-full max-w-[1100px] h-auto mx-auto rounded-2xl shadow-sm ring-1 ring-gray-100"
           />
 
           {/* Social proof nudge below steps */}
@@ -278,7 +290,7 @@ export default function HomePage() {
                 ) : (
                   <Link href="/checkout"
                     className={`block w-full font-bold py-3 rounded-xl text-center transition-colors ${c.status === 'urgent' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-navy text-white hover:bg-blue-900'}`}>
-                    {c.status === 'urgent' ? '🔥 Enroll Now — Only ' + c.spots + ' Spots Left!' : c.status === 'open' ? '🗓 Reserve My Spot — Fall 2026' : 'Reserve My Spot'}
+                    {c.status === 'urgent' ? '🔥 Enroll Now — Only ' + c.spots + ' Spots Left!' : c.status === 'open' ? '🗓 Reserve My Spot — ' + c.label : 'Reserve My Spot'}
                   </Link>
                 )}
               </div>
@@ -425,7 +437,7 @@ export default function HomePage() {
             certification — and the prep that gets you there with confidence.
           </p>
           <div className="bg-navy/10 rounded-xl p-4 mb-6 max-w-lg mx-auto">
-            <p className="text-navy text-sm font-bold">🌐 Fall 2026 cohort — enrolling now</p>
+            <p className="text-navy text-sm font-bold">🌐 {COHORTS[0].label} cohort — enrolling now</p>
           </div>
           <div className="flex flex-wrap gap-4 justify-center mb-6">
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"

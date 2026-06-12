@@ -35,7 +35,7 @@ export default function TermsPage() {
           <p className="text-gray-700 leading-relaxed">
             By visiting or using wisergenerations.com (the "Site"), or by enrolling in any program
             offered through it, you agree to these Terms of Service and our{' '}
-            <Link href="/privacy" className="text-gold hover:underline">
+            <Link href="/privacy-policy" className="text-gold hover:underline">
               Privacy Policy
             </Link>
             . If you do not agree, please do not use the Site or enroll in any program.
@@ -212,7 +212,7 @@ export default function TermsPage() {
         <section className="border-t border-gray-200 pt-6 mt-10">
           <p className="text-sm text-gray-500">
             See also our{' '}
-            <Link href="/privacy" className="text-gold hover:underline font-medium">
+            <Link href="/privacy-policy" className="text-gold hover:underline font-medium">
               Privacy Policy
             </Link>
             .

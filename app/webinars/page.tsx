@@ -26,7 +26,7 @@ const upcomingWebinars = [
   {
     title: 'The PMP Exam Is Changing: What You Need to Know',
     date: 'On-Demand',
-    description: 'PMI confirmed significant changes to the PMP exam effective July 8, 2026. This recorded session breaks down every domain shift, new question type, and what it means for professionals certifying before or after the deadline.',
+    description: 'PMI made significant changes to the PMP exam effective July 8, 2026. This recorded session breaks down every domain shift, new question type, and what it means for your prep on the current exam.',
     tags: ['PMP', 'Exam Changes', 'On-Demand'],
     cta: 'Watch Recording'
   },
