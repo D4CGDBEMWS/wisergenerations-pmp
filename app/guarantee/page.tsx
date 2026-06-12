@@ -86,7 +86,7 @@ export default function GuaranteePage() {
           <p className="text-gray-300 text-xl leading-relaxed max-w-3xl mx-auto">
             Crystal stands behind her curriculum and her teaching. If you complete the program,
             do the work, and do not pass your PMP or CAPM exam — you restudy with her again at
-            no charge. No fine print. No runaround.
+            no charge. No gimmicks — just the clear eligibility terms below.
           </p>
           <div className="mt-10">
             <a
