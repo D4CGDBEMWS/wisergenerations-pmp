@@ -12,7 +12,7 @@ export default function CAPMPage() {
     <div className="bg-white">
 
       {/* Hero */}
-      <section className="bg-navy text-white py-20 px-4 sm:px-6 lg:px-8">
+      <section className="bg-brand-blue text-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">CAPM Certification Prep</p>
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6">
@@ -42,7 +42,7 @@ export default function CAPMPage() {
       </section>
 
       {/* Who it's for */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-paper">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-navy mb-8 text-center">Who the CAPM® Is For</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -54,8 +54,8 @@ export default function CAPMPage() {
               { Icon: Briefcase, title: 'Project Coordinators', desc: 'Coordinators and admins who support projects and want to formalize their PM knowledge.' },
               { Icon: ClipboardList, title: 'PMI Pathway Starters', desc: 'Anyone who wants a stepping stone on the path to earning the PMP® in the future.' },
             ].map(({ Icon, title, desc }) => (
-              <div key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gold/15 text-navy">
+              <div key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-line">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-leaf-soft text-leaf">
                   <Icon className="h-6 w-6" strokeWidth={1.75} />
                 </div>
                 <h3 className="font-bold text-navy mb-2">{title}</h3>
@@ -85,7 +85,7 @@ export default function CAPMPage() {
                 'Certificate of completion from Wiser Generations Int\'l',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-gold/20 text-gold flex items-center justify-center">
+                  <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-leaf-soft text-leaf flex items-center justify-center">
                     <Check className="h-3 w-3" strokeWidth={3} />
                   </span>
                   <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
@@ -93,7 +93,7 @@ export default function CAPMPage() {
               ))}
             </ul>
           </div>
-          <div className="bg-navy text-white rounded-2xl p-8">
+          <div className="bg-brand-blue text-white rounded-2xl p-8">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Investment</p>
             <p className="text-4xl font-bold mb-1">from $599</p>
             <p className="text-gray-300 text-sm mb-6">One-time investment. Payment plans available.</p>
@@ -127,12 +127,12 @@ export default function CAPMPage() {
       </section>
 
       {/* CAPM vs PMP */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-paper">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-navy mb-8 text-center">CAPM® vs. PMP® — Which Is Right for You?</h2>
-          <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+          <div className="overflow-x-auto rounded-2xl border border-line shadow-sm">
             <table className="w-full text-sm">
-              <thead className="bg-navy text-white">
+              <thead className="bg-brand-blue text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">Criteria</th>
                   <th className="px-6 py-4 text-center font-semibold">CAPM®</th>
@@ -168,7 +168,7 @@ export default function CAPMPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-navy text-white text-center">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-brand-blue text-white text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your PM Career?</h2>
           <p className="text-gray-300 mb-8 leading-relaxed">
