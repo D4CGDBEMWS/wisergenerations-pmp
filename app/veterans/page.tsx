@@ -120,8 +120,8 @@ export default function VeteransPage() {
             </div>
             <div className="sticky top-24">
               <img
-                src="/veterans-hero.jpg"
-                alt="Instructor mentoring a student one-on-one in a project management class"
+                src="/veterans-classroom.jpg"
+                alt="Military veterans attending a project management training session"
                 className="w-full rounded-xl object-cover mb-6"
                 style={{ maxHeight: '280px' }}
               />
