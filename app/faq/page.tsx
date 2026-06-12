@@ -63,7 +63,7 @@ const faqCategories = [
     questions: [
       {
         q: 'How much does the PMP program cost?',
-        a: 'The PMP Certification Prep program starts at $1,497. The CAPM Career Launcher starts at $997. Veterans receive a discounted rate starting at $797 for either program. Corporate packages are custom-priced based on team size and delivery format. All pricing is reviewed on your strategy call.'
+        a: 'The PMP Certification Prep program starts at $899. The CAPM Career Launcher starts at $599. Veterans receive a discounted rate starting at $797 for either program. Corporate packages are custom-priced based on team size and delivery format. All pricing is reviewed on your strategy call.'
       },
       {
         q: 'Are payment plans available?',

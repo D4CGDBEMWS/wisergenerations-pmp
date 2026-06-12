@@ -12,10 +12,6 @@ const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const VETERANS_FAQ = [
   {
-    q: 'Can I use my GI Bill® or VA education benefits for this program?',
-    a: 'Wiser Generations Int’l™ is not currently a GI Bill® approved facility, so direct VA tuition payment isn\u2019t available. However, many veterans use TA, employer L&D budgets, VR&E (Chapter 31) sponsorship, or workforce development grants. We provide a tuition justification letter and itemized invoice you can submit, and we walk every veteran through the available options during onboarding.',
-  },
-  {
     q: 'Should I pursue PMP® or CAPM® first as a transitioning veteran?',
     a: 'It depends on your service experience. If you led teams, ran missions, or managed operations for 36+ months as an E-5 or above (or as an officer), your experience usually qualifies you directly for PMP®. If you\u2019re newer to leadership or don\u2019t yet have documented "project leadership" hours, CAPM® is the faster on-ramp and PMP® comes next. Crystal will help you decide on a free 15-min call.',
   },
