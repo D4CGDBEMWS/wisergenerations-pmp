@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Veterans and the PMP: How Military Experience Maps to Certification | Wiser Generations',
+  title: 'Veterans and the PMP®: How Military Experience Maps to Certification | Wiser Generations',
   description: 'Military experience translates directly to PMP eligibility. Learn how to document your service for the PMI application, which roles qualify, and how the veteran cohort experience works.',
 }
 
@@ -19,7 +19,7 @@ export default function VeteransPmpPost() {
             <span className="text-gray-400 text-sm">Veterans</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Veterans and the PMP: How Military Experience Maps to Certification
+            Veterans and the PMP®: How Military Experience Maps to Certification
           </h1>
           <div className="flex items-center gap-4 text-gray-400 text-sm">
             <span>By Crystal Stewart, PMP</span>
@@ -41,7 +41,7 @@ export default function VeteransPmpPost() {
             </p>
           </div>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Why Veterans Are Uniquely Positioned for the PMP</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Why Veterans Are Uniquely Positioned for the PMP®</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             PMI defines a project manager as someone who leads a team to achieve defined objectives within
             scope, schedule, and budget constraints. By that definition, most veterans with leadership roles

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'CAPM Certification Prep',
+  title: 'CAPM® Certification Prep',
   description: 'Earn your CAPM certification with Wiser Generations Int\'l mentor-led training. Designed for career changers and early-career professionals. PMI-aligned curriculum.',
 }
 
@@ -16,7 +16,7 @@ export default function CAPMPage() {
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">CAPM Certification Prep</p>
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6">
             Start Your PM Career.<br />
-            <span className="text-gold">Earn Your CAPM.</span>
+            <span className="text-gold">Earn Your CAPM®.</span>
           </h1>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl leading-relaxed">
             The Certified Associate in Project Management (CAPM) is your entry point into the global project
@@ -43,7 +43,7 @@ export default function CAPMPage() {
       {/* Who it's for */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-navy mb-8 text-center">Who the CAPM Is For</h2>
+          <h2 className="text-3xl font-bold text-navy mb-8 text-center">Who the CAPM® Is For</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: '🎓', title: 'Recent Graduates', desc: 'BS or BA grads entering the workforce who want a recognized PM credential before their first role.' },
@@ -68,11 +68,11 @@ export default function CAPMPage() {
         <div className="max-w-4xl mx-auto grid gap-12 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">What You Get</p>
-            <h2 className="text-3xl font-bold text-navy mb-6">CAPM Career Launcher — What&apos;s Included</h2>
+            <h2 className="text-3xl font-bold text-navy mb-6">CAPM® Career Launcher — What&apos;s Included</h2>
             <ul className="space-y-4">
               {[
                 '23 PMI contact hours (satisfies CAPM eligibility requirement)',
-                'Live, mentor-led virtual sessions with Crystal Stewart, PMP',
+                'Live, mentor-led virtual sessions with Crystal Stewart, PMP®',
                 'Beginner-friendly curriculum aligned with the current CAPM exam',
                 'PMI application support — we help you complete the paperwork',
                 'Practice exam question bank with full answer explanations',
@@ -117,7 +117,7 @@ export default function CAPMPage() {
       {/* CAPM vs PMP */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-navy mb-8 text-center">CAPM vs. PMP — Which Is Right for You?</h2>
+          <h2 className="text-3xl font-bold text-navy mb-8 text-center">CAPM® vs. PMP® — Which Is Right for You?</h2>
           <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
             <table className="w-full text-sm">
               <thead className="bg-navy text-white">

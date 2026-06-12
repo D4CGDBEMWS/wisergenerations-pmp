@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'CAPM vs PMP: Which Certification Is Right for Your Career? | Wiser Generations',
+  title: 'CAPM® vs PMP®: Which Certification Is Right for Your Career? | Wiser Generations',
   description: 'CAPM or PMP? Learn the key differences in eligibility requirements, cost, salary impact, and career outcomes — and how to decide which PMI certification makes sense for where you are right now.',
 }
 
@@ -19,7 +19,7 @@ export default function CapmVsPmpPost() {
             <span className="text-gray-400 text-sm">Career Strategy</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            CAPM vs PMP: Which Certification Is Right for Your Career?
+            CAPM® vs PMP®: Which Certification Is Right for Your Career?
           </h1>
           <div className="flex items-center gap-4 text-gray-400 text-sm">
             <span>By Crystal Stewart, PMP</span>
@@ -72,7 +72,7 @@ export default function CapmVsPmpPost() {
             </table>
           </div>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">When the CAPM Makes Sense</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">When the CAPM® Makes Sense</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             The CAPM (Certified Associate in Project Management) is PMI&apos;s entry-level credential.
             It validates that you understand project management fundamentals — without requiring years of leading projects.
@@ -89,7 +89,7 @@ export default function CapmVsPmpPost() {
             exam prep. Because passing the CAPM exam is step one. Getting hired with it is step two.
           </p>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">When the PMP Is the Right Move</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">When the PMP® Is the Right Move</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             The PMP (Project Management Professional) is the gold standard PM credential worldwide.
             It is recognized by employers in every industry, in every country where project management is practiced.
@@ -106,7 +106,7 @@ export default function CapmVsPmpPost() {
             and the gap tends to grow over time as PMP holders move into larger program management and leadership roles.
           </p>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Can I Do CAPM Now and PMP Later?</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Can I Do CAPM® Now and PMP® Later?</h2>
           <p className="text-gray-700 leading-relaxed mb-6">
             Absolutely — and many professionals do exactly this. The CAPM establishes your PMI credential and
             membership in the PM community. As you gain experience, you build toward the PMP.

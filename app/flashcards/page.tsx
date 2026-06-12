@@ -15,7 +15,7 @@ const cards: Card[] = [
   { term:'Program', category:'Core Concepts', definition:'A group of related projects, subsidiary programs, and program activities managed in a coordinated manner to obtain benefits not available from managing them individually.' },
   { term:'Portfolio', category:'Core Concepts', definition:'Projects, programs, subsidiary portfolios, and operations managed as a group to achieve strategic objectives. Portfolio components are not necessarily interdependent or directly related.' },
   { term:'Project Charter', category:'Core Concepts', acronym:'PC', definition:'A document issued by the project initiator or sponsor that formally authorizes the existence of a project and provides the project manager with the authority to apply organizational resources.' },
-  { term:'Project Management Plan', category:'Core Concepts', acronym:'PMP', definition:'The document that describes how the project will be executed, monitored, controlled, and closed. Integrates all subsidiary plans and baselines.' },
+  { term:'Project Management Plan', category:'Core Concepts', acronym:'PMP®', definition:'The document that describes how the project will be executed, monitored, controlled, and closed. Integrates all subsidiary plans and baselines.' },
   { term:'Work Breakdown Structure', category:'Core Concepts', acronym:'WBS', definition:'A hierarchical decomposition of the total scope of work to be carried out by the project team. The lowest level of the WBS is the work package.' },
   { term:'Deliverable', category:'Core Concepts', definition:'Any unique and verifiable product, result, or capability to perform a service that is required to be produced to complete a process, phase, or project.' },
   { term:'Milestone', category:'Core Concepts', definition:'A significant point or event in a project. Milestones have zero duration and represent completion of a major deliverable or phase. Used to track project progress.' },
@@ -214,7 +214,7 @@ export default function FlashcardsPage() {
       <div className="bg-navy text-white py-12 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">PMBOK Glossary</p>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">PMP Flashcards</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">PMP® Flashcards</h1>
           <p className="text-gray-300 text-lg">{cards.length} terms from the PMBOK Guide. Flip cards, track mastery, filter by category.</p>
         </div>
       </div>

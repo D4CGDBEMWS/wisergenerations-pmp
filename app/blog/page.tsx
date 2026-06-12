@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Blog — PM Certification Insights | Wiser Generations Int\'l',
-  description: 'Project management certification tips, PMP exam insights, career advice for veterans and career transitioners, and updates on PMI exam changes from Crystal Stewart, PMP.',
+  description: 'Project management certification tips, PMP® exam insights, career advice for veterans and career transitioners, and updates on PMI exam changes from Crystal Stewart, PMP.',
 }
 
 const posts = [
@@ -18,7 +18,7 @@ const posts = [
   },
   {
     slug: 'capm-vs-pmp-which-certification',
-    title: 'CAPM vs PMP: Which Certification Is Right for Your Career?',
+    title: 'CAPM® vs PMP: Which Certification Is Right for Your Career?',
     excerpt: 'The CAPM and PMP are both PMI certifications — but they serve very different career stages. Here is how to decide which one makes sense for where you are right now.',
     category: 'Career Strategy',
     readTime: '6 min read',

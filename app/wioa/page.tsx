@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'WIOA-Funded PMP and CAPM Training in Georgia | Enterprise Academy™',
+  title: 'WIOA-Funded PMP® and CAPM® Training in Georgia | Enterprise Academy',
   description:
     'Georgia WIOA-eligible PMP and CAPM certification training. Veteran-founded, PMI-aligned, live instructor-led. ETPL application currently in review.',
 }
@@ -58,7 +58,7 @@ export default function WioaPage() {
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-navy mb-4 text-center">
-            How WIOA Works for PMP/CAPM Training
+            How WIOA Works for PMP®/CAPM® Training
           </h2>
           <p className="text-gray-600 text-center max-w-2xl mx-auto mb-12">
             WIOA (Workforce Innovation and Opportunity Act) funds approved training for eligible

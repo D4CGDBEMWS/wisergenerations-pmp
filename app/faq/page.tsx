@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'FAQ — PMP & CAPM Certification Questions | Wiser Generations Int\'l',
+  title: 'FAQ — PMP® & CAPM® Certification Questions | Wiser Generations Int\'l',
   description: 'Answers to the most common questions about PMP and CAPM certification prep, exam eligibility, payment plans, veterans benefits, and the Wiser Generations program.',
 }
 

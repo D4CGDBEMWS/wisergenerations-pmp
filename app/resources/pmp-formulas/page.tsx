@@ -5,10 +5,10 @@ import ResourceCTA from '@/components/marketing/ResourceCTA'
 export const metadata: Metadata = {
   title: 'PMP® Formulas Reference — Free PMP® Exam Cheat Sheet',
   description:
-    'The 12 most-tested PMP® formulas with purpose, calculation, and when-to-use notes. Free PMP® exam cheat sheet from Wiser Generations Int’l™.',
+    'The 12 most-tested PMP® formulas with purpose, calculation, and when-to-use notes. Free PMP® exam cheat sheet from Wiser Generations Int’l.',
   alternates: { canonical: '/resources/pmp-formulas' },
   openGraph: {
-    title: 'PMP® Formulas Reference — Wiser Generations Int’l™',
+    title: 'PMP® Formulas Reference — Wiser Generations Int’l',
     description:
       'Free PMP® formula cheat sheet covering EVM, PERT, communication channels, and more.',
     url: 'https://wisergenerations.com/resources/pmp-formulas',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 }
 
 // ---------------------------------------------------------------------------
-// PMP Formulas — SEO pillar page targeting "PMP formulas" / "PMP cheat sheet"
+// PMP® Formulas — SEO pillar page targeting "PMP formulas" / "PMP cheat sheet"
 // long-tail searches.  No gating; CTAs funnel into Study Access ($47/mo).
 // ---------------------------------------------------------------------------
 
@@ -260,7 +260,7 @@ export default function PmpFormulasPage() {
               <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Hub</p>
               <h3 className="mt-2 text-lg font-bold text-slate-900">All free PMP® resources</h3>
               <p className="mt-2 text-sm text-slate-600">
-                Browse every free guide, reference, and tool from Wiser Generations Int’l™.
+                Browse every free guide, reference, and tool from Wiser Generations Int’l.
               </p>
             </Link>
           </div>
@@ -277,8 +277,8 @@ export default function PmpFormulasPage() {
             headline: 'The 12 PMP® formulas you must know for the exam',
             description:
               'Free PMP® formula reference covering EVM, forecasting, PERT, communication channels, and EMV.',
-            author: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
-            publisher: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
+            author: { '@type': 'Organization', name: 'Wiser Generations Int’l' },
+            publisher: { '@type': 'Organization', name: 'Wiser Generations Int’l' },
             mainEntityOfPage: 'https://wisergenerations.com/resources/pmp-formulas',
           }),
         }}

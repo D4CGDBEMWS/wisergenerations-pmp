@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Wiser Generations™',
+  title: 'Terms of Service — Wiser Generations',
   description:
-    'Terms governing use of the Wiser Generations™ website and enrollment in its certification training programs.',
+    'Terms governing use of the Wiser Generations website and enrollment in its certification training programs.',
   robots: { index: true, follow: true },
 }
 
@@ -45,9 +45,9 @@ export default function TermsPage() {
         <section>
           <h2 className="text-2xl font-bold text-navy">2. Who we are</h2>
           <p className="text-gray-700 leading-relaxed">
-            Wiser Generations™ is an independent project management training program operated as
-            part of Enterprise Academy™, based in Smyrna, Georgia (Metro Atlanta), with virtual
-            programs delivered nationwide. Wiser Generations™ and Enterprise Academy™ are not
+            Wiser Generations is an independent project management training program operated as
+            part of Enterprise Academy, based in Smyrna, Georgia (Metro Atlanta), with virtual
+            programs delivered nationwide. Wiser Generations and Enterprise Academy are not
             affiliated with, endorsed by, or sponsored by the Project Management Institute, Inc.
             ("PMI"). PMP®, CAPM®, PMI-ACP®, PMBOK®, and related marks are registered marks of PMI.
           </p>
@@ -129,7 +129,7 @@ export default function TermsPage() {
           <h2 className="text-2xl font-bold text-navy">7. Intellectual property</h2>
           <p className="text-gray-700 leading-relaxed">
             All Site content, course materials, study guides, recordings, and the Wiser
-            Generations™ and Enterprise Academy™ marks are owned by us or our licensors. You may
+            Generations and Enterprise Academy marks are owned by us or our licensors. You may
             use the materials for your own personal study and exam preparation. You may not copy,
             distribute, sublicense, or create derivative works without written permission. PMI marks
             referenced anywhere on the Site remain the property of PMI.
@@ -161,7 +161,7 @@ export default function TermsPage() {
           <h2 className="text-2xl font-bold text-navy">10. Limitation of liability</h2>
           <p className="text-gray-700 leading-relaxed">
             <strong>[PLACEHOLDER — review with counsel.]</strong> To the fullest extent permitted by
-            law, in no event shall Wiser Generations™, Enterprise Academy™, or any of our
+            law, in no event shall Wiser Generations, Enterprise Academy, or any of our
             affiliates, officers, employees, or agents be liable for any indirect, incidental,
             special, consequential, or punitive damages, including loss of profits, data, or
             goodwill, arising out of or in connection with your use of the Site or any program. Our
@@ -173,7 +173,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-2xl font-bold text-navy">11. Indemnification</h2>
           <p className="text-gray-700 leading-relaxed">
-            You agree to defend and indemnify Wiser Generations™ and Enterprise Academy™ from any
+            You agree to defend and indemnify Wiser Generations and Enterprise Academy from any
             claims arising out of your breach of these Terms, your violation of any law, or your
             misuse of the Site or course materials.
           </p>

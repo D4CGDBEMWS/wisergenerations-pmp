@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Is the PMP Worth It in 2026? Salary Data and Career ROI | Wiser Generations',
+  title: 'Is the PMP® Worth It in 2026? Salary Data and Career ROI | Wiser Generations',
   description: 'Does the PMP certification actually pay off? We break down the salary data, career outcomes, and return on investment for PMP certification in 2026.',
 }
 
@@ -19,7 +19,7 @@ export default function PmpSalaryRoiPost() {
             <span className="text-gray-400 text-sm">Career Strategy</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Is the PMP Worth It in 2026? Salary Data and Career ROI
+            Is the PMP® Worth It in 2026? Salary Data and Career ROI
           </h1>
           <div className="flex items-center gap-4 text-gray-400 text-sm">
             <span>By Crystal Stewart, PMP</span>
@@ -64,7 +64,7 @@ export default function PmpSalaryRoiPost() {
             Figures represent medians and vary by location, industry, and experience level.
           </p>
 
-          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Why the PMP Commands a Premium</h2>
+          <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Why the PMP® Commands a Premium</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             The salary premium is not just about the letters. The PMP is a signal that carries weight
             because it is genuinely hard to earn — you need real experience, formal education hours,
@@ -102,7 +102,7 @@ export default function PmpSalaryRoiPost() {
             {[
               { group: 'Experienced PMs without a credential', body: 'If you have been doing the work but lack the certification, the PMP is low-hanging fruit. You likely qualify, you already understand the concepts, and a passing score immediately upgrades your positioning in every future job application.' },
               { group: 'Veterans transitioning to civilian PM roles', body: 'Military leadership experience maps well to PMP eligibility — but civilian employers often need the credential as a translation layer. The PMP bridges the gap between your demonstrated capability and what the job posting requires.' },
-              { group: 'Career transitioners entering PM', body: 'For people pivoting into project management from another field, the CAPM or PMP credential provides immediate credibility and access to roles that would otherwise require years of PM-specific experience to unlock.' },
+              { group: 'Career transitioners entering PM', body: 'For people pivoting into project management from another field, the CAPM® or PMP credential provides immediate credibility and access to roles that would otherwise require years of PM-specific experience to unlock.' },
             ].map((item) => (
               <div key={item.group} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                 <h3 className="font-bold text-navy mb-2">{item.group}</h3>

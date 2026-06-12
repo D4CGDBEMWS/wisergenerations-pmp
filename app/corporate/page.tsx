@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Corporate PM Training | Wiser Generations Int\'l',
-  description: 'Custom PMP and CAPM training for corporate teams. PMI-aligned curriculum tailored to your industry, delivered virtually or on-site in Metro Atlanta. Volume pricing for 5+ employees.',
+  description: 'Custom PMP® and CAPM® training for corporate teams. PMI-aligned curriculum tailored to your industry, delivered virtually or on-site in Metro Atlanta. Volume pricing for 5+ employees.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -100,7 +100,7 @@ export default function CorporatePage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Corporate PM Training</p>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">Train Your Team to PMP Standard</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">Train Your Team to PMP® Standard</h1>
               <p className="text-gray-300 text-lg leading-relaxed mb-8">
                 Custom PM training and certification prep for corporate teams. PMI-aligned, industry-tailored,
                 and delivered by a practitioner with 20+ years of enterprise experience. Virtual or on-site in Metro Atlanta.

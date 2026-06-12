@@ -49,7 +49,7 @@ export default function FreeGuidePage() {
       <nav className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-slate-900">
-            ← Wiser Generations Int’l™
+            ← Wiser Generations Int’l
           </Link>
         </div>
       </nav>
@@ -100,7 +100,7 @@ export default function FreeGuidePage() {
               <div>
                 <p className="text-sm font-semibold text-slate-900">Crystal Stewart, PMP®</p>
                 <p className="text-xs text-slate-500">
-                  The Project Management Evangelist™ · Founder, Enterprise Academy™
+                  The Project Management Evangelist™ · Founder, Enterprise Academy
                 </p>
               </div>
             </div>

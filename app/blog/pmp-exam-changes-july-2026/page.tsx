@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'PMP Exam Changes July 2026: Everything You Need to Know | Wiser Generations',
+  title: 'PMP® Exam Changes July 2026: Everything You Need to Know | Wiser Generations',
   description: 'PMI confirmed major changes to the PMP exam effective July 8, 2026. New domain weights, AI and sustainability content, new question formats. Here is what every aspiring PMP needs to know.',
 }
 
@@ -21,7 +21,7 @@ export default function PmpExamChangesPost() {
             <span className="text-gray-400 text-sm">Exam Updates</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            PMP Exam Changes July 2026: Everything You Need to Know
+            PMP® Exam Changes July 2026: Everything You Need to Know
           </h1>
           <div className="flex items-center gap-4 text-gray-400 text-sm">
             <span>By Crystal Stewart, PMP</span>
@@ -189,7 +189,7 @@ export default function PmpExamChangesPost() {
           <h3 className="text-xl font-bold text-navy mb-6">More Articles</h3>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { href: '/blog/capm-vs-pmp-which-certification', title: 'CAPM vs PMP: Which Certification Is Right for Your Career?', cat: 'Career Strategy' },
+              { href: '/blog/capm-vs-pmp-which-certification', title: 'CAPM® vs PMP: Which Certification Is Right for Your Career?', cat: 'Career Strategy' },
               { href: '/blog/veterans-pmp-military-experience', title: 'Veterans and the PMP: How Military Experience Maps to Certification', cat: 'Veterans' },
               { href: '/blog/pmp-salary-roi-2026', title: 'Is the PMP Worth It in 2026? Salary Data and Career ROI', cat: 'Career Strategy' }
             ].map((post) => (
