@@ -87,13 +87,21 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/10 pt-8">
+        <div className="border-t border-white/10 pt-8 space-y-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-xs">&copy; {new Date().getFullYear()} Wiser Generations Int&apos;l. An Enterprise Academy Program. All rights reserved.</p>
             <p className="text-gray-600 text-xs text-center md:text-right max-w-md">
               PMP&reg;, CAPM&reg;, and PMI&reg; are registered marks of the Project Management Institute, Inc. Wiser Generations Int&apos;l is not affiliated with PMI.
             </p>
           </div>
+          <p className="text-gray-600 text-[11px] leading-relaxed text-center md:text-left max-w-4xl">
+            Individual results vary. The 87% first-attempt pass rate, &quot;500+ professionals trained,&quot; and similar
+            figures reflect historical results from prior students and are not a guarantee of your outcome. Salary
+            and earnings figures are general industry data, not a promise of income or employment. Testimonials
+            reflect individual experiences and may not be typical. See our{' '}
+            <Link href="/terms" className="underline hover:text-gold">Terms of Service</Link> and{' '}
+            <Link href="/guarantee" className="underline hover:text-gold">Pass Guarantee</Link> for details.
+          </p>
         </div>
 
       </div>

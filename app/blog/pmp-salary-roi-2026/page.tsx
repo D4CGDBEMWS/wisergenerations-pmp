@@ -61,7 +61,9 @@ export default function PmpSalaryRoiPost() {
           </div>
           <p className="text-gray-500 text-xs mb-8 italic">
             Source: PMI Earning Power: Project Management Salary Survey and industry salary databases.
-            Figures represent medians and vary by location, industry, and experience level.
+            Figures represent medians and vary by location, industry, and experience level. These are
+            general industry data for informational purposes only and are not a promise or guarantee of
+            income or employment. Individual results vary.
           </p>
 
           <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Why the PMP® Commands a Premium</h2>
