@@ -60,7 +60,7 @@ export default function CapmVsPmpPost() {
                   ['Exam Duration', '3 hours', '4 hours'],
                   ['Salary Impact', 'Entry-level lift', 'Significant (avg +25% over non-certified PMs)'],
                   ['Best For', 'Career transitioners, early career', 'Working PMs with experience'],
-                  ['WG Program Cost', 'From $997', 'From $1,497'],
+                  ['WG Program Cost', 'From $599', 'From $899'],
                 ].map(([factor, capm, pmp]) => (
                   <tr key={factor} className="border-b border-gray-200 even:bg-white">
                     <td className="p-4 font-medium text-navy">{factor}</td>

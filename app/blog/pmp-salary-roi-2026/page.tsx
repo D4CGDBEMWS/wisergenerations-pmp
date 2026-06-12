@@ -80,8 +80,8 @@ export default function PmpSalaryRoiPost() {
 
           <h2 className="text-2xl font-bold text-navy mt-10 mb-4">Calculating Your ROI</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            A PMP prep program at Wiser Generations starts at $1,497. The PMI exam fee for members is $405.
-            The PMI membership itself is $139/year. Total initial investment is roughly $2,000–$2,200.
+            A PMP prep program at Wiser Generations starts at $899. The PMI exam fee for members is $405.
+            The PMI membership itself is $139/year. Total initial investment is roughly $1,400–$1,500.
           </p>
           <p className="text-gray-700 leading-relaxed mb-4">
             If the PMP adds $10,000 to your annual salary — a conservative estimate based on available data —

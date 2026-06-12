@@ -37,7 +37,7 @@ const faqCategories = [
     questions: [
       {
         q: 'What is included in the PMP Certification Prep program?',
-        a: 'The program includes 36 hours of PMI-aligned education delivered in live virtual cohort sessions, access to a 500+ question practice exam bank, a personalized study plan, exam application support, and mentor access to Crystal throughout the cohort. The program also includes the pass guarantee — if you complete it and do not pass, you restudy free.'
+        a: 'The program includes 36 hours of PMI-aligned education delivered in live virtual cohort sessions, access to a 694-question practice exam bank, a personalized study plan, exam application support, and mentor access to Crystal throughout the cohort. The program also includes the pass guarantee — if you complete it and do not pass, you restudy free.'
       },
       {
         q: 'Is this live or self-paced?',
@@ -63,7 +63,7 @@ const faqCategories = [
     questions: [
       {
         q: 'How much does the PMP program cost?',
-        a: 'The PMP Certification Prep program starts at $1,497. The CAPM Career Launcher starts at $997. Veterans receive a discounted rate starting at $797 for either program. Corporate packages are custom-priced based on team size and delivery format. All pricing is reviewed on your strategy call.'
+        a: 'The PMP Certification Prep program starts at $899. The CAPM Career Launcher starts at $599. Veterans receive a discounted rate starting at $797 for either program. Corporate packages are custom-priced based on team size and delivery format. All pricing is reviewed on your strategy call.'
       },
       {
         q: 'Are payment plans available?',

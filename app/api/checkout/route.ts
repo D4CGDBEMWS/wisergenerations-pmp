@@ -11,12 +11,12 @@ import { verifyTurnstile } from '@/lib/turnstile'
 const PROGRAMS = {
   'pmp-prep': {
     name: 'PMP\u00ae Certification Prep',
-    amount: 149700,
+    amount: 89900,
     description: "PMP\u00ae Certification Prep \u2014 Wiser Generations Int\u2019l\u2122",
   },
   'capm-launcher': {
     name: 'CAPM\u00ae Career Launcher',
-    amount: 99700,
+    amount: 59900,
     description: "CAPM\u00ae Career Launcher \u2014 Wiser Generations Int\u2019l\u2122",
   },
   'veterans-pathway': {

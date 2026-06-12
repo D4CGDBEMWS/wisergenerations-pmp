@@ -27,7 +27,7 @@ const TESTIMONIALS = [
 const COHORTS = [
   { name: 'April Accelerator', dates: 'April 14 – June 30, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
   { name: 'May Fast Track', dates: 'June 8 – June 26, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
-  { name: 'PMBOK® 8 Cohort — Fall 2026', dates: 'September 2026', spots: 20, status: 'open', examBy: 'First 8th-edition-native cohort — reserve your spot' },
+  { name: 'Fall 2026 Cohort', dates: 'September 2026', spots: 20, status: 'open', examBy: 'Enrolling now — reserve your spot' },
 ]
 
 const HOW_IT_WORKS = [
@@ -35,14 +35,14 @@ const HOW_IT_WORKS = [
     step: '01',
     icon: '📞',
     title: 'Book a Free Strategy Call',
-    desc: 'Tell Crystal where you are and where you want to go. She will map your fastest path to PMP or CAPM certification — no pressure, no pitch.',
+    desc: 'Tell us where you are and where you want to go. Crystal and team will map your fastest path to PMP or CAPM certification — no pressure, no pitch.',
     cta: { label: 'Book Your Call →', href: CALENDLY, external: true },
   },
   {
     step: '02',
     icon: '📋',
     title: 'Get Your Custom Study Plan',
-    desc: 'Based on your schedule, background, and exam date, Crystal builds a personalized roadmap. Live cohort sessions, practice exams, and 1:1 support included.',
+    desc: 'Based on your schedule, background, and exam date, our mentors build a personalized roadmap. Live cohort sessions, practice exams, and 1:1 support included.',
     cta: null,
   },
   {
@@ -59,9 +59,9 @@ export default function HomePage() {
     <>
       {/* Post-July-8 Banner */}
       <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
-        🆕 The PMP® exam changed July 8, 2026 — Enterprise Academy is building the first PMBOK® 8-native cohort.{' '}
+        🎯 Mentor-led PMP® &amp; CAPM® prep with an 87% first-attempt pass rate.{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
-          Reserve your Fall 2026 spot →
+          Book a free strategy call →
         </a>
       </div>
 
@@ -74,13 +74,13 @@ export default function HomePage() {
               <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations Int'l™</p>
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
-                <span className="text-gold">Built for PMBOK® 8.™</span>
+                <span className="text-gold">On the First Try.™</span>
               </h1>
-              <p className="text-gray-400 text-base italic mb-6">The only provider rebuilding from the ground up — not retrofitting 7th-edition slides.</p>
+              <p className="text-gray-400 text-base italic mb-6">Preparing you to sit confidently and pass the exam on the first try.</p>
               <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-6 max-w-2xl">
-                The PMP® exam changed July 8, 2026. Enterprise Academy™ is the first provider building
-                8th-edition-native content from day one — new AI &amp; sustainability modules, new question
-                formats, and new case scenarios. Mentor-led. PMI-aligned. Crystal Stewart, PMP®.
+                PMI-aligned prep that gets working professionals exam-ready with confidence. Live cohorts,
+                realistic practice, and 1:1 support from Crystal and team — built around a single goal:
+                you pass on your first attempt.
               </p>
               {/* Stat strip — social proof immediately under headline */}
               <div className="flex flex-wrap gap-6 mb-6">
@@ -250,18 +250,18 @@ export default function HomePage() {
                 📥 Free Download — No Credit Card Needed
               </div>
               <h2 className="text-3xl font-bold text-navy mb-3">
-                Get the Free Guide:<br/>"The PMP® Exam Is Changing"
+                Get the Free Guide:<br/>"Your PMP® Exam Game Plan"
               </h2>
               <p className="text-gray-600 leading-relaxed mb-5">
-                PMI confirmed the exam changes July 8, 2026. This free 9-page guide breaks down every
-                domain shift, new question type, and new content area — so you can decide your path with confidence.
+                A free 9-page guide to the PMP® exam — every domain, question type, and content area —
+                so you can plan your prep and choose your path with confidence.
               </p>
               <ul className="space-y-2 mb-6">
                 {[
                   'Domain weights: People 42%→33%, Business Env 8%→26%',
                   'New question formats — case sets, graphics, pull-down lists',
                   'AI & Sustainability — what you need to know',
-                  'Decision table: should YOU certify before July 8?',
+                  'Decision guide: is the PMP® or CAPM® right for you?',
                   'Cohort dates, inclusions & real graduate testimonials',
                 ].map(item => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
@@ -280,7 +280,7 @@ export default function HomePage() {
                 <p className="text-gold text-xs font-bold uppercase tracking-widest mb-2">Free Guide</p>
                 <div className="bg-gold/20 border border-gold/40 rounded-xl p-4 mb-4">
                   <p className="text-white font-bold text-xl leading-snug mb-1">
-                    The PMP® Exam Is Changing July 8, 2026
+                    Your PMP® Exam Game Plan
                   </p>
                   <p className="text-gray-400 text-sm">What Every Aspiring PMP® Needs to Know</p>
                 </div>
@@ -308,7 +308,7 @@ export default function HomePage() {
           <div className="text-center mb-8">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Act Now</p>
             <h2 className="text-2xl font-bold text-navy">Cohort Schedule — Current &amp; Upcoming</h2>
-            <p className="text-gray-600 mt-2">May Fast Track enrollment is closed. Our first PMBOK® 8-native cohort opens Fall 2026 — reserve your spot now.</p>
+            <p className="text-gray-600 mt-2">Reserve your seat in an upcoming cohort — spots are limited to keep classes small and mentor-led.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {COHORTS.map((c) => (
@@ -339,7 +339,7 @@ export default function HomePage() {
             ))}
           </div>
           <p className="text-center text-xs text-gray-400 mt-4">
-            * Spots are limited to maintain cohort quality. Book a call to confirm availability.
+            * Spots are limited to maintain cohort quality.
           </p>
         </div>
       </section>
@@ -366,14 +366,14 @@ export default function HomePage() {
       <section className="py-16 bg-navy text-white">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-2">Why Choose Enterprise Academy for PMBOK® 8?</h2>
-            <p className="text-gray-400 text-sm">The exam changed July 8. Here is why 8th-edition-native prep matters.</p>
+            <h2 className="text-3xl font-bold mb-2">Why Students Choose Enterprise Academy</h2>
+            <p className="text-gray-400 text-sm">Mentor-led prep built around one goal: passing on your first attempt.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
             {[
-              { icon: '📚', title: '8th-Edition Native', desc: 'Every module, question, and case scenario built for PMBOK® 8 from day one — not retrofitted 7th-edition content.' },
-              { icon: '🎯', title: 'New Format Ready', desc: 'AI, sustainability, case sets, graphics, and pull-down list questions — built in from the start, not bolted on.' },
-              { icon: '🏆', title: 'Same Credential', desc: 'A PMP® earned after July 8 carries the same global recognition and salary impact. Enterprise Academy gets you there faster.' },
+              { icon: '📚', title: 'Mentor-Led', desc: "Live cohorts and 1:1 support from Crystal and team — you're never studying alone." },
+              { icon: '🎯', title: 'Realistic Practice', desc: 'A 694-question bank, full-length mock exam, and every current question format, so exam day feels familiar.' },
+              { icon: '🏆', title: 'Pass Guarantee', desc: "Crystal and team coach you until you pass — no extra charge, no fine print. Our 87% first-attempt rate means most never need it." },
             ].map(item => (
               <div key={item.title} className="bg-white/10 hover:bg-white/15 transition-colors rounded-2xl p-8 border border-white/10">
                 <p className="text-4xl mb-4">{item.icon}</p>
@@ -391,27 +391,6 @@ export default function HomePage() {
               className="shrink-0 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors whitespace-nowrap">
               Get the Free Guide →
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* What Enterprise Academy Is Building */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Now Building for PMBOK® 8</p>
-            <h2 className="text-3xl font-bold text-navy mb-4">What Happens After July 8?</h2>
-          </div>
-          <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
-            <p>When the PMP exam transitions to PMBOK&reg; 8 on July 9, 2026, most providers will be retrofitting their 7th-edition content&mdash;updating slide decks and hoping students don&apos;t notice the legacy framework underneath.</p>
-            <p>Enterprise Academy is rebuilding from the ground up for PMBOK 8. Every module, every practice question, every case scenario. Built 8th-edition-native from day one.</p>
-            <p>If you&apos;re choosing a provider for post-July 2026 exam prep, the question isn&apos;t who has the biggest brand. It&apos;s who rebuilt versus retrofitted.</p>
-          </div>
-          <div className="mt-10 text-center">
-            <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-              className="inline-block bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
-              Reserve Your Spot in the First PMBOK® 8-Native Cohort — Fall 2026
-            </a>
           </div>
         </div>
       </section>
@@ -462,8 +441,8 @@ export default function HomePage() {
               <div className="text-4xl mb-4">🎖️</div>
               <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
               <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                You have managed missions under pressure. Now translate that into a PMP® credential before the exam changes.
-                Veteran-discounted tuition. Veteran peer cohort. VA benefit guidance included.
+                You have managed missions under pressure. Now translate that into a PMP® credential.
+                Veteran-discounted tuition. Veteran peer cohort.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/veterans" className="bg-gold text-navy font-bold px-8 py-3 rounded-lg hover:bg-amber-400 transition-colors">
@@ -494,20 +473,20 @@ export default function HomePage() {
       {/* Final CTA */}
       <section className="py-16 bg-gold">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">The Exam Changed. Your Opportunity Hasn’t.</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">Ready to Pass on Your First Try?</h2>
           <p className="text-navy/70 mb-4 text-lg">
-            Enterprise Academy™ is rebuilding from the ground up for PMBOK® 8 — the only provider built 8th-edition-native.
-            Book a free call with Crystal today. She will map your fastest path to certified.
+            Book a free call with Crystal today. She&apos;ll map your fastest path to PMP® or CAPM®
+            certification — and the prep that gets you there with confidence.
           </p>
           <div className="bg-navy/10 rounded-xl p-4 mb-6 max-w-lg mx-auto">
-            <p className="text-navy text-sm font-bold">🌐 Fall 2026 PMBOK® 8 cohort — first 8th-edition-native prep</p>
+            <p className="text-navy text-sm font-bold">🌐 Fall 2026 cohort — enrolling now</p>
           </div>
           <div className="flex flex-wrap gap-4 justify-center mb-6">
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
               className="bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
               Book Your Free Call Today
             </a>
-            <Link href="/enroll"
+            <Link href="/programs"
               className="border-2 border-navy text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors text-lg">
               View All Programs
             </Link>

@@ -5,16 +5,12 @@ import Faq from '@/components/marketing/Faq'
 
 export const metadata: Metadata = {
   title: 'Veterans PM Pathway — PMP® & CAPM® for Military Veterans',
-  description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition, peer cohort, VA benefit guidance. Enterprise Academy™.',
+  description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition and a veteran peer cohort. Enterprise Academy™.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const VETERANS_FAQ = [
-  {
-    q: 'Can I use my GI Bill® or VA education benefits for this program?',
-    a: 'Wiser Generations Int’l™ is not currently a GI Bill® approved facility, so direct VA tuition payment isn\u2019t available. However, many veterans use TA, employer L&D budgets, VR&E (Chapter 31) sponsorship, or workforce development grants. We provide a tuition justification letter and itemized invoice you can submit, and we walk every veteran through the available options during onboarding.',
-  },
   {
     q: 'Should I pursue PMP® or CAPM® first as a transitioning veteran?',
     a: 'It depends on your service experience. If you led teams, ran missions, or managed operations for 36+ months as an E-5 or above (or as an officer), your experience usually qualifies you directly for PMP®. If you\u2019re newer to leadership or don\u2019t yet have documented "project leadership" hours, CAPM® is the faster on-ramp and PMP® comes next. Crystal will help you decide on a free 15-min call.',
@@ -121,7 +117,6 @@ export default function VeteransPage() {
                 {[
                   { icon: '📋', title: 'Military-to-PM Skills Translation Guide', body: 'A personalized document mapping your MOS/rate and service experience to PMI competency areas. Use this in interviews and on your resume.' },
                   { icon: '📚', title: 'PMP® or CAPM® Prep (Your Choice)', body: 'Full certification prep course with live study sessions, practice exams, and Crystal as your mentor. You choose the credential that fits your timeline.' },
-                  { icon: '💰', title: 'VA Benefit Compatibility Guidance', body: 'We help you understand which VA education benefits may apply to your tuition. Not a guarantee — but we navigate it with you.' },
                   { icon: '👥', title: 'Veteran Peer Cohort', body: 'Study and grow alongside other veterans who understand your background, your communication style, and your mission-first mindset.' },
                   { icon: '💼', title: 'Employer Introduction Program', body: "Access to Enterprise Academy's network of PM-hiring employers who actively seek veteran talent. Resume review and interview prep included." },
                   { icon: '🎖️', title: 'Veteran-Discounted Tuition', body: 'Discounted rate for all honorably discharged veterans. Bring your DD-214 verification at enrollment.' },
