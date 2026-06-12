@@ -214,7 +214,7 @@ function CheckoutSuccessContent() {
 
 // ---------------------------------------------------------------------------
 // StudyAccessSuccess — dedicated post-subscription welcome view for the
-// $47/mo Wiser Generations Int’l Study Access tier. Highlights the monthly PM
+// $49/mo Wiser Generations Int’l Study Access tier. Highlights the monthly PM
 // templates perk and points members to the templates landing page.
 // ---------------------------------------------------------------------------
 function StudyAccessSuccess() {
@@ -235,10 +235,24 @@ function StudyAccessSuccess() {
                 You&rsquo;re in. Welcome to Study Access.
               </h1>
               <p className="mt-3 text-base leading-7 text-slate-700">
-                Your $47/month subscription is active. A confirmation receipt is on its way to
+                Your $49/month subscription is active. A confirmation receipt is on its way to
                 your inbox from Stripe.
               </p>
             </div>
+          </div>
+
+          <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-900 p-6 text-center">
+            <h2 className="text-xl font-bold text-white">Your PMP® Practice Studio is ready</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              694 practice questions, the full-length mock exam, and ITTO flashcards are included with your
+              subscription. Sign in with this same email to start practicing.
+            </p>
+            <Link
+              href="/access/login"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-yellow-400 px-6 py-3 text-sm font-bold text-slate-900 transition hover:bg-yellow-300"
+            >
+              Open the Practice Studio →
+            </Link>
           </div>
 
           <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-100/60 p-6">

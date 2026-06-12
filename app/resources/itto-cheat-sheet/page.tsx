@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 // ---------------------------------------------------------------------------
 // PMP® ITTO Cheat Sheet — second SEO pillar page (after PMP Formulas).
 // Targets long-tail searches like "PMP ITTO cheat sheet", "PMP ITTOs",
-// "PMBOK inputs and outputs". Funnels into Study Access ($47/mo).
+// "PMBOK inputs and outputs". Funnels into Study Access ($49/mo).
 // ---------------------------------------------------------------------------
 
 const KNOWLEDGE_AREAS = [
@@ -156,7 +156,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What\u2019s the fastest way to learn ITTOs without burning out?',
-    a: 'Group ITTOs by knowledge area, learn the patterns (common inputs, common tools, common outputs), and drill scenario questions instead of flashcards. Wiser Generations Int’l Study Access ($47/month) includes a structured ITTO drill module that takes 2–3 weeks instead of months.',
+    a: 'Group ITTOs by knowledge area, learn the patterns (common inputs, common tools, common outputs), and drill scenario questions instead of flashcards. Wiser Generations Int’l Study Access ($49/month) includes a structured ITTO drill module that takes 2–3 weeks instead of months.',
   },
 ] as const
 
