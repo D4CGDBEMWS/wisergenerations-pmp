@@ -233,29 +233,19 @@ export default function HomePage() {
               </Link>
               <p className="text-xs text-gray-400 mt-2">Enter your name & email — instant download. No spam ever.</p>
             </div>
-            <div className="flex justify-center">
-              <div className="bg-navy rounded-2xl p-8 w-full max-w-sm text-center shadow-2xl">
-                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-2">Free Guide</p>
-                <div className="bg-gold/20 border border-gold/40 rounded-xl p-4 mb-4">
-                  <p className="text-white font-bold text-xl leading-snug mb-1">
-                    Your PMP® Exam Game Plan
-                  </p>
-                  <p className="text-gray-400 text-sm">What Every Aspiring PMP® Needs to Know</p>
-                </div>
-                <div className="space-y-2 text-left mb-6">
-                  {['9 pages of exam intel', 'Domain comparison table', 'New question format guide', 'Decision flowchart', 'Cohort dates & pricing'].map(f => (
-                    <p key={f} className="text-gray-300 text-sm flex items-center gap-2">
-                      <span className="text-gold">✓</span> {f}
-                    </p>
-                  ))}
-                </div>
-                <Link href="/free-guide"
-                  className="block w-full bg-gold text-navy font-bold py-3 rounded-xl hover:bg-amber-400 transition-colors">
-                  Download Free →
-                </Link>
-                <p className="text-gray-500 text-xs mt-3">Instant access · No credit card</p>
+                      <div className="flex justify-center items-center">
+            <div className="relative">
+              <img
+                src="/pmbok-8th-edition.jpg"
+                alt="PMBOK Guide 8th Edition — A Guide to the Project Management Body of Knowledge"
+                className="rounded-2xl shadow-2xl object-contain w-full max-w-[280px]"
+                style={{maxHeight: '400px'}}
+              />
+              <div className="absolute -bottom-3 -right-3 bg-gold text-navy font-bold px-3 py-1.5 rounded-xl text-xs shadow-lg">
+                8th Edition &middot; 2025
               </div>
             </div>
+          </div>
           </div>
         </div>
       </section>
