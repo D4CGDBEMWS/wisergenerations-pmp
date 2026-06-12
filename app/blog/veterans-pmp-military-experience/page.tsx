@@ -11,7 +11,7 @@ const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 export default function VeteransPmpPost() {
   return (
     <main className="bg-white">
-      <section className="bg-navy text-white py-16 px-4">
+      <section className="bg-brand-blue text-white py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <Link href="/blog" className="text-gold text-sm hover:underline">Blog</Link>
@@ -76,7 +76,7 @@ export default function VeteransPmpPost() {
               { military: 'Company / Battery Commander', pm: 'Directed project teams, managed budgets, and delivered outcomes for complex, multi-stakeholder initiatives.' },
               { military: 'Program Manager / G6', pm: 'Led enterprise-scale programs with cross-functional dependencies, risk management, and executive reporting.' },
             ].map((item) => (
-              <div key={item.military} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div key={item.military} className="bg-paper rounded-lg p-4 border border-gray-200">
                 <div className="font-bold text-navy text-sm mb-1">{item.military}</div>
                 <div className="text-gray-600 text-sm">{item.pm}</div>
               </div>
@@ -113,7 +113,7 @@ export default function VeteransPmpPost() {
             She does not make assumptions about what you have access to — she asks, and helps you find the right path.
           </p>
 
-          <div className="bg-navy text-white rounded-2xl p-8 mt-10">
+          <div className="bg-brand-blue text-white rounded-2xl p-8 mt-10">
             <div className="text-2xl mb-3">🎖️</div>
             <h3 className="text-xl font-bold mb-4">Built for Veterans, by Someone Who Has Been There</h3>
             <p className="text-gray-300 mb-6">

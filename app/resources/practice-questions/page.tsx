@@ -159,7 +159,7 @@ export default function PracticeQuestionsPage() {
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Hero */}
-      <section className="bg-navy text-white">
+      <section className="bg-brand-blue text-white">
         <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
             Free PMP® Practice

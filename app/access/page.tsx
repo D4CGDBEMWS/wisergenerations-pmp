@@ -8,7 +8,7 @@ export const metadata = {
 export default function AccessPage() {
   return (
     <main className="min-h-screen bg-white">
-      <section className="bg-[#0a1628] text-white py-16 px-4 text-center">
+      <section className="bg-brand-blue text-white py-16 px-4 text-center">
         <span className="inline-block bg-yellow-400 text-[#0a1628] text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase">PMP® Practice Studio</span>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">PMP® Practice Studio<br /><span className="text-yellow-400">694 Questions + Mock Exam</span></h1>
         <p className="text-xl text-gray-300 mb-6 max-w-2xl mx-auto">694 practice questions, a full-length 200-question timed mock exam, ITTO flashcards, and a glossary — included with Study Access.</p>
@@ -22,7 +22,7 @@ export default function AccessPage() {
         <p className="mt-4 text-sm text-gray-400">Already a member? <Link href="/access/login" className="text-yellow-400 font-semibold hover:underline">Sign in here</Link></p>
       </section>
 
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4 bg-paper">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-[#0a1628]">What&apos;s included with Study Access:</h2>
@@ -53,7 +53,7 @@ export default function AccessPage() {
         </div>
       </section>
 
-      <section className="py-12 px-4 bg-[#0a1628] text-white text-center">
+      <section className="py-12 px-4 bg-brand-blue text-white text-center">
         <h2 className="text-2xl font-bold mb-2">Cancel Anytime</h2>
         <p className="text-gray-300 mb-6 max-w-xl mx-auto">No long-term commitment. Study Access is month-to-month — keep it for as long as you&rsquo;re preparing, and cancel whenever you&rsquo;re ready.</p>
         <Link href="/checkout" className="inline-block bg-yellow-400 hover:bg-yellow-300 text-[#0a1628] font-bold py-4 px-10 rounded-xl text-lg">Start Study Access — $49/month</Link>

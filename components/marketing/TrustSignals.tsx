@@ -38,7 +38,7 @@ export default function TrustSignals({
       aria-label="Trust signals"
       className={
         isNavy
-          ? 'border-y border-white/10 bg-navy text-white'
+          ? 'border-y border-white/10 bg-brand-blue text-white'
           : 'border-y border-slate-200 bg-white'
       }
     >

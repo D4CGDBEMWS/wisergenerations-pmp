@@ -74,7 +74,7 @@ export default function AboutPage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-navy text-white py-20 px-4">
+      <section className="bg-brand-blue text-white py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Text */}
@@ -119,7 +119,7 @@ export default function AboutPage() {
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
                 </div>
-                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
+                <div className="absolute -top-4 -right-4 bg-brand-blue border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
                   <p className="font-bold text-gold">87%</p>
                   <p className="text-xs">First-attempt<br/>pass rate</p>
                 </div>
@@ -171,7 +171,7 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-            <div className="bg-navy rounded-2xl p-8 text-white">
+            <div className="bg-brand-blue rounded-2xl p-8 text-white">
               <div className="space-y-6">
                 <div className="text-center border-b border-gold/30 pb-6">
                   <div className="text-4xl font-bold text-gold">87%</div>
@@ -196,7 +196,7 @@ export default function AboutPage() {
       </section>
 
       {/* Teaching philosophy */}
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Teaching Philosophy</p>
@@ -244,7 +244,7 @@ export default function AboutPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="bg-navy text-white py-20 px-4">
+      <section className="bg-brand-blue text-white py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">What Students Say</p>
@@ -299,7 +299,7 @@ export default function AboutPage() {
             </a>
             <Link
               href="/programs"
-              className="border-2 border-navy text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors"
+              className="border-2 border-brand-blue text-navy font-bold px-8 py-4 rounded-lg hover:bg-brand-blue hover:text-white transition-colors"
             >
               View Programs
             </Link>

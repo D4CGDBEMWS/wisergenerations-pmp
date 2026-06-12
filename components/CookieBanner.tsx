@@ -51,13 +51,13 @@ export default function CookieBanner() {
         <div className="flex gap-3">
           <button
             onClick={accept}
-            className="flex-1 rounded-lg bg-navy px-4 py-2 text-xs font-bold text-white transition hover:bg-navy/90"
+            className="flex-1 rounded-lg bg-brand-blue px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-blue/90"
           >
             Accept All
           </button>
           <button
             onClick={decline}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-navy hover:text-navy"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-brand-blue hover:text-navy"
           >
             Essential Only
           </button>

@@ -76,7 +76,7 @@ export default function WebinarsPage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-navy text-white py-20 px-4">
+      <section className="bg-brand-blue text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Free Webinars & Live Events</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -98,7 +98,7 @@ export default function WebinarsPage() {
       </section>
 
       {/* Benefits */}
-      <section className="bg-gray-50 py-14 px-4">
+      <section className="bg-paper py-14 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((b) => (
@@ -135,7 +135,7 @@ export default function WebinarsPage() {
                   href={CALENDLY}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-navy text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy/80 transition-colors inline-block text-sm"
+                  className="bg-brand-blue text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-blue/80 transition-colors inline-block text-sm"
                 >
                   {w.cta} →
                 </a>
@@ -146,7 +146,7 @@ export default function WebinarsPage() {
       </section>
 
       {/* Past topics */}
-      <section className="bg-gray-50 py-16 px-4">
+      <section className="bg-paper py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Previous Sessions</p>
@@ -173,7 +173,7 @@ export default function WebinarsPage() {
             Join the Wiser Generations newsletter to receive webinar invitations, exam updates,
             and PM career resources. No spam — just useful information from Crystal, on her schedule.
           </p>
-          <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+          <div className="bg-paper rounded-2xl p-8 border border-gray-200">
             <p className="text-navy font-semibold mb-4">Two ways to stay connected:</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
@@ -186,7 +186,7 @@ export default function WebinarsPage() {
               </a>
               <Link
                 href="/free-guide"
-                className="border-2 border-navy text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors"
+                className="border-2 border-brand-blue text-navy font-bold px-8 py-4 rounded-lg hover:bg-brand-blue hover:text-white transition-colors"
               >
                 Download the Free Guide
               </Link>
@@ -199,7 +199,7 @@ export default function WebinarsPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-navy text-white py-16 px-4 text-center">
+      <section className="bg-brand-blue text-white py-16 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Ready for More Than a Webinar?</h2>
           <p className="text-gray-300 mb-8">

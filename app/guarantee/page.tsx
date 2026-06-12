@@ -77,7 +77,7 @@ export default function GuaranteePage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-navy text-white py-20 px-4">
+      <section className="bg-brand-blue text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Our Commitment to You</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -149,7 +149,7 @@ export default function GuaranteePage() {
                 </p>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+            <div className="bg-paper rounded-2xl p-8 border border-gray-200">
               <h3 className="text-xl font-bold text-navy mb-6 text-center">How It Works</h3>
               <div className="space-y-4">
                 {[
@@ -174,7 +174,7 @@ export default function GuaranteePage() {
       </section>
 
       {/* What's included */}
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">What You Get</p>
@@ -200,7 +200,7 @@ export default function GuaranteePage() {
             <h2 className="text-3xl font-bold text-navy">To Qualify for the Restudy Guarantee</h2>
             <p className="text-gray-600 mt-4">The guarantee is for students who commit to the process. Here is what that means:</p>
           </div>
-          <div className="bg-navy rounded-2xl p-8">
+          <div className="bg-brand-blue rounded-2xl p-8">
             <ul className="space-y-4">
               {qualifications.map((q, i) => (
                 <li key={i} className="flex items-start gap-3 text-gray-200">
@@ -214,7 +214,7 @@ export default function GuaranteePage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Questions</p>
@@ -232,7 +232,7 @@ export default function GuaranteePage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-navy text-white py-20 px-4 text-center">
+      <section className="bg-brand-blue text-white py-20 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Ready to Certify with Confidence?</h2>
           <p className="text-gray-300 mb-8 text-lg">

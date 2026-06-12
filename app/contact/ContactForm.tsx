@@ -70,7 +70,7 @@ export default function ContactForm() {
         <button
           type="button"
           onClick={() => setFormState('idle')}
-          className="mt-6 inline-flex rounded-lg border-2 border-navy text-navy font-semibold px-5 py-2 text-sm hover:bg-navy hover:text-white transition-colors"
+          className="mt-6 inline-flex rounded-lg border-2 border-brand-blue text-navy font-semibold px-5 py-2 text-sm hover:bg-brand-blue hover:text-white transition-colors"
         >
           Send another message
         </button>

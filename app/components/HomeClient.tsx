@@ -70,7 +70,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
   return (
     <>
       {/* Sticky booking bar */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 bg-navy border-t-2 border-gold py-3 px-4 transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-50 bg-brand-blue border-t-2 border-gold py-3 px-4 transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           <p className="text-white font-medium text-sm hidden sm:block">Ready to earn your PMP® or CAPM®?</p>
           <div className="flex gap-3 w-full sm:w-auto">
@@ -102,7 +102,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
                 onClick={() => setActiveAudience(a.id)}
                 className={`px-5 py-2.5 rounded-full font-semibold text-sm transition-all ${
                   activeAudience === a.id
-                    ? 'bg-navy text-white shadow-lg scale-105'
+                    ? 'bg-brand-blue text-white shadow-lg scale-105'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -114,7 +114,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {displayPrograms.map(p => (
               <div key={p.id} className={`border-2 ${p.color} rounded-2xl p-8 hover:shadow-lg transition-all hover:-translate-y-1 relative`}>
-                {p.badge && <span className="absolute top-4 right-4 bg-navy text-white text-xs font-bold px-3 py-1 rounded-full">{p.badge}</span>}
+                {p.badge && <span className="absolute top-4 right-4 bg-brand-blue text-white text-xs font-bold px-3 py-1 rounded-full">{p.badge}</span>}
                 <div className="text-4xl mb-4">{p.icon}</div>
                 <h3 className="text-xl font-bold text-navy mb-1">{p.name}</h3>
                 <p className="text-gold text-sm font-medium mb-3">{p.audience}</p>
@@ -138,7 +138,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
                     <p className="text-navy font-bold text-lg">Custom Pricing</p>
                   )}
                   <a href={p.id === 'pmp' ? '/pmp' : p.id === 'capm-adult' ? '/capm' : p.id === 'veterans' ? '/veterans' : '/corporate'}
-                    className="bg-navy text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-900 transition-colors text-sm">
+                    className="bg-brand-blue text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-900 transition-colors text-sm">
                     Learn More →
                   </a>
                 </div>
@@ -189,7 +189,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
                 aria-label={`Show testimonial ${i + 1}`}
                 className={`rounded-full transition-all duration-300 ${
                   i === activeTestimonial
-                    ? 'w-8 h-3 bg-navy'
+                    ? 'w-8 h-3 bg-brand-blue'
                     : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
                 }`}
               />

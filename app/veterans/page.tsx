@@ -45,7 +45,7 @@ export default function VeteransPage() {
   return (
     <div>
       {/* Hero with background image */}
-      <section className="relative bg-navy text-white py-24">
+      <section className="relative bg-brand-blue text-white py-24">
         <div className="absolute inset-0 overflow-hidden">
           <img
             src={ARMY_PHOTOS.classroom2}
@@ -132,7 +132,7 @@ export default function VeteransPage() {
               </div>
             </div>
             <div className="sticky top-24">
-              <div className="mt-4 bg-navy rounded-xl p-5 text-white text-center">
+              <div className="mt-4 bg-brand-blue rounded-xl p-5 text-white text-center">
                 <p className="font-bold text-gold mb-1">Ready to start?</p>
                 <p className="text-sm text-gray-300 mb-3">Book a free 15-min call with Crystal</p>
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="block bg-gold text-navy font-bold py-2 rounded-lg hover:bg-amber-400 transition-colors">Book Your Call →</a>
@@ -143,7 +143,7 @@ export default function VeteransPage() {
       </section>
 
       {/* Crystal veteran note */}
-      <section className="py-16 bg-navy text-white">
+      <section className="py-16 bg-brand-blue text-white">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-gold font-bold uppercase text-sm tracking-wider mb-4">From Crystal</p>
           <blockquote className="text-xl italic text-gray-200 leading-relaxed mb-4">

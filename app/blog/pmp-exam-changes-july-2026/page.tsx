@@ -13,7 +13,7 @@ export default function PmpExamChangesPost() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-navy text-white py-16 px-4">
+      <section className="bg-brand-blue text-white py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <Link href="/blog" className="text-gold text-sm hover:underline">Blog</Link>
@@ -56,9 +56,9 @@ export default function PmpExamChangesPost() {
             The three domains of the PMP exam are People, Process, and Business Environment. Their weights changed:
           </p>
           <div className="overflow-x-auto mb-6">
-            <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden">
+            <table className="w-full border-collapse bg-paper rounded-lg overflow-hidden">
               <thead>
-                <tr className="bg-navy text-white">
+                <tr className="bg-brand-blue text-white">
                   <th className="text-left p-4 font-semibold">Domain</th>
                   <th className="text-left p-4 font-semibold">Previous Weight</th>
                   <th className="text-left p-4 font-semibold">Current Weight</th>
@@ -144,7 +144,7 @@ export default function PmpExamChangesPost() {
             on your first try.
           </p>
 
-          <div className="bg-navy text-white rounded-2xl p-8 mt-10">
+          <div className="bg-brand-blue text-white rounded-2xl p-8 mt-10">
             <h3 className="text-xl font-bold mb-4">Ready to Pass the Current PMP® Exam?</h3>
             <p className="text-gray-300 mb-6">
               Book a free strategy call with Crystal. She will walk you through the current cohort schedule,
@@ -166,7 +166,7 @@ export default function PmpExamChangesPost() {
       </article>
 
       {/* Related posts */}
-      <section className="bg-gray-50 py-14 px-4">
+      <section className="bg-paper py-14 px-4">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-xl font-bold text-navy mb-6">More Articles</h3>
           <div className="grid md:grid-cols-3 gap-6">

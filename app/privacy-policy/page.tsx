@@ -199,7 +199,7 @@ export default function PrivacyPolicyPage() {
           <p>
             If you have questions or concerns about this Privacy Policy or our data practices, please contact:
           </p>
-          <div className="mt-3 bg-gray-50 rounded-xl p-5 border border-gray-200">
+          <div className="mt-3 bg-paper rounded-xl p-5 border border-gray-200">
             <p className="font-bold text-navy">Wiser Generations Int&apos;l / Enterprise Academy</p>
             <p>Smyrna, Georgia (Metro Atlanta)</p>
             <p>

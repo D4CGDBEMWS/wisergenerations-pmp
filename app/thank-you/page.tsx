@@ -59,9 +59,9 @@ export default async function ThankYouPage({ searchParams }: Props) {
   const enrollment = await getEnrollment(resolvedSearchParams.payment_intent)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-paper">
       <script dangerouslySetInnerHTML={{ __html: `if(typeof gtag==='function'){gtag('event','enrollment_complete')}` }} />
-      <header className="bg-[#0a1628] px-6 py-4 text-white">
+      <header className="bg-brand-blue px-6 py-4 text-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded bg-[#c9a84c] text-sm font-bold text-[#0a1628]">
@@ -94,7 +94,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
           </div>
 
           <div className="mt-10 grid gap-6 text-left md:grid-cols-2">
-            <div className="rounded-2xl bg-gray-50 p-6">
+            <div className="rounded-2xl bg-paper p-6">
               <h2 className="text-lg font-semibold text-[#0a1628]">What happens next?</h2>
               <div className="mt-4 space-y-3 text-sm text-gray-600">
                 <p>1. Your receipt is emailed automatically after payment.</p>
@@ -104,7 +104,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-[#0a1628] p-6 text-white">
+            <div className="rounded-2xl bg-brand-blue p-6 text-white">
               <h2 className="text-lg font-semibold text-[#c9a84c]">Book your kickoff call</h2>
               <p className="mt-3 text-sm text-gray-300">
                 Choose a convenient time to connect with Crystal and map out your certification plan.

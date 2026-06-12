@@ -125,7 +125,7 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <section className="bg-navy text-white">
+    <section className="bg-brand-blue text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid gap-8 md:grid-cols-2 md:items-center">
           <div>
