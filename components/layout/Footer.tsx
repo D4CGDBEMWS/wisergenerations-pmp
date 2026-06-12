@@ -11,7 +11,7 @@ export function Footer() {
             <p className="text-gold font-bold text-lg mb-1">Wiser Generations Int&apos;l</p>
             <p className="text-gray-400 text-sm mb-4">An Enterprise Academy Program</p>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs mb-6">
-              PMP and CAPM certification prep for career transitioners, corporate teams, and veterans.
+              PMP® and CAPM® certification prep for career transitioners, corporate teams, and veterans.
               Mentor-led. PMI-aligned. Delivered by Crystal Stewart, PMP.
             </p>
             <div className="flex gap-4">

@@ -19,7 +19,7 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 // Programs — single source of truth for names AND prices.
 // Prices should ultimately come from the backend/CMS (fix #8), but until
 // that migration happens these values are at least consistent with the
-// /programs page ($899 PMP, $599 CAPM, $797 Veterans).
+// /programs page ($899 PMP®, $599 CAPM®, $797 Veterans).
 // ---------------------------------------------------------------------------
 const PROGRAMS = {
   'pmp-prep': {
@@ -161,7 +161,7 @@ function StudyAccessCard() {
 
       <div className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-amber-700">
-          Wiser Generations Int’l™ Study Access
+          Wiser Generations Int’l Study Access
         </p>
         <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
           Study month-to-month
@@ -171,7 +171,7 @@ function StudyAccessCard() {
           <span className="text-base font-medium text-slate-600">/month</span>
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Get instant access to the Wiser Generations Int’l™ self-study material. Cancel anytime.
+          Get instant access to the Wiser Generations Int’l self-study material. Cancel anytime.
         </p>
       </div>
 
@@ -474,7 +474,7 @@ export default function CheckoutPage() {
               Secure checkout
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
-              Choose how you want to study with Wiser Generations Int’l™
+              Choose how you want to study with Wiser Generations Int’l
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
               Start month-to-month with Study Access, or enroll in a full mentor-led program below.
@@ -498,7 +498,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* ──────────────────────────────────────────────────────────────── */}
-        {/* SECTION 1 — Wiser Generations Int’l™ Study Access ($49/month)        */}
+        {/* SECTION 1 — Wiser Generations Int’l Study Access ($49/month)        */}
         {/* ──────────────────────────────────────────────────────────────── */}
         <StudyAccessCard />
 

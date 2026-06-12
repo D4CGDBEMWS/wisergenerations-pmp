@@ -56,7 +56,7 @@ export default async function AccessSuccessPage({
         <h1 className="text-4xl font-bold text-[#0a1628] mb-4">You are In!</h1>
         <p className="text-xl text-gray-600 mb-2">{greeting}</p>
         <p className="text-gray-600 mb-8">
-          {'Your Study Access Package is now active' + emailNote + '. You have full access to the PMP Exam Simulator and PMBOK Flashcards.'}
+          {'Your Study Access Package is now active' + emailNote + '. You have full access to the PMP® Exam Simulator and PMBOK Flashcards.'}
         </p>
 
         <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-8 text-left">

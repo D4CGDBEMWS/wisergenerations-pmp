@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Free Webinars & Live Q&A | Wiser Generations Int\'l',
-  description: 'Join Crystal Stewart, PMP for free monthly webinars and live Q&A sessions on PMP certification, exam changes, career transitions, and project management strategy.',
+  description: 'Join Crystal Stewart, PMP® for free monthly webinars and live Q&A sessions on PMP certification, exam changes, career transitions, and project management strategy.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -19,7 +19,7 @@ const upcomingWebinars = [
   {
     title: 'Is PMP Right for You? Free Orientation',
     date: 'Monthly — Third Tuesday, 12:00 PM ET',
-    description: 'A 45-minute orientation session for professionals considering PMP or CAPM certification. Crystal covers eligibility, the exam format, what the credential is worth, and what the prep process looks like.',
+    description: 'A 45-minute orientation session for professionals considering PMP or CAPM® certification. Crystal covers eligibility, the exam format, what the credential is worth, and what the prep process looks like.',
     tags: ['PMP', 'CAPM', 'Orientation', 'Free'],
     cta: 'Register Free'
   },

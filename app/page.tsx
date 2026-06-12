@@ -8,7 +8,7 @@ const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
 const TESTIMONIALS = [
   {
-    name: 'Tai Cochran, MA Ed. HD, PMP',
+    name: 'Tai Cochran, MA Ed. HD, PMP®',
     role: 'CEO, HER PM | Project Leadership Strategist',
     quote: 'Crystal is the ultimate trainer! She is a wealth of knowledge and wisdom, truly invested to ensure the success of each of her students. Her knowledge, training and mentorship helped me to clear my PMP on the very first try!',
   },
@@ -35,7 +35,7 @@ const HOW_IT_WORKS = [
     step: '01',
     icon: '📞',
     title: 'Book a Free Strategy Call',
-    desc: 'Tell us where you are and where you want to go. Crystal and team will map your fastest path to PMP or CAPM certification — no pressure, no pitch.',
+    desc: 'Tell us where you are and where you want to go. Crystal and team will map your fastest path to PMP or CAPM® certification — no pressure, no pitch.',
     cta: { label: 'Book Your Call →', href: CALENDLY, external: true },
   },
   {
@@ -71,7 +71,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-28 relative">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Wiser Generations Int'l™</p>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Wiser Generations Int'l</p>
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
                 <span className="text-gold">On the First Try.™</span>
@@ -410,12 +410,12 @@ export default function HomePage() {
               <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
               <h2 className="text-4xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy™.
+                The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy.
                 U.S. Army veteran. Crystal does not just teach PM — she has lived it, built with it, and now equips
                 the next generation of project managers to do the same.
               </p>
               <div className="flex flex-wrap gap-3 mb-6">
-                {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy™ Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
+                {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
                   <span key={t} className="bg-light-navy border border-navy/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
                 ))}
               </div>

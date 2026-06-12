@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Wiser Generations™',
+  title: 'Privacy Policy — Wiser Generations',
   description:
-    'How Wiser Generations™ collects, uses, and protects personal information from visitors and students.',
+    'How Wiser Generations collects, uses, and protects personal information from visitors and students.',
   // Legal pages should be indexable so search engines surface them when users
   // look for "wisergenerations privacy policy". Standard practice.
   robots: { index: true, follow: true },
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
         <p className="font-bold mb-1">⚠️ Draft for review</p>
         <p>
           This policy is a working draft tailored to the data flows actually present in the
-          Wiser Generations™ codebase. <strong>It is not legal advice.</strong> Please have
+          Wiser Generations codebase. <strong>It is not legal advice.</strong> Please have
           qualified legal counsel review before publishing — particularly the GDPR, CCPA/CPRA,
           and CAN-SPAM sections.
         </p>
@@ -35,8 +35,8 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-2xl font-bold text-navy">1. Who we are</h2>
           <p className="text-gray-700 leading-relaxed">
-            Wiser Generations™ is an independent project management training program operated as
-            part of Enterprise Academy™. Our mailing location is Smyrna, Georgia (Metro Atlanta),
+            Wiser Generations is an independent project management training program operated as
+            part of Enterprise Academy. Our mailing location is Smyrna, Georgia (Metro Atlanta),
             and we deliver training virtually nationwide. For privacy questions, contact us at{' '}
             <a href="mailto:info@wisergenerations.com" className="text-gold hover:underline">
               info@wisergenerations.com

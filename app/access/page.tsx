@@ -23,8 +23,8 @@ export default function AccessPage() {
   return (
     <main className="min-h-screen bg-white">
       <section className="bg-[#0a1628] text-white py-16 px-4 text-center">
-        <span className="inline-block bg-yellow-400 text-[#0a1628] text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase">PMP Practice Studio</span>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">PMP Practice Studio<br /><span className="text-yellow-400">694 Questions + Mock Exam</span></h1>
+        <span className="inline-block bg-yellow-400 text-[#0a1628] text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase">PMP® Practice Studio</span>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">PMP® Practice Studio<br /><span className="text-yellow-400">694 Questions + Mock Exam</span></h1>
         <p className="text-xl text-gray-300 mb-6 max-w-2xl mx-auto">694 practice questions, a full-length 200-question timed mock exam, ITTO flashcards, and a glossary — all in one tool built for the PMP exam.</p>
         <div className="flex items-center justify-center gap-4">
           <span className="text-5xl font-bold text-yellow-400">$79</span>

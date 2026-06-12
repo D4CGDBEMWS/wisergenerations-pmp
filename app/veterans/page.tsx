@@ -5,7 +5,7 @@ import Faq from '@/components/marketing/Faq'
 
 export const metadata: Metadata = {
   title: 'Veterans PM Pathway — PMP® & CAPM® for Military Veterans',
-  description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition and a veteran peer cohort. Enterprise Academy™.',
+  description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition and a veteran peer cohort. Enterprise Academy.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'

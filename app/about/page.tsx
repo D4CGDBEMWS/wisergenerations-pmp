@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'About Crystal Stewart, PMP | Wiser Generations Int\'l',
+  title: 'About Crystal Stewart, PMP® | Wiser Generations Int\'l',
   description: 'Meet Crystal Stewart, PMP — U.S. Army veteran, enterprise PM leader, and founder of Enterprise Academy. 20+ years of real-world project management experience, now teaching the next generation.',
 }
 
@@ -285,7 +285,7 @@ export default function AboutPage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold text-navy mb-4">Ready to Work With Crystal?</h2>
           <p className="text-gray-600 mb-8 text-lg">
-            Book a free strategy call. Crystal will map out your path to PMP or CAPM
+            Book a free strategy call. Crystal will map out your path to PMP or CAPM®
             certification — based on your schedule, your background, and your goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Free PMP Practice Questions | Wiser Generations",
+  title: "Free PMP® Practice Questions | Wiser Generations",
   description: "Try real PMP-style practice questions free — full rationale on every answer.",
 };
 

@@ -6,10 +6,10 @@ import PracticeQuestionsLeadForm from '@/components/marketing/PracticeQuestionsL
 export const metadata: Metadata = {
   title: 'Free PMP® Practice Questions — 8 Sample PMP® Exam Questions',
   description:
-    '8 free PMP® exam-style practice questions with full answer explanations from Wiser Generations Int’l™. Test your readiness for the 2026 PMP® exam.',
+    '8 free PMP® exam-style practice questions with full answer explanations from Wiser Generations Int’l. Test your readiness for the 2026 PMP® exam.',
   alternates: { canonical: '/resources/practice-questions' },
   openGraph: {
-    title: 'Free PMP® Practice Questions — Wiser Generations Int’l™',
+    title: 'Free PMP® Practice Questions — Wiser Generations Int’l',
     description:
       'Free PMP® exam-style practice questions with full answer explanations.',
     url: 'https://wisergenerations.com/resources/practice-questions',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 }
 
 // ---------------------------------------------------------------------------
-// Free PMP Practice Questions — SEO + lead-magnet page
+// Free PMP® Practice Questions — SEO + lead-magnet page
 // Mirrors PMA's /free-pmp-questions funnel: free sample questions → email
 // capture for "more" → upsell into Study Access for the full bank.
 // ---------------------------------------------------------------------------
@@ -302,7 +302,7 @@ export default function PracticeQuestionsPage() {
             about: 'PMP® Certification Exam Preparation',
             educationalLevel: 'Professional certification',
             educationalUse: 'Self-assessment',
-            provider: { '@type': 'Organization', name: 'Wiser Generations Int’l™' },
+            provider: { '@type': 'Organization', name: 'Wiser Generations Int’l' },
           }),
         }}
       />
@@ -331,7 +331,7 @@ const FAQ = [
   },
   {
     q: 'How many practice questions should I do before the real PMP® exam?',
-    a: 'Most students who pass the PMP® on the first try complete 1,000–2,000 practice questions during prep, scoring 75–80%+ on full-length mocks before testing. Wiser Generations Int’l™ Study Access ($47/month) includes a much larger question bank with detailed explanations.',
+    a: 'Most students who pass the PMP® on the first try complete 1,000–2,000 practice questions during prep, scoring 75–80%+ on full-length mocks before testing. Wiser Generations Int’l Study Access ($47/month) includes a much larger question bank with detailed explanations.',
   },
   {
     q: 'Are the explanations enough to learn from, or do I need a course?',

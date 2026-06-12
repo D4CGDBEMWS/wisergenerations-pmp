@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Fractional PM Leadership | Enterprise Academy™ Pods",
+  title: "Fractional PM Leadership | Enterprise Academy Pods",
   description: "Fractional senior project management for growing teams. Starting at $5,000/month, 3-month minimum. LIAP™ framework. Delivered by Crystal Stewart and vetted pod leaders.",
 }
 
@@ -49,7 +49,7 @@ export default function PodsPage() {
       <section className="bg-navy text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy™ · Delivery Pods</p>
+          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Delivery Pods</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 max-w-4xl">
             Fractional Project Management Leadership for Growing Teams
           </h1>
