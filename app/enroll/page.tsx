@@ -29,7 +29,7 @@ const PROGRAMS = [
     icon: '🎖️',
     name: 'Veterans Pathway',
     audience: 'Military Veterans & Transitioning Service Members',
-    price: 'From $797',
+    price: 'From $799',
     badge: 'Special Rate',
     features: ['Veteran-discounted tuition', 'Military experience translation', 'Peer veteran cohort'],
   },

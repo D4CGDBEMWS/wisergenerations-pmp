@@ -132,7 +132,7 @@ export const PROGRAMS = [
     audience: 'Military veterans transitioning to civilian careers',
     description: 'You already lead projects under pressure. Now translate your military experience into the PM credential employers recognize. Structured for the way veterans learn and lead.',
     features: ['Military-to-PM skills translation guide', 'PMP® or CAPM® prep (your choice)', 'Veteran peer cohort', 'Employer introduction program', 'Veteran discount applied'],
-    price: 797,
+    price: 799,
     badge: 'Veteran Discount Applied',
     color: 'border-green-600',
   },
