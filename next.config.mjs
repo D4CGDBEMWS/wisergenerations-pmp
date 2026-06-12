@@ -11,6 +11,8 @@ const nextConfig = {
       // Consolidated duplicate routes onto a single canonical URL
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
       { source: '/resources/blog', destination: '/blog', permanent: true },
+      // WIOA offering removed — redirect any inbound links to Programs
+      { source: '/wioa', destination: '/programs', permanent: true },
     ]
   },
   async headers() {

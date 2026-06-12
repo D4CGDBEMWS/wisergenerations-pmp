@@ -17,7 +17,6 @@ const navLinks = [
 
 // Mobile menu includes secondary links so nothing is lost
 const mobileExtraLinks = [
-  { label: 'WIOA', href: '/wioa' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Flashcards', href: '/flashcards' },
