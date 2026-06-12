@@ -34,7 +34,7 @@ export default function CAPMPage() {
               href="/checkout"
               className="inline-block rounded-xl border border-white/30 px-8 py-4 text-base font-bold text-white transition hover:bg-white/10"
             >
-              Enroll Now — from $997
+              Enroll Now — from $599
             </Link>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function CAPMPage() {
           </div>
           <div className="bg-navy text-white rounded-2xl p-8">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Investment</p>
-            <p className="text-4xl font-bold mb-1">from $997</p>
+            <p className="text-4xl font-bold mb-1">from $599</p>
             <p className="text-gray-300 text-sm mb-6">One-time investment. Payment plans available.</p>
             <ul className="space-y-2 mb-8 text-sm text-gray-300">
               <li>✓ Live cohort instruction</li>

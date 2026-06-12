@@ -250,18 +250,18 @@ export default function HomePage() {
                 📥 Free Download — No Credit Card Needed
               </div>
               <h2 className="text-3xl font-bold text-navy mb-3">
-                Get the Free Guide:<br/>"The PMP® Exam Is Changing"
+                Get the Free Guide:<br/>"Your PMP® Exam Game Plan"
               </h2>
               <p className="text-gray-600 leading-relaxed mb-5">
-                PMI confirmed the exam changes July 8, 2026. This free 9-page guide breaks down every
-                domain shift, new question type, and new content area — so you can decide your path with confidence.
+                A free 9-page guide to the PMP® exam — every domain, question type, and content area —
+                so you can plan your prep and choose your path with confidence.
               </p>
               <ul className="space-y-2 mb-6">
                 {[
                   'Domain weights: People 42%→33%, Business Env 8%→26%',
                   'New question formats — case sets, graphics, pull-down lists',
                   'AI & Sustainability — what you need to know',
-                  'Decision table: should YOU certify before July 8?',
+                  'Decision guide: is the PMP® or CAPM® right for you?',
                   'Cohort dates, inclusions & real graduate testimonials',
                 ].map(item => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
@@ -280,7 +280,7 @@ export default function HomePage() {
                 <p className="text-gold text-xs font-bold uppercase tracking-widest mb-2">Free Guide</p>
                 <div className="bg-gold/20 border border-gold/40 rounded-xl p-4 mb-4">
                   <p className="text-white font-bold text-xl leading-snug mb-1">
-                    The PMP® Exam Is Changing July 8, 2026
+                    Your PMP® Exam Game Plan
                   </p>
                   <p className="text-gray-400 text-sm">What Every Aspiring PMP® Needs to Know</p>
                 </div>

@@ -5,7 +5,7 @@ import Faq from '@/components/marketing/Faq'
 
 export const metadata: Metadata = {
   title: 'Veterans PM Pathway — PMP® & CAPM® for Military Veterans',
-  description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition, peer cohort, VA benefit guidance. Enterprise Academy™.',
+  description: 'Translate your military leadership into a PMP® or CAPM® credential. Veteran-discounted tuition and a veteran peer cohort. Enterprise Academy™.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -121,7 +121,6 @@ export default function VeteransPage() {
                 {[
                   { icon: '📋', title: 'Military-to-PM Skills Translation Guide', body: 'A personalized document mapping your MOS/rate and service experience to PMI competency areas. Use this in interviews and on your resume.' },
                   { icon: '📚', title: 'PMP® or CAPM® Prep (Your Choice)', body: 'Full certification prep course with live study sessions, practice exams, and Crystal as your mentor. You choose the credential that fits your timeline.' },
-                  { icon: '💰', title: 'VA Benefit Compatibility Guidance', body: 'We help you understand which VA education benefits may apply to your tuition. Not a guarantee — but we navigate it with you.' },
                   { icon: '👥', title: 'Veteran Peer Cohort', body: 'Study and grow alongside other veterans who understand your background, your communication style, and your mission-first mindset.' },
                   { icon: '💼', title: 'Employer Introduction Program', body: "Access to Enterprise Academy's network of PM-hiring employers who actively seek veteran talent. Resume review and interview prep included." },
                   { icon: '🎖️', title: 'Veteran-Discounted Tuition', body: 'Discounted rate for all honorably discharged veterans. Bring your DD-214 verification at enrollment.' },

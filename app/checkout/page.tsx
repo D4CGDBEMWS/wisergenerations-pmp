@@ -19,20 +19,20 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 // Programs — single source of truth for names AND prices.
 // Prices should ultimately come from the backend/CMS (fix #8), but until
 // that migration happens these values are at least consistent with the
-// /programs page ($1,497 PMP, $997 CAPM, $797 Veterans).
+// /programs page ($899 PMP, $599 CAPM, $797 Veterans).
 // ---------------------------------------------------------------------------
 const PROGRAMS = {
   'pmp-prep': {
     id: 'pmp-prep',
     name: 'PMP® Certification Prep',
-    price: 1497,
+    price: 899,
     description:
       'Our flagship PMP® prep experience with live instruction, accountability, and application support.',
   },
   'capm-launcher': {
     id: 'capm-launcher',
     name: 'CAPM® Career Launcher',
-    price: 997,
+    price: 599,
     description:
       'Foundational project management training for early-career professionals and career changers.',
   },
@@ -109,7 +109,7 @@ function Spinner() {
 // StudyAccessCard — $49/month recurring tier (Stripe Checkout subscription)
 // ---------------------------------------------------------------------------
 const STUDY_ACCESS_INCLUDED = [
-  'Self-paced PMP® / CAPM® study library',
+  'Self-paced PMP® / CAPM® study material',
   'Practice question bank with explanations',
   'Monthly live Q&A office hours',
   'Private study community access',
@@ -168,11 +168,10 @@ function StudyAccessCard() {
         </h2>
         <div className="mt-3 flex items-baseline gap-2">
           <span className="text-5xl font-bold tracking-tight text-slate-900">$49</span>
-          <span className="text-base font-medium text-slate-600">/month · recurring</span>
+          <span className="text-base font-medium text-slate-600">/month</span>
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Get instant access to the Wiser Generations Int’l™ self-study library and monthly office
-          hours. Cancel anytime.
+          Get instant access to the Wiser Generations Int’l™ self-study material. Cancel anytime.
         </p>
       </div>
 
@@ -191,7 +190,7 @@ function StudyAccessCard() {
               href="/resources/pm-templates"
               className="font-bold text-amber-800 underline hover:text-amber-900"
             >
-              See the library →
+              Templates →
             </a>
           </p>
         </div>
