@@ -42,21 +42,23 @@ export default function Navbar() {
   }, [])
 
   return (
-    <nav className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-navy shadow-lg' : 'bg-navy'}`}>
+    <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 transition-all duration-200 ${scrolled ? 'shadow-md' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center">
-              <span className="text-navy font-bold text-sm">WG</span>
-            </div>
+          <Link href="/" className="flex-shrink-0" aria-label="Wiser Generations home">
+            <img
+              src="/wiser-generations-logo.png"
+              alt="Wiser Generations"
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop nav — 5 core links */}
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}
-                className="text-gray-300 hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                className="text-navy hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 {link.label}
               </Link>
             ))}
@@ -69,7 +71,7 @@ export default function Navbar() {
               <Link
                 href="/free-practice"
                 onClick={() => trackEvent('try_free_practice_click')}
-                className="border border-gold/60 text-gold hover:bg-gold/10 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
+                className="border border-navy/30 text-navy hover:bg-navy/5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
               >
                 Try Free Practice →
               </Link>
@@ -83,7 +85,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden text-gray-300 hover:text-white p-2" aria-label="Toggle menu">
+            className="lg:hidden text-navy hover:text-gold p-2" aria-label="Toggle menu">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -97,20 +99,20 @@ export default function Navbar() {
 
       {/* Mobile menu — all links available */}
       {isOpen && (
-        <div className="lg:hidden bg-navy border-t border-white/10">
+        <div className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
-                className="block text-gray-300 hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                className="block text-navy hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 {link.label}
               </Link>
             ))}
 
             {/* Secondary links in mobile */}
-            <div className="pt-2 border-t border-white/10 mt-2">
+            <div className="pt-2 border-t border-gray-200 mt-2">
               {mobileExtraLinks.map((link) => (
                 <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
-                  className="block text-gray-400 hover:text-gray-200 px-3 py-1.5 rounded-md text-xs font-medium transition-colors">
+                  className="block text-gray-600 hover:text-navy px-3 py-1.5 rounded-md text-xs font-medium transition-colors">
                   {link.label}
                 </Link>
               ))}
@@ -118,9 +120,9 @@ export default function Navbar() {
 
             {/* Mobile CTAs — hidden on /free-practice */}
             {!hideCTAs && (
-              <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+              <div className="pt-4 border-t border-gray-200 flex flex-col gap-3">
                 <Link href="/free-practice" onClick={() => setIsOpen(false)}
-                  className="block border border-gold/60 text-gold px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
+                  className="block border border-navy/30 text-navy px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
                   Try Free Practice Questions →
                 </Link>
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
