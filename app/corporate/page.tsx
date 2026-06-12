@@ -118,12 +118,13 @@ export default function CorporatePage() {
             </div>
                         <div className="rounded-2xl overflow-hidden shadow-2xl">
                                       <img
-                                                        src="/corporate-training.jpg"
-                                                        alt="Corporate PM training session with instructor and team"
+                                                        src="/corporate-hero.jpg"
+                                                        alt="Instructor handing out materials during a corporate training session"
                                                         className="w-full h-full object-cover"
                                                         style={{ maxHeight: '420px' }}
                                                       />
-                        </div>div></div>
+                        </div>
+        </div>
 
       <section className="bg-gold py-8 px-4">
         <div className="max-w-5xl mx-auto">
