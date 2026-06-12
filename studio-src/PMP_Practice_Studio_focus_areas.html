@@ -594,7 +594,7 @@ let pool = [], pos = 0, score = 0, answered = false, missed = [];
 */
 const FREE_LIMIT = 3;                 // free questions before the email gate
 const PROGRAMS_URL = "/programs";     // end-of-sample conversion target
-const EMAIL_ENDPOINT = "";            // <<< DEV: put your list/API endpoint here (POST {email}). Leave "" to skip network + just unlock.
+const EMAIL_ENDPOINT = "/api/lead";   // POST {email} to the lead-capture endpoint. Leave "" to skip network + just unlock.
 const STUDENT_MODE = (typeof window!=="undefined" && window.STUDENT_MODE===true) ||
                      new URLSearchParams(location.search).get("full")==="1";
 let emailUnlocked = STUDENT_MODE;     // students start unlocked
