@@ -77,7 +77,7 @@ export default function GuaranteePage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-brand-blue text-white py-20 px-4">
+      <section className="bg-navy text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Our Commitment to You</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -200,7 +200,7 @@ export default function GuaranteePage() {
             <h2 className="text-3xl font-bold text-navy">To Qualify for the Restudy Guarantee</h2>
             <p className="text-gray-600 mt-4">The guarantee is for students who commit to the process. Here is what that means:</p>
           </div>
-          <div className="bg-brand-blue rounded-2xl p-8">
+          <div className="bg-navy rounded-2xl p-8">
             <ul className="space-y-4">
               {qualifications.map((q, i) => (
                 <li key={i} className="flex items-start gap-3 text-gray-200">

@@ -164,7 +164,7 @@ export default function FlashcardsPage() {
   if (mode === 'study' && card) {
     return (
       <main className="min-h-screen bg-paper">
-        <div className="bg-brand-blue text-white px-4 py-3 sticky top-0 z-10">
+        <div className="bg-navy text-white px-4 py-3 sticky top-0 z-10">
           <div className="max-w-xl mx-auto flex items-center justify-between">
             <button onClick={() => setMode('browse')} className="text-gray-300 hover:text-white text-sm">Exit</button>
             <div className="text-center">
@@ -193,7 +193,7 @@ export default function FlashcardsPage() {
                 <p className="text-gray-400 text-xs mt-6">Tap to reveal definition</p>
               </div>
               <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',transform:'rotateY(180deg)'}}
-                className="bg-brand-blue rounded-2xl shadow-md flex flex-col items-center justify-center p-8">
+                className="bg-navy rounded-2xl shadow-md flex flex-col items-center justify-center p-8">
                 <p className="text-gold text-xs uppercase tracking-widest mb-4">Definition</p>
                 <p className="text-white text-center leading-relaxed">{card.definition}</p>
               </div>
@@ -211,7 +211,7 @@ export default function FlashcardsPage() {
 
   return (
     <main className="min-h-screen bg-paper">
-      <div className="bg-brand-blue text-white py-12 px-4">
+      <div className="bg-navy text-white py-12 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">PMBOK Glossary</p>
           <h1 className="text-3xl md:text-4xl font-bold mb-3">PMP® Flashcards</h1>
@@ -237,7 +237,7 @@ export default function FlashcardsPage() {
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map(cat => (
               <button key={cat} onClick={() => setCategory(cat)}
-                className={'text-xs px-3 py-1.5 rounded-full border font-medium transition-all ' + (category === cat ? 'bg-brand-blue text-white border-brand-blue' : 'border-gray-300 text-gray-600 hover:border-brand-blue')}>
+                className={'text-xs px-3 py-1.5 rounded-full border font-medium transition-all ' + (category === cat ? 'bg-navy text-white border-brand-blue' : 'border-gray-300 text-gray-600 hover:border-brand-blue')}>
                 {cat}
               </button>
             ))}
@@ -265,7 +265,7 @@ export default function FlashcardsPage() {
           </div>
         )}
         <div className="mt-10 flex flex-col sm:flex-row gap-4">
-          <Link href="/exam-simulator" className="flex-1 bg-brand-blue text-white font-bold py-4 rounded-xl text-center hover:bg-brand-blue/80 transition-colors">Exam Simulator</Link>
+          <Link href="/exam-simulator" className="flex-1 bg-navy text-white font-bold py-4 rounded-xl text-center hover:bg-navy/80 transition-colors">Exam Simulator</Link>
           <a href="https://calendly.com/space4grace/30min-pod" target="_blank" rel="noopener noreferrer"
             className="flex-1 bg-gold text-navy font-bold py-4 rounded-xl text-center hover:bg-yellow-400 transition-colors">
             Book a Free Call

@@ -122,7 +122,7 @@ export default function PmpFormulasPage() {
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Hero */}
-      <section className="bg-brand-blue text-white">
+      <section className="bg-navy text-white">
         <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
             Free PMP® Reference
@@ -176,7 +176,7 @@ export default function PmpFormulasPage() {
                   >
                     <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <h3 className="text-lg font-bold text-slate-900">{f.name}</h3>
-                      <code className="self-start rounded-md bg-brand-blue px-3 py-1.5 font-mono text-sm font-bold text-gold sm:self-auto">
+                      <code className="self-start rounded-md bg-navy px-3 py-1.5 font-mono text-sm font-bold text-gold sm:self-auto">
                         {f.formula}
                       </code>
                     </header>

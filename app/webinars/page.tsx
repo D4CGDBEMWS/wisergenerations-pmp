@@ -76,7 +76,7 @@ export default function WebinarsPage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-brand-blue text-white py-20 px-4">
+      <section className="bg-navy text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Free Webinars & Live Events</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -135,7 +135,7 @@ export default function WebinarsPage() {
                   href={CALENDLY}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-brand-blue text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-blue/80 transition-colors inline-block text-sm"
+                  className="bg-navy text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy/80 transition-colors inline-block text-sm"
                 >
                   {w.cta} →
                 </a>
@@ -186,7 +186,7 @@ export default function WebinarsPage() {
               </a>
               <Link
                 href="/free-guide"
-                className="border-2 border-brand-blue text-navy font-bold px-8 py-4 rounded-lg hover:bg-brand-blue hover:text-white transition-colors"
+                className="border-2 border-brand-blue text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors"
               >
                 Download the Free Guide
               </Link>

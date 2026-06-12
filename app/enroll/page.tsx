@@ -57,7 +57,7 @@ export default function EnrollPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-brand-blue text-white py-16">
+      <section className="bg-navy text-white py-16">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">Enrollment</p>
@@ -99,7 +99,7 @@ export default function EnrollPage() {
                   <p className="text-2xl font-bold text-navy">{p.price}</p>
                   <a
                     href="#book"
-                    className="bg-brand-blue text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-blue-900 transition-colors"
+                    className="bg-navy text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-blue-900 transition-colors"
                   >
                     Book a Call
                   </a>

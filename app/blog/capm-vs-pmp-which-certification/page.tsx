@@ -11,7 +11,7 @@ const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 export default function CapmVsPmpPost() {
   return (
     <main className="bg-white">
-      <section className="bg-brand-blue text-white py-16 px-4">
+      <section className="bg-navy text-white py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <Link href="/blog" className="text-gold text-sm hover:underline">Blog</Link>
@@ -45,7 +45,7 @@ export default function CapmVsPmpPost() {
           <div className="overflow-x-auto mb-8">
             <table className="w-full border-collapse bg-paper rounded-lg overflow-hidden text-sm">
               <thead>
-                <tr className="bg-brand-blue text-white">
+                <tr className="bg-navy text-white">
                   <th className="text-left p-4">Factor</th>
                   <th className="text-left p-4">CAPM</th>
                   <th className="text-left p-4">PMP</th>
@@ -114,7 +114,7 @@ export default function CapmVsPmpPost() {
             it is building on a foundation you have already laid.
           </p>
 
-          <div className="bg-brand-blue text-white rounded-2xl p-8 mt-10">
+          <div className="bg-navy text-white rounded-2xl p-8 mt-10">
             <h3 className="text-xl font-bold mb-4">Not Sure Which Is Right for You?</h3>
             <p className="text-gray-300 mb-6">
               Book a free strategy call with Crystal. She will review your background, assess your eligibility,

@@ -46,7 +46,7 @@ export default function PodsPage() {
     <>
     <script dangerouslySetInnerHTML={{ __html: `if(typeof gtag==='function'){gtag('event','pod_discovery_click')}` }} />
       {/* Hero */}
-      <section className="bg-brand-blue text-white relative overflow-hidden">
+      <section className="bg-navy text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Delivery Pods</p>
@@ -88,7 +88,7 @@ export default function PodsPage() {
       </section>
 
       {/* What a Pod Includes */}
-      <section className="py-16 bg-brand-blue text-white">
+      <section className="py-16 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-10">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">The Engagement</p>
@@ -110,7 +110,7 @@ export default function PodsPage() {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-navy text-sm font-bold uppercase tracking-widest mb-2">Investment</p>
           <h2 className="text-3xl font-bold text-navy mb-8">Transparent, Scalable Pricing</h2>
-          <div className="bg-brand-blue rounded-2xl p-8 mb-8 text-left">
+          <div className="bg-navy rounded-2xl p-8 mb-8 text-left">
             <div className="space-y-4">
               <div className="flex items-center gap-4 border-b border-white/10 pb-4">
                 <p className="text-4xl font-bold text-gold">$5,000</p>
@@ -137,7 +137,7 @@ export default function PodsPage() {
             href={CALENDLY}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-brand-blue text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg"
+            className="inline-block bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg"
           >
             Schedule a 30-Minute Discovery Call
           </a>
@@ -186,7 +186,7 @@ export default function PodsPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-brand-blue">
+      <section className="py-16 bg-navy">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Talk?</h2>
           <p className="text-gray-300 text-lg mb-8">

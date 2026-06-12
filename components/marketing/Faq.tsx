@@ -27,7 +27,7 @@ export default function Faq({
   const isNavy = tone === 'navy'
 
   return (
-    <section aria-label={heading} className={isNavy ? 'bg-brand-blue py-16 text-white' : 'bg-white py-16'}>
+    <section aria-label={heading} className={isNavy ? 'bg-navy py-16 text-white' : 'bg-white py-16'}>
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <p
           className={`text-xs font-bold uppercase tracking-[0.18em] ${

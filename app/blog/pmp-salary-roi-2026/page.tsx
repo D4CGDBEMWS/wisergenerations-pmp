@@ -11,7 +11,7 @@ const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 export default function PmpSalaryRoiPost() {
   return (
     <main className="bg-white">
-      <section className="bg-brand-blue text-white py-16 px-4">
+      <section className="bg-navy text-white py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <Link href="/blog" className="text-gold text-sm hover:underline">Blog</Link>
@@ -53,7 +53,7 @@ export default function PmpSalaryRoiPost() {
               { stat: '#3', label: 'PMP ranked among the top 3 most valuable certifications globally by multiple surveys' },
               { stat: '$135K+', label: 'Median annual salary for PMP-certified project managers in the United States' },
             ].map((item) => (
-              <div key={item.stat} className="bg-brand-blue text-white rounded-xl p-6 text-center">
+              <div key={item.stat} className="bg-navy text-white rounded-xl p-6 text-center">
                 <div className="text-3xl font-bold text-gold mb-2">{item.stat}</div>
                 <p className="text-gray-300 text-sm leading-relaxed">{item.label}</p>
               </div>
@@ -111,7 +111,7 @@ export default function PmpSalaryRoiPost() {
             ))}
           </div>
 
-          <div className="bg-brand-blue text-white rounded-2xl p-8 mt-10">
+          <div className="bg-navy text-white rounded-2xl p-8 mt-10">
             <h3 className="text-xl font-bold mb-4">Ready to Calculate Your Personal ROI?</h3>
             <p className="text-gray-300 mb-6">
               Book a free strategy call with Crystal. She will assess your eligibility, tell you which

@@ -55,7 +55,7 @@ export default function BlogPage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-brand-blue text-white py-16 px-4">
+      <section className="bg-navy text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Resources & Insights</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">The PM Certification Blog</h1>
@@ -86,7 +86,7 @@ export default function BlogPage() {
           <div className="max-w-4xl mx-auto">
             <p className="text-gold text-xs font-semibold tracking-widest uppercase mb-4">Featured</p>
             <Link href={`/blog/${featured.slug}`}
-              className="block bg-brand-blue text-white rounded-2xl p-8 hover:opacity-95 transition-opacity">
+              className="block bg-navy text-white rounded-2xl p-8 hover:opacity-95 transition-opacity">
               <div className="flex items-center gap-3 mb-4">
                 <span className="bg-gold text-navy text-xs font-bold px-3 py-1 rounded-full">{featured.category}</span>
                 <span className="text-gray-400 text-sm">{featured.date}</span>

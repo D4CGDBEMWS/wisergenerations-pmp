@@ -76,7 +76,7 @@ export default function Navbar() {
               <Link
                 href="/free-practice"
                 onClick={() => trackEvent('try_free_practice_click')}
-                className="border border-brand-blue/30 text-navy hover:bg-brand-blue/5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
+                className="border border-brand-blue/30 text-navy hover:bg-navy/5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
               >
                 Try Free Practice →
               </Link>

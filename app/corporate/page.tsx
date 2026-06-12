@@ -95,7 +95,7 @@ const process = [
 export default function CorporatePage() {
   return (
     <main className="bg-white">
-      <section className="bg-brand-blue text-white py-20 px-4">
+      <section className="bg-navy text-white py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -194,7 +194,7 @@ export default function CorporatePage() {
                 Organizations that invest in PM certification see measurable improvements in project delivery, team confidence, and organizational capability.
               </p>
             </div>
-            <div className="bg-brand-blue rounded-2xl p-8">
+            <div className="bg-navy rounded-2xl p-8">
               <ul className="space-y-4">
                 {outcomes.map((o) => (
                   <li key={o} className="flex items-start gap-3 text-gray-200">
@@ -217,7 +217,7 @@ export default function CorporatePage() {
         </div>
       </section>
 
-      <section className="bg-brand-blue text-white py-20 px-4">
+      <section className="bg-navy text-white py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Elevate Your Team?</h2>
           <p className="text-gray-300 mb-8 text-lg">

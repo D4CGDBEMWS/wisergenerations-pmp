@@ -46,7 +46,7 @@ export default function HomePage() {
   return (
     <>
       {/* Top announcement banner */}
-      <div className="bg-brand-blue text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
+      <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
         🎯 Mentor-led PMP® &amp; CAPM® prep with an 87% first-attempt pass rate.{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
           Book a free strategy call →
@@ -54,7 +54,7 @@ export default function HomePage() {
       </div>
 
       {/* Hero */}
-      <section className="bg-brand-blue text-white relative overflow-hidden pb-16 lg:pb-0">
+      <section className="bg-navy text-white relative overflow-hidden pb-16 lg:pb-0">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-28 relative">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -129,7 +129,7 @@ export default function HomePage() {
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
                 </div>
-                <div className="absolute -top-4 -right-4 bg-brand-blue border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
+                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
                   <p className="font-bold text-gold">87%</p>
                   <p className="text-xs">First-attempt<br/>pass rate</p>
                 </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
           />
 
           {/* Social proof nudge below steps */}
-          <div className="mt-10 bg-brand-blue/5 border border-brand-blue/10 rounded-2xl p-6 text-center">
+          <div className="mt-10 bg-navy/5 border border-brand-blue/10 rounded-2xl p-6 text-center">
             <p className="text-navy font-semibold text-lg">
               <span className="text-gold font-bold">87%</span> of students pass on their first attempt.{' '}
               <span className="text-gold font-bold">Pass Guarantee</span> included — we coach you until you pass.
@@ -170,7 +170,7 @@ export default function HomePage() {
                 Book a Free Strategy Call
               </a>
               <Link href="/free-practice"
-                className="border-2 border-brand-blue text-navy font-bold px-8 py-3 rounded-lg hover:bg-brand-blue hover:text-white transition-colors">
+                className="border-2 border-brand-blue text-navy font-bold px-8 py-3 rounded-lg hover:bg-navy hover:text-white transition-colors">
                 Try Free Practice First
               </Link>
             </div>
@@ -179,7 +179,7 @@ export default function HomePage() {
       </section>
 
       {/* DISPLAY STAT — typographic anchor between How It Works and Free Guide */}
-      <section className="py-16 bg-brand-blue text-center overflow-hidden">
+      <section className="py-16 bg-navy text-center overflow-hidden">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
             <div>
@@ -234,7 +234,7 @@ export default function HomePage() {
               <p className="text-xs text-gray-400 mt-2">Enter your name & email — instant download. No spam ever.</p>
             </div>
             <div className="flex justify-center">
-              <div className="bg-brand-blue rounded-2xl p-8 w-full max-w-sm text-center shadow-2xl">
+              <div className="bg-navy rounded-2xl p-8 w-full max-w-sm text-center shadow-2xl">
                 <p className="text-gold text-xs font-bold uppercase tracking-widest mb-2">Free Guide</p>
                 <div className="bg-gold/20 border border-gold/40 rounded-xl p-4 mb-4">
                   <p className="text-white font-bold text-xl leading-snug mb-1">
@@ -289,7 +289,7 @@ export default function HomePage() {
                   </p>
                 ) : (
                   <Link href="/checkout"
-                    className={`block w-full font-bold py-3 rounded-xl text-center transition-colors ${c.status === 'urgent' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-brand-blue text-white hover:bg-blue-900'}`}>
+                    className={`block w-full font-bold py-3 rounded-xl text-center transition-colors ${c.status === 'urgent' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-navy text-white hover:bg-blue-900'}`}>
                     {c.status === 'urgent' ? '🔥 Enroll Now — Only ' + c.spots + ' Spots Left!' : c.status === 'open' ? '🗓 Reserve My Spot — ' + c.label : 'Reserve My Spot'}
                   </Link>
                 )}
@@ -321,7 +321,7 @@ export default function HomePage() {
       </section>
 
       {/* Why certify now */}
-      <section className="py-16 bg-brand-blue text-white">
+      <section className="py-16 bg-navy text-white">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-2">Why Students Choose Enterprise Academy</h2>
@@ -378,7 +378,7 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="flex gap-4">
-                <Link href="/about" className="bg-brand-blue text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
+                <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
                   Crystal&apos;s Story
                 </Link>
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer"

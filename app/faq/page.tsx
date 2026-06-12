@@ -130,7 +130,7 @@ export default function FaqPage() {
     <main className="bg-white">
 
       {/* Hero */}
-      <section className="bg-brand-blue text-white py-16 px-4">
+      <section className="bg-navy text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">Frequently Asked Questions</p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
