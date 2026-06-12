@@ -48,7 +48,7 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Free Resources</h3>
+            <h3 className="text-white font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
               {[
                 { label: 'Free PMP Guide', href: '/free-guide' },
