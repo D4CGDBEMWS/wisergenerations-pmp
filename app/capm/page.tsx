@@ -38,6 +38,12 @@ export default function CAPMPage() {
               Enroll Now — from $599
             </Link>
           </div>
+        <img
+          src="/capm-hero.jpg"
+          alt="Instructor leading a project planning session with engaged learners"
+          className="mt-8 w-full rounded-xl object-cover"
+          style={{ maxHeight: '420px' }}
+        />
         </div>
       </section>
 
