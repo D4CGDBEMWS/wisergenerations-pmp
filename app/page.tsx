@@ -24,12 +24,25 @@ const TESTIMONIALS = [
   },
 ]
 
-const COHORTS = [
-  { name: 'Fall 2026 Cohort', dates: 'September 2026', spots: 20, status: 'open', examBy: 'Enrolling now — reserve your spot' },
-  { name: 'Winter 2027 Cohort', dates: 'January 2027', spots: 20, status: 'open', examBy: 'Planning ahead? Reserve your seat early' },
-]
+// Cohorts roll automatically every 2 months so the schedule never goes stale.
+// Pure server-side date math (no user input) — revalidated daily via ISR below.
+function getUpcomingCohorts() {
+  const fmt = (d: Date) => d.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+  const now = new Date()
+  // Next cohort opens the month after this one; the following runs two months later.
+  const first = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+  const second = new Date(now.getFullYear(), now.getMonth() + 3, 1)
+  return [
+    { name: `${fmt(first)} Cohort`, dates: fmt(first), label: fmt(first), spots: 12, status: 'open', examBy: 'Enrolling now — reserve your seat' },
+    { name: `${fmt(second)} Cohort`, dates: fmt(second), label: fmt(second), spots: 20, status: 'open', examBy: 'Planning ahead? Reserve your seat early' },
+  ]
+}
+
+// Refresh the rolling cohort schedule (and any date-derived content) once a day.
+export const revalidate = 86400
 
 export default function HomePage() {
+  const COHORTS = getUpcomingCohorts()
   return (
     <>
       {/* Top announcement banner */}
@@ -277,7 +290,7 @@ export default function HomePage() {
                 ) : (
                   <Link href="/checkout"
                     className={`block w-full font-bold py-3 rounded-xl text-center transition-colors ${c.status === 'urgent' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-navy text-white hover:bg-blue-900'}`}>
-                    {c.status === 'urgent' ? '🔥 Enroll Now — Only ' + c.spots + ' Spots Left!' : c.status === 'open' ? '🗓 Reserve My Spot — Fall 2026' : 'Reserve My Spot'}
+                    {c.status === 'urgent' ? '🔥 Enroll Now — Only ' + c.spots + ' Spots Left!' : c.status === 'open' ? '🗓 Reserve My Spot — ' + c.label : 'Reserve My Spot'}
                   </Link>
                 )}
               </div>
@@ -424,7 +437,7 @@ export default function HomePage() {
             certification — and the prep that gets you there with confidence.
           </p>
           <div className="bg-navy/10 rounded-xl p-4 mb-6 max-w-lg mx-auto">
-            <p className="text-navy text-sm font-bold">🌐 Fall 2026 cohort — enrolling now</p>
+            <p className="text-navy text-sm font-bold">🌐 {COHORTS[0].label} cohort — enrolling now</p>
           </div>
           <div className="flex flex-wrap gap-4 justify-center mb-6">
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
