@@ -1,7 +1,7 @@
 export const SITE_NAME = 'Wiser Generations Int\'l'
 export const SITE_URL = 'https://wisergenerations.com'
 export const TAGLINE = 'Project Manage Your Career. Transform Your Future.™'
-export const FOUNDER = 'Crystal Stewart, PMP®'
+export const FOUNDER = 'Crystal Stewart,  PMP®'
 export const FOUNDER_TITLE = 'The Project Management Evangelist™'
 export const COMPANY = 'Enterprise Academy'
 
@@ -141,6 +141,6 @@ export const PROGRAMS = [
 export const STATS = [
   { value: '20+', label: 'Years Enterprise PM Experience' },
   { value: 'Pass', label: 'Guarantee — We coach you until you pass' },
-  { value: '500+', label: 'Professionals Trained' },
+  { value: '694', label: 'Professionals Trained' },
   { value: '100%', label: 'PMI-Aligned Curriculum' },
 ]

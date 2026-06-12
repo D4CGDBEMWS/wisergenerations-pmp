@@ -116,19 +116,17 @@ export default function CorporatePage() {
                 </Link>
               </div>
             </div>
-            <div className="bg-white/10 rounded-2xl p-8 border border-white/20">
-              <h3 className="text-xl font-bold text-gold mb-6">What Organizations Get</h3>
-              <ul className="space-y-3">
-                {['Customized PMI-aligned curriculum','Live cohort sessions for your full team','Virtual or on-site delivery','PMI contact hours documentation','PMP and CAPM certification support','Executive briefings available','Volume pricing for 5+ employees','Ongoing partnership & follow-on cohorts'].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-gray-200">
-                    <span className="text-gold">✓</span><span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                        <div className="rounded-2xl overflow-hidden shadow-2xl">
+                                      <img
+                                                        src="/corporate-hero.jpg"
+                                                        alt="Instructor handing out materials during a corporate training session"
+                                                        className="w-full h-full object-cover"
+                                                        style={{ maxHeight: '420px' }}
+                                                      />
+                        </div>
         </div>
-      </section>
+    </div>
+    </section>
 
       <section className="bg-gold py-8 px-4">
         <div className="max-w-5xl mx-auto">
