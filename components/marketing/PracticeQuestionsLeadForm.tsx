@@ -51,7 +51,7 @@ export default function PracticeQuestionsLeadForm() {
   }
 
   return (
-    <div className="rounded-3xl border-2 border-gold bg-gradient-to-br from-navy to-slate-900 p-8 text-white shadow-lg">
+    <div className="rounded-3xl border-2 border-gold bg-gradient-to-br from-brand-blue to-slate-900 p-8 text-white shadow-lg">
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
         Want 25 more practice questions?
       </p>

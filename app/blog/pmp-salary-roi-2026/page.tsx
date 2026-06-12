@@ -104,7 +104,7 @@ export default function PmpSalaryRoiPost() {
               { group: 'Veterans transitioning to civilian PM roles', body: 'Military leadership experience maps well to PMP eligibility — but civilian employers often need the credential as a translation layer. The PMP bridges the gap between your demonstrated capability and what the job posting requires.' },
               { group: 'Career transitioners entering PM', body: 'For people pivoting into project management from another field, the CAPM® or PMP credential provides immediate credibility and access to roles that would otherwise require years of PM-specific experience to unlock.' },
             ].map((item) => (
-              <div key={item.group} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+              <div key={item.group} className="bg-paper rounded-xl p-6 border border-gray-200">
                 <h3 className="font-bold text-navy mb-2">{item.group}</h3>
                 <p className="text-gray-700 text-sm leading-relaxed">{item.body}</p>
               </div>

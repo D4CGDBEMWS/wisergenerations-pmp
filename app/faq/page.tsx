@@ -143,7 +143,7 @@ export default function FaqPage() {
       </section>
 
       {/* Quick links */}
-      <section className="bg-gray-50 py-8 px-4 border-b border-gray-200">
+      <section className="bg-paper py-8 px-4 border-b border-gray-200">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-wrap gap-3 justify-center">
             {faqCategories.map((cat) => (
@@ -171,7 +171,7 @@ export default function FaqPage() {
               </div>
               <div className="space-y-4">
                 {cat.questions.map((item) => (
-                  <details key={item.q} className="group bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+                  <details key={item.q} className="group bg-paper rounded-xl border border-gray-200 overflow-hidden">
                     <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
                       <h3 className="font-semibold text-navy pr-4">{item.q}</h3>
                       <span className="text-gold font-bold text-xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
@@ -188,7 +188,7 @@ export default function FaqPage() {
       </section>
 
       {/* Still have questions */}
-      <section className="bg-navy text-white py-16 px-4">
+      <section className="bg-brand-blue text-white py-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Still Have Questions?</h2>
           <p className="text-gray-300 mb-8">

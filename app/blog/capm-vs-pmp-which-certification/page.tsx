@@ -43,7 +43,7 @@ export default function CapmVsPmpPost() {
 
           <h2 className="text-2xl font-bold text-navy mt-10 mb-4">The Quick Comparison</h2>
           <div className="overflow-x-auto mb-8">
-            <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden text-sm">
+            <table className="w-full border-collapse bg-paper rounded-lg overflow-hidden text-sm">
               <thead>
                 <tr className="bg-navy text-white">
                   <th className="text-left p-4">Factor</th>
@@ -135,7 +135,7 @@ export default function CapmVsPmpPost() {
         </div>
       </article>
 
-      <section className="bg-gray-50 py-14 px-4">
+      <section className="bg-paper py-14 px-4">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-xl font-bold text-navy mb-6">More Articles</h3>
           <div className="grid md:grid-cols-2 gap-6">

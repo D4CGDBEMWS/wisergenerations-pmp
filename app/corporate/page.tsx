@@ -162,7 +162,7 @@ export default function CorporatePage() {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">How It Works</p>
@@ -207,7 +207,7 @@ export default function CorporatePage() {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-16 px-4">
+      <section className="bg-paper py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-2xl text-navy italic mb-6 leading-relaxed">
             &ldquo;Knowledgeable with a sincere concern for each of her pupils, she has a unique way of conveying the concepts regardless of their learning method. I highly recommend Crystal&apos;s services to any organization that desires to improve their PMO.&rdquo;

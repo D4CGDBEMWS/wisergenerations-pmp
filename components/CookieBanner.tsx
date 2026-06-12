@@ -57,7 +57,7 @@ export default function CookieBanner() {
           </button>
           <button
             onClick={decline}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-navy hover:text-navy"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-brand-blue hover:text-navy"
           >
             Essential Only
           </button>

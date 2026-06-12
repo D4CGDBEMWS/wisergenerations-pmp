@@ -149,7 +149,7 @@ export default function GuaranteePage() {
                 </p>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+            <div className="bg-paper rounded-2xl p-8 border border-gray-200">
               <h3 className="text-xl font-bold text-navy mb-6 text-center">How It Works</h3>
               <div className="space-y-4">
                 {[
@@ -174,7 +174,7 @@ export default function GuaranteePage() {
       </section>
 
       {/* What's included */}
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">What You Get</p>
@@ -214,7 +214,7 @@ export default function GuaranteePage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Questions</p>
@@ -232,7 +232,7 @@ export default function GuaranteePage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-navy text-white py-20 px-4 text-center">
+      <section className="bg-brand-blue text-white py-20 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Ready to Certify with Confidence?</h2>
           <p className="text-gray-300 mb-8 text-lg">

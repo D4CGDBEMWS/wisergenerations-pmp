@@ -76,7 +76,7 @@ export default function Navbar() {
               <Link
                 href="/free-practice"
                 onClick={() => trackEvent('try_free_practice_click')}
-                className="border border-navy/30 text-navy hover:bg-navy/5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
+                className="border border-brand-blue/30 text-navy hover:bg-navy/5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
               >
                 Try Free Practice →
               </Link>
@@ -127,7 +127,7 @@ export default function Navbar() {
             {!hideCTAs && (
               <div className="pt-4 border-t border-gray-200 flex flex-col gap-3">
                 <Link href="/free-practice" onClick={() => setIsOpen(false)}
-                  className="block border border-navy/30 text-navy px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
+                  className="block border border-brand-blue/30 text-navy px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
                   Try Free Practice Questions →
                 </Link>
                 <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}

@@ -77,7 +77,7 @@ export default function PodsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {WHO_ITS_FOR.map((item) => (
-              <div key={item.title} className="bg-light-navy border border-navy/10 rounded-2xl p-6">
+              <div key={item.title} className="bg-light-navy border border-brand-blue/10 rounded-2xl p-6">
                 <p className="text-4xl mb-4">{item.icon}</p>
                 <h3 className="text-lg font-bold text-navy mb-3">{item.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>

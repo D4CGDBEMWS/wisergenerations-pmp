@@ -39,7 +39,7 @@ export default function ResourceCTA({ variant = 'soft' }: { variant?: Variant })
       className={`my-12 overflow-hidden rounded-3xl border-2 p-8 shadow-sm ${
         isSoft
           ? 'border-amber-400 bg-gradient-to-br from-white to-amber-50'
-          : 'border-navy bg-navy text-white'
+          : 'border-brand-blue bg-navy text-white'
       }`}
     >
       <p

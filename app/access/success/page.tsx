@@ -88,7 +88,7 @@ export default async function AccessSuccessPage({
           </Link>
           <Link
             href="/flashcards"
-            className="border-2 border-[#0a1628] text-[#0a1628] hover:bg-gray-50 font-bold py-4 px-8 rounded-xl text-lg transition-colors"
+            className="border-2 border-[#0a1628] text-[#0a1628] hover:bg-paper font-bold py-4 px-8 rounded-xl text-lg transition-colors"
           >
             Study Flashcards
           </Link>

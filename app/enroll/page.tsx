@@ -130,7 +130,7 @@ export default function EnrollPage() {
       </section>
 
       {/* Reassurance */}
-      <section className="bg-gray-50 py-12">
+      <section className="bg-paper py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-navy font-bold text-lg mb-2">Not sure which program is right for you?</p>
           <p className="text-gray-600 text-sm mb-4">That's exactly what the discovery call is for. Crystal will help you figure out the best path based on your experience, timeline, and goals.</p>

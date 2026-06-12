@@ -56,7 +56,7 @@ export default function PmpExamChangesPost() {
             The three domains of the PMP exam are People, Process, and Business Environment. Their weights changed:
           </p>
           <div className="overflow-x-auto mb-6">
-            <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden">
+            <table className="w-full border-collapse bg-paper rounded-lg overflow-hidden">
               <thead>
                 <tr className="bg-navy text-white">
                   <th className="text-left p-4 font-semibold">Domain</th>
@@ -166,7 +166,7 @@ export default function PmpExamChangesPost() {
       </article>
 
       {/* Related posts */}
-      <section className="bg-gray-50 py-14 px-4">
+      <section className="bg-paper py-14 px-4">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-xl font-bold text-navy mb-6">More Articles</h3>
           <div className="grid md:grid-cols-3 gap-6">

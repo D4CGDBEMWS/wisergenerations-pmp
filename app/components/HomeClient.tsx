@@ -70,7 +70,7 @@ export default function HomeClient({ programs, testimonials, calendly }: Props) 
   return (
     <>
       {/* Sticky booking bar */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 bg-navy border-t-2 border-gold py-3 px-4 transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-50 bg-brand-blue border-t-2 border-gold py-3 px-4 transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           <p className="text-white font-medium text-sm hidden sm:block">Ready to earn your PMP® or CAPM®?</p>
           <div className="flex gap-3 w-full sm:w-auto">

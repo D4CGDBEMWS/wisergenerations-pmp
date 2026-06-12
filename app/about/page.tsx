@@ -196,7 +196,7 @@ export default function AboutPage() {
       </section>
 
       {/* Teaching philosophy */}
-      <section className="bg-gray-50 py-20 px-4">
+      <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Teaching Philosophy</p>
@@ -299,7 +299,7 @@ export default function AboutPage() {
             </a>
             <Link
               href="/programs"
-              className="border-2 border-navy text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors"
+              className="border-2 border-brand-blue text-navy font-bold px-8 py-4 rounded-lg hover:bg-brand-blue hover:text-white transition-colors"
             >
               View Programs
             </Link>

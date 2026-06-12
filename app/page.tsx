@@ -159,7 +159,7 @@ export default function HomePage() {
           />
 
           {/* Social proof nudge below steps */}
-          <div className="mt-10 bg-navy/5 border border-navy/10 rounded-2xl p-6 text-center">
+          <div className="mt-10 bg-navy/5 border border-brand-blue/10 rounded-2xl p-6 text-center">
             <p className="text-navy font-semibold text-lg">
               <span className="text-gold font-bold">87%</span> of students pass on their first attempt.{' '}
               <span className="text-gold font-bold">Pass Guarantee</span> included — we coach you until you pass.
@@ -170,7 +170,7 @@ export default function HomePage() {
                 Book a Free Strategy Call
               </a>
               <Link href="/free-practice"
-                className="border-2 border-navy text-navy font-bold px-8 py-3 rounded-lg hover:bg-navy hover:text-white transition-colors">
+                className="border-2 border-brand-blue text-navy font-bold px-8 py-3 rounded-lg hover:bg-navy hover:text-white transition-colors">
                 Try Free Practice First
               </Link>
             </div>
@@ -261,7 +261,7 @@ export default function HomePage() {
       </section>
 
       {/* Cohort Countdown */}
-      <section className="py-12 bg-gray-50 border-b border-gray-100">
+      <section className="py-12 bg-paper border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Act Now</p>
@@ -374,7 +374,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-wrap gap-3 mb-6">
                 {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
-                  <span key={t} className="bg-light-navy border border-navy/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
+                  <span key={t} className="bg-light-navy border border-brand-blue/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
                 ))}
               </div>
               <div className="flex gap-4">
@@ -392,7 +392,7 @@ export default function HomePage() {
       </section>
 
       {/* Veterans — with photo */}
-      <section className="py-16 bg-navy text-white relative overflow-hidden">
+      <section className="py-16 bg-brand-blue text-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
@@ -436,16 +436,16 @@ export default function HomePage() {
             Book a free call with Crystal today. She&apos;ll map your fastest path to PMP® or CAPM®
             certification — and the prep that gets you there with confidence.
           </p>
-          <div className="bg-navy/10 rounded-xl p-4 mb-6 max-w-lg mx-auto">
+          <div className="bg-brand-blue/10 rounded-xl p-4 mb-6 max-w-lg mx-auto">
             <p className="text-navy text-sm font-bold">🌐 {COHORTS[0].label} cohort — enrolling now</p>
           </div>
           <div className="flex flex-wrap gap-4 justify-center mb-6">
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-              className="bg-navy text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
+              className="bg-brand-blue text-white font-bold px-8 py-4 rounded-lg hover:bg-blue-900 transition-colors text-lg">
               Book Your Free Call Today
             </a>
             <Link href="/programs"
-              className="border-2 border-navy text-navy font-bold px-8 py-4 rounded-lg hover:bg-navy hover:text-white transition-colors text-lg">
+              className="border-2 border-brand-blue text-navy font-bold px-8 py-4 rounded-lg hover:bg-brand-blue hover:text-white transition-colors text-lg">
               View All Programs
             </Link>
           </div>

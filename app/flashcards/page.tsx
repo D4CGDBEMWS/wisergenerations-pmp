@@ -163,7 +163,7 @@ export default function FlashcardsPage() {
 
   if (mode === 'study' && card) {
     return (
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-paper">
         <div className="bg-navy text-white px-4 py-3 sticky top-0 z-10">
           <div className="max-w-xl mx-auto flex items-center justify-between">
             <button onClick={() => setMode('browse')} className="text-gray-300 hover:text-white text-sm">Exit</button>
@@ -210,7 +210,7 @@ export default function FlashcardsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-paper">
       <div className="bg-navy text-white py-12 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">PMBOK Glossary</p>
@@ -237,7 +237,7 @@ export default function FlashcardsPage() {
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map(cat => (
               <button key={cat} onClick={() => setCategory(cat)}
-                className={'text-xs px-3 py-1.5 rounded-full border font-medium transition-all ' + (category === cat ? 'bg-navy text-white border-navy' : 'border-gray-300 text-gray-600 hover:border-navy')}>
+                className={'text-xs px-3 py-1.5 rounded-full border font-medium transition-all ' + (category === cat ? 'bg-navy text-white border-brand-blue' : 'border-gray-300 text-gray-600 hover:border-brand-blue')}>
                 {cat}
               </button>
             ))}

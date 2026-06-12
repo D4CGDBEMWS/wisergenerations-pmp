@@ -12,7 +12,7 @@ export default function CAPMPage() {
     <div className="bg-white">
 
       {/* Hero */}
-      <section className="bg-brand-blue text-white py-20 px-4 sm:px-6 lg:px-8">
+      <section className="bg-navy text-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">CAPM Certification Prep</p>
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6">
@@ -93,7 +93,7 @@ export default function CAPMPage() {
               ))}
             </ul>
           </div>
-          <div className="bg-brand-blue text-white rounded-2xl p-8">
+          <div className="bg-navy text-white rounded-2xl p-8">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Investment</p>
             <p className="text-4xl font-bold mb-1">from $599</p>
             <p className="text-gray-300 text-sm mb-6">One-time investment. Payment plans available.</p>
@@ -132,7 +132,7 @@ export default function CAPMPage() {
           <h2 className="text-3xl font-bold text-navy mb-8 text-center">CAPM® vs. PMP® — Which Is Right for You?</h2>
           <div className="overflow-x-auto rounded-2xl border border-line shadow-sm">
             <table className="w-full text-sm">
-              <thead className="bg-brand-blue text-white">
+              <thead className="bg-navy text-white">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">Criteria</th>
                   <th className="px-6 py-4 text-center font-semibold">CAPM®</th>

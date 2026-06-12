@@ -67,7 +67,7 @@ export default function BlogPage() {
       </section>
 
       {/* Category filter */}
-      <section className="bg-gray-50 py-6 px-4 border-b border-gray-200">
+      <section className="bg-paper py-6 px-4 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((cat) => (
@@ -124,7 +124,7 @@ export default function BlogPage() {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="bg-navy text-white py-16 px-4">
+      <section className="bg-brand-blue text-white py-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Get PM Insights in Your Inbox</h2>
           <p className="text-gray-300 mb-8">

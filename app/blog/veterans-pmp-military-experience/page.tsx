@@ -76,7 +76,7 @@ export default function VeteransPmpPost() {
               { military: 'Company / Battery Commander', pm: 'Directed project teams, managed budgets, and delivered outcomes for complex, multi-stakeholder initiatives.' },
               { military: 'Program Manager / G6', pm: 'Led enterprise-scale programs with cross-functional dependencies, risk management, and executive reporting.' },
             ].map((item) => (
-              <div key={item.military} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div key={item.military} className="bg-paper rounded-lg p-4 border border-gray-200">
                 <div className="font-bold text-navy text-sm mb-1">{item.military}</div>
                 <div className="text-gray-600 text-sm">{item.pm}</div>
               </div>
