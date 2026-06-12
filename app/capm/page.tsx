@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { GraduationCap, Repeat, Rocket, Medal, Briefcase, ClipboardList, Check } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'CAPM® Certification Prep',
@@ -46,15 +47,17 @@ export default function CAPMPage() {
           <h2 className="text-3xl font-bold text-navy mb-8 text-center">Who the CAPM® Is For</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: '🎓', title: 'Recent Graduates', desc: 'BS or BA grads entering the workforce who want a recognized PM credential before their first role.' },
-              { icon: '🔄', title: 'Career Changers', desc: 'Professionals moving into PM from another field who need to establish formal credentials quickly.' },
-              { icon: '🚀', title: 'Early-Career PMs', desc: 'Those with under 3 years of PM experience who are not yet eligible for the PMP®.' },
-              { icon: '🎖️', title: 'Veterans', desc: 'Transitioning service members building civilian PM credentials alongside military experience.' },
-              { icon: '💼', title: 'Project Coordinators', desc: 'Coordinators and admins who support projects and want to formalize their PM knowledge.' },
-              { icon: '📋', title: 'PMI Pathway Starters', desc: 'Anyone who wants a stepping stone on the path to earning the PMP® in the future.' },
-            ].map(({ icon, title, desc }) => (
+              { Icon: GraduationCap, title: 'Recent Graduates', desc: 'BS or BA grads entering the workforce who want a recognized PM credential before their first role.' },
+              { Icon: Repeat, title: 'Career Changers', desc: 'Professionals moving into PM from another field who need to establish formal credentials quickly.' },
+              { Icon: Rocket, title: 'Early-Career PMs', desc: 'Those with under 3 years of PM experience who are not yet eligible for the PMP®.' },
+              { Icon: Medal, title: 'Veterans', desc: 'Transitioning service members building civilian PM credentials alongside military experience.' },
+              { Icon: Briefcase, title: 'Project Coordinators', desc: 'Coordinators and admins who support projects and want to formalize their PM knowledge.' },
+              { Icon: ClipboardList, title: 'PMI Pathway Starters', desc: 'Anyone who wants a stepping stone on the path to earning the PMP® in the future.' },
+            ].map(({ Icon, title, desc }) => (
               <div key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="text-3xl mb-3">{icon}</div>
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gold/15 text-navy">
+                  <Icon className="h-6 w-6" strokeWidth={1.75} />
+                </div>
                 <h3 className="font-bold text-navy mb-2">{title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{desc}</p>
               </div>
@@ -82,7 +85,9 @@ export default function CAPMPage() {
                 'Certificate of completion from Wiser Generations Int\'l',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gold/20 text-gold flex items-center justify-center text-xs font-bold">✓</span>
+                  <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-gold/20 text-gold flex items-center justify-center">
+                    <Check className="h-3 w-3" strokeWidth={3} />
+                  </span>
                   <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -93,10 +98,17 @@ export default function CAPMPage() {
             <p className="text-4xl font-bold mb-1">from $599</p>
             <p className="text-gray-300 text-sm mb-6">One-time investment. Payment plans available.</p>
             <ul className="space-y-2 mb-8 text-sm text-gray-300">
-              <li>✓ Live cohort instruction</li>
-              <li>✓ 23 PMI contact hours certificate</li>
-              <li>✓ Application support included</li>
-              <li>✓ Veteran discount available</li>
+              {[
+                'Live cohort instruction',
+                '23 PMI contact hours certificate',
+                'Application support included',
+                'Veteran discount available',
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <Check className="h-4 w-4 flex-shrink-0 text-gold" strokeWidth={3} />
+                  {item}
+                </li>
+              ))}
             </ul>
             <Link
               href="/checkout"
