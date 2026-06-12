@@ -30,30 +30,6 @@ const COHORTS = [
   { name: 'Fall 2026 Cohort', dates: 'September 2026', spots: 20, status: 'open', examBy: 'Enrolling now — reserve your spot' },
 ]
 
-const HOW_IT_WORKS = [
-  {
-    step: '01',
-    icon: '📞',
-    title: 'Book a Free Strategy Call',
-    desc: 'Tell us where you are and where you want to go. Crystal and team will map your fastest path to PMP or CAPM® certification — no pressure, no pitch.',
-    cta: { label: 'Book Your Call →', href: CALENDLY, external: true },
-  },
-  {
-    step: '02',
-    icon: '📋',
-    title: 'Get Your Custom Study Plan',
-    desc: 'Based on your schedule, background, and exam date, our mentors build a personalized roadmap. Live cohort sessions, practice exams, and 1:1 support included.',
-    cta: null,
-  },
-  {
-    step: '03',
-    icon: '🏆',
-    title: 'Your PMP®, Exam',
-    desc: 'Show up on exam day with confidence. Our 87% first-attempt pass rate and Pass Guarantee mean we are invested in your success just as much as you are.',
-    cta: { label: 'Try Free Practice Questions →', href: '/free-practice', external: false },
-  },
-]
-
 export default function HomePage() {
   return (
     <>
@@ -160,45 +136,15 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">Simple Process</p>
             <h2 className="text-3xl md:text-4xl font-bold text-navy">How It Works</h2>
-            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Three steps from where you are today to PMP® certified.</p>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Your path from day one to PMP® certified and job-ready.</p>
           </div>
 
-          <div className="relative">
-            {/* Connector line — desktop only */}
-            <div className="hidden md:block absolute top-12 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-0.5 bg-gold/30 z-0" />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-              {HOW_IT_WORKS.map((s, i) => (
-                <div key={s.step} className="flex flex-col items-center text-center">
-                  {/* Step circle */}
-                  <div className="relative mb-6">
-                    <div className="w-24 h-24 rounded-full bg-navy border-4 border-gold flex flex-col items-center justify-center shadow-lg">
-                      <span className="text-3xl">{s.icon}</span>
-                    </div>
-                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gold flex items-center justify-center shadow">
-                      <span className="text-navy font-bold text-xs">{i + 1}</span>
-                    </div>
-                  </div>
-                  {/* Content */}
-                  <h3 className="text-lg font-bold text-navy mb-3">{s.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4">{s.desc}</p>
-                  {s.cta && (
-                    s.cta.external ? (
-                      <a href={s.cta.href} target="_blank" rel="noopener noreferrer"
-                        className="inline-block bg-gold text-navy font-bold px-5 py-2.5 rounded-lg hover:bg-amber-400 transition-colors text-sm">
-                        {s.cta.label}
-                      </a>
-                    ) : (
-                      <Link href={s.cta.href}
-                        className="inline-block border-2 border-navy text-navy font-bold px-5 py-2.5 rounded-lg hover:bg-navy hover:text-white transition-colors text-sm">
-                        {s.cta.label}
-                      </Link>
-                    )
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Process graphic — Learn → Practice → Certified → Get Job-Ready */}
+          <img
+            src="/HowWeDoIt_process_light.png"
+            alt="How we do it: Learn, Practice, Certified, Get Job-Ready"
+            className="block w-full max-w-[1100px] h-auto mx-auto"
+          />
 
           {/* Social proof nudge below steps */}
           <div className="mt-10 bg-navy/5 border border-navy/10 rounded-2xl p-6 text-center">
