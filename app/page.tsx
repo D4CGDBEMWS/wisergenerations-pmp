@@ -25,15 +25,14 @@ const TESTIMONIALS = [
 ]
 
 const COHORTS = [
-  { name: 'April Accelerator', dates: 'April 14 – June 30, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
-  { name: 'May Fast Track', dates: 'June 8 – June 26, 2026', spots: 0, status: 'closed', examBy: 'Enrollment closed' },
   { name: 'Fall 2026 Cohort', dates: 'September 2026', spots: 20, status: 'open', examBy: 'Enrolling now — reserve your spot' },
+  { name: 'Winter 2027 Cohort', dates: 'January 2027', spots: 20, status: 'open', examBy: 'Planning ahead? Reserve your seat early' },
 ]
 
 export default function HomePage() {
   return (
     <>
-      {/* Post-July-8 Banner */}
+      {/* Top announcement banner */}
       <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
         🎯 Mentor-led PMP® &amp; CAPM® prep with an 87% first-attempt pass rate.{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
@@ -47,7 +46,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 lg:py-28 relative">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Wiser Generations Int'l</p>
+              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-4">Enterprise Academy · Wiser Generations Int&apos;l</p>
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6">
                 Pass Your PMP®<br />
                 <span className="text-gold">On the First Try.™</span>
@@ -143,7 +142,7 @@ export default function HomePage() {
           <img
             src="/HowWeDoIt_process_light.png"
             alt="How we do it: Learn, Practice, Certified, Get Job-Ready"
-            className="block w-full max-w-[1100px] h-auto mx-auto"
+            className="block w-full max-w-[1100px] h-auto mx-auto rounded-2xl shadow-sm ring-1 ring-gray-100"
           />
 
           {/* Social proof nudge below steps */}

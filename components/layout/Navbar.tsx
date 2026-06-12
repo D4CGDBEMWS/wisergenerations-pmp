@@ -47,10 +47,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0" aria-label="Wiser Generations home">
+            {/* Full wordmark on sm+, compact icon on narrow mobile */}
             <img
               src="/wiser-generations-logo.png"
               alt="Wiser Generations"
-              className="h-10 w-auto"
+              className="hidden sm:block h-10 w-auto"
+            />
+            <img
+              src="/wiser-generations-icon.png"
+              alt="Wiser Generations"
+              className="block sm:hidden h-9 w-auto"
             />
           </Link>
 

@@ -83,9 +83,8 @@ const RESOURCES: Resource[] = [
   {
     title: 'Wiser Generations Int’l Blog',
     description:
-      'Weekly articles on PMP® prep, career transition, veterans, and corporate training. Subscribe for launch.',
-    href: '/resources/blog',
-    badge: 'Coming soon',
+      'Articles on PMP® prep, career transition, veterans, and corporate training.',
+    href: '/blog',
   },
   {
     title: 'Veterans PM Pathway',

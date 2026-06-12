@@ -6,6 +6,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'res.cloudinary.com' },
     ],
   },
+  async redirects() {
+    return [
+      // Consolidated duplicate routes onto a single canonical URL
+      { source: '/privacy', destination: '/privacy-policy', permanent: true },
+      { source: '/resources/blog', destination: '/blog', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

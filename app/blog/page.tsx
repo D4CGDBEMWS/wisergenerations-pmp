@@ -10,7 +10,7 @@ const posts = [
   {
     slug: 'pmp-exam-changes-july-2026',
     title: 'PMP Exam Changes July 2026: Everything You Need to Know',
-    excerpt: 'PMI has confirmed significant changes to the PMP exam effective July 8, 2026. New domain weights, new question types, AI and sustainability content — here is what every aspiring PMP needs to know.',
+    excerpt: 'PMI made significant changes to the PMP exam effective July 8, 2026. New domain weights, new question types, AI and sustainability content — here is what every aspiring PMP needs to know.',
     category: 'Exam Updates',
     readTime: '8 min read',
     date: 'March 2026',
