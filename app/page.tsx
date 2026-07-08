@@ -242,7 +242,7 @@ export default function HomePage() {
                 style={{maxHeight: '400px'}}
               />
               <div className="absolute -bottom-3 -right-3 bg-gold text-navy font-bold px-3 py-1.5 rounded-xl text-xs shadow-lg">
-                8th Edition &middot; 2025
+                8th Edition &middot; 2026
               </div>
             </div>
           </div>
