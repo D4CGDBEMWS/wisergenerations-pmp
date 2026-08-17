@@ -113,12 +113,14 @@ Rules:
 - Don't touch the `id:` line — other parts of the site match on it.
 - Leave every comma exactly where it is.
 
-> **Careful:** changing `price:` here does **not** change what Stripe charges.
-> The amount customers actually pay is set separately in
-> `app/api/checkout/route.ts` (in cents — `89900` means $899.00) and in your
-> Stripe dashboard. **If you change a price, ask a developer to update the
-> checkout amount to match**, or the page will advertise one price and the card
-> will be charged another.
+**What the customer is charged updates automatically.** Change the number
+here and the program page, the checkout page, the AI assistant, and the amount
+Stripe bills all move together. You do not need to touch Stripe or ask a
+developer.
+
+> **One exception:** the $49/month Study Access subscription is priced in
+> Stripe itself, not here. To change that one, edit the price in your Stripe
+> dashboard — and ask a developer, because the Price ID is stored in Vercel.
 
 ---
 
@@ -424,7 +426,7 @@ misbehaving but the rest of the site is fine.
 
 ## When to call a developer
 
-- Changing what customers are **charged** (page price and Stripe must match)
+- Changing the **$49/month subscription** price (that one lives in Stripe)
 - The site is down and rolling back didn't fix it
 - Adding a new page or program
 - Anything involving a `.ts` or `.tsx` file
