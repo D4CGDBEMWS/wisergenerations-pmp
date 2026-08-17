@@ -1,10 +1,12 @@
 'use client'
 
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { FormEvent, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
+import { useSearchParams } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
+import { CHECKOUT_PROGRAMS } from '@/lib/constants'
 
 // ---------------------------------------------------------------------------
 // Stripe — only initialise once, at module level (correct pattern).
@@ -19,33 +21,13 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 // Programs — single source of truth for names AND prices.
 // Prices should ultimately come from the backend/CMS (fix #8), but until
 // that migration happens these values are at least consistent with the
-// /programs page ($899 PMP®, $599 CAPM®, $799 Veterans).
 // ---------------------------------------------------------------------------
-const PROGRAMS = {
-  'pmp-prep': {
-    id: 'pmp-prep',
-    name: 'PMP® Certification Prep',
-    price: 899,
-    description:
-      'Our flagship PMP® prep experience with live instruction, accountability, and application support.',
-  },
-  'capm-launcher': {
-    id: 'capm-launcher',
-    name: 'CAPM® Career Launcher',
-    price: 599,
-    description:
-      'Foundational project management training for early-career professionals and career changers.',
-  },
-  'veterans-pathway': {
-    id: 'veterans-pathway',
-    name: 'Veterans PM Pathway',
-    price: 799,
-    description:
-      'A mission-aligned transition pathway designed for veterans moving into project management roles.',
-  },
-} as const
+// Rendered from the same list the server charges from (lib/constants.ts), so
+// the page can never advertise a program the API does not sell, or a price it
+// does not charge.
+const PROGRAMS = CHECKOUT_PROGRAMS
 
-type ProgramId = keyof typeof PROGRAMS
+type ProgramId = string
 
 type CheckoutFormState = {
   firstName: string
@@ -351,14 +333,24 @@ function PaymentForm({
 // ---------------------------------------------------------------------------
 // CheckoutPage
 // ---------------------------------------------------------------------------
-export default function CheckoutPage() {
+function CheckoutPageInner() {
   useEffect(() => { trackEvent('checkout_start') }, [])
+
+  // Tier buttons on /pmp and /programs link here as /checkout?program=<id>,
+  // so the program the visitor actually clicked is the one preselected. An
+  // unknown or missing value falls back to the entry-level program rather
+  // than erroring, since this is a marketing link anyone can edit or share.
+  const searchParams = useSearchParams()
+  const requestedProgram = searchParams.get('program')
+  const initialProgramId =
+    PROGRAMS.find((program) => program.id === requestedProgram)?.id ?? PROGRAMS[0]!.id
+
   const [form, setForm] = useState<CheckoutFormState>({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    programId: 'pmp-prep',
+    programId: initialProgramId,
   })
   const [clientSecret, setClientSecret] = useState('')
   const [formError, setFormError] = useState('')
@@ -367,7 +359,8 @@ export default function CheckoutPage() {
   // Fix #5 — ref-based guard to prevent race condition on rapid "Continue" clicks.
   const isSubmittingRef = useRef(false)
 
-  const selectedProgram = PROGRAMS[form.programId]
+  const selectedProgram =
+    PROGRAMS.find((program) => program.id === form.programId) ?? PROGRAMS[0]!
 
   const elementsOptions = useMemo(
     () => ({
@@ -534,7 +527,7 @@ export default function CheckoutPage() {
               </p>
 
               <div className="mt-6 grid gap-4" role="radiogroup" aria-label="Select a program">
-                {Object.values(PROGRAMS).map((program) => {
+                {PROGRAMS.map((program) => {
                   const isSelected = program.id === form.programId
 
                   return (
@@ -746,3 +739,28 @@ export default function CheckoutPage() {
   )
 }
 
+// useSearchParams() requires a Suspense boundary in the App Router. The
+// fallback is a visible skeleton rather than null: this page already requires
+// JavaScript for Stripe Elements, but a customer arriving at a payment page
+// should never see a blank screen while it hydrates.
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-slate-50 px-4 py-16">
+          <div className="mx-auto max-w-3xl">
+            <div className="h-8 w-56 animate-pulse rounded-lg bg-slate-200" />
+            <div className="mt-8 space-y-4">
+              {[0, 1, 2].map((row) => (
+                <div key={row} className="h-28 animate-pulse rounded-2xl bg-slate-200" />
+              ))}
+            </div>
+            <p className="mt-8 text-sm text-slate-500">Loading secure checkout\u2026</p>
+          </div>
+        </main>
+      }
+    >
+      <CheckoutPageInner />
+    </Suspense>
+  )
+}
