@@ -3,7 +3,7 @@
 import { FormEvent, useId, useRef, useState } from 'react'
 import Link from 'next/link'
 import { trackEvent } from '@/components/Analytics'
-import { useTurnstile } from './useTurnstile'
+import { useTurnstile } from '@/components/useTurnstile'
 
 // ---------------------------------------------------------------------------
 // ChatLeadForm — the form the AI Guide renders when it calls `show_lead_form`.
