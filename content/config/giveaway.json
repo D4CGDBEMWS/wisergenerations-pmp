@@ -1,0 +1,21 @@
+{
+  "_comment": "Free Coaching Session Giveaway. Set enabled to true ONLY after every field below is filled in with real, approved values. While enabled is false, the giveaway is hidden from the site and the AI Guide will say it is not currently running.",
+
+  "enabled": false,
+
+  "title": "Win a Free Coaching Session",
+  "description": "Enter for a chance to win a complimentary 1-on-1 project management coaching session with Crystal Stewart, PMP®.",
+
+  "sessionDurationMinutes": 60,
+
+  "entryStartDate": "",
+  "entryDeadline": "",
+  "winnerSelectionDate": "",
+  "winnerAnnouncement": "The winner will be selected at random and notified by email at the address used to enter.",
+
+  "eligibility": "Open to legal residents of the United States who are 18 years of age or older at the time of entry. No purchase necessary.",
+
+  "officialRulesUrl": "/giveaway#official-rules",
+
+  "terms": "No purchase necessary to enter or win. A purchase will not increase your chances of winning. Void where prohibited. One entry per person. The prize has no cash value and is non-transferable. By entering you agree to receive email updates from Wiser Generations Int'l; you may unsubscribe at any time."
+}

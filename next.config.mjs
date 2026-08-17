@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The AI Guide reads its knowledge base from disk at runtime. Next's file
+  // tracing cannot see a readdirSync() path, so the markdown is force-included
+  // in the serverless bundle for /api/chat. Without this the assistant would
+  // deploy with an empty knowledge base.
+  outputFileTracingIncludes: {
+    '/api/chat': ['./content/knowledge-base/**/*'],
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

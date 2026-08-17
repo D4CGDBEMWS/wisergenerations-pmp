@@ -36,6 +36,9 @@ export default function CookieBanner() {
       role="dialog"
       aria-label="Cookie consent"
       aria-live="polite"
+      // Lets the AI Guide launcher measure this banner and sit above it
+      // instead of covering the consent buttons.
+      data-wg-bottom-chrome=""
       className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-lg sm:bottom-4 sm:left-4 sm:right-auto sm:max-w-md sm:rounded-2xl sm:border"
     >
       <div className="px-5 py-4">

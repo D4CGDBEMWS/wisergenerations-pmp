@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:ai": "node scripts/test-ai-guide.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
     "@stripe/react-stripe-js": "^6.1.0",
     "@stripe/stripe-js": "^9.1.0",
     "@upstash/ratelimit": "^2.0.8",
