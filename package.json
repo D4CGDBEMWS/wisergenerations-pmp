@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:ai": "node scripts/test-ai-guide.mjs"
+    "test:ai": "node scripts/test-ai-guide.mjs",
+    "giveaway:export": "node scripts/export-giveaway-entries.mjs",
+    "giveaway:pick": "node scripts/export-giveaway-entries.mjs --pick"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",
