@@ -16,12 +16,30 @@ import { Fragment, type ReactNode } from 'react'
 const MARKDOWN_LINK = /\[([^\]]+)\]\((\/[^\s)]*|https?:\/\/[^\s)]+)\)/g
 const BARE_URL = /(https?:\/\/[^\s<>()]+)/g
 
+// Resolved against a base no real link can reach, so "did this stay on our
+// origin?" is answered by the same URL parser the browser uses.
+const INTERNAL_BASE = 'https://internal.invalid'
+
+/**
+ * True only when the href resolves to a path on our own origin.
+ *
+ * Deliberately not a string prefix check. `//evil.com` is the obvious
+ * protocol-relative form, but for http/https the URL spec also treats a
+ * backslash as authority-position, so `/\evil.com` and `/\/evil.com` navigate
+ * off-origin too — and a tab or newline anywhere in the URL is stripped before
+ * parsing. Asking the parser covers all of those; enumerating them does not.
+ */
+function isInternalPath(href: string): boolean {
+  if (!href.startsWith('/')) return false
+  try {
+    return new URL(href, INTERNAL_BASE).origin === INTERNAL_BASE
+  } catch {
+    return false
+  }
+}
+
 function isSafeHref(href: string): boolean {
-  // A single leading slash is an internal path. Two is protocol-relative
-  // (`//evil.com`), which the browser resolves as a cross-origin navigation
-  // while looking like a site-internal link — reject it.
-  if (href.startsWith('//')) return false
-  if (href.startsWith('/')) return true
+  if (href.startsWith('/')) return isInternalPath(href)
   try {
     const url = new URL(href)
     return url.protocol === 'https:' || url.protocol === 'http:'
@@ -34,7 +52,7 @@ function LinkNode({ href, children }: { href: string; children: ReactNode }) {
   const className =
     'font-semibold text-brand-blue underline underline-offset-2 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue'
 
-  if (href.startsWith('/') && !href.startsWith('//')) {
+  if (isInternalPath(href)) {
     return (
       <Link href={href} className={className}>
         {children}

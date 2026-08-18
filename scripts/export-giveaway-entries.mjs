@@ -71,11 +71,19 @@ if (process.argv.includes('--pick')) {
 // gates external fetches behind a prompt; LibreOffice leaves "Evaluate
 // formulas" unchecked by default.
 //
-// Prefixing a single quote marks the cell as literal text. Trim first so a
-// leading space cannot hide the trigger character.
+// Prefixing a single quote marks the cell as literal text.
+//
+// The trigger test runs against a probe with leading characters stripped that a
+// spreadsheet may discard on import but JS trim() keeps -- NUL and other C0
+// controls, soft hyphen, zero-width and bidi marks. Without that, a value like
+// "\u0000=1+1" would reach the file unprefixed and could still be read as a
+// formula. The prefix is applied to the original value, not the probe, so
+// nothing is silently dropped from the export.
+const HIDDEN_LEAD = /^[\s\u0000-\u001f\u00ad\u200b-\u200f\u2060\ufeff]+/
 const esc = (v) => {
   const raw = String(v ?? '')
-  const safe = /^[=+\-@\t\r]/.test(raw.trim()) ? `'${raw}` : raw
+  const probe = raw.replace(HIDDEN_LEAD, '')
+  const safe = /^[=+\-@]/.test(probe) ? `'${raw}` : raw
   return `"${safe.replace(/"/g, '""')}"`
 }
 console.log('first_name,last_name,email,marketing_consent,entered_at')
