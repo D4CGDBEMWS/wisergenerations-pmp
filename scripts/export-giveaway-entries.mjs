@@ -56,7 +56,16 @@ if (process.argv.includes('--pick')) {
   process.exit(0)
 }
 
-const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
+// Quoting alone does NOT stop spreadsheet formula evaluation: Excel,
+// LibreOffice, and Google Sheets strip the quotes on import and then treat a
+// leading =, +, -, or @ as a formula. Entrant names come from an untrusted
+// public form, and this file exists to be opened by a human, so neutralise
+// those cells by prefixing a single quote.
+const esc = (v) => {
+  const raw = String(v ?? '')
+  const safe = /^[=+\-@\t\r]/.test(raw) ? `'${raw}` : raw
+  return `"${safe.replace(/"/g, '""')}"`
+}
 console.log('first_name,last_name,email,marketing_consent,entered_at')
 for (const e of entries) {
   console.log(

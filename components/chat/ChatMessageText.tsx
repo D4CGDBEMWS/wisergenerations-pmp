@@ -17,6 +17,10 @@ const MARKDOWN_LINK = /\[([^\]]+)\]\((\/[^\s)]*|https?:\/\/[^\s)]+)\)/g
 const BARE_URL = /(https?:\/\/[^\s<>()]+)/g
 
 function isSafeHref(href: string): boolean {
+  // A single leading slash is an internal path. Two is protocol-relative
+  // (`//evil.com`), which the browser resolves as a cross-origin navigation
+  // while looking like a site-internal link — reject it.
+  if (href.startsWith('//')) return false
   if (href.startsWith('/')) return true
   try {
     const url = new URL(href)
@@ -30,7 +34,7 @@ function LinkNode({ href, children }: { href: string; children: ReactNode }) {
   const className =
     'font-semibold text-brand-blue underline underline-offset-2 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue'
 
-  if (href.startsWith('/')) {
+  if (href.startsWith('/') && !href.startsWith('//')) {
     return (
       <Link href={href} className={className}>
         {children}
