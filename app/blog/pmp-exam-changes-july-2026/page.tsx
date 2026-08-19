@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'PMP® Exam Changes July 2026: Everything You Need to Know | Wiser Generations',
-  description: 'PMI confirmed major changes to the PMP exam effective July 8, 2026. New domain weights, AI and sustainability content, new question formats. Here is what every aspiring PMP needs to know.',
+  description: 'PMI confirmed major changes to the PMP exam effective July 9, 2026. New domain weights, AI and sustainability content, new question formats. Here is what every aspiring PMP needs to know.',
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -38,7 +38,7 @@ export default function PmpExamChangesPost() {
           <div className="bg-gold/20 border-l-4 border-gold rounded-r-xl p-6 mb-10">
             <p className="font-bold text-navy text-lg mb-2">The short version:</p>
             <p className="text-navy">
-              PMI made significant changes to the PMP exam effective July 8, 2026. Domain weights shifted,
+              PMI made significant changes to the PMP exam effective July 9, 2026. Domain weights shifted,
               new question types were added, and AI and sustainability content entered the exam for the first time.
               Here&apos;s exactly what changed — and how to prepare to pass the current exam on your first attempt.
             </p>
@@ -47,7 +47,7 @@ export default function PmpExamChangesPost() {
           <h2 className="text-2xl font-bold text-navy mt-10 mb-4">What PMI Changed</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             PMI periodically updates the PMP exam to reflect how project management is actually practiced.
-            The July 8, 2026 change is one of the more significant updates in recent years — touching domain weights,
+            The July 9, 2026 change is one of the more significant updates in recent years — touching domain weights,
             question formats, and content areas simultaneously.
           </p>
 
