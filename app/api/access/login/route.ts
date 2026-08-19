@@ -38,44 +38,119 @@ export const runtime = 'nodejs'
 const RATE_LIMIT = { limit: 5, windowMs: 15 * 60_000 }
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-async function sendMagicLinkEmail(toEmail: string, loginUrl: string): Promise<void> {
-  // Mandrill (Mailchimp Transactional) issues its own API keys, separate from
-  // the marketing key. MANDRILL_API_KEY is preferred; MAILCHIMP_API_KEY is
-  // accepted as a fallback because that is what production currently supplies.
-  // See docs/PHASE-0.5-FOUNDATION.md — this needs verifying against the live
-  // Mandrill account.
-  const apiKey = process.env.MANDRILL_API_KEY || process.env.MAILCHIMP_API_KEY
-  if (!apiKey) {
-    console.warn('[access/login] no transactional key set; magic link not sent')
-    return
-  }
+// ---------------------------------------------------------------------------
+// Magic-link delivery.
+//
+// Two providers, tried in the order of whichever is actually configured:
+//
+//   RESEND_API_KEY    Resend. The contact form already uses it and the free
+//                     tier covers 3,000 emails a month, so this is the path
+//                     that costs nothing extra.
+//   MANDRILL_API_KEY  Mailchimp Transactional.
+//
+// The previous fallback to MAILCHIMP_API_KEY has been REMOVED. Mandrill is a
+// separate add-on from the Mailchimp marketing plan and issues its own keys;
+// a marketing key is rejected by Mandrill's API. Accepting it as a fallback
+// could only ever produce a silent failure, which is what it did.
+//
+// Failures are recorded in audit_events. The POST handler deliberately always
+// returns ok so the response cannot be used to enumerate customers, and that
+// same silence would otherwise hide a completely dead mailer from the owner.
+// The audit row is the operator's channel; the HTTP response is not.
+// ---------------------------------------------------------------------------
 
+const MAGIC_LINK_FROM =
+  process.env.MAGIC_LINK_FROM_EMAIL ||
+  process.env.RESEND_FROM_EMAIL ||
+  'info@wisergenerations.com'
+const MAGIC_LINK_SUBJECT = 'Your Wiser Generations Study Access login link'
+
+function magicLinkHtml(loginUrl: string): string {
+  return (
+    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">` +
+    `<div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">` +
+    `<h1 style="color:#C9A84C;margin:0;font-size:24px">Wiser Generations</h1></div>` +
+    `<div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">` +
+    `<h2 style="color:#0A1628;margin-top:0">Your login link</h2>` +
+    `<p style="color:#374151;line-height:1.6">This link signs you in to Study Access and expires in <strong>15 minutes</strong>.</p>` +
+    `<p style="text-align:center;margin:32px 0"><a href="${loginUrl}" style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">Sign in</a></p>` +
+    `<p style="color:#6b7280;font-size:14px">If you didn't request this, you can ignore it.</p></div></div>`
+  )
+}
+
+function magicLinkText(loginUrl: string): string {
+  return `Your Wiser Generations login link:\n\n${loginUrl}\n\nIt expires in 15 minutes.`
+}
+
+async function sendViaResend(apiKey: string, toEmail: string, loginUrl: string): Promise<number> {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: `Wiser Generations <${MAGIC_LINK_FROM}>`,
+      to: [toEmail],
+      subject: MAGIC_LINK_SUBJECT,
+      html: magicLinkHtml(loginUrl),
+      text: magicLinkText(loginUrl),
+    }),
+  })
+  return res.status
+}
+
+async function sendViaMandrill(apiKey: string, toEmail: string, loginUrl: string): Promise<number> {
   const res = await fetch('https://mandrillapp.com/api/1.0/messages/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       key: apiKey,
       message: {
-        from_email: 'info@wisergenerations.com',
+        from_email: MAGIC_LINK_FROM,
         from_name: 'Wiser Generations',
         to: [{ email: toEmail, type: 'to' }],
-        subject: 'Your Wiser Generations Study Access login link',
-        html:
-          `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">` +
-          `<div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">` +
-          `<h1 style="color:#C9A84C;margin:0;font-size:24px">Wiser Generations</h1></div>` +
-          `<div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">` +
-          `<h2 style="color:#0A1628;margin-top:0">Your login link</h2>` +
-          `<p style="color:#374151;line-height:1.6">This link signs you in to Study Access and expires in <strong>15 minutes</strong>.</p>` +
-          `<p style="text-align:center;margin:32px 0"><a href="${loginUrl}" style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">Sign in</a></p>` +
-          `<p style="color:#6b7280;font-size:14px">If you didn't request this, you can ignore it.</p></div></div>`,
-        text: `Your Wiser Generations login link:\n\n${loginUrl}\n\nIt expires in 15 minutes.`,
+        subject: MAGIC_LINK_SUBJECT,
+        html: magicLinkHtml(loginUrl),
+        text: magicLinkText(loginUrl),
       },
     }),
   })
+  return res.status
+}
 
-  if (!res.ok) {
-    throw new Error(`Mandrill send failed: ${res.status}`)
+async function sendMagicLinkEmail(toEmail: string, loginUrl: string): Promise<void> {
+  const resendKey = process.env.RESEND_API_KEY
+  const mandrillKey = process.env.MANDRILL_API_KEY
+  const provider = resendKey ? 'resend' : mandrillKey ? 'mandrill' : null
+
+  if (!provider) {
+    console.warn('[access/login] no email provider configured; magic link not sent')
+    await recordAuditEvent({
+      eventType: 'login.email_failed',
+      metadata: { result: 'no_provider_configured' },
+    })
+    return
+  }
+
+  try {
+    const status =
+      provider === 'resend'
+        ? await sendViaResend(resendKey!, toEmail, loginUrl)
+        : await sendViaMandrill(mandrillKey!, toEmail, loginUrl)
+
+    // Only the provider name and HTTP status are recorded. Response bodies can
+    // echo the address or the key back, and neither belongs in an audit row.
+    if (status < 200 || status >= 300) {
+      console.error(`[access/login] ${provider} rejected the send: HTTP ${status}`)
+      await recordAuditEvent({
+        eventType: 'login.email_failed',
+        metadata: { result: `${provider}_http_${status}` },
+      })
+    }
+  } catch (err) {
+    console.error(`[access/login] ${provider} send threw:`, err)
+    await recordAuditEvent({
+      eventType: 'login.email_failed',
+      metadata: { result: `${provider}_unreachable` },
+    })
   }
 }
 
