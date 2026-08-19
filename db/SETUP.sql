@@ -190,3 +190,32 @@ SELECT table_name AS "Tables created"
                       'payment_events','programs','program_enrollments',
                       'consents','audit_events')
  ORDER BY table_name;
+
+-- ---------- 4 of 4: give the owner study access ----------
+WITH me AS (
+  INSERT INTO customers (email, name)
+  VALUES ('fus.pmp.ce@gmail.com', 'Crystal Stewart')
+  ON CONFLICT (lower(email)) DO UPDATE SET updated_at = now()
+  RETURNING id
+)
+INSERT INTO entitlements (customer_id, entitlement_key, source_type, source_id, idempotency_key)
+SELECT id, 'STUDY_ACCESS', 'admin_grant', 'owner-account', 'admin:owner:STUDY_ACCESS'
+  FROM me
+ON CONFLICT (idempotency_key) DO NOTHING;
+
+-- ---------- the answer ----------
+SELECT CASE
+  WHEN (SELECT count(*) FROM information_schema.tables
+         WHERE table_schema='public' AND table_name IN
+           ('customers','products','product_entitlements','orders','order_items',
+            'entitlements','sessions','login_tokens','payment_events','programs',
+            'program_enrollments','consents','audit_events')) < 13
+    THEN 'NOT FINISHED - some tables are missing. Copy this whole file again and re-run it.'
+  WHEN (SELECT count(*) FROM products) < 7
+    THEN 'NOT FINISHED - the product list is incomplete. Copy this whole file again and re-run it.'
+  WHEN NOT EXISTS (SELECT 1 FROM customers c JOIN entitlements e ON e.customer_id=c.id
+                    WHERE lower(c.email)='fus.pmp.ce@gmail.com'
+                      AND e.entitlement_key='STUDY_ACCESS' AND e.revoked_at IS NULL)
+    THEN 'NOT FINISHED - study access was not granted. Copy this whole file again and re-run it.'
+  ELSE 'ALL DONE. 13 tables created, 7 products loaded, and study access is active for fus.pmp.ce@gmail.com. Tell Claude it says ALL DONE.'
+END AS "Result";
