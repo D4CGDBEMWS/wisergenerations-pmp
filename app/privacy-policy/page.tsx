@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
       <div className="mb-10">
         <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Legal</p>
         <h1 className="text-4xl font-bold text-navy mb-4">Privacy Policy</h1>
-        <p className="text-gray-500 text-sm">Effective Date: April 12, 2026 &nbsp;·&nbsp; Last Updated: June 12, 2026</p>
+        <p className="text-gray-500 text-sm">Effective Date: April 12, 2026 &nbsp;·&nbsp; Last Updated: August 19, 2026</p>
       </div>
 
       <div className="prose prose-slate max-w-none space-y-8 text-gray-700 leading-relaxed">
@@ -76,6 +76,11 @@ export default function PrivacyPolicyPage() {
             <li><strong>Calendly</strong> — scheduling and booking of discovery and strategy calls. Governed by the <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Calendly Privacy Policy</a>.</li>
             <li><strong>Google Analytics</strong> — website traffic and usage analytics. Governed by the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Google Privacy Policy</a>. You may opt out via <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Google&apos;s opt-out browser add-on</a>.</li>
             <li><strong>Vercel</strong> — website hosting and infrastructure. Governed by the <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Vercel Privacy Policy</a>.</li>
+            <li><strong>Neon</strong> — the database holding your account, purchase and study-access records, hosted in the United States. Governed by the <a href="https://neon.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Neon Privacy Policy</a>.</li>
+            <li><strong>Resend</strong> — delivery of account emails such as sign-in links and contact form messages. Governed by the <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Resend Privacy Policy</a>.</li>
+            <li><strong>Kit (formerly ConvertKit)</strong> — delivery of the free study guide and its follow-up sequence. Governed by the <a href="https://kit.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Kit Privacy Policy</a>.</li>
+            <li><strong>Cloudflare</strong> — bot and spam protection on our forms. Governed by the <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Cloudflare Privacy Policy</a>.</li>
+            <li><strong>Upstash</strong> — rate limiting to protect our forms from abuse. Governed by the <a href="https://upstash.com/trust/privacy.pdf" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Upstash Privacy Policy</a>.</li>
           </ul>
         </section>
 
@@ -89,6 +94,7 @@ export default function PrivacyPolicyPage() {
             <li>Newsletter subscriber data is retained until you unsubscribe.</li>
             <li>Purchase and enrollment records are retained for at least 7 years for tax and legal compliance.</li>
             <li>Inquiry and support communications are retained for 3 years.</li>
+            <li>If you create an account or request a free resource but never make a purchase, we delete your record within 180 days.</li>
           </ul>
         </section>
 
@@ -175,9 +181,10 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-xl font-bold text-navy mb-3">11. Children&apos;s Privacy</h2>
           <p>
-            Our services are designed for adults pursuing professional certification. We do not knowingly collect
-            personal information from anyone under the age of 16. If you believe a child has provided us with
-            personal information, please contact us immediately at{' '}
+            Our services are designed for adults pursuing professional certification, including our CAPM&reg; pathway
+            for learners aged 18&ndash;24. We do not knowingly collect personal information from anyone under the age
+            of 18. If you believe someone under 18 has provided us with personal information, please contact us
+            immediately at{' '}
             <a href="mailto:info@wisergenerations.com" className="text-gold hover:underline font-medium">
               info@wisergenerations.com
             </a>{' '}
