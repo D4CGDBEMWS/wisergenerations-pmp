@@ -62,10 +62,13 @@ export function getQuickActions(): QuickAction[] {
 // Cohorts
 // ---------------------------------------------------------------------------
 
+export type SkipDate = { date: string; reason: string }
+
 export type Cohort = {
   id: string
   start: string
   end: string
+  skipDates?: SkipDate[]
   note?: string
 }
 
@@ -74,6 +77,14 @@ export type FormattedCohort = Cohort & {
   label: string
   /** True while the boot camp is running, so it is not offered as "upcoming". */
   inProgress: boolean
+  /**
+   * Days actually taught, worked out from the dates rather than assumed. A
+   * cohort with a holiday inside it spans five calendar days but still teaches
+   * four, and stating the span as the length would be wrong.
+   */
+  teachingDays: number
+  /** "no class Wednesday, November 11 (Veterans Day)", or '' when none. */
+  skipLabel: string
 }
 
 export const COHORTS = cohortsJson
@@ -94,12 +105,38 @@ function dayStartUtc(date: string): number {
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
+const DAY_FMT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'UTC',
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+})
+
+function formatDay(date: string): string {
+  return DAY_FMT.format(new Date(dayStartUtc(date)))
+}
+
 function formatRange(start: string, end: string): string {
-  const s = new Date(dayStartUtc(start))
-  const e = new Date(dayStartUtc(end))
-  const opts = { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' } as const
-  const fmt = new Intl.DateTimeFormat('en-US', opts)
-  return `${fmt.format(s)} – ${fmt.format(e)}, ${e.getUTCFullYear()}`
+  const year = new Date(dayStartUtc(end)).getUTCFullYear()
+  return `${formatDay(start)} – ${formatDay(end)}, ${year}`
+}
+
+/** Whole days from start to end inclusive. */
+function spanDays(start: string, end: string): number {
+  return Math.round((dayStartUtc(end) - dayStartUtc(start)) / DAY_MS) + 1
+}
+
+/**
+ * Only skips that fall inside the cohort count. A stray date left in the config
+ * after a cohort moved would otherwise silently shorten the advertised length.
+ */
+function skipsWithin(cohort: Cohort): SkipDate[] {
+  const from = dayStartUtc(cohort.start)
+  const to = dayStartUtc(cohort.end)
+  return (cohort.skipDates ?? []).filter((skip) => {
+    const day = dayStartUtc(skip.date)
+    return Number.isFinite(day) && day >= from && day <= to
+  })
 }
 
 /**
@@ -117,11 +154,18 @@ export function getUpcomingCohorts(now: number = Date.now()): FormattedCohort[] 
       return Number.isFinite(start) && Number.isFinite(end) && now < end + DAY_MS
     })
     .sort((a, b) => dayStartUtc(a.start) - dayStartUtc(b.start))
-    .map((c) => ({
-      ...c,
-      label: formatRange(c.start, c.end),
-      inProgress: now >= dayStartUtc(c.start),
-    }))
+    .map((c) => {
+      const skips = skipsWithin(c)
+      return {
+        ...c,
+        label: formatRange(c.start, c.end),
+        inProgress: now >= dayStartUtc(c.start),
+        teachingDays: spanDays(c.start, c.end) - skips.length,
+        skipLabel: skips
+          .map((skip) => `no class ${formatDay(skip.date)} (${skip.reason})`)
+          .join('; '),
+      }
+    })
 }
 
 /**

@@ -131,14 +131,22 @@ function renderCohortSchedule(): string {
   const next = upcoming[0]!
   const lines = upcoming.map((c) => {
     const status = c.inProgress ? ' — IN PROGRESS, closed to new enrollment' : ''
+    const skip = c.skipLabel ? ` — ${c.skipLabel}` : ''
     const note = c.note ? ` (${c.note})` : ''
-    return `- ${c.label}${status}${note}`
+    return `- ${c.label}${status}${skip}${note}`
   })
+
+  // Cohorts are normally four straight days, but a holiday inside one makes it
+  // span five. Say so explicitly rather than letting the general format line
+  // above contradict the dates listed underneath it.
+  const withSkips = upcoming.filter((c) => c.skipLabel)
 
   return [
     '# Boot Camp Schedule (live — always accurate)',
     '',
-    `Format: ${COHORTS.format}, ${COHORTS.daysPerCohort} consecutive days.`,
+    `Format: ${COHORTS.format} — ${COHORTS.daysPerCohort} teaching days. Most run Monday`,
+    'to Thursday, but check the dates below rather than assuming: a public holiday moves',
+    'or interrupts some of them.',
     `Daily session times: ${getCohortSessionTimes()} — every day of the boot camp.`,
     '',
     '## Scheduled cohorts',
@@ -149,6 +157,19 @@ function renderCohortSchedule(): string {
         ` a visitor can join is ${upcoming[1]?.label ?? 'not yet scheduled — offer the strategy call'}.`
       : `The next available cohort starts ${next.label}.`,
     '',
+    ...(withSkips.length
+      ? [
+          '## Cohorts with a day off inside them',
+          '',
+          `These still teach the full ${COHORTS.daysPerCohort} days; they just run across more`,
+          'calendar days. Always mention the day off when you give one of these dates, so',
+          'nobody plans around a range that turns out to have a gap in it.',
+          ...withSkips.map(
+            (c) => `- ${c.label}: ${c.skipLabel}. ${c.teachingDays} teaching days.`
+          ),
+          '',
+        ]
+      : []),
     'Rules for these dates:',
     '- Quote them exactly as written. Never adjust, extrapolate, or extend the pattern',
     '  to invent a cohort beyond the last one listed.',

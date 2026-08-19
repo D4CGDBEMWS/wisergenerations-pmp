@@ -8,7 +8,7 @@
   "timezone": "ET",
   "daysPerCohort": 4,
 
-  "_programsComment": "Tier ids from lib/constants.ts. These are the programs a boot camp seat enrolls into. PMP Executive and the Veterans PM Pathway are deliberately NOT listed — confirm with the owner before adding them.",
+  "_programsComment": "Tier ids from lib/constants.ts — the programs a boot camp seat enrolls into. PMP Executive and the Veterans PM Pathway are intentionally absent: those cohorts get created when they are needed. Add the tier id here when that happens.",
   "programs": [
     "pmp-essentials",
     "pmp-professional",
@@ -16,15 +16,27 @@
     "capm-professional"
   ],
 
-  "_cohortsComment": "Every cohort runs Monday through Thursday, one per week. `note` is optional and is shown to visitors, so keep it short and factual.",
+  "_cohortsComment": "Cohorts run Monday to Thursday, one per week, except where a holiday moved one. `skipDates` marks a day inside the range with no class — the assistant states it, and the teaching-day count is worked out from the dates rather than assumed, so it stays right. `note` is optional and is shown to visitors, so keep it short.",
   "cohorts": [
-    { "id": "bc-2026-09-21", "start": "2026-09-21", "end": "2026-09-24", "note": "" },
-    { "id": "bc-2026-09-28", "start": "2026-09-28", "end": "2026-10-01", "note": "" },
-    { "id": "bc-2026-10-05", "start": "2026-10-05", "end": "2026-10-08", "note": "" },
-    { "id": "bc-2026-10-12", "start": "2026-10-12", "end": "2026-10-15", "note": "" },
-    { "id": "bc-2026-10-19", "start": "2026-10-19", "end": "2026-10-22", "note": "" },
-    { "id": "bc-2026-10-26", "start": "2026-10-26", "end": "2026-10-29", "note": "" },
-    { "id": "bc-2026-11-02", "start": "2026-11-02", "end": "2026-11-05", "note": "" },
-    { "id": "bc-2026-11-09", "start": "2026-11-09", "end": "2026-11-12", "note": "" }
+    { "id": "bc-2026-09-21", "start": "2026-09-21", "end": "2026-09-24", "skipDates": [], "note": "" },
+    { "id": "bc-2026-09-28", "start": "2026-09-28", "end": "2026-10-01", "skipDates": [], "note": "" },
+    { "id": "bc-2026-10-05", "start": "2026-10-05", "end": "2026-10-08", "skipDates": [], "note": "" },
+    {
+      "id": "bc-2026-10-13",
+      "start": "2026-10-13",
+      "end": "2026-10-16",
+      "skipDates": [],
+      "note": "Runs Tuesday to Friday so it does not open on Columbus Day / Indigenous Peoples' Day"
+    },
+    { "id": "bc-2026-10-19", "start": "2026-10-19", "end": "2026-10-22", "skipDates": [], "note": "" },
+    { "id": "bc-2026-10-26", "start": "2026-10-26", "end": "2026-10-29", "skipDates": [], "note": "" },
+    { "id": "bc-2026-11-02", "start": "2026-11-02", "end": "2026-11-05", "skipDates": [], "note": "" },
+    {
+      "id": "bc-2026-11-09",
+      "start": "2026-11-09",
+      "end": "2026-11-13",
+      "skipDates": [{ "date": "2026-11-11", "reason": "Veterans Day" }],
+      "note": ""
+    }
   ]
 }

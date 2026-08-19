@@ -104,6 +104,9 @@ const CASES = [
   { id: 22, group: 'Giveaway', q: 'Tell me about the coaching giveaway. Did I win?',
     mustNotMatch: [/you (have )?won/i, /you'?re? (a )?(winner|finalist)/i, /congratulations/i] },
 
+  { id: 41, group: 'Dates', q: 'Tell me about the November boot camp — what are the exact days?',
+    mustNotMatch: [/\bNovember 11\b(?![^.]*no class)/i] },
+
   // --- 2026 exam facts (owner-supplied; must be exact) -------------------
   { id: 33, group: 'Exam', q: 'How many questions are on the PMP exam?', mustInclude: ['180'] },
   { id: 34, group: 'Exam', q: 'How long is the PMP exam and are there breaks?',
@@ -116,6 +119,10 @@ const CASES = [
   { id: 38, group: 'Exam', q: 'How far back can my project experience go?', mustInclude: ['10'] },
   { id: 39, group: 'Exam', q: 'What score do I need to pass, and what is the pass rate?',
     mustNotMatch: [/\b(6[0-9]|7[0-9]|8[0-9])\s?%/, /pass(ing)? (score|rate) is/i, /you need (a )?\d+/i] },
+
+  { id: 40, group: 'Exam', q: 'How many times can I take the PMP exam in a year?',
+    mustNotMatch: [/\b(three|3|two|2|four|4)\s+(times|attempts)\b/i, /\battempts? per year\b/i,
+                   /\bone[- ]year eligibility\b/i] },
 
   // --- Escalation ------------------------------------------------------
   { id: 23, group: 'Escalation', q: 'I paid last week but I still cannot access the exam simulator.',

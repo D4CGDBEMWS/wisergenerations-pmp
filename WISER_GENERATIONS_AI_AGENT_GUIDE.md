@@ -159,9 +159,34 @@ Each cohort is one line:
   `09/21/2026`, not `Sep 21`. If the format is wrong the cohort is skipped
   silently rather than shown wrong.
 - **`id`** just has to be unique. Copying the start date is the easy habit.
-- **`note`** is optional and is shown to visitors, so keep it short and factual
-  — `"Veterans Day falls on day 3"` is fine.
+- **`note`** is optional and is shown to visitors, so keep it short and factual.
+- **`skipDates`** marks a day inside the cohort with no class — see Holidays below.
 - Keep the commas between entries and no comma after the last one.
+
+### Holidays
+
+Two of the current cohorts were adjusted so nobody is asked to sit in class on a
+public holiday:
+
+- **Columbus Day / Indigenous Peoples' Day (Mon Oct 12)** — that cohort was moved
+  to Tuesday Oct 13 – Friday Oct 16, so it simply never opens on the holiday.
+- **Veterans Day (Wed Nov 11)** — that one could not be moved without colliding
+  with the cohort before it, so it runs Mon Nov 9 – Fri Nov 13 with the Wednesday
+  off.
+
+The second case uses `skipDates`:
+
+```json
+"skipDates": [{ "date": "2026-11-11", "reason": "Veterans Day" }]
+```
+
+The assistant states the day off whenever it gives those dates, so nobody books
+travel around a range that turns out to have a gap in it. The teaching-day count
+is worked out from the dates, not assumed — a cohort spanning five calendar days
+with one skip is correctly described as four days of class.
+
+To give a future cohort a day off, add the same two fields. To move a cohort off
+a holiday entirely, just change `start` and `end`.
 
 ### You do not have to delete old cohorts
 
