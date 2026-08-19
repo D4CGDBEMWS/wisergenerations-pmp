@@ -152,7 +152,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'How is the 2026 PMP® exam handling ITTOs differently?',
-    a: 'The July 8, 2026 update emphasizes situational judgment, AI in PM, sustainability, and value delivery. ITTO trivia questions are less common; scenario questions where you choose the right tool or technique are more common. Our PMP® Exam Changes 2026 free guide breaks this down in detail.',
+    a: 'The July 9, 2026 update emphasizes situational judgment, AI in PM, sustainability, and value delivery. ITTO trivia questions are less common; scenario questions where you choose the right tool or technique are more common. Our PMP® Exam Changes 2026 free guide breaks this down in detail.',
   },
   {
     q: 'What\u2019s the fastest way to learn ITTOs without burning out?',
