@@ -8,14 +8,15 @@ const config: Config = {
         gold: '#C9A84C',
         'light-navy': '#E8EDF5',
         'light-gold': '#FBF5E8',
-        teal: '#156082',
-        // Brand palette drawn from the logo + Practice Studio:
-        'brand-blue': '#166497',      // logo blue — primary surfaces/headings
-        'brand-blue-dark': '#114F7A', // darker blue for hovers/depth
-        leaf: '#4A9A5E',              // logo leaf green — secondary accent
-        'leaf-soft': '#DCEFE1',       // soft green tint for chips/success
-        paper: '#F4F8FA',             // light blue-tinted section background
-        line: '#DBE6EC',              // soft blue-gray border
+        // The blue-and-green tree logo is retired. brand-blue is no longer the
+        // logo's blue: it is navy lightened — same hue (216) and saturation, so
+        // it reads as part of the navy/gold identity instead of against it.
+        // Kept at the old lightness so section rhythm is unchanged, and it
+        // clears 4.5:1 with white text and 2:1 against navy so adjacent
+        // sections stay distinct.
+        'brand-blue': '#244D89',      // navy, lightened — large CTA surfaces
+        paper: '#F4F8FA',             // light section background
+        line: '#DBE6EC',              // soft hairline border
       },
       fontFamily: { sans: ['Inter', 'sans-serif'] },
     },

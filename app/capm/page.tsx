@@ -61,7 +61,7 @@ export default function CAPMPage() {
               { Icon: ClipboardList, title: 'PMI Pathway Starters', desc: 'Anyone who wants a stepping stone on the path to earning the PMP® in the future.' },
             ].map(({ Icon, title, desc }) => (
               <div key={title} className="bg-white rounded-2xl p-6 shadow-sm border border-line">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-leaf-soft text-leaf">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-light-gold text-gold">
                   <Icon className="h-6 w-6" strokeWidth={1.75} />
                 </div>
                 <h3 className="font-bold text-navy mb-2">{title}</h3>
@@ -91,7 +91,7 @@ export default function CAPMPage() {
                 'Certificate of completion from Wiser Generations Int\'l',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-leaf-soft text-leaf flex items-center justify-center">
+                  <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-light-gold text-gold flex items-center justify-center">
                     <Check className="h-3 w-3" strokeWidth={3} />
                   </span>
                   <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
