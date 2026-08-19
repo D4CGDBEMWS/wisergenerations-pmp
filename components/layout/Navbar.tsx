@@ -45,17 +45,17 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
+          {/* The primary white-on-navy lockup. It carries its own navy panel, so
+              it reads as a plaque against the white bar. Sized as tall as the
+              64px bar allows — see the note in the footer about the tagline,
+              which is only ~1.5px at this height. */}
           <Link href="/" className="flex-shrink-0" aria-label="Wiser Generations home">
-            {/* Full wordmark on sm+, compact icon on narrow mobile */}
             <img
-              src="/wiser-generations-logo.png"
+              src="/wg-logo.png"
               alt="Wiser Generations"
-              className="hidden sm:block h-10 w-auto"
-            />
-            <img
-              src="/wiser-generations-icon.png"
-              alt="Wiser Generations"
-              className="block sm:hidden h-9 w-auto"
+              width={68}
+              height={48}
+              className="h-10 sm:h-12 w-auto"
             />
           </Link>
 
