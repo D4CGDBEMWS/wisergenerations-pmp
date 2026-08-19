@@ -1,5 +1,10 @@
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
+import { claimEvent, markEventProcessed, markEventFailed } from '@/lib/payments/events'
+import { queryOne } from '@/lib/db/client'
+import { upsertCustomer } from '@/lib/customers'
+import { grantEntitlement, revokeEntitlementsBySource, STUDY_ACCESS } from '@/lib/entitlements'
+import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
 import Stripe from 'stripe'
 
 export const runtime = 'nodejs'
@@ -194,6 +199,11 @@ function splitFullName(full: string | null | undefined) {
 }
 
 export async function POST(request: NextRequest) {
+  // Visible to the catch block: a failed event must have its claim cleared,
+  // otherwise the ledger turns a transient error into permanent data loss by
+  // treating every Stripe retry as an already-seen duplicate.
+  let claimedEventId: string | null = null
+
     try {
           const stripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2025-08-27.basil' })
           const signature = request.headers.get('stripe-signature')
@@ -205,6 +215,31 @@ export async function POST(request: NextRequest) {
 
       const payload = await request.text()
           const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
+
+      // Signature verification proves the event is authentic. It does NOT
+      // prove this is the first copy — Stripe retries on any non-2xx and can
+      // replay a delivery that already succeeded. The ledger is that check.
+      //
+      // Deliberately non-fatal. The Mailchimp tagging below predates this
+      // ledger and works without a database; a database outage must not take
+      // it down too. If the ledger is unavailable we lose de-duplication for
+      // that delivery — Mailchimp's upsert is keyed by email and tolerates a
+      // repeat — but we do not lose the behaviour that already worked.
+      let ledgerAvailable = true
+      try {
+        const claim = await claimEvent({ eventId: event.id, eventType: event.type })
+        claimedEventId = event.id
+        if (!claim.isFirstDelivery) {
+          // 200 so Stripe stops retrying something already handled.
+          return NextResponse.json({ received: true, duplicate: true })
+        }
+      } catch (ledgerErr) {
+        ledgerAvailable = false
+        console.error(
+          '[stripe/webhook] idempotency ledger unavailable; continuing without de-duplication.',
+          ledgerErr
+        )
+      }
 
       // ─────────────────────────────────────────────────────────────────
       // 1. One-time program purchases (PMP, CAPM, Veterans) — existing
@@ -303,6 +338,45 @@ export async function POST(request: NextRequest) {
       //    Deactivate the subscription-active and pm-templates-monthly tags
       //    so the templates drip stops. Customer stays on the audience.
       // ─────────────────────────────────────────────────────────────────
+      // ───────────────────────────────────────────────────────────────
+      // Entitlements. The database — not Stripe — is the source of access.
+      // ───────────────────────────────────────────────────────────────
+      if (event.type === 'checkout.session.completed') {
+        const s2 = event.data.object as Stripe.Checkout.Session
+        const email2 = s2.customer_email || s2.customer_details?.email || ''
+        const isStudyAccess =
+          Boolean(s2.subscription) ||
+          s2.metadata?.product === 'study-access' ||
+          s2.metadata?.product === 'pmp-practice-studio'
+
+        if (email2 && isStudyAccess && s2.payment_status === 'paid') {
+          const c2 = await upsertCustomer({
+            email: email2,
+            name: s2.customer_details?.name ?? null,
+            stripeCustomerId: typeof s2.customer === 'string' ? s2.customer : null,
+          })
+          await grantEntitlement({
+            customerId: c2.id,
+            entitlementKey: STUDY_ACCESS,
+            sourceType: s2.subscription ? 'subscription' : 'order',
+            sourceId: (typeof s2.subscription === 'string' ? s2.subscription : null) ?? s2.id,
+            idempotencyKey: `${event.id}:${STUDY_ACCESS}`,
+          })
+        }
+      }
+
+      // Refunds revoke access. Without this a refunded customer keeps the
+      // product, because an entitlement outlives the payment that created it.
+      if (event.type === 'charge.refunded') {
+        const charge = event.data.object as Stripe.Charge
+        await revokeEntitlementsBySource({
+          sourceType: 'order',
+          sourceId:
+            (typeof charge.payment_intent === 'string' ? charge.payment_intent : null) ?? charge.id,
+          reason: 'charge.refunded',
+        })
+      }
+
       if (event.type === 'customer.subscription.deleted') {
               const subscription = event.data.object as Stripe.Subscription
 
@@ -326,11 +400,37 @@ export async function POST(request: NextRequest) {
             } catch (lookupErr) {
                       console.warn('Could not look up canceled subscription customer:', lookupErr)
             }
+
+        // Revoke by the subscription that granted access, then drop live
+        // sessions so the change takes effect on the next request rather than
+        // whenever the cookie happens to expire.
+        {
+          const revoked = await revokeEntitlementsBySource({
+            sourceType: 'subscription',
+            sourceId: subscription.id,
+            reason: 'customer.subscription.deleted',
+          })
+          if (revoked > 0) {
+            const owner = await queryOne<{ customer_id: string }>(
+              `SELECT customer_id FROM entitlements
+                WHERE source_type = 'subscription' AND source_id = $1 LIMIT 1`,
+              [subscription.id]
+            )
+            if (owner) await revokeAllSessionsForCustomer(owner.customer_id)
+          }
+        }
       }
 
+      if (ledgerAvailable) await markEventProcessed(event.id)
       return NextResponse.json({ received: true })
     } catch (error) {
           const message = error instanceof Error ? error.message : String(error)
+
+          if (claimedEventId) {
+            // Best-effort: never let bookkeeping mask the original failure.
+            await markEventFailed(claimedEventId, message).catch(() => {})
+          }
+
           const isSignatureError =
                 message.toLowerCase().includes('signature') ||
                 message.toLowerCase().includes('webhook secret')

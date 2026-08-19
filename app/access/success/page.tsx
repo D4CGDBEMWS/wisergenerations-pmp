@@ -2,6 +2,15 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import Link from 'next/link'
+import { upsertCustomer } from '@/lib/customers'
+import { grantEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
+import {
+  createSession,
+  SESSION_COOKIE,
+  LEGACY_COOKIE,
+  sessionCookieOptions,
+  SESSION_MAX_AGE_SECONDS,
+} from '@/lib/auth/session'
 
 export default async function AccessSuccessPage({
   searchParams,
@@ -33,14 +42,41 @@ export default async function AccessSuccessPage({
       ? session.customer_details.name
       : ''
 
-    const cookieStore = await cookies()
-    cookieStore.set('wg_study_access', sessionId as string, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 365,
-      path: '/',
-    })
+    // Record the purchase as an entitlement and open a real session.
+    //
+    // The previous implementation set wg_study_access to the Stripe session id
+    // and treated that cookie's presence as authorization. It is replaced by a
+    // durable entitlement plus an opaque server-side session, so access
+    // survives independently of anything the browser holds.
+    // Deliberately non-fatal. Stripe has already confirmed payment by this
+    // point, so a database problem must not turn a successful purchase into an
+    // error page. If this fails the customer still sees confirmation, and the
+    // Stripe webhook grants the entitlement independently — failing that, the
+    // login route's bounded Stripe lookup grants it on first sign-in. Three
+    // independent paths to the same grant.
+    try {
+      const customer = await upsertCustomer({
+        email,
+        name: customerName || null,
+        stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
+      })
+
+      await grantEntitlement({
+        customerId: customer.id,
+        entitlementKey: STUDY_ACCESS,
+        sourceType: session.subscription ? 'subscription' : 'order',
+        sourceId:
+          (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
+        idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
+      })
+
+      const { token } = await createSession({ customerId: customer.id })
+      const cookieStore = await cookies()
+      cookieStore.set(SESSION_COOKIE, token, sessionCookieOptions(SESSION_MAX_AGE_SECONDS))
+      cookieStore.set(LEGACY_COOKIE, '', { path: '/', maxAge: 0 })
+    } catch (grantErr) {
+      console.error('[/access/success] could not record entitlement or open session:', grantErr)
+    }
   } catch (err) {
     console.error('[/access/success] error:', err)
     redirect('/access')
