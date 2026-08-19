@@ -1,22 +1,18 @@
 # Cohort Dates, Enrollment, and Payment
 
-## Cohort dates — READ THIS CAREFULLY
+## Cohort dates
 
-**There are no specific published cohort start dates in this knowledge base.**
+**Do not look for dates in this file.** The boot camp schedule is generated live from
+the owner's config and appears in its own "Boot Camp Schedule" section further down.
+That section is the only place cohort dates come from, so there is exactly one source
+and it cannot drift out of date. Use it verbatim.
 
-Cohorts run on a rolling basis and the website shows the next open cohorts by month.
-Exact start dates, session times, and current seat availability change regularly and are
-confirmed directly with the team.
+If that section says no dates are published, then none are — say so and offer the free
+strategy call. Never fill the gap from general knowledge, and never repeat a date from
+earlier in the conversation once the schedule stops listing it.
 
-**Correct response when asked "when does the next cohort start?":**
-Explain that cohort dates are updated regularly, that the fastest way to get current
-availability is a free strategy call or the Programs page, and offer the scheduling link.
-Mention that cohorts have limited spots to maintain quality, so early enrollment is
-recommended.
-
-**NEVER state, guess, estimate, or imply a specific cohort start date, month, or
-enrollment deadline.** If the owner adds dates to this file later, use only what is
-written here verbatim.
+Seat availability is not something you know. Never say a cohort is filling fast, nearly
+full, or has a given number of seats left, and never offer to hold or reserve a place.
 
 ## Enrollment path
 

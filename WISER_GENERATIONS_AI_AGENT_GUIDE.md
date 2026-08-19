@@ -16,17 +16,18 @@ itself in about two minutes. You never install anything.
 2. [How to edit any file](#how-to-edit-any-file)
 3. [Turning the AI assistant on and off](#turning-the-ai-assistant-on-and-off)
 4. [Changing prices](#changing-prices)
-5. [Changing what the assistant knows](#changing-what-the-assistant-knows)
-6. [Changing the greeting and buttons](#changing-the-greeting-and-buttons)
-7. [Changing links (booking, enrollment)](#changing-links)
-8. [Running the giveaway](#running-the-giveaway)
-9. [Where your leads go](#where-your-leads-go)
-10. [Checking that the assistant is behaving](#checking-that-the-assistant-is-behaving)
-11. [What it costs](#what-it-costs)
-12. [Where the passwords live](#where-the-passwords-live)
-13. [What NOT to edit](#what-not-to-edit)
-14. [How to undo something](#how-to-undo-something)
-15. [When to call a developer](#when-to-call-a-developer)
+5. [Changing the boot camp dates](#changing-the-boot-camp-dates)
+6. [Changing what the assistant knows](#changing-what-the-assistant-knows)
+7. [Changing the greeting and buttons](#changing-the-greeting-and-buttons)
+8. [Changing links (booking, enrollment)](#changing-links)
+9. [Running the giveaway](#running-the-giveaway)
+10. [Where your leads go](#where-your-leads-go)
+11. [Checking that the assistant is behaving](#checking-that-the-assistant-is-behaving)
+12. [What it costs](#what-it-costs)
+13. [Where the passwords live](#where-the-passwords-live)
+14. [What NOT to edit](#what-not-to-edit)
+15. [How to undo something](#how-to-undo-something)
+16. [When to call a developer](#when-to-call-a-developer)
 
 ---
 
@@ -139,11 +140,74 @@ developer.
 
 ---
 
+## Changing the boot camp dates
+
+**File:** `content/config/cohorts.json`
+
+This is the only place cohort dates exist. The assistant reads it live, so a
+change here is the change everywhere — there is no second list to remember.
+
+### To add or change a cohort
+
+Each cohort is one line:
+
+```json
+{ "id": "bc-2026-09-21", "start": "2026-09-21", "end": "2026-09-24", "note": "" }
+```
+
+- **Dates must be `YYYY-MM-DD`.** September 21, 2026 is `2026-09-21`. Not
+  `09/21/2026`, not `Sep 21`. If the format is wrong the cohort is skipped
+  silently rather than shown wrong.
+- **`id`** just has to be unique. Copying the start date is the easy habit.
+- **`note`** is optional and is shown to visitors, so keep it short and factual
+  — `"Veterans Day falls on day 3"` is fine.
+- Keep the commas between entries and no comma after the last one.
+
+### You do not have to delete old cohorts
+
+A cohort disappears from the assistant on its own the day after it ends. Leaving
+finished ones in the file is fine and gives you a record of what ran.
+
+### When every cohort has finished
+
+The assistant goes back to saying it does not have dates and offering the
+strategy call. It will not invent one, and it will not extend the weekly pattern
+to guess at a cohort you have not published. Add the next batch when you know
+them.
+
+### Session times and format
+
+```json
+"format": "4-day live virtual boot camp",
+"sessionStartTime": "9:00 AM",
+"sessionEndTime": "5:00 PM",
+"timezone": "ET",
+```
+
+Change these and the assistant's answer to "what time are the sessions?" changes
+with them.
+
+### To switch the whole schedule off
+
+Set `"enabled": false`. The assistant immediately stops quoting dates, exactly
+as if the file were empty. Useful if you need to pull the schedule at short
+notice without deleting anything.
+
+### What the assistant will never do with these dates
+
+- Invent a cohort past the last one listed, even though the pattern is weekly
+- Tell anyone how many seats are left, or that a cohort is filling up
+- Hold, reserve, or book a place
+
+Those are all deliberate. If a visitor needs any of them, it hands them to you.
+
+---
+
 ## Changing what the assistant knows
 
 **Folder:** `content/knowledge-base/`
 
-Eight plain-English files. The assistant is only allowed to answer from these —
+Nine plain-English files. The assistant is only allowed to answer from these —
 if something isn't in here, it says it doesn't have verified information and
 offers to connect the visitor with you. That is deliberate.
 
@@ -151,12 +215,13 @@ offers to connect the visitor with you. That is deliberate.
 |---|---|
 | `01-about.md` | Who you are, your background, credentials |
 | `02-courses.md` | Program descriptions, length, what's included |
-| `03-dates-and-enrollment.md` | Cohort dates, payment plans, guarantee, refunds |
+| `03-dates-and-enrollment.md` | Payment plans, guarantee, refunds (dates live elsewhere — see below) |
 | `04-eligibility.md` | PMI exam requirements |
 | `05-free-resources.md` | Free guide, practice questions, strategy call |
 | `06-giveaway.md` | Giveaway rules of engagement |
 | `07-testimonials.md` | The three approved testimonials and approved statistics |
 | `08-escalation-and-limits.md` | When to hand off to you; what it must never do |
+| `09-exam-2026.md` | The 2026 PMP exam — format, timing, domain weights, eligibility |
 
 ### If the assistant says something wrong
 
@@ -168,18 +233,10 @@ That means the topic isn't covered. Add it to the right file in plain English.
 Write it the way you'd explain it to a student — full sentences, no special
 formatting needed.
 
-### Adding cohort dates
+### Cohort dates are not in these files
 
-**Right now the assistant has no dates and is instructed never to guess one.**
-That is on purpose — an invented start date is the single most damaging thing a
-chatbot can do to a training business.
-
-When you have real dates, open `03-dates-and-enrollment.md`, find the section
-headed "Cohort dates — READ THIS CAREFULLY", and replace the explanation with
-your actual dates. From then on it will quote exactly what you wrote.
-
-**When dates change, update this file the same day.** The assistant will repeat
-whatever is written here with total confidence.
+They live in `content/config/cohorts.json`, so there is one list and it cannot
+drift out of step with itself. See the next section.
 
 ### Adding a testimonial
 

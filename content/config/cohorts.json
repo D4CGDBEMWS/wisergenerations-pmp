@@ -1,0 +1,30 @@
+{
+  "_comment": "Boot camp schedule. Safe for a non-technical owner to edit — see WISER_GENERATIONS_AI_AGENT_GUIDE.md. Dates must stay in YYYY-MM-DD form. A cohort whose end date has passed is dropped automatically, so old ones can be left in place as a record. When every cohort here has finished, the assistant goes back to saying it does not have dates and offering a strategy call — it never invents one.",
+
+  "enabled": true,
+  "format": "4-day live virtual boot camp",
+  "sessionStartTime": "9:00 AM",
+  "sessionEndTime": "5:00 PM",
+  "timezone": "ET",
+  "daysPerCohort": 4,
+
+  "_programsComment": "Tier ids from lib/constants.ts. These are the programs a boot camp seat enrolls into. PMP Executive and the Veterans PM Pathway are deliberately NOT listed — confirm with the owner before adding them.",
+  "programs": [
+    "pmp-essentials",
+    "pmp-professional",
+    "capm-essentials",
+    "capm-professional"
+  ],
+
+  "_cohortsComment": "Every cohort runs Monday through Thursday, one per week. `note` is optional and is shown to visitors, so keep it short and factual.",
+  "cohorts": [
+    { "id": "bc-2026-09-21", "start": "2026-09-21", "end": "2026-09-24", "note": "" },
+    { "id": "bc-2026-09-28", "start": "2026-09-28", "end": "2026-10-01", "note": "" },
+    { "id": "bc-2026-10-05", "start": "2026-10-05", "end": "2026-10-08", "note": "" },
+    { "id": "bc-2026-10-12", "start": "2026-10-12", "end": "2026-10-15", "note": "" },
+    { "id": "bc-2026-10-19", "start": "2026-10-19", "end": "2026-10-22", "note": "" },
+    { "id": "bc-2026-10-26", "start": "2026-10-26", "end": "2026-10-29", "note": "" },
+    { "id": "bc-2026-11-02", "start": "2026-11-02", "end": "2026-11-05", "note": "" },
+    { "id": "bc-2026-11-09", "start": "2026-11-09", "end": "2026-11-12", "note": "" }
+  ]
+}

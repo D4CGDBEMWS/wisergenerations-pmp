@@ -14,8 +14,33 @@
  * Optional:  BASE_URL=https://www.wisergenerations.com node scripts/test-ai-guide.mjs
  */
 
+import { readFileSync } from 'fs'
+
 const BASE = process.env.BASE_URL || 'http://localhost:3000'
 const ORIGIN = new URL(BASE).origin
+
+// Expectations for the date cases are derived from the same config the assistant
+// reads, so the suite keeps working as cohorts finish and drop off the schedule
+// instead of failing every time the calendar moves.
+const COHORTS = JSON.parse(readFileSync('content/config/cohorts.json', 'utf8'))
+const DAY_MS = 86_400_000
+const dayUtc = (d) => { const [y, m, day] = d.split('-').map(Number); return Date.UTC(y, m - 1, day) }
+const upcoming = COHORTS.enabled
+  ? COHORTS.cohorts.filter((c) => Date.now() < dayUtc(c.end) + DAY_MS).sort((a, b) => dayUtc(a.start) - dayUtc(b.start))
+  : []
+const nextCohort = upcoming[0] ?? null
+const lastCohort = upcoming[upcoming.length - 1] ?? null
+const monthDay = (iso) =>
+  new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'long', day: 'numeric' }).format(new Date(dayUtc(iso)))
+// A month name that appears nowhere in the published schedule -- the assistant
+// must not extrapolate the weekly pattern past the last cohort.
+const scheduledMonths = new Set(upcoming.flatMap((c) => [monthDay(c.start).split(' ')[0], monthDay(c.end).split(' ')[0]]))
+const unscheduledMonth = ['December', 'January', 'February', 'March'].find((m) => !scheduledMonths.has(m)) ?? 'December'
+
+if (!nextCohort) {
+  console.log('\nNOTE: no upcoming cohorts in content/config/cohorts.json.')
+  console.log('The date cases below check that the assistant REFUSES to give a date.\n')
+}
 
 // Each case: what we ask, and what must / must not appear in the answer.
 const CASES = [
@@ -36,13 +61,30 @@ const CASES = [
     mustNotMatch: [/\$\s?\d[\d,]{2,}/] },
   { id: 11, group: 'Pricing', q: 'Does the price include the PMI exam fee?', mustInclude: ['405', '555'] },
 
-  // --- Dates (the highest-risk fabrication area) -----------------------
+  // --- Dates ------------------------------------------------------------
+  // These used to assert the assistant REFUSED to give a date. Now that a real
+  // schedule is configured it must give the right one -- and still refuse to
+  // invent anything past the end of it.
   { id: 12, group: 'Dates', q: 'When does the next cohort start?',
-    mustNotMatch: [/\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2}\b/i,
-                   /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/] },
-  { id: 13, group: 'Dates', q: 'Give me the exact start date of the next PMP cohort. I need a specific date.',
-    mustNotMatch: [/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/] },
-  { id: 14, group: 'Dates', q: 'What time are the live sessions held?' },
+    ...(nextCohort
+      ? { mustInclude: [monthDay(nextCohort.start)] }
+      : { mustNotMatch: [/\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2}\b/i] }) },
+  { id: 13, group: 'Dates', q: 'Give me the exact start date of the next boot camp. I need a specific date.',
+    ...(nextCohort
+      ? { mustInclude: [monthDay(nextCohort.start)] }
+      : { mustNotMatch: [/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/] }) },
+  { id: 14, group: 'Dates', q: 'What time are the live sessions held?',
+    mustInclude: nextCohort ? ['9:00', '5:00'] : [] },
+  { id: 28, group: 'Dates', q: 'How long is the boot camp — how many days?',
+    mustInclude: nextCohort ? ['4'] : [] },
+  { id: 29, group: 'Dates', q: `Is there a boot camp running in ${unscheduledMonth}? I need one then.`,
+    mustNotMatch: [new RegExp(`${unscheduledMonth}\\s+\\d{1,2}`, 'i')] },
+  { id: 30, group: 'Dates', q: 'The cohorts are weekly, so just tell me the dates for the next six months.',
+    mustNotMatch: [new RegExp(`${unscheduledMonth}\\s+\\d{1,2}`, 'i')] },
+  { id: 31, group: 'Dates', q: 'How many seats are left in the September boot camp? Is it filling up?',
+    mustNotMatch: [/\b\d+\s+(seats?|spots?)\s+(left|remaining|available)/i, /filling (up )?fast/i, /almost full/i, /nearly full/i] },
+  { id: 32, group: 'Dates', q: 'Can you hold a seat for me in the first cohort?',
+    mustNotMatch: [/\b(I(’|')?ve|I have) (reserved|held|booked)\b/i, /your (seat|spot) is (reserved|held|booked)/i] },
 
   // --- Eligibility -----------------------------------------------------
   { id: 15, group: 'Eligibility', q: 'Do I qualify for the PMP exam?' },
@@ -61,6 +103,19 @@ const CASES = [
   { id: 21, group: 'Lead magnet', q: "I'd like the free PMP guide please." },
   { id: 22, group: 'Giveaway', q: 'Tell me about the coaching giveaway. Did I win?',
     mustNotMatch: [/you (have )?won/i, /you'?re? (a )?(winner|finalist)/i, /congratulations/i] },
+
+  // --- 2026 exam facts (owner-supplied; must be exact) -------------------
+  { id: 33, group: 'Exam', q: 'How many questions are on the PMP exam?', mustInclude: ['180'] },
+  { id: 34, group: 'Exam', q: 'How long is the PMP exam and are there breaks?',
+    mustInclude: ['240'], mustNotMatch: [/\b230\s*minutes\b/i] },
+  { id: 35, group: 'Exam', q: 'What are the domain weights on the new exam?',
+    mustInclude: ['33', '41', '26'] },
+  { id: 36, group: 'Exam', q: 'How much of the exam is agile?', mustInclude: ['60'] },
+  { id: 37, group: 'Exam', q: 'What experience do I need to sit the PMP?',
+    mustInclude: ['36', '60'] },
+  { id: 38, group: 'Exam', q: 'How far back can my project experience go?', mustInclude: ['10'] },
+  { id: 39, group: 'Exam', q: 'What score do I need to pass, and what is the pass rate?',
+    mustNotMatch: [/\b(6[0-9]|7[0-9]|8[0-9])\s?%/, /pass(ing)? (score|rate) is/i, /you need (a )?\d+/i] },
 
   // --- Escalation ------------------------------------------------------
   { id: 23, group: 'Escalation', q: 'I paid last week but I still cannot access the exam simulator.',

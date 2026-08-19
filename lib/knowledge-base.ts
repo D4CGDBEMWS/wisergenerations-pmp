@@ -1,7 +1,14 @@
 import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { PMP_TIERS, CAPM_TIERS, FOUNDER, SITE_NAME } from '@/lib/constants'
-import { LINKS, GIVEAWAY, isGiveawayActive } from '@/lib/site-config'
+import {
+  LINKS,
+  GIVEAWAY,
+  isGiveawayActive,
+  COHORTS,
+  getUpcomingCohorts,
+  getCohortSessionTimes,
+} from '@/lib/site-config'
 
 // ---------------------------------------------------------------------------
 // knowledge-base — assembles the approved facts the AI Guide is allowed to use.
@@ -10,7 +17,7 @@ import { LINKS, GIVEAWAY, isGiveawayActive } from '@/lib/site-config'
 //   1. content/knowledge-base/*.md  — owner-editable prose
 //   2. lib/constants.ts             — live pricing (so the bot can't quote a
 //                                     stale number; there is one source of truth)
-//   3. content/config/*.json        — links and giveaway status
+//   3. content/config/*.json        — links, giveaway status, cohort schedule
 //
 // next.config.mjs uses outputFileTracingIncludes to guarantee the markdown
 // ships to Vercel's serverless bundle.
@@ -19,6 +26,12 @@ import { LINKS, GIVEAWAY, isGiveawayActive } from '@/lib/site-config'
 const KB_DIR = join(process.cwd(), 'content', 'knowledge-base')
 
 let cachedPrompt: string | null = null
+let cachedForDay: string | null = null
+
+/** UTC calendar day, used to expire the cached prompt when the date rolls. */
+function utcDay(): string {
+  return new Date().toISOString().slice(0, 10)
+}
 
 function readMarkdown(): string {
   const files = readdirSync(KB_DIR)
@@ -91,6 +104,60 @@ function renderGiveawayStatus(): string {
     `- Official rules: ${GIVEAWAY.officialRulesUrl}`,
     '',
     'Use these values verbatim. Never state odds. Never tell anyone they have won.',
+  ].join('\n')
+}
+
+function renderCohortSchedule(): string {
+  const upcoming = getUpcomingCohorts()
+
+  // No dates configured, or every cohort has already finished. The assistant
+  // falls back to the behaviour it had before any dates existed: say plainly
+  // that it does not have a date and offer the strategy call. It must never
+  // fill this gap from general knowledge or from a date it saw earlier in the
+  // conversation.
+  if (upcoming.length === 0) {
+    return [
+      '# Boot Camp Schedule: NO DATES CURRENTLY PUBLISHED',
+      '',
+      'There are no scheduled boot camp dates available to you right now.',
+      '',
+      'When asked when the next cohort starts, say you do not have current dates,',
+      'that the team confirms scheduling directly, and offer the free strategy call.',
+      'NEVER state, guess, estimate, or imply a specific start date, month, or',
+      'enrollment deadline. Do not reuse a date from earlier in this conversation.',
+    ].join('\n')
+  }
+
+  const next = upcoming[0]!
+  const lines = upcoming.map((c) => {
+    const status = c.inProgress ? ' — IN PROGRESS, closed to new enrollment' : ''
+    const note = c.note ? ` (${c.note})` : ''
+    return `- ${c.label}${status}${note}`
+  })
+
+  return [
+    '# Boot Camp Schedule (live — always accurate)',
+    '',
+    `Format: ${COHORTS.format}, ${COHORTS.daysPerCohort} consecutive days.`,
+    `Daily session times: ${getCohortSessionTimes()} — every day of the boot camp.`,
+    '',
+    '## Scheduled cohorts',
+    ...lines,
+    '',
+    next.inProgress
+      ? `The cohort running now (${next.label}) is closed to new enrollment. The next one` +
+        ` a visitor can join is ${upcoming[1]?.label ?? 'not yet scheduled — offer the strategy call'}.`
+      : `The next available cohort starts ${next.label}.`,
+    '',
+    'Rules for these dates:',
+    '- Quote them exactly as written. Never adjust, extrapolate, or extend the pattern',
+    '  to invent a cohort beyond the last one listed.',
+    '- If someone wants a date after the last cohort above, say the schedule beyond that',
+    '  has not been published and offer the free strategy call.',
+    '- You do not know seat counts or how full a cohort is. Never state or imply that a',
+    '  cohort is almost full, filling fast, or has a specific number of seats left.',
+    '- You cannot reserve, hold, or book a seat. Enrollment happens at checkout or on a',
+    '  call with the team.',
   ].join('\n')
 }
 
@@ -209,7 +276,13 @@ an email is sent, or someone is entered in anything unless a tool returned succe
  * price after the first call.
  */
 export function getSystemPrompt(): string {
-  if (cachedPrompt) return cachedPrompt
+  // The cohort schedule drops cohorts as they finish, so a prompt cached for the
+  // life of the process would keep offering a boot camp that has already run.
+  // Keying the cache to the UTC day rebuilds it at most once every 24 hours,
+  // which costs one uncached Anthropic call a day and nothing else.
+  const today = utcDay()
+  if (cachedPrompt && cachedForDay === today) return cachedPrompt
+  cachedForDay = today
 
   cachedPrompt = [
     BEHAVIOR,
@@ -226,6 +299,10 @@ export function getSystemPrompt(): string {
     '---',
     '',
     renderPricing(),
+    '',
+    '---',
+    '',
+    renderCohortSchedule(),
     '',
     '---',
     '',
