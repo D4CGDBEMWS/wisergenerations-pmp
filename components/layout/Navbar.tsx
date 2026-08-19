@@ -45,18 +45,26 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0" aria-label="Wiser Generations home">
-            {/* Full wordmark on sm+, compact icon on narrow mobile */}
+          {/* Badge + live text, not a single logo image. The navbar gives the
+              logo a 40px-tall slot, which is far too short for the supplied
+              stacked lockups — their tagline would render about 4px high. Text
+              also stays sharp on every display and costs no extra download. */}
+          <Link
+            href="/"
+            className="flex-shrink-0 flex items-center gap-2.5"
+            aria-label="Wiser Generations home"
+          >
             <img
-              src="/wiser-generations-logo.png"
-              alt="Wiser Generations"
-              className="hidden sm:block h-10 w-auto"
+              src="/wg-badge.png"
+              alt=""
+              aria-hidden="true"
+              width={40}
+              height={40}
+              className="h-9 w-9 sm:h-10 sm:w-10"
             />
-            <img
-              src="/wiser-generations-icon.png"
-              alt="Wiser Generations"
-              className="block sm:hidden h-9 w-auto"
-            />
+            <span className="hidden sm:block font-display font-bold text-navy text-base leading-none tracking-[0.08em]">
+              WISER GENERATIONS
+            </span>
           </Link>
 
           {/* Desktop nav — 5 core links */}

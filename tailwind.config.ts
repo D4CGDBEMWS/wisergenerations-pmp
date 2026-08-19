@@ -17,7 +17,12 @@ const config: Config = {
         paper: '#F4F8FA',             // light blue-tinted section background
         line: '#DBE6EC',              // soft blue-gray border
       },
-      fontFamily: { sans: ['Inter', 'sans-serif'] },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        // Wordmark face. Cinzel is a close free match for the logo's
+        // inscriptional serif; Georgia is the fallback while it loads.
+        display: ['Cinzel', 'Georgia', 'serif'],
+      },
     },
   },
   plugins: [],

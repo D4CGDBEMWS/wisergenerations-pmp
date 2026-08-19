@@ -8,7 +8,16 @@ export function Footer() {
 
           {/* Brand */}
           <div className="lg:col-span-2">
-            <p className="text-gold font-bold text-lg mb-1">Wiser Generations Int&apos;l</p>
+            {/* The white/gold lockup, matted off its navy panel so it sits
+                directly on the footer. The supplied panel navy is #051F40,
+                bluer than the site's #0A1628, and would have shown as a patch. */}
+            <img
+              src="/wg-wordmark-light.png"
+              alt="Wiser Generations Int'l — Mentor, Learn, Lead, Legacy"
+              width={225}
+              height={158}
+              className="h-auto w-[225px] max-w-full mb-3"
+            />
             <p className="text-gray-400 text-sm mb-4">An Enterprise Academy Program</p>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs mb-6">
               PMP® and CAPM® certification prep for career transitioners, corporate teams, and veterans.
