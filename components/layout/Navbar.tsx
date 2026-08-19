@@ -49,7 +49,7 @@ export default function Navbar() {
               it reads as a plaque against the white bar. Sized as tall as the
               64px bar allows — see the note in the footer about the tagline,
               which is only ~1.5px at this height. */}
-          <Link href="/" className="flex-shrink-0" aria-label="Wiser Generations home">
+          <Link href="/" className="flex-shrink-0 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Wiser Generations home">
             <img
               src="/wg-logo.png"
               alt="Wiser Generations"
@@ -63,7 +63,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}
-                className="text-navy hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                className="text-navy hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">
                 {link.label}
               </Link>
             ))}
@@ -82,7 +82,7 @@ export default function Navbar() {
               </Link>
               {/* Primary CTA */}
               <a href={CALENDLY} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('calendly_click')}
-                className="bg-gold text-navy font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-400 transition-colors whitespace-nowrap">
+                className="bg-gold text-navy font-bold px-4 py-2 rounded-lg text-sm hover:bg-yellow-400 transition-colors whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">
                 Book a Call
               </a>
             </div>
@@ -90,7 +90,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden text-navy hover:text-gold p-2" aria-label="Toggle menu">
+            className="lg:hidden text-navy hover:text-gold p-2 min-h-[44px] min-w-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Toggle menu" aria-expanded={isOpen} aria-controls="mobile-menu">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -104,11 +104,11 @@ export default function Navbar() {
 
       {/* Mobile menu — all links available */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200">
+        <div id="mobile-menu" className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
-                className="block text-navy hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                className="block text-navy hover:text-gold px-3 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">
                 {link.label}
               </Link>
             ))}
@@ -117,7 +117,7 @@ export default function Navbar() {
             <div className="pt-2 border-t border-gray-200 mt-2">
               {mobileExtraLinks.map((link) => (
                 <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
-                  className="block text-gray-600 hover:text-navy px-3 py-1.5 rounded-md text-xs font-medium transition-colors">
+                  className="block text-gray-600 hover:text-navy px-3 py-1.5 rounded-md text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">
                   {link.label}
                 </Link>
               ))}
