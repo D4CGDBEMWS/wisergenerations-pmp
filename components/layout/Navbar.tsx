@@ -6,13 +6,20 @@ import { trackEvent } from '@/components/Analytics'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
-// Slimmed to 5 core nav items — secondary links moved to footer
+// Slimmed to core nav items — secondary links moved to footer.
+//
+// Practice Studio earns a slot despite that slimming: it is the only
+// subscription product, and until now nothing on the site linked to /access.
+// It was reachable only by typing the URL or by hitting the paywall on a
+// gated page, which meant the recurring-revenue product was found mainly by
+// people bumping into a locked door.
 const navLinks = [
   { label: 'Programs', href: '/programs' },
   { label: 'Veterans', href: '/veterans' },
   { label: 'Corporate', href: '/corporate' },
   { label: 'About', href: '/about' },
   { label: 'Free Guide', href: '/free-guide' },
+  { label: 'Practice Studio', href: '/access' },
 ]
 
 // Mobile menu includes secondary links so nothing is lost
@@ -59,7 +66,7 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop nav — 5 core links */}
+          {/* Desktop nav — core links */}
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}
