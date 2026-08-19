@@ -1,6 +1,7 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
+import { useTurnstile } from '@/components/useTurnstile'
 
 // ---------------------------------------------------------------------------
 // PracticeQuestionsLeadForm
@@ -14,9 +15,21 @@ export default function PracticeQuestionsLeadForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
 
+  // /api/subscribe verifies a Turnstile token whenever TURNSTILE_SECRET_KEY is
+  // set. This form previously posted without one, so in production every
+  // submission was rejected with "Security check failed" and the lead was lost.
+  const turnstileRef = useRef<HTMLDivElement | null>(null)
+  const { token, reset, required } = useTurnstile(turnstileRef, { theme: 'dark' })
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (status === 'submitting') return
+
+    if (required && !token) {
+      setStatus('error')
+      setMessage('Please complete the security check below, then try again.')
+      return
+    }
 
     setStatus('submitting')
     setMessage('')
@@ -30,12 +43,14 @@ export default function PracticeQuestionsLeadForm() {
           firstName,
           tags: ['practice-questions'],
           source: 'practice-questions',
+          turnstileToken: token,
         }),
       })
       const data = await response.json().catch(() => null)
       if (!response.ok) {
         setStatus('error')
         setMessage(data?.error || 'Could not sign you up. Please try again.')
+        reset()
         return
       }
       setStatus('success')
@@ -47,6 +62,7 @@ export default function PracticeQuestionsLeadForm() {
     } catch {
       setStatus('error')
       setMessage('Something went wrong. Please try again.')
+      reset()
     }
   }
 
@@ -88,12 +104,14 @@ export default function PracticeQuestionsLeadForm() {
         />
         <button
           type="submit"
-          disabled={status === 'submitting'}
+          disabled={status === 'submitting' || (required && !token)}
           className="rounded-lg bg-gold px-6 py-3 text-sm font-bold text-navy transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {status === 'submitting' ? 'Sending\u2026' : 'Send me 25 more'}
         </button>
       </form>
+
+      {required && <div ref={turnstileRef} className="mt-4 max-w-sm" />}
 
       {message ? (
         <p

@@ -144,3 +144,102 @@ export const STATS = [
   { value: '694', label: 'Professionals Trained' },
   { value: '100%', label: 'PMI-Aligned Curriculum' },
 ]
+
+// ---------------------------------------------------------------------------
+// CHECKOUT PROGRAMS — the single list of things a customer can actually buy.
+//
+// Prices are READ FROM the tier definitions above rather than repeated here.
+// Before this existed, /checkout and /api/checkout each kept their own copy of
+// the price list, so the site could advertise $1,499 while Stripe charged $899
+// and nothing would catch it.
+//
+// `id` values are STABLE and must not be renamed: they are written into Stripe
+// PaymentIntent metadata and become Mailchimp tags via the Stripe webhook.
+// Renaming one orphans the purchase history attached to it.
+// ---------------------------------------------------------------------------
+
+export type CheckoutProgram = {
+  /** Stable identifier used in Stripe metadata and Mailchimp tags. */
+  id: string
+  /** The tier in PMP_TIERS / CAPM_TIERS this is sold as, when applicable. */
+  tierId: string | null
+  name: string
+  /** Display price in whole dollars. */
+  price: number
+  /** What Stripe charges, in cents. Always derived — never typed by hand. */
+  amount: number
+  description: string
+}
+
+function checkoutProgramFromTier(
+  id: string,
+  tierId: string,
+  description: string
+): CheckoutProgram {
+  const tier = [...PMP_TIERS, ...CAPM_TIERS].find((candidate) => candidate.id === tierId)
+
+  // Fails the build rather than shipping a checkout button with no price.
+  if (!tier) {
+    throw new Error(
+      `CHECKOUT_PROGRAMS references unknown tier "${tierId}". ` +
+        `Add it to PMP_TIERS or CAPM_TIERS in lib/constants.ts.`
+    )
+  }
+
+  return {
+    id,
+    tierId,
+    name: tier.name,
+    price: tier.price,
+    amount: tier.price * 100,
+    description,
+  }
+}
+
+const veteransProgram = PROGRAMS.find((program) => program.id === 'veterans')
+
+if (!veteransProgram) {
+  throw new Error('PROGRAMS is missing the "veterans" entry that CHECKOUT_PROGRAMS depends on.')
+}
+
+export const CHECKOUT_PROGRAMS: CheckoutProgram[] = [
+  checkoutProgramFromTier(
+    'pmp-prep',
+    'pmp-essentials',
+    'Structured cohort prep with live instruction, the full practice bank, and a study guide.'
+  ),
+  checkoutProgramFromTier(
+    'pmp-professional',
+    'pmp-professional',
+    'Everything in Essentials, plus 1:1 mentorship, exam application support, and the pass guarantee.'
+  ),
+  checkoutProgramFromTier(
+    'pmp-executive',
+    'pmp-executive',
+    'The full experience — mentorship, career coaching, and LinkedIn optimization after your cohort.'
+  ),
+  checkoutProgramFromTier(
+    'capm-launcher',
+    'capm-essentials',
+    'Foundational project management training for early-career professionals and career changers.'
+  ),
+  checkoutProgramFromTier(
+    'capm-professional',
+    'capm-professional',
+    'Everything in CAPM® Essentials, plus career transition support to help you land your first PM role.'
+  ),
+  {
+    id: 'veterans-pathway',
+    tierId: null,
+    name: veteransProgram.name,
+    price: veteransProgram.price,
+    amount: veteransProgram.price * 100,
+    description:
+      'A mission-aligned transition pathway designed for veterans moving into project management roles.',
+  },
+]
+
+/** Maps a pricing tier to the checkout program that sells it. */
+export function checkoutIdForTier(tierId: string): string | null {
+  return CHECKOUT_PROGRAMS.find((program) => program.tierId === tierId)?.id ?? null
+}

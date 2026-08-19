@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { PMP_TIERS, CAPM_TIERS } from '@/lib/constants'
+import { PMP_TIERS, CAPM_TIERS, checkoutIdForTier } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'Programs — PMP®, CAPM®, Corporate & Veterans',
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
                                                                                                                                                                                                                                                                                                     ))}
                                                                                                                                                                                                                                                                                                           </ul>
                                                                                                                                                                                                                                                                                                                 <Link
-                                                                                                                                                                                                                                                                                                                        href="/checkout"
+                                                                                                                                                                                                                                                                                                                        href={`/checkout?program=${checkoutIdForTier(tier.id) ?? ''}`}
                                                                                                                                                                                                                                                                                                                                 className={`block w-full font-bold py-3 rounded-xl text-center transition-colors ${
                                                                                                                                                                                                                                                                                                                                           tier.highlight
                                                                                                                                                                                                                                                                                                                                                       ? 'bg-gold text-navy hover:bg-amber-400'

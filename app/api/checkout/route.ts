@@ -3,30 +3,31 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { verifyTurnstile } from '@/lib/turnstile'
+import { CHECKOUT_PROGRAMS } from '@/lib/constants'
 
 // ---------------------------------------------------------------------------
-// Program definitions — server is the canonical source of truth for prices.
-// Never trust the client to send the amount.
+// Program definitions.
+//
+// The server remains the canonical source of truth for the amount charged:
+// the client never sends a price, it sends a programId that is looked up here.
+//
+// The list is built from CHECKOUT_PROGRAMS in lib/constants.ts, which derives
+// every amount from the published tier price. This route previously kept its
+// own hardcoded copy which had drifted — three of the six purchasable programs
+// had no entry at all, so anyone selecting PMP Professional or Executive was
+// charged the Essentials price.
 // ---------------------------------------------------------------------------
-const PROGRAMS = {
-  'pmp-prep': {
-    name: 'PMP\u00ae Certification Prep',
-    amount: 89900,
-    description: "PMP\u00ae Certification Prep \u2014 Wiser Generations Int\u2019l\u2122",
-  },
-  'capm-launcher': {
-    name: 'CAPM\u00ae Career Launcher',
-    amount: 59900,
-    description: "CAPM\u00ae Career Launcher \u2014 Wiser Generations Int\u2019l\u2122",
-  },
-  'veterans-pathway': {
-    name: 'Veterans PM Pathway',
-    amount: 79900,
-    description: "Veterans PM Pathway \u2014 Wiser Generations Int\u2019l\u2122",
-  },
-} as const
-
-type ProgramId = keyof typeof PROGRAMS
+const PROGRAMS: Record<string, { name: string; amount: number; description: string }> =
+  Object.fromEntries(
+    CHECKOUT_PROGRAMS.map((program) => [
+      program.id,
+      {
+        name: program.name,
+        amount: program.amount,
+        description: `${program.name} \u2014 Wiser Generations Int\u2019l\u2122`,
+      },
+    ])
+  )
 
 // ---------------------------------------------------------------------------
 // POST /api/checkout
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid program selected.' }, { status: 400 })
   }
 
-  const program = PROGRAMS[programId as ProgramId]
+  const program = PROGRAMS[programId]!
 
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY
   if (!stripeSecretKey) {
