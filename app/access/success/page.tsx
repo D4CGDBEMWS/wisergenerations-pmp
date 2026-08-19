@@ -48,25 +48,35 @@ export default async function AccessSuccessPage({
     // and treated that cookie's presence as authorization. It is replaced by a
     // durable entitlement plus an opaque server-side session, so access
     // survives independently of anything the browser holds.
-    const customer = await upsertCustomer({
-      email,
-      name: customerName || null,
-      stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
-    })
+    // Deliberately non-fatal. Stripe has already confirmed payment by this
+    // point, so a database problem must not turn a successful purchase into an
+    // error page. If this fails the customer still sees confirmation, and the
+    // Stripe webhook grants the entitlement independently — failing that, the
+    // login route's bounded Stripe lookup grants it on first sign-in. Three
+    // independent paths to the same grant.
+    try {
+      const customer = await upsertCustomer({
+        email,
+        name: customerName || null,
+        stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
+      })
 
-    await grantEntitlement({
-      customerId: customer.id,
-      entitlementKey: STUDY_ACCESS,
-      sourceType: session.subscription ? 'subscription' : 'order',
-      sourceId:
-        (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
-      idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
-    })
+      await grantEntitlement({
+        customerId: customer.id,
+        entitlementKey: STUDY_ACCESS,
+        sourceType: session.subscription ? 'subscription' : 'order',
+        sourceId:
+          (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
+        idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
+      })
 
-    const { token } = await createSession({ customerId: customer.id })
-    const cookieStore = await cookies()
-    cookieStore.set(SESSION_COOKIE, token, sessionCookieOptions(SESSION_MAX_AGE_SECONDS))
-    cookieStore.set(LEGACY_COOKIE, '', { path: '/', maxAge: 0 })
+      const { token } = await createSession({ customerId: customer.id })
+      const cookieStore = await cookies()
+      cookieStore.set(SESSION_COOKIE, token, sessionCookieOptions(SESSION_MAX_AGE_SECONDS))
+      cookieStore.set(LEGACY_COOKIE, '', { path: '/', maxAge: 0 })
+    } catch (grantErr) {
+      console.error('[/access/success] could not record entitlement or open session:', grantErr)
+    }
   } catch (err) {
     console.error('[/access/success] error:', err)
     redirect('/access')

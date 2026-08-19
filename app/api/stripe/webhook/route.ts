@@ -219,11 +219,26 @@ export async function POST(request: NextRequest) {
       // Signature verification proves the event is authentic. It does NOT
       // prove this is the first copy — Stripe retries on any non-2xx and can
       // replay a delivery that already succeeded. The ledger is that check.
-      const claim = await claimEvent({ eventId: event.id, eventType: event.type })
-      claimedEventId = event.id
-      if (!claim.isFirstDelivery) {
-        // 200 so Stripe stops retrying something already handled.
-        return NextResponse.json({ received: true, duplicate: true })
+      //
+      // Deliberately non-fatal. The Mailchimp tagging below predates this
+      // ledger and works without a database; a database outage must not take
+      // it down too. If the ledger is unavailable we lose de-duplication for
+      // that delivery — Mailchimp's upsert is keyed by email and tolerates a
+      // repeat — but we do not lose the behaviour that already worked.
+      let ledgerAvailable = true
+      try {
+        const claim = await claimEvent({ eventId: event.id, eventType: event.type })
+        claimedEventId = event.id
+        if (!claim.isFirstDelivery) {
+          // 200 so Stripe stops retrying something already handled.
+          return NextResponse.json({ received: true, duplicate: true })
+        }
+      } catch (ledgerErr) {
+        ledgerAvailable = false
+        console.error(
+          '[stripe/webhook] idempotency ledger unavailable; continuing without de-duplication.',
+          ledgerErr
+        )
       }
 
       // ─────────────────────────────────────────────────────────────────
@@ -406,7 +421,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      await markEventProcessed(event.id)
+      if (ledgerAvailable) await markEventProcessed(event.id)
       return NextResponse.json({ received: true })
     } catch (error) {
           const message = error instanceof Error ? error.message : String(error)
