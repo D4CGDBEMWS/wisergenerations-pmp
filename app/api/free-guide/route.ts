@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
+import { recordAuditEvent } from '@/lib/audit'
 
 // ---------------------------------------------------------------------------
 // POST /api/free-guide
@@ -37,13 +38,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
   }
 
+  // Two spellings accepted for the form id. The key is CONVERTKIT_API_KEY with
+  // no separator and the form id was CONVERT_KIT_FORM_ID with one, so setting
+  // the pair consistently — the obvious thing to do — left the form id unread
+  // and every lead silently discarded. The same class of mismatch left
+  // RESEND_FROM_EMAIL unread in this deployment for five months.
   const apiKey = process.env.CONVERTKIT_API_KEY
-  const formId = process.env.CONVERT_KIT_FORM_ID
+  const formId = process.env.CONVERT_KIT_FORM_ID || process.env.CONVERTKIT_FORM_ID
 
   if (!apiKey || !formId) {
-    // In development without ConvertKit configured, log and return success
-    // so you can test the UI flow without the integration.
-    console.warn('[/api/free-guide] ConvertKit env vars not set — skipping subscription.')
+    // Returning ok keeps the UI flow testable without the integration, but a
+    // misconfigured PRODUCTION deployment then tells the visitor their guide is
+    // on its way and drops the address — the failure is invisible from both
+    // sides. So say which half is missing, and say it at error level, because
+    // nobody reads warnings in serverless logs.
+    console.error('[/api/free-guide] lead NOT captured — ConvertKit not configured', {
+      hasApiKey: Boolean(apiKey),
+      hasFormId: Boolean(formId),
+    })
+    await recordAuditEvent({
+      eventType: 'lead.dropped',
+      metadata: { reason: 'convertkit_not_configured', source_type: 'free-guide' },
+    })
     return NextResponse.json({ ok: true })
   }
 
