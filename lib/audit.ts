@@ -37,6 +37,7 @@ export type AuditEventType =
   | 'login.success'
   | 'login.failed'
   | 'login.rate_limited'
+  | 'login.email_failed'
   | 'session.revoked'
   | 'consent.recorded'
   | 'webhook.received'
