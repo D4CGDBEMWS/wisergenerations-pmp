@@ -1,7 +1,7 @@
 {
-  "_comment": "Controls the Wiser Generations Virtual Guide chat widget. Safe for a non-technical owner to edit. See WISER_GENERATIONS_AI_AGENT_GUIDE.md.",
+  "_comment": "Controls the Wiser Generations Virtual Guide chat widget. Safe for a non-technical owner to edit. See WISER_GENERATIONS_AI_AGENT_GUIDE.md. NOTE: enabled is deliberately false — the assistant stays off until someone turns it on on purpose, after the accuracy tests have been run and reviewed.",
 
-  "enabled": true,
+  "enabled": false,
 
   "assistantName": "Wiser Generations Virtual Guide",
 

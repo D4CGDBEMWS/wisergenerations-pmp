@@ -34,7 +34,7 @@ itself in about two minutes. You never install anything.
 
 | I want to… | Edit this file |
 |---|---|
-| Turn the chat assistant off | `content/config/chat.json` |
+| Turn the chat assistant on or off | `content/config/chat.json` |
 | Change a course price | `lib/constants.ts` |
 | Fix something the assistant said wrong | `content/knowledge-base/` |
 | Change the chat greeting or buttons | `content/config/chat.json` |
@@ -69,21 +69,36 @@ website to see the change.
 
 **File:** `content/config/chat.json`
 
+> **The assistant ships switched OFF.** That is deliberate, not an oversight.
+> Turning it on should be a decision someone makes on purpose, after the
+> accuracy tests have been run and the answers read.
+
 Find the line near the top:
 
 ```json
-"enabled": true,
+"enabled": false,
 ```
 
-Change `true` to `false` and commit. Two minutes later the chat bubble is gone
-from every page. Nothing else on the site is affected — the eBook funnel, the
-giveaway, and the checkout all keep working.
+**To turn it ON:** change `false` to `true` and commit. Two minutes later the
+chat bubble appears on every page.
 
-Change it back to `true` to bring it back. There is no penalty for flipping it
-back and forth, and it costs nothing while it's off.
+**To turn it OFF:** change `true` back to `false`. Two minutes later the bubble
+is gone from every page. Nothing else on the site is affected — the eBook
+funnel, the giveaway, and the checkout all keep working.
 
-**Turn it off if:** you see it saying something wrong and you need time to fix
-the knowledge base, or you want to stop API spending immediately.
+There is no penalty for flipping it back and forth, and it costs nothing while
+it is off — no chat bubble is sent to the browser at all, and no AI calls are
+made or billed.
+
+**Before turning it on for the first time**, make sure all three are true:
+1. `ANTHROPIC_API_KEY` is set in Vercel and the site has been redeployed.
+2. Someone has run the accuracy tests and *read the answers* (see
+   [Checking that the assistant is behaving](#checking-that-the-assistant-is-behaving)).
+3. The privacy policy has been updated for AI chat — see
+   `docs/PRIVACY-POLICY-REVIEW-REQUEST.md`.
+
+**Turn it back off if:** you see it saying something wrong and you need time to
+fix the knowledge base, or you want to stop API spending immediately.
 
 ---
 
