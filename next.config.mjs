@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // app/api/studio reads content/studio/*.html at runtime. Next's tracer only
+  // follows filesystem reads it can resolve statically, and a
+  // join(process.cwd(), ...) path is not one of those, so the file would be
+  // missing from the deployed bundle and the route would 500 in production
+  // while working perfectly in development.
+  outputFileTracingIncludes: {
+    '/api/studio': ['./content/studio/**'],
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
