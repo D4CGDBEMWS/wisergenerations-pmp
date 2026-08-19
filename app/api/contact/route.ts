@@ -13,8 +13,10 @@ export const runtime = 'nodejs'
 // Required env vars:
 //   RESEND_API_KEY      -- from https://resend.com (free tier 3,000/mo)
 //   CONTACT_TO_EMAIL    -- destination inbox (defaults to info@wisergenerations.com)
-//   CONTACT_FROM_EMAIL  -- verified sender on your Resend domain
-//                         (defaults to onboarding@resend.dev for first-run testing)
+//   RESEND_FROM_EMAIL   -- verified sender on your Resend domain
+//                         (CONTACT_FROM_EMAIL is accepted as an alias; falls back
+//                         to onboarding@resend.dev, which Resend only delivers to
+//                         the account owner, so it is testing-only)
 //
 // In development without RESEND_API_KEY set we log the submission and return
 // success so the UI flow can be tested without the integration.
@@ -86,7 +88,10 @@ export async function POST(req: NextRequest) {
 
   const apiKey      = process.env.RESEND_API_KEY
   const toAddress   = process.env.CONTACT_TO_EMAIL   || 'info@wisergenerations.com'
-  const fromAddress = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev'
+  // CONTACT_FROM_EMAIL first for anyone who set that name, then
+  // RESEND_FROM_EMAIL, which is what production actually supplies.
+  const fromAddress =
+    process.env.CONTACT_FROM_EMAIL || process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
 
   if (!apiKey) {
     console.warn('[/api/contact] RESEND_API_KEY not set — submission accepted but not delivered.', {

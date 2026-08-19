@@ -59,7 +59,10 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // The audit row is the operator's channel; the HTTP response is not.
 // ---------------------------------------------------------------------------
 
-const MAGIC_LINK_FROM = process.env.MAGIC_LINK_FROM_EMAIL || 'info@wisergenerations.com'
+const MAGIC_LINK_FROM =
+  process.env.MAGIC_LINK_FROM_EMAIL ||
+  process.env.RESEND_FROM_EMAIL ||
+  'info@wisergenerations.com'
 const MAGIC_LINK_SUBJECT = 'Your Wiser Generations Study Access login link'
 
 function magicLinkHtml(loginUrl: string): string {
