@@ -1,35 +1,28 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
+import { writeConsent } from '@/lib/consent'
+import { useConsent } from '@/components/useConsent'
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    try {
-      const consent = localStorage.getItem('cookie-consent')
-      if (!consent) setVisible(true)
-    } catch {
-      setVisible(true)
-    }
-  }, [])
+  // The banner now writes the value Analytics actually reads. Previously it
+  // wrote 'cookie-consent' and nothing consulted it, so declining changed
+  // nothing — GA4 was already running.
+  const consent = useConsent()
+  const [dismissed, setDismissed] = useState(false)
 
   function accept() {
-    try {
-      localStorage.setItem('cookie-consent', 'accepted')
-    } catch {}
-    setVisible(false)
+    writeConsent('accepted')
+    setDismissed(true)
   }
 
   function decline() {
-    try {
-      localStorage.setItem('cookie-consent', 'declined')
-    } catch {}
-    setVisible(false)
+    writeConsent('essential')
+    setDismissed(true)
   }
 
-  if (!visible) return null
+  if (consent !== null || dismissed) return null
 
   return (
     <div
@@ -54,13 +47,13 @@ export default function CookieBanner() {
         <div className="flex gap-3">
           <button
             onClick={accept}
-            className="flex-1 rounded-lg bg-navy px-4 py-2 text-xs font-bold text-white transition hover:bg-navy/90"
+            className="flex-1 rounded-lg bg-navy px-4 py-3 text-xs font-bold text-white transition hover:bg-navy/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             Accept All
           </button>
           <button
             onClick={decline}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-brand-blue hover:text-navy"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-xs font-bold text-gray-600 transition hover:border-navy hover:text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             Essential Only
           </button>

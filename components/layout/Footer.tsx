@@ -61,6 +61,7 @@ export function Footer() {
             <ul className="space-y-2">
               {[
                 { label: 'Free PMP Guide', href: '/free-guide' },
+                { label: 'Practice Studio — $49/mo', href: '/access' },
                 { label: 'Exam Simulator', href: '/exam-simulator' },
 { label: 'Try Free Practice Questions →', href: '/free-practice' },
                 { label: 'PMBOK Flashcards', href: '/flashcards' },

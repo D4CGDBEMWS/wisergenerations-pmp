@@ -1,11 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // The AI Guide reads its knowledge base from disk at runtime. Next's file
-  // tracing cannot see a readdirSync() path, so the markdown is force-included
-  // in the serverless bundle for /api/chat. Without this the assistant would
-  // deploy with an empty knowledge base.
+  // Two runtime file reads, two entries. Next's tracer only follows filesystem
+  // reads it can resolve statically, and neither of these is one — the chat
+  // route walks its knowledge base with readdirSync, and the studio route
+  // builds its path from process.cwd(). Without these the files are absent from
+  // the deployed bundle and both routes fail in production while working
+  // perfectly in development.
   outputFileTracingIncludes: {
     '/api/chat': ['./content/knowledge-base/**/*'],
+    '/api/studio': ['./content/studio/**'],
   },
   images: {
     remotePatterns: [

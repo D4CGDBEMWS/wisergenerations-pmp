@@ -9,9 +9,12 @@ const AUDIENCES = [
   { id: 'earlycareer', label: 'Early Career' },
 ]
 
-const AUDIENCE_MAP: Record<string, string[]> = {
+// Exported so a test can assert every id here exists in PROGRAMS. It listed
+// 'pmp-adult', which is not a program id — the id is 'pmp' — so selecting
+// "Career Transitioner" silently filtered the PMP program out of the results.
+export const AUDIENCE_MAP: Record<string, string[]> = {
   all: [],
-  professional: ['pmp-adult', 'capm-adult'],
+  professional: ['pmp', 'capm-adult'],
   veteran: ['veterans'],
   corporate: ['corporate'],
   earlycareer: ['capm-adult'],

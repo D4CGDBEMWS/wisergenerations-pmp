@@ -4,15 +4,22 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/build-free-studio.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "migrate": "node scripts/migrate.mjs",
+    "purge": "node scripts/purge-stale-signups.mjs",
+    "build:free-studio": "node scripts/build-free-studio.mjs",
     "test:ai": "node scripts/test-ai-guide.mjs",
     "giveaway:export": "node scripts/export-giveaway-entries.mjs",
     "giveaway:pick": "node scripts/export-giveaway-entries.mjs --pick"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",
+    "@neondatabase/serverless": "^1.1.0",
     "@stripe/react-stripe-js": "^6.1.0",
     "@stripe/stripe-js": "^9.1.0",
     "@upstash/ratelimit": "^2.0.8",
@@ -28,14 +35,17 @@
     "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.5",
     "@types/node": "^20",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.5",
     "autoprefixer": "^10.4.0",
-    "eslint": "^10.2.0",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.2",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }
