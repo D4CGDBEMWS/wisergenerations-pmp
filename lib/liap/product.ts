@@ -9,9 +9,11 @@
 // The amount is in cents and is the single source of truth for both the
 // display price and the Stripe charge — the PMP checkout once advertised one
 // price and charged another because those two numbers lived apart.
+//
+// $24.99, set by the business owner on 20 August 2026.
 // ---------------------------------------------------------------------------
 
-const AMOUNT_CENTS = 2400
+const AMOUNT_CENTS = 2499
 
 export const LIAP_BOOK = {
   productKey: 'LIAP_BOOK_PREORDER',
