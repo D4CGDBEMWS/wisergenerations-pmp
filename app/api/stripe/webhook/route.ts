@@ -4,6 +4,8 @@ import { claimEvent, markEventProcessed, markEventFailed } from '@/lib/payments/
 import { queryOne } from '@/lib/db/client'
 import { upsertCustomer } from '@/lib/customers'
 import { grantEntitlement, revokeEntitlementsBySource, STUDY_ACCESS } from '@/lib/entitlements'
+import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
+import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
 import Stripe from 'stripe'
 
@@ -361,6 +363,33 @@ export async function POST(request: NextRequest) {
             sourceType: s2.subscription ? 'subscription' : 'order',
             sourceId: (typeof s2.subscription === 'string' ? s2.subscription : null) ?? s2.id,
             idempotencyKey: `${event.id}:${STUDY_ACCESS}`,
+          })
+        }
+      }
+
+      // ───────────────────────────────────────────────────────────────
+      // Life Is a Project™ book preorder.
+      //
+      // Matched on metadata rather than on amount or product name: the marker
+      // is set in one place, app/api/liap/preorder, and nothing else uses it.
+      // Deliberately separate from the Study Access branch above — the two
+      // products share this transport and nothing else, so a change to one
+      // cannot reach the other.
+      // ───────────────────────────────────────────────────────────────
+      if (event.type === 'checkout.session.completed') {
+        const liapSession = event.data.object as Stripe.Checkout.Session
+        const liapEmail =
+          liapSession.customer_email || liapSession.customer_details?.email || ''
+
+        if (isLiapPreorder(liapSession.metadata) && liapEmail && liapSession.payment_status === 'paid') {
+          await fulfilPreorder({
+            email: liapEmail,
+            name: liapSession.customer_details?.name ?? null,
+            stripeCustomerId:
+              typeof liapSession.customer === 'string' ? liapSession.customer : null,
+            sourceId: liapSession.id,
+            idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
+            amount: liapSession.amount_total ?? null,
           })
         }
       }
