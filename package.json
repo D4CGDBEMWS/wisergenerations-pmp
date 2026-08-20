@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "migrate": "node scripts/migrate.mjs",
     "purge": "node scripts/purge-stale-signups.mjs",
+    "liap:preorders": "node scripts/liap-approve-preorder.mjs",
     "build:free-studio": "node scripts/build-free-studio.mjs",
     "test:ai": "node scripts/test-ai-guide.mjs",
     "giveaway:export": "node scripts/export-giveaway-entries.mjs",

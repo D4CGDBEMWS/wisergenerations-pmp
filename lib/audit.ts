@@ -45,6 +45,17 @@ export type AuditEventType =
   | 'webhook.failed'
   | 'admin.entitlement_change'
   | 'retention.purged'
+  // Life Is a Project. Deliberately narrow: an assessment records that it
+  // started and that it finished, plus the resulting position. Never the
+  // narrative, the affected area, or a score breakdown — an audit trail that
+  // captured what someone wrote about their divorce would be a worse leak
+  // than the one it exists to detect.
+  | 'liap.assessment_started'
+  | 'liap.assessment_completed'
+  | 'liap.results_emailed'
+  | 'liap.preorder_verification_submitted'
+  | 'liap.preorder_verification_reviewed'
+  | 'liap.narratives_purged'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}
