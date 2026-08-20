@@ -241,3 +241,48 @@ describe('GET /api/studio', () => {
     expect((await get()).status).toBe(404)
   })
 })
+
+// ---------------------------------------------------------------------------
+// One number, everywhere.
+//
+// The studio badge read 698 while /access advertised 694: 694 entries in
+// DATA.questions plus 4 case-set and matching items merged into the pool at
+// load. Both counts were honest on their own and disagreed in public, which is
+// the worst combination for a number a business advertises.
+//
+// The advanced-format items now belong to the mock exam only. This guards the
+// reconciliation rather than the mechanism — if someone merges them back into
+// the practice pool, the marketing copy silently becomes wrong again.
+// ---------------------------------------------------------------------------
+
+const ADVERTISED_QUESTIONS = 694
+
+describe('the question count agrees with itself', () => {
+  const studio = readFileSync(FULL_STUDIO, 'utf8')
+
+  it('the practice pool is not padded with the mock-exam formats', () => {
+    // Q.length drives both the badge and the "N of N available" line.
+    expect(studio).not.toMatch(/NEWFORMATS\.forEach[^)]*Q\.push/)
+  })
+
+  it('the studio holds exactly what the site advertises', () => {
+    const data = JSON.parse(
+      studio.slice(
+        studio.indexOf('{', studio.indexOf('const DATA =')),
+        studio.lastIndexOf('}', studio.indexOf('const MOCK =')) + 1
+      )
+    )
+    expect(data.questions).toHaveLength(ADVERTISED_QUESTIONS)
+  })
+
+  it('every customer-facing page states the same number', () => {
+    for (const page of ['app/access/page.tsx', 'app/exam-simulator/page.tsx']) {
+      const source = readFileSync(join(process.cwd(), page), 'utf8')
+      const counts = [...source.matchAll(/\b(6\d\d)\s+(?:PMP-style\s+)?practice questions/gi)]
+        .map((m) => Number(m[1]))
+      for (const n of counts) {
+        expect(n, `${page} advertises ${n}`).toBe(ADVERTISED_QUESTIONS)
+      }
+    }
+  })
+})

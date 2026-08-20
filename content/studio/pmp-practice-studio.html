@@ -434,9 +434,13 @@ const NEWFORMATS = [
   }
 ];
 
-/* merge new-format items into the practice pool data + topic indexes */
+/* Register topic colours for the new-format items. They are NOT pushed into
+   the practice pool: doing so made every count in this studio read 698 while
+   the site advertises 694, and the badge and the "N of N available" line both
+   derive from Q.length. The case sets and matching items remain in the mock
+   exam, which builds its own pool from MOCK.concat(NEWFORMATS). */
 (function(){
-  NEWFORMATS.forEach(it=>{ if(!DATA.topicColor[it.topic]) DATA.topicColor[it.topic] = (it.type==="match"?"#7a4ba0":"#2f6c8f"); Q.push(it); });
+  NEWFORMATS.forEach(it=>{ if(!DATA.topicColor[it.topic]) DATA.topicColor[it.topic] = (it.type==="match"?"#7a4ba0":"#2f6c8f"); });
 })();
 /* ---- case-set renderer (practice) ---- */
 let _caseState=null;
