@@ -129,10 +129,10 @@ const data = readLiteral(full, 'const DATA =', '{', '}')
 const mock = readLiteral(full, 'const MOCK =', '[', ']')
 const newFormatsText = readLiteralText(full, 'const NEWFORMATS =', '[', ']')
 
-// NEWFORMATS holds the case-set and matching items the studio pushes into the
-// question pool at load — the source of the 698 the badge shows against the
-// 694 in DATA. Not JSON, so it is counted by its topic labels and otherwise
-// treated as opaque text.
+// NEWFORMATS holds the case-set and matching items. They belong to the mock
+// exam only and are deliberately not part of the practice count, so the studio
+// and the marketing pages both read 694. Not JSON, so it is counted by its
+// topic labels and otherwise treated as opaque text.
 const newFormatTopics = [...newFormatsText.matchAll(/topic\s*:\s*"([^"]+)"/g)].map((m) => m[1])
 
 const sample = pickSample(data.questions, FREE_QUESTIONS)
@@ -203,7 +203,7 @@ writeFileSync(OUTPUT, free)
 
 const pct = ((free.length / full.length) * 100).toFixed(0)
 console.log(
-  `  free studio: ${sample.length} of ${data.questions.length + newFormatTopics.length} questions, ` +
+  `  free studio: ${sample.length} of ${data.questions.length} questions, ` +
     `no mock exam, no ITTO cards, no glossary`
 )
 console.log(
