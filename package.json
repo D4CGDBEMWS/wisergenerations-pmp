@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "migrate": "node scripts/migrate.mjs",
+    "purge": "node scripts/purge-stale-signups.mjs",
     "build:free-studio": "node scripts/build-free-studio.mjs"
   },
   "dependencies": {
