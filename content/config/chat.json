@@ -1,0 +1,22 @@
+{
+  "_comment": "Controls the Wiser Generations Virtual Guide chat widget. Safe for a non-technical owner to edit. See WISER_GENERATIONS_AI_AGENT_GUIDE.md. NOTE: enabled is deliberately false — the assistant stays off until someone turns it on on purpose, after the accuracy tests have been run and reviewed.",
+
+  "enabled": false,
+
+  "assistantName": "Wiser Generations Virtual Guide",
+
+  "greeting": "Welcome to Wiser Generations! I'm the Wiser Generations Virtual Guide — an AI assistant, not a person. I can help you learn about our courses, get your free guide, or find the right next step. What can I help you with today?",
+
+  "quickActions": [
+    { "label": "Explore the Course", "message": "Tell me about your PMP certification program." },
+    { "label": "Get the Free Guide", "message": "I'd like the free PMP exam guide." },
+    { "label": "Enter the Coaching Giveaway", "message": "Tell me about the free coaching session giveaway." },
+    { "label": "Find My Next Step", "message": "I'm not sure where to start. Can you help me figure out the right next step?" },
+    { "label": "Ask a Question", "message": "I have a question." }
+  ],
+
+  "disclaimer": "AI-powered assistant. For anything account- or payment-related, we'll connect you with a person.",
+
+  "maxTurns": 24,
+  "maxMessageLength": 2000
+}

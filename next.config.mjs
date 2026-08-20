@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // app/api/studio reads content/studio/*.html at runtime. Next's tracer only
-  // follows filesystem reads it can resolve statically, and a
-  // join(process.cwd(), ...) path is not one of those, so the file would be
-  // missing from the deployed bundle and the route would 500 in production
-  // while working perfectly in development.
+  // Two runtime file reads, two entries. Next's tracer only follows filesystem
+  // reads it can resolve statically, and neither of these is one — the chat
+  // route walks its knowledge base with readdirSync, and the studio route
+  // builds its path from process.cwd(). Without these the files are absent from
+  // the deployed bundle and both routes fail in production while working
+  // perfectly in development.
   outputFileTracingIncludes: {
+    '/api/chat': ['./content/knowledge-base/**/*'],
     '/api/studio': ['./content/studio/**'],
   },
   images: {

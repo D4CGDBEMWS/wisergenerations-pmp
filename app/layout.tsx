@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import NewsletterSignup from '@/components/layout/NewsletterSignup'
 import CookieBanner from '@/components/CookieBanner'
 import Analytics from '@/components/Analytics'
+import VirtualGuide from '@/components/chat/VirtualGuide'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.wisergenerations.com'),
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NewsletterSignup />
         <Footer />
         <CookieBanner />
+        <VirtualGuide />
       </body>
     </html>
   )

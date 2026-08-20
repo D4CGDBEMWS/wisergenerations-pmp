@@ -1,0 +1,25 @@
+{
+  "_comment": "Every link the AI Guide and site CTAs point to. Change a URL here and it updates everywhere. Do not rename the keys.",
+
+  "scheduling": "https://calendly.com/space4grace/30min-pod",
+  "enroll": "/enroll",
+  "checkout": "/checkout",
+  "programs": "/programs",
+  "pmp": "/pmp",
+  "capm": "/capm",
+  "corporate": "/corporate",
+  "veterans": "/veterans",
+  "freeGuide": "/free-guide",
+  "freePractice": "/free-practice",
+  "resources": "/resources",
+  "blog": "/blog",
+  "faq": "/faq",
+  "guarantee": "/guarantee",
+  "contact": "/contact",
+  "privacyPolicy": "/privacy-policy",
+  "terms": "/terms",
+  "giveaway": "/giveaway",
+  "giveawayRules": "/giveaway#official-rules",
+
+  "supportEmail": "info@wisergenerations.com"
+}

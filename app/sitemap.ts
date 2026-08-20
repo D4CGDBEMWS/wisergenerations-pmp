@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/blog/veterans-pmp-military-experience`, lastModified: new Date(), priority: 0.7 },
     { url: `${BASE}/blog/pmp-salary-roi-2026`,              lastModified: new Date(), priority: 0.7 },
     { url: `${BASE}/free-guide`,                            lastModified: new Date(), priority: 0.8 },
+    { url: `${BASE}/giveaway`,                              lastModified: new Date(), priority: 0.6 },
     { url: `${BASE}/contact`,                               lastModified: new Date(), priority: 0.7 },
     { url: `${BASE}/privacy-policy`,                        lastModified: new Date(), priority: 0.3 },
     { url: `${BASE}/terms`,                                 lastModified: new Date(), priority: 0.3 },

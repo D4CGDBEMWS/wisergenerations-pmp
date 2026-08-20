@@ -13,9 +13,13 @@
     "migrate": "node scripts/migrate.mjs",
     "purge": "node scripts/purge-stale-signups.mjs",
     "liap:preorders": "node scripts/liap-approve-preorder.mjs",
-    "build:free-studio": "node scripts/build-free-studio.mjs"
+    "build:free-studio": "node scripts/build-free-studio.mjs",
+    "test:ai": "node scripts/test-ai-guide.mjs",
+    "giveaway:export": "node scripts/export-giveaway-entries.mjs",
+    "giveaway:pick": "node scripts/export-giveaway-entries.mjs --pick"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
     "@neondatabase/serverless": "^1.1.0",
     "@stripe/react-stripe-js": "^6.1.0",
     "@stripe/stripe-js": "^9.1.0",

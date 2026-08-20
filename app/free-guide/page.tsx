@@ -1,22 +1,44 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
+import { useTurnstile } from '@/components/useTurnstile'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
 export default function FreeGuidePage() {
+  const router = useRouter()
   const [firstName, setFirstName] = useState('')
   const [email, setEmail] = useState('')
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [started, setStarted] = useState(false)
+
+  const turnstileRef = useRef<HTMLDivElement | null>(null)
+  const { token, reset, required } = useTurnstile(turnstileRef)
+
+  // Fires once, the first time someone touches the form — the drop-off point
+  // between "saw the offer" and "gave us an address".
+  function markStarted() {
+    if (started) return
+    setStarted(true)
+    trackEvent('ebook_form_started')
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     if (!firstName.trim() || !email.trim()) {
       setErrorMessage('Please enter your first name and email.')
+      setFormState('error')
+      return
+    }
+
+    if (required && !token) {
+      setErrorMessage('Please complete the security check below the button.')
+      setFormState('error')
       return
     }
 
@@ -27,7 +49,11 @@ export default function FreeGuidePage() {
       const res = await fetch('/api/free-guide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName: firstName.trim(), email: email.trim() }),
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          email: email.trim(),
+          turnstileToken: token,
+        }),
       })
 
       if (!res.ok) {
@@ -36,10 +62,15 @@ export default function FreeGuidePage() {
       }
 
       setFormState('success')
-      trackEvent('free_guide_download')
+      trackEvent('lead_captured', { source: 'free_guide', interest: 'ebook' })
+      // A distinct URL so the conversion is measurable, retargetable, and
+      // linkable — and so the guide is available immediately rather than only
+      // once an email arrives.
+      router.push('/free-guide/thank-you')
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setFormState('error')
+      reset()
     }
   }
 
@@ -115,10 +146,9 @@ export default function FreeGuidePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-semibold text-slate-900">Check your inbox!</h2>
+                <h2 className="text-2xl font-semibold text-slate-900">You&apos;re in!</h2>
                 <p className="mt-3 text-sm leading-6 text-slate-600">
-                  Your free guide is on its way to <strong>{email}</strong>. Check your spam
-                  folder if it doesn't arrive within a few minutes.
+                  Taking you to your guide&hellip;
                 </p>
                 <div className="mt-6 space-y-3">
                   <Link
@@ -160,6 +190,7 @@ export default function FreeGuidePage() {
                       autoComplete="given-name"
                       placeholder="Crystal"
                       value={firstName}
+                      onFocus={markStarted}
                       onChange={(e) => setFirstName(e.target.value)}
                       className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-500"
                     />
@@ -186,14 +217,21 @@ export default function FreeGuidePage() {
 
                   <button
                     type="submit"
-                    disabled={formState === 'submitting'}
+                    disabled={formState === 'submitting' || (required && !token)}
                     className="w-full rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     {formState === 'submitting' ? 'Sending your guide…' : 'Get the Free Guide →'}
                   </button>
 
+                  {required && <div ref={turnstileRef} />}
+
                   <p className="text-center text-xs text-slate-400">
-                    No spam. Unsubscribe anytime.
+                    We&apos;ll email you PMP® exam tips and program updates. No spam, unsubscribe
+                    anytime. See our{' '}
+                    <Link href="/privacy-policy" className="underline hover:no-underline">
+                      Privacy Policy
+                    </Link>
+                    .
                   </p>
                 </form>
               </>
