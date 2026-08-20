@@ -44,6 +44,7 @@ export type AuditEventType =
   | 'webhook.duplicate'
   | 'webhook.failed'
   | 'admin.entitlement_change'
+  | 'retention.purged'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}
