@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
       <div className="mb-10">
         <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Legal</p>
         <h1 className="text-4xl font-bold text-navy mb-4">Privacy Policy</h1>
-        <p className="text-gray-500 text-sm">Effective Date: April 12, 2026 &nbsp;·&nbsp; Last Updated: August 19, 2026</p>
+        <p className="text-gray-500 text-sm">Effective Date: April 12, 2026 &nbsp;·&nbsp; Last Updated: August 20, 2026</p>
       </div>
 
       <div className="prose prose-slate max-w-none space-y-8 text-gray-700 leading-relaxed">
