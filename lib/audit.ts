@@ -56,6 +56,11 @@ export type AuditEventType =
   | 'liap.preorder_verification_submitted'
   | 'liap.preorder_verification_reviewed'
   | 'liap.narratives_purged'
+  // Phase II-A. A retreat enquiry is recorded as having happened and as which
+  // kind — never the message. Somebody's account of why they need a weekend
+  // away has no place in a security log, and the metadata allow-list would
+  // strip it regardless.
+  | 'liap.retreat_interest'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}
