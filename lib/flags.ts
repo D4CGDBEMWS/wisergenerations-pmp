@@ -19,6 +19,11 @@ export type FeatureFlag =
   // the book and the assessment untouched.
   | 'LIAP_PARTNERS'
   | 'LIAP_RETREAT'
+  // Phase II-B. Gates the entire admin surface, including the staff sign-in
+  // page. Separate from every other flag because this is the one that, when
+  // on, means privileged accounts can authenticate — and it should be
+  // possible to shut that off without touching anything customers see.
+  | 'LIAP_ADMIN'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */
