@@ -133,9 +133,42 @@ describe('the destination allow-list', () => {
   it('never returns anything that leaves the site', () => {
     const paths = Object.values(PARTNER_DESTINATIONS)
     for (const p of paths) {
-      expect(p.startsWith('/')).toBe(true)
+      // Same-origin, root-relative, no scheme, no protocol-relative escape.
+      // Section anchors added in Phase II-J are still internal paths — the
+      // fragment is part of a fixed stored value, not request input.
+      expect(p.startsWith('/life-is-a-project')).toBe(true)
       expect(p.startsWith('//')).toBe(false)
       expect(p).not.toContain(':')
+      expect(p).not.toContain('\\')
+    }
+  })
+
+  it('anchors are fixed entries, never assembled from a request', () => {
+    // The open-redirect defence extended to fragments. A campaign lands at a
+    // section because somebody added an entry to this table in a reviewed
+    // commit — not because a query parameter asked for it.
+    const anchored = Object.entries(PARTNER_DESTINATIONS).filter(([, p]) => p.includes('#'))
+    expect(anchored.length).toBeGreaterThan(0)
+
+    for (const [key, path] of anchored) {
+      expect(key.startsWith('section-')).toBe(true)
+      // Exactly one fragment, on the hub, and nothing after it but the id.
+      expect(path.split('#')).toHaveLength(2)
+      expect(path.startsWith('/life-is-a-project#')).toBe(true)
+      expect(path.split('#')[1]).toMatch(/^[a-z-]+$/)
+    }
+  })
+
+  it('refuses a destination key that tries to smuggle its own anchor', () => {
+    // Storing a key means a mistyped or hostile field cannot produce a new
+    // landing point, let alone an off-site one.
+    for (const attempt of [
+      'hub#evil',
+      '/life-is-a-project#\u0000',
+      'section-destination extra',
+      'https://evil.example.com#risk',
+    ]) {
+      expect(destinationPath(attempt)).toBe('/life-is-a-project')
     }
   })
 })

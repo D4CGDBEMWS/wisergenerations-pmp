@@ -43,6 +43,24 @@ export const PARTNER_DESTINATIONS = {
   retreat: '/life-is-a-project/retreat',
   group: '/life-is-a-project/retreat/group',
   sponsor: '/life-is-a-project/sponsor',
+
+  // Phase II-J. Section anchors, so a campaign short can land the viewer at
+  // the point in the story it just told them — the website continuing the
+  // short rather than a generic homepage arrival.
+  //
+  // These are FIXED ENTRIES, exactly like the ones above. The anchor is part
+  // of the stored value, not something a query parameter can supply: a
+  // partner still stores a KEY, and there is no request input anywhere in
+  // this path that reaches the fragment. Adding a landing point is a code
+  // change and a review, which is the point.
+  'section-destination': '/life-is-a-project#destination',
+  'section-direction': '/life-is-a-project#direction',
+  'section-resources': '/life-is-a-project#resources',
+  'section-risk': '/life-is-a-project#risk',
+  'section-change': '/life-is-a-project#change',
+  'section-start': '/life-is-a-project#start',
+  'section-build': '/life-is-a-project#build',
+  'section-experience': '/life-is-a-project#experience',
 } as const
 
 export type PartnerDestination = keyof typeof PARTNER_DESTINATIONS
