@@ -361,10 +361,15 @@ export const FAQ: readonly FaqEntry[] = [
   { question: approved('How do group arrangements work?'), answer: pending('FAQ answer — group arrangements.') },
   { question: approved('Can an organization host LIAP?'), answer: pending('FAQ answer — organisational hosting.') },
 
-  // ── Carried forward, but with no counterpart in the new required list.
-  //    NOT retired: that is the owner's call (finding J-6), not mine. ───────
-  { question: approved('Is the book different from the workshop?'), answer: pending('FAQ answer — book versus workshop. Owner to confirm whether this question is retained.') },
-  { question: approved('How can I sponsor or partner?'), answer: pending('FAQ answer — sponsorship and partnership. Owner to confirm whether this question is retained.') },
+  // ── J-6, ruled 22 August 2026: RETAINED. ────────────────────────────────
+  //
+  // Both were carried forward from the previous handoff with no counterpart
+  // in the new required coverage list, which is what made them look orphaned.
+  // The owner has ruled they stay. Answers remain pending until she supplies
+  // approved copy, so neither renders yet — retained and unanswered are
+  // different states, and activeFaq() already tells them apart.
+  { question: approved('Is the book different from the workshop?'), answer: pending('FAQ answer — book versus workshop. Question retained by owner ruling, 22 August 2026; awaiting approved copy.') },
+  { question: approved('How can I sponsor or partner?'), answer: pending('FAQ answer — sponsorship and partnership. Question retained by owner ruling, 22 August 2026; awaiting approved copy.') },
 
   // ── New required coverage, 22 August 2026. ──────────────────────────────
   { question: approved('What is Living Is a Project...Are You Ready?™?'), answer: pending('FAQ answer — what LIAP is.') },

@@ -428,3 +428,23 @@ describe('J-2 — held brand language', () => {
     expect(heldBrandLeaks()).not.toContain('BE READY.')
   })
 })
+
+describe('J-6 — the two questions ruled retained', () => {
+  const RETAINED = ['Is the book different from the workshop?', 'How can I sponsor or partner?']
+
+  it('keeps both, unretired', () => {
+    for (const question of RETAINED) {
+      const entry = FAQ.find((e) => copyText(e.question) === question)
+      expect(entry, `${question} is missing`).toBeDefined()
+      expect(entry!.retired).toBeUndefined()
+    }
+  })
+
+  it('leaves both answers pending, so neither renders yet', () => {
+    // Retained and answered are different states. The ruling settled the
+    // first; approved copy settles the second.
+    const waiting = unansweredFaq().map((e) => copyText(e.question))
+    for (const question of RETAINED) expect(waiting).toContain(question)
+    expect(activeFaq().map((e) => copyText(e.question))).not.toContain(RETAINED[0])
+  })
+})
