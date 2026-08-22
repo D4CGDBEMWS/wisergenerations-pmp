@@ -163,6 +163,53 @@ describe('who is protected', () => {
     expect(await remaining()).toEqual(['employer@example.com', 'funded@example.com'])
   })
 
+  it('never deletes someone with an open retreat enquiry', async () => {
+    // The defect this clause fixes is real, not hypothetical. A $1,499.99
+    // retreat is routinely nurtured for longer than six months, and without
+    // this the purge would delete a live prospect's record mid-conversation.
+    const id = await signup('prospect@example.com', SIGNUP_RETENTION_DAYS + 90)
+    await db.query(
+      `INSERT INTO retreat_leads (email, inquiry_type, status, customer_id)
+       VALUES ($1, 'individual', 'reviewing', $2)`,
+      ['prospect@example.com', id]
+    )
+
+    expect((await purgeStaleSignups()).deleted).toBe(0)
+    expect(await remaining()).toEqual(['prospect@example.com'])
+  })
+
+  it('does delete someone whose enquiry was declined or withdrawn', async () => {
+    // Only OPEN enquiries protect a record. Holding somebody's account of
+    // their circumstances indefinitely because they once asked about a
+    // retreat would be the opposite of a retention policy.
+    for (const [email, status] of [
+      ['declined@example.com', 'declined'],
+      ['withdrew@example.com', 'withdrawn'],
+    ]) {
+      const id = await signup(email!, SIGNUP_RETENTION_DAYS + 5)
+      await db.query(
+        `INSERT INTO retreat_leads (email, inquiry_type, status, customer_id)
+         VALUES ($1, 'individual', $2, $3)`,
+        [email, status, id]
+      )
+    }
+
+    expect((await purgeStaleSignups()).deleted).toBe(2)
+    expect(await remaining()).toEqual([])
+  })
+
+  it('never deletes someone waiting on an interest list', async () => {
+    const id = await signup('waiting@example.com', SIGNUP_RETENTION_DAYS + 20)
+    await db.query(
+      `INSERT INTO liap_interest (email, interest_key, customer_id)
+       VALUES ($1, 'workshop', $2)`,
+      ['waiting@example.com', id]
+    )
+
+    expect((await purgeStaleSignups()).deleted).toBe(0)
+    expect(await remaining()).toEqual(['waiting@example.com'])
+  })
+
   it('deletes only the stale signup when mixed with protected records', async () => {
     const bought = await signup('paid@example.com', SIGNUP_RETENTION_DAYS + 5)
     await db.query(`INSERT INTO orders (customer_id, status) VALUES ($1, 'paid')`, [bought])

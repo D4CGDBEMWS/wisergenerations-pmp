@@ -26,6 +26,13 @@ export const LIAP_TAGS = [
   'liap_ready_to_stabilize',
   'liap_workshop_interest',
   'liap_starter_kit_interest',
+  // Phase II-A. Still allow-listed, still tags only, still no free text: a
+  // retreat enquiry carries somebody's account of their circumstances, and
+  // none of that reaches a marketing system.
+  'liap_retreat_interest',
+  'liap_group_interest',
+  'liap_sponsor_interest',
+  'liap_community_referred',
 ] as const
 
 export type LiapTag = (typeof LIAP_TAGS)[number]

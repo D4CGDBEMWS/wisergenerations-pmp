@@ -10,7 +10,16 @@
 // takes effect on redeploy without a code change.
 // ---------------------------------------------------------------------------
 
-export type FeatureFlag = 'LIAP' | 'CAPM_PATHWAY'
+export type FeatureFlag =
+  | 'LIAP'
+  // Phase II-A. Two flags rather than one, because the community channel and
+  // the retreat funnel have different launch dates: partner QR codes have to
+  // work the day the signs go up, which may be well before a retreat date is
+  // announced. Both are independent of LIAP, so switching either off leaves
+  // the book and the assessment untouched.
+  | 'LIAP_PARTNERS'
+  | 'LIAP_RETREAT'
+  | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */
 export function isEnabled(flag: FeatureFlag): boolean {

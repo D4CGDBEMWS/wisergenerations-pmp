@@ -37,6 +37,21 @@ export const SIGNUP_RETENTION_DAYS = 180
  *                          attached to the learner
  *   not a payer          — a guardian or employer who bought a seat for
  *                          someone else has no order of their own either
+ *   no open enquiry      — an unresolved retreat, group or sponsor lead is a
+ *                          live sales conversation, not an abandoned signup
+ *   no interest record   — somebody waiting to hear when an offer opens
+ *
+ * The last two were added in Phase II-A, and the first of them fixes a real
+ * defect rather than anticipating one. A $1,499.99 retreat is a considered
+ * purchase that is routinely nurtured for longer than six months; without
+ * that clause this purge would delete the customer record of a prospect
+ * mid-conversation, leaving an orphaned lead row that looks like data but no
+ * longer identifies anybody.
+ *
+ * Note that only OPEN enquiries protect a record. A lead that was declined or
+ * withdrawn is closed business, and holding somebody's account of their
+ * circumstances indefinitely because they once asked about a retreat would be
+ * the opposite of a retention policy.
  *
  * The last two matter more than they look. `program_enrollments` separates
  * payer from participant precisely so a seat can be funded by someone who is
@@ -54,6 +69,9 @@ const IN_SCOPE = `
    AND NOT EXISTS (SELECT 1 FROM entitlements e        WHERE e.customer_id       = c.id)
    AND NOT EXISTS (SELECT 1 FROM program_enrollments p WHERE p.customer_id       = c.id)
    AND NOT EXISTS (SELECT 1 FROM program_enrollments p WHERE p.payer_customer_id = c.id)
+   AND NOT EXISTS (SELECT 1 FROM retreat_leads r        WHERE r.customer_id       = c.id
+                                                          AND r.status NOT IN ('declined', 'withdrawn'))
+   AND NOT EXISTS (SELECT 1 FROM liap_interest i        WHERE i.customer_id       = c.id)
 `
 
 export interface PurgeCandidate {
