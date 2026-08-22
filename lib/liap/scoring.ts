@@ -115,11 +115,14 @@ export function totalScore(scores: readonly DimensionScore[]): number {
 }
 
 /**
- * §17. S.T.E.A.D.Y. routing.
+ * §17. Change-navigation routing — whether the report leads with WISER
+ * Pivots™.
  *
  * Triggered by the situation, never by the score. Someone who answered well
  * across the board can still have lost a parent on Tuesday, and telling them
  * to seize the moment would be the wrong reading of a good total.
+ *
+ * The name is internal and predates the rename; see STEADY_STEPS below.
  */
 export function needsSteady(intake: Intake): boolean {
   return intake.changeType === 'unexpected' || (intake.urgency ?? 0) >= 4
@@ -128,56 +131,133 @@ export function needsSteady(intake: Intake): boolean {
 /**
  * The change-navigation steps shown on the readiness report.
  *
- * ── AWAITING WISER PIVOTS™ CONTENT ─────────────────────────────────────────
+ * WISER Pivots™ — approved by the owner on 22 August 2026 as the customer-
+ * facing replacement for S.T.E.A.D.Y., which is retired. Every string below is
+ * her approved wording; nothing here was written by the system, and nothing
+ * here may be rewritten by it.
  *
- * Owner ruling, 22 August 2026: S.T.E.A.D.Y. is retired from customer-facing
- * LIAP and Wiser Pivots™ is the approved replacement concept — but the six
- * replacement cards are being written separately, and the instruction was
- * explicit that they must not be invented here.
+ * ── WHY THE IDENTIFIER STILL SAYS STEADY ───────────────────────────────────
  *
- * So the copy below is unchanged and still renders. That is deliberate: the
- * alternative is a report with a hole in it for anyone navigating an
- * unexpected change, which is precisely the reader who most needs something
- * on the page.
+ * `STEADY_STEPS`, `needsSteady()` and the `steady_routed` column are internal
+ * and seen by nobody. The owner’s instruction was to preserve stable
+ * identifiers unless changing them is technically necessary, and renaming a
+ * symbol to follow a marketing decision is exactly the blind replacement the
+ * handoff warns against — it would touch the persona suite, the assessment
+ * service and a shipped migration to change nothing a customer can see.
  *
- * WHAT WAS PREPARED: the render site now reads its heading and introduction
- * from `PIVOTS_INTRO` rather than having them inline, and every card is typed
- * as a `PivotStep`. When the approved content arrives, replacing it is one
- * edit to this array and one to that constant — no component changes, no
- * layout work, and nothing else in the engine moves.
+ * ── WHAT THE CYCLE IS, AND WHAT IT IS NOT ──────────────────────────────────
  *
- * The identifier stays `STEADY_STEPS`. It is referenced by the persona suite
- * and seen by nobody, and renaming an internal symbol to follow a marketing
- * decision is the blind replacement the handoff warns against.
+ * It is Agile-inspired but written for everyday life. It is NOT PMI or PMP
+ * instruction and must never be presented as such — a test asserts that no
+ * certification vocabulary appears in any of this copy.
+ *
+ * ── PIVOT IS NOT THE FIFTH CARD ────────────────────────────────────────────
+ *
+ * WISER is the adaptive thinking cycle; PIVOT is the personal and intentional
+ * action, and it carries `focal` so the render site can give it the weight the
+ * owner asked for rather than laying six equal tiles side by side. The type
+ * permits exactly one focal step and a test proves there is exactly one.
  */
 export interface PivotStep {
-  /** Currently the S.T.E.A.D.Y. initial. Wiser Pivots™ may use something else. */
+  /**
+   * Position in the acronym. Five are letters; the turn is the word PIVOT,
+   * because it is not one more letter in a list.
+   */
   readonly letter: string
+  /** The step word: WAIT, INSPECT, SELECT, EMBRACE, PIVOT, REVIEW. */
   readonly title: string
-  readonly body: string
+  /** What the word stands for, where it stands for more than itself. */
+  readonly expansion?: string
+  /** The imperative beneath the word. */
+  readonly lead: string
+  /** One entry per paragraph. The turn needs four; the others need one. */
+  readonly body: readonly string[]
+  /** The focal point of the section. Exactly one step carries it. */
+  readonly focal?: true
 }
 
 /**
- * Heading and introduction for that section.
+ * Heading, descriptor and signature concept for the section.
  *
- * Lifted out of the page so the retired acronym appears in exactly one place
- * a writer has to touch.
+ * All three are approved wording. There is deliberately no system-written
+ * bridging sentence: the previous S.T.E.A.D.Y. introduction was generated
+ * copy, and replacing generated copy with more generated copy is not what
+ * retiring it meant. If the owner wants a line tying the cycle to what the
+ * reader described, it is one approved sentence away.
  */
 export const PIVOTS_INTRO = {
-  heading: 'Start with S.T.E.A.D.Y.',
-  body:
-    'What you described is the kind of change that rewards steadying before planning. Work ' +
-    'these in order — it is how you move from reacting to choosing.',
+  heading: 'WISER Pivots™',
+  descriptor: 'An adaptive cycle for navigating change.',
+  signature: 'The bend is not the end. Be ready to make the turn.',
 } as const
 
 export const STEADY_STEPS: readonly PivotStep[] = [
-  { letter: 'S', title: 'Stabilize what is urgent', body: 'Deal first with anything that gets worse if left. Not everything — the things with a clock on them.' },
-  { letter: 'T', title: 'Take inventory', body: 'Write down what you actually have: money, people, time, options, obligations. Most situations look different once they are on paper.' },
-  { letter: 'E', title: 'Evaluate the impact', body: 'Separate what has genuinely changed from what you fear might change. They are rarely the same list.' },
-  { letter: 'A', title: 'Assess risks and resources', body: 'Name what would hurt most if it went wrong, and what you already have that would help.' },
-  { letter: 'D', title: 'Determine the next best steps', body: 'Choose the smallest number of actions that move you forward. Three is usually enough.' },
-  { letter: 'Y', title: 'Yield, review and adjust', body: 'Set a date to look again. A plan made in the first week of a change is a draft, not a commitment.' },
+  {
+    letter: 'W',
+    title: 'WAIT',
+    lead: 'Resist the reaction.',
+    body: [
+      'Something changed. Give yourself enough space to respond intentionally rather than simply react.',
+    ],
+  },
+  {
+    letter: 'I',
+    title: 'INSPECT',
+    lead: 'See what is true now.',
+    body: [
+      'Look at the current reality. What changed? What remains? What is working? What isn’t?',
+    ],
+  },
+  {
+    letter: 'S',
+    title: 'SELECT',
+    lead: 'Choose what matters now.',
+    body: [
+      'Priorities can change when circumstances change. Decide what requires your attention now—and what can wait.',
+    ],
+  },
+  {
+    letter: 'E',
+    title: 'EMBRACE',
+    lead: 'Accept the need to adapt.',
+    body: [
+      'You don’t have to like the change to acknowledge it. Embrace the reality of where you are so you can determine how to move forward.',
+    ],
+  },
+  {
+    letter: 'PIVOT',
+    title: 'PIVOT',
+    expansion: 'Personal + Intentional Action',
+    lead: 'Make the turn.',
+    body: [
+      'You have waited. You have inspected. You have selected. You have embraced the need for change.',
+      'Now decide what to do with what you know.',
+      'A pivot may mean changing the route—not the destination. It may mean changing the timeline, reordering priorities, moving resources, reducing scope, trying another approach, or recognizing that the destination itself needs to change.',
+      'A Wiser Pivot™ is an intentional action you choose in response to what has changed.',
+    ],
+    focal: true,
+  },
+  {
+    letter: 'R',
+    title: 'REVIEW',
+    lead: 'Learn from your pivot.',
+    body: [
+      'What happened after you made the turn? Did it move you closer to your destination? What worked? What didn’t? What did you learn? What needs another adjustment?',
+      'When circumstances change again, return to WAIT.',
+    ],
+  },
 ]
+
+/**
+ * The cycle, in order, for the diagram at the top of the section.
+ *
+ * Derived rather than typed a second time, so the picture and the cards can
+ * never disagree about what comes after what.
+ */
+export const PIVOTS_CYCLE: readonly string[] = STEADY_STEPS.map((s) => s.title)
+
+/** The one step that is an action rather than a way of thinking. */
+export const PIVOT_STEP: PivotStep = STEADY_STEPS.find((s) => s.focal)!
 
 // ---------------------------------------------------------------------------
 // §15's critical rule, made explicit.

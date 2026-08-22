@@ -154,7 +154,7 @@ describe('the complete journey', () => {
     expect(report.scores).toHaveLength(8)
     for (const s of report.scores) expect(s.score).toBe(20)
 
-    // S.T.E.A.D.Y. routed, because the change was unexpected at urgency 5.
+    // WISER Pivots™ routed, because the change was unexpected at urgency 5.
     expect(report.steady).toBe(true)
 
     // Exactly three actions, and a three-phase plan.

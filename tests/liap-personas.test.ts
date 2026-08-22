@@ -85,7 +85,7 @@ describe('persona 1 — expected retirement, strong money, weak purpose', () => 
   const intake: Intake = { changeType: 'expected', area: 'retirement', urgency: 2 }
   const report = buildScoreReport(answers, intake)
 
-  it('does not route to S.T.E.A.D.Y. for a chosen, unhurried change', () => {
+  it('does not route to WISER Pivots™ for a chosen, unhurried change', () => {
     expect(report.steady).toBe(false)
   })
 
@@ -105,7 +105,7 @@ describe('persona 2 — unexpected job loss, weak money and risk, urgency 5', ()
   const report = buildScoreReport(answers, intake)
   const full = buildFullReport(answers, intake)
 
-  it('routes to S.T.E.A.D.Y.', () => {
+  it('routes to WISER Pivots™', () => {
     expect(report.steady).toBe(true)
   })
 
@@ -120,7 +120,8 @@ describe('persona 2 — unexpected job loss, weak money and risk, urgency 5', ()
   })
 
   it('opens the plan with stabilisation, not expansion', () => {
-    expect(full.plan.phases[0]!.items[0]).toContain('S.T.E.A.D.Y.')
+    expect(full.plan.phases[0]!.items[0]).toContain('WISER Pivots™')
+    expect(full.plan.phases[0]!.items[0]).not.toContain('S.T.E.A.D.Y.')
   })
 })
 
@@ -153,7 +154,7 @@ describe('persona 4 — family transition, weak relationships, strong career', (
     expect(report.ranked[0]!.key).toBe('relationships')
   })
 
-  it('routes to S.T.E.A.D.Y. on change type alone, without high urgency', () => {
+  it('routes to WISER Pivots™ on change type alone, without high urgency', () => {
     expect(report.steady).toBe(true)
   })
 })
@@ -168,7 +169,7 @@ describe('persona 5 — relocation, moderate throughout', () => {
     expect(full.position).toBe('plan')
   })
 
-  it('does not route to S.T.E.A.D.Y. below the urgency threshold', () => {
+  it('does not route to WISER Pivots™ below the urgency threshold', () => {
     expect(full.steady).toBe(false)
   })
 })
@@ -298,7 +299,7 @@ describe('persona 12 — arrives via an external retailer preorder', () => {
   })
 })
 
-describe('S.T.E.A.D.Y. routing', () => {
+describe('change-navigation routing — needsSteady() keeps its internal name', () => {
   it('triggers on unexpected change at any urgency', () => {
     expect(needsSteady({ changeType: 'unexpected', urgency: 1 })).toBe(true)
   })

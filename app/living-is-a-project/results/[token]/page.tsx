@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
-import { STEADY_STEPS, PIVOTS_INTRO } from '@/lib/liap/scoring'
+import { STEADY_STEPS, PIVOTS_INTRO, PIVOTS_CYCLE, PIVOT_STEP } from '@/lib/liap/scoring'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
 import { InterestButton } from '@/components/liap/InterestButton'
@@ -129,30 +129,93 @@ export default async function ResultsPage({
         )}
 
         {/* Change navigation, before any expansion advice. §17.
-            Heading, introduction and cards all come from lib/liap/scoring so
-            the approved Wiser Pivots™ content can replace them without this
-            component changing. See PIVOTS_INTRO. */}
+            Every string comes from lib/liap/scoring — heading, descriptor,
+            signature concept and all six steps — so the copy has exactly one
+            home and this component decides only how it looks.
+
+            ── PIVOT IS THE FOCAL POINT, NOT THE FIFTH TILE ─────────────────
+            WISER is the adaptive thinking cycle; PIVOT is the personal and
+            intentional action. So the four thinking steps are compact cards
+            and the turn is a full-width navy panel with the gold rule — the
+            one thing on the section you cannot scroll past. It stays inside
+            the same ordered list, because visually it is the emphasis and
+            semantically it is still step five of six. */}
         {report.steady && (
-          <section aria-labelledby="steady-heading">
-            <h2 id="steady-heading" className="text-xl font-bold text-navy">
+          <section aria-labelledby="pivots-heading">
+            <h2 id="pivots-heading" className="text-xl font-bold text-navy">
               {PIVOTS_INTRO.heading}
             </h2>
-            <p className="mt-2 leading-relaxed text-gray-600">{PIVOTS_INTRO.body}</p>
+            <p className="mt-1 text-gray-600">{PIVOTS_INTRO.descriptor}</p>
+            <p className="mt-3 text-lg font-semibold italic text-navy">{PIVOTS_INTRO.signature}</p>
+
+            {/* The cycle. Decorative — the ordered list below carries the
+                same sequence for anyone not looking at it — and it scrolls
+                sideways on a phone rather than shrinking to six unreadable
+                words. */}
+            <div aria-hidden="true" className="-mx-1 mt-6 overflow-x-auto pb-1">
+              <ol className="flex w-max items-center gap-2 px-1 text-[11px] font-bold uppercase tracking-wider">
+                {PIVOTS_CYCLE.map((label, i) => (
+                  <li key={label} className="flex items-center gap-2">
+                    <span
+                      className={
+                        label === PIVOT_STEP.title
+                          ? 'rounded-full bg-navy px-3 py-1.5 text-gold'
+                          : 'rounded-full bg-gray-100 px-3 py-1.5 text-gray-700'
+                      }
+                    >
+                      {label}
+                    </span>
+                    <span className="text-gray-400">{i === PIVOTS_CYCLE.length - 1 ? '\u21bb' : '\u2192'}</span>
+                  </li>
+                ))}
+                <li className="rounded-full bg-gray-100 px-3 py-1.5 text-gray-700">{PIVOTS_CYCLE[0]}</li>
+              </ol>
+            </div>
+
             <ol className="mt-5 space-y-3">
-              {STEADY_STEPS.map((s) => (
-                <li key={s.letter} className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4">
-                  <span
-                    aria-hidden="true"
-                    className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-navy font-bold text-gold"
+              {STEADY_STEPS.map((step) =>
+                step.focal ? (
+                  <li
+                    key={step.letter}
+                    className="rounded-xl border-l-4 border-gold bg-navy p-6 text-white sm:p-8"
                   >
-                    {s.letter}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-navy">{s.title}</p>
-                    <p className="mt-0.5 text-sm leading-relaxed text-gray-600">{s.body}</p>
-                  </div>
-                </li>
-              ))}
+                    <p className="text-2xl font-black tracking-wide text-gold sm:text-3xl">{step.title}</p>
+                    {step.expansion && (
+                      <p className="mt-1 text-sm font-semibold uppercase tracking-[0.14em] text-white/70">
+                        {step.expansion}
+                      </p>
+                    )}
+                    <p className="mt-3 text-lg font-bold">{step.lead}</p>
+                    {step.body.map((paragraph) => (
+                      <p key={paragraph} className="mt-3 leading-relaxed text-white/90">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </li>
+                ) : (
+                  <li
+                    key={step.letter}
+                    className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-navy font-bold text-gold"
+                    >
+                      {step.letter}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-navy">
+                        {step.title} <span className="font-normal text-gray-600">— {step.lead}</span>
+                      </p>
+                      {step.body.map((paragraph) => (
+                        <p key={paragraph} className="mt-0.5 text-sm leading-relaxed text-gray-600">
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  </li>
+                )
+              )}
             </ol>
           </section>
         )}

@@ -143,8 +143,8 @@ function quote(text: string | null | undefined, limit = 180): string | null {
  * RESOLVE comes from the next one down, unless the customer named a decision
  * themselves — in which case theirs wins, because they know their situation
  * and being told to resolve something else would read as not having listened.
- * MOVE comes from the position, tempered by S.T.E.A.D.Y.: someone in an
- * unexpected, urgent change is not told to expand.
+ * MOVE comes from the position, tempered by change-navigation routing: someone
+ * in an unexpected, urgent change is not told to expand.
  */
 export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
   const ranked = report.ranked
@@ -224,7 +224,7 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
     'Gather the information you are currently missing, rather than deciding without it.',
   ]
   if (report.steady) {
-    first.unshift('Work the S.T.E.A.D.Y. sequence before committing to anything larger. Stabilise first; the plan will hold better for it.')
+    first.unshift('Work the WISER Pivots™ cycle before committing to anything larger — wait, inspect, select, embrace, then make the turn.')
   }
   if (decision) {
     first.push(`Set a decision date for: “${decision}”`)
