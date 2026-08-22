@@ -49,11 +49,11 @@ const STUDY_SURFACES = [
 describe('shell resolution', () => {
   it('puts every LIAP path in the LIAP shell', () => {
     for (const path of [
-      '/life-is-a-project',
-      '/life-is-a-project/access',
-      '/life-is-a-project/assessment',
-      '/life-is-a-project/book',
-      '/life-is-a-project/results/abc123',
+      '/living-is-a-project',
+      '/living-is-a-project/access',
+      '/living-is-a-project/assessment',
+      '/living-is-a-project/book',
+      '/living-is-a-project/results/abc123',
     ]) {
       expect(shellForPath(path).key, path).toBe('liap')
     }
@@ -66,9 +66,9 @@ describe('shell resolution', () => {
   })
 
   it('does not match a path that merely starts with the same characters', () => {
-    // /life-is-a-projector is not a LIAP page.
-    expect(shellForPath('/life-is-a-projector').key).toBe('default')
-    expect(shellForPath('/life-is-a-project-something').key).toBe('default')
+    // /living-is-a-projector is not a LIAP page.
+    expect(shellForPath('/living-is-a-projector').key).toBe('default')
+    expect(shellForPath('/living-is-a-project-something').key).toBe('default')
   })
 
   it('falls back to the general site for a missing path', () => {
@@ -113,7 +113,7 @@ describe('the LIAP shell, as the owner ruled it', () => {
   const liap = shell('liap')
 
   it('sends the logo to the LIAP hub, not the PMP homepage', () => {
-    expect(liap.homeHref).toBe('/life-is-a-project')
+    expect(liap.homeHref).toBe('/living-is-a-project')
     expect(liap.homeHref).not.toBe('/')
   })
 

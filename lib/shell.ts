@@ -161,8 +161,8 @@ const DEFAULT_SHELL: Shell = {
  */
 const LIAP_SHELL: Shell = {
   key: 'liap',
-  pathPrefix: '/life-is-a-project',
-  homeHref: '/life-is-a-project',
+  pathPrefix: '/living-is-a-project',
+  homeHref: '/living-is-a-project',
   nav: [{ label: 'Need help?', href: '/contact' }],
   mobileNav: [],
   footerColumns: [

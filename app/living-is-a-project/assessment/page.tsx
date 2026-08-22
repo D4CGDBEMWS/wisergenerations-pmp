@@ -33,7 +33,7 @@ export default async function AssessmentPage() {
     // The LIAP sign-in page, not the Study Access one. Shared authentication
     // infrastructure must not be visible to a reader as another product's
     // branding — owner ruling, 22 August 2026.
-    redirect('/life-is-a-project/access')
+    redirect('/living-is-a-project/access')
   }
 
   if (!access.entitled) {
@@ -48,13 +48,13 @@ export default async function AssessmentPage() {
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/life-is-a-project/book"
+            href="/living-is-a-project/book"
             className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-navy px-6 font-bold text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             Preorder the book
           </Link>
           <Link
-            href="/life-is-a-project/verify-preorder"
+            href="/living-is-a-project/verify-preorder"
             className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-gray-300 px-6 font-semibold text-navy transition-colors hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
           >
             I preordered elsewhere
