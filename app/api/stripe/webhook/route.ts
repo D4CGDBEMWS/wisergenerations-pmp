@@ -4,6 +4,7 @@ import { claimEvent, markEventProcessed, markEventFailed } from '@/lib/payments/
 import { queryOne } from '@/lib/db/client'
 import { upsertCustomer } from '@/lib/customers'
 import { grantEntitlement, revokeEntitlementsBySource, STUDY_ACCESS } from '@/lib/entitlements'
+import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
@@ -346,10 +347,29 @@ export async function POST(request: NextRequest) {
       if (event.type === 'checkout.session.completed') {
         const s2 = event.data.object as Stripe.Checkout.Session
         const email2 = s2.customer_email || s2.customer_details?.email || ''
-        const isStudyAccess =
-          Boolean(s2.subscription) ||
-          s2.metadata?.product === 'study-access' ||
-          s2.metadata?.product === 'pmp-practice-studio'
+        // ── B-2. Subscription is a billing mechanism, not product identity ──
+        //
+        // This used to read `Boolean(s2.subscription) || <two metadata
+        // checks>`, and the first clause swallowed the other two: every
+        // subscription checkout granted Study Access whatever it was for. It
+        // worked only because there has been exactly one subscription product.
+        // A LIAP payment plan, a Retreat instalment, coaching or a future Boot
+        // Camp arrangement would each have inherited a PMP entitlement, and it
+        // would have failed silently and in the direction of granting.
+        //
+        // lib/programs identifies the product from the marker the checkout
+        // route actually wrote — including `metadata.tier`, which is what the
+        // live subscription flow has always set and the reason the shortcut
+        // existed. Unidentifiable grants nothing.
+        const product = identifyCheckoutSession(s2)
+        const isStudyAccess = productGrants(product, STUDY_ACCESS)
+
+        if (email2 && !isStudyAccess && s2.payment_status === 'paid') {
+          console.log(
+            `[stripe/webhook] no Study Access grant for ${s2.id}: ` +
+              `${product ? `${product.program}/${product.marker}` : 'unrecognised product'}`
+          )
+        }
 
         if (email2 && isStudyAccess && s2.payment_status === 'paid') {
           const c2 = await upsertCustomer({

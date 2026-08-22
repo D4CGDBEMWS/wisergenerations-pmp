@@ -4,6 +4,7 @@ import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { upsertCustomer, findCustomerByEmail } from '@/lib/customers'
 import { grantEntitlement, hasEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
 import { issueLoginToken, consumeLoginToken } from '@/lib/auth/login-token'
+import { identifyCheckoutSession, identifySubscription, productGrants } from '@/lib/programs'
 import {
   createSession,
   SESSION_COOKIE,
@@ -169,29 +170,40 @@ async function backfillEntitlementFromStripe(email: string): Promise<boolean> {
   const customers = await stripe.customers.list({ email, limit: 10 })
 
   for (const customer of customers.data) {
+    // ── B-3. Same rule as the webhook, second location ──────────────────
+    //
+    // This used to grant Study Access for ANY active subscription on the
+    // address. Identification now comes from the subscription's own marker,
+    // falling back to the Study Access price id for subscriptions old enough
+    // to predate metadata — a narrower test than the one it replaces, because
+    // a price identifies one product rather than the whole category of things
+    // billed monthly.
     const subs = await stripe.subscriptions.list({
       customer: customer.id,
       status: 'active',
       limit: 5,
     })
-    if (subs.data.length > 0) {
+    const studySub = subs.data.find((sub) => productGrants(identifySubscription(sub), STUDY_ACCESS))
+    if (studySub) {
       const record = await upsertCustomer({ email, stripeCustomerId: customer.id })
       await grantEntitlement({
         customerId: record.id,
         entitlementKey: STUDY_ACCESS,
         sourceType: 'subscription',
-        sourceId: subs.data[0]!.id,
-        idempotencyKey: `backfill:sub:${subs.data[0]!.id}`,
+        sourceId: studySub.id,
+        idempotencyKey: `backfill:sub:${studySub.id}`,
       })
       return true
     }
 
-    // Grandfathered one-time purchasers, scoped to this customer only.
+    // Grandfathered one-time purchasers, scoped to this customer only. This
+    // branch always checked the product marker; it now asks the same module
+    // as everything else so there is one answer to "what is this?".
     const sessions = await stripe.checkout.sessions.list({ customer: customer.id, limit: 20 })
     const paid = sessions.data.find(
       (s) =>
         s.payment_status === 'paid' &&
-        (s.metadata?.product === 'study-access' || s.metadata?.product === 'pmp-practice-studio')
+        productGrants(identifyCheckoutSession(s), STUDY_ACCESS)
     )
     if (paid) {
       const record = await upsertCustomer({ email, stripeCustomerId: customer.id })

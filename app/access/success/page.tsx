@@ -4,6 +4,7 @@ import Stripe from 'stripe'
 import Link from 'next/link'
 import { upsertCustomer } from '@/lib/customers'
 import { grantEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
+import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import {
   createSession,
   SESSION_COOKIE,
@@ -33,6 +34,18 @@ export default async function AccessSuccessPage({
 
     const session = await stripe.checkout.sessions.retrieve(sessionId as string)
 
+    // ── B-1. Paid is not the same as "paid for THIS product" ──────────────
+    //
+    // This page used to grant Study Access to any paid checkout session whose
+    // id arrived in the query string. Every LIAP book buyer is handed a real
+    // session id on their own success page, so pasting it here bought a
+    // $49/month PMP product for the price of a book — and a future Boot Camp
+    // purchase would have done the same.
+    //
+    // The product is now identified before anything is granted, and an
+    // unrecognised, absent or foreign marker grants nothing.
+    const product = identifyCheckoutSession(session)
+
     if (session.payment_status !== 'paid') {
       redirect('/access')
     }
@@ -61,14 +74,24 @@ export default async function AccessSuccessPage({
         stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
       })
 
-      await grantEntitlement({
-        customerId: customer.id,
-        entitlementKey: STUDY_ACCESS,
-        sourceType: session.subscription ? 'subscription' : 'order',
-        sourceId:
-          (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
-        idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
-      })
+      // Fails closed. A session this system cannot name, or one belonging to
+      // another Wiser Generations program, reaches here and grants nothing —
+      // the page still confirms their purchase, because it was real.
+      if (productGrants(product, STUDY_ACCESS)) {
+        await grantEntitlement({
+          customerId: customer.id,
+          entitlementKey: STUDY_ACCESS,
+          sourceType: session.subscription ? 'subscription' : 'order',
+          sourceId:
+            (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
+          idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
+        })
+      } else {
+        console.warn(
+          `[/access/success] no Study Access grant: session ${session.id} identifies as ` +
+            `${product ? `${product.program}/${product.marker}` : 'an unrecognised product'}`
+        )
+      }
 
       const { token } = await createSession({ customerId: customer.id })
       const cookieStore = await cookies()
