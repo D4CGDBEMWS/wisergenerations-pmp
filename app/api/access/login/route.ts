@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { upsertCustomer, findCustomerByEmail } from '@/lib/customers'
 import { grantEntitlement, hasEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
-import { issueLoginToken, consumeLoginToken, normalizeRedirect } from '@/lib/auth/login-token'
+import { issueLoginToken, consumeLoginToken } from '@/lib/auth/login-token'
 import {
   createSession,
   SESSION_COOKIE,
@@ -235,7 +235,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (entitled) {
-      const { token } = await issueLoginToken({ email, redirectTo: body.from })
+      // Explicitly the Study Access product: this route grants a session only
+      // after checking STUDY_ACCESS above, so a link issued here can never be
+      // a LIAP sign-in. Naming it stops the default from being load-bearing.
+      const { token } = await issueLoginToken({ email, product: 'study', redirectTo: body.from })
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wisergenerations.com'
       // The email is NOT in the URL: the token alone identifies the request,
       // so there is no address to tamper with and no destination to smuggle.
@@ -285,9 +288,11 @@ export async function GET(req: NextRequest) {
     metadata: { result: 'ok' },
   })
 
-  const response = NextResponse.redirect(
-    new URL(normalizeRedirect(consumed.redirectTo), req.url)
-  )
+  // Already resolved, and resolved within the product the link was issued
+  // for. Re-normalising here would imply the stored value is untrusted; only
+  // lib/auth/login-token writes it, and it writes nothing but allow-listed
+  // paths.
+  const response = NextResponse.redirect(new URL(consumed.redirectTo, req.url))
   response.cookies.set(SESSION_COOKIE, sessionToken, sessionCookieOptions(SESSION_MAX_AGE_SECONDS))
   // Clear the compromised cookie from every browser that still carries one.
   response.cookies.set(LEGACY_COOKIE, '', { path: '/', maxAge: 0 })

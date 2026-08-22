@@ -3,7 +3,16 @@ import { setDbForTesting, type Db } from '@/lib/db/client'
 import { createTestDb, seedEntitledCustomer, seedCustomer } from './helpers/db'
 import { createSession, validateSession, revokeSession, SESSION_COOKIE, LEGACY_COOKIE } from '@/lib/auth/session'
 import { hasEntitlement, grantEntitlement, revokeEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
-import { issueLoginToken, consumeLoginToken, normalizeRedirect } from '@/lib/auth/login-token'
+import {
+  issueLoginToken,
+  consumeLoginToken,
+  resolveRedirect,
+  resolveStoredRedirect,
+  productForDestination,
+  allowedDestinations,
+  NEUTRAL_DESTINATION,
+  LOGIN_PRODUCTS,
+} from '@/lib/auth/login-token'
 import { hashToken } from '@/lib/auth/crypto'
 
 // ---------------------------------------------------------------------------
@@ -238,10 +247,10 @@ describe('§27 — additional security requirements', () => {
     // The destination is stored server-side against the token and never
     // travels in the callback URL, so there is no attacker-controlled value
     // to smuggle. An unknown destination falls back rather than being obeyed.
-    expect(normalizeRedirect('https://evil.example/steal')).toBe('/exam-simulator')
-    expect(normalizeRedirect('//evil.example')).toBe('/exam-simulator')
-    expect(normalizeRedirect('/admin')).toBe('/exam-simulator')
-    expect(normalizeRedirect('/flashcards')).toBe('/flashcards')
+    expect(resolveRedirect('https://evil.example/steal')).toBe('/exam-simulator')
+    expect(resolveRedirect('//evil.example')).toBe('/exam-simulator')
+    expect(resolveRedirect('/admin')).toBe('/exam-simulator')
+    expect(resolveRedirect('/flashcards')).toBe('/flashcards')
 
     const { token } = await issueLoginToken({
       email: 'redirect@example.com',
@@ -273,5 +282,111 @@ describe('§27 — additional security requirements', () => {
     const a = await upsertCustomer({ email: 'Case@Example.com' })
     const b = await upsertCustomer({ email: 'case@example.com' })
     expect(a.id).toBe(b.id)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Cross-product sign-in isolation.
+//
+// Owner ruling, 22 August 2026: a LIAP sign-in must resolve only to LIAP
+// destinations, an unknown destination must fail safely rather than land the
+// reader in another product, and PMP/CAPM behaviour must not change.
+//
+// The bug this replaced was not exotic. One flat allow-list of two paths, and
+// every unrecognised value went to /exam-simulator — so a reader signing in
+// to take the Life Project-Ready™ Assessment arrived at a PMP exam simulator
+// they may never have bought, with no error to explain it.
+//
+// These tests are written against the property rather than the example: not
+// "this one value no longer leaks" but "no value in either product's list can
+// resolve into the other's".
+// ---------------------------------------------------------------------------
+
+describe('magic-link destinations are scoped to their product', () => {
+  it('resolves a LIAP sign-in only to LIAP destinations', () => {
+    expect(resolveRedirect('/living-is-a-project/assessment', 'liap')).toBe(
+      '/living-is-a-project/assessment'
+    )
+    expect(resolveRedirect(null, 'liap')).toBe('/living-is-a-project')
+  })
+
+  it('preserves Study Access behaviour exactly', () => {
+    expect(resolveRedirect('/flashcards', 'study')).toBe('/flashcards')
+    expect(resolveRedirect('/exam-simulator', 'study')).toBe('/exam-simulator')
+    expect(resolveRedirect(null, 'study')).toBe('/exam-simulator')
+    expect(resolveRedirect(undefined)).toBe('/exam-simulator')
+    expect(resolveRedirect('/admin', 'study')).toBe('/exam-simulator')
+  })
+
+  it('cannot resolve any product\u2019s destination under another product', () => {
+    // The property, checked exhaustively over both lists in both directions.
+    for (const product of LOGIN_PRODUCTS) {
+      const foreign = LOGIN_PRODUCTS.filter((p) => p !== product)
+      for (const other of foreign) {
+        for (const path of allowedDestinations(other)) {
+          const resolved = resolveRedirect(path, product)
+          expect(allowedDestinations(product)).toContain(resolved)
+          expect(resolved).not.toBe(path)
+        }
+      }
+    }
+  })
+
+  it('sends a LIAP sign-in asking for a PMP page to a LIAP page', () => {
+    // The specific regression, stated plainly.
+    expect(resolveRedirect('/exam-simulator', 'liap')).toBe('/living-is-a-project')
+    expect(resolveRedirect('/flashcards', 'liap')).toBe('/living-is-a-project')
+    expect(resolveRedirect('/living-is-a-project/assessment', 'study')).toBe('/exam-simulator')
+  })
+
+  it('keeps the allow-lists disjoint, which is what makes the product derivable', () => {
+    const seen = new Set<string>()
+    for (const product of LOGIN_PRODUCTS) {
+      for (const path of allowedDestinations(product)) {
+        expect(seen.has(path), `${path} appears in more than one product`).toBe(false)
+        seen.add(path)
+        expect(productForDestination(path)).toBe(product)
+      }
+    }
+  })
+
+  it('fails safe on a destination belonging to no product', () => {
+    // Only this module writes redirect_to, so this is a row that predates the
+    // allow-list or was edited by hand. Guessing a product is what the old
+    // code did; the neutral answer belongs to nobody and always exists.
+    expect(productForDestination('/some-page-that-was-retired')).toBeNull()
+    expect(resolveStoredRedirect('/some-page-that-was-retired')).toBe(NEUTRAL_DESTINATION)
+    expect(resolveStoredRedirect(null)).toBe(NEUTRAL_DESTINATION)
+    expect(resolveStoredRedirect('https://evil.example')).toBe(NEUTRAL_DESTINATION)
+  })
+
+  it('never stores an unresolved destination, whatever was asked for', async () => {
+    const cases: Array<[string | null, 'study' | 'liap', string]> = [
+      ['https://evil.example/steal', 'study', '/exam-simulator'],
+      ['/exam-simulator', 'liap', '/living-is-a-project'],
+      ['/living-is-a-project/book', 'liap', '/living-is-a-project/book'],
+      [null, 'liap', '/living-is-a-project'],
+    ]
+
+    for (const [requested, product, expected] of cases) {
+      const { token } = await issueLoginToken({
+        email: `scoped-${product}-${String(requested)}@example.com`,
+        product,
+        redirectTo: requested,
+      })
+      const consumed = await consumeLoginToken(token)
+      expect(consumed!.redirectTo).toBe(expected)
+    }
+  })
+
+  it('round-trips a LIAP link without touching a PMP page', async () => {
+    const { token } = await issueLoginToken({
+      email: 'reader@example.com',
+      product: 'liap',
+      redirectTo: '/living-is-a-project/assessment',
+    })
+    const consumed = await consumeLoginToken(token)
+    expect(consumed!.redirectTo).toBe('/living-is-a-project/assessment')
+    expect(consumed!.redirectTo.startsWith('/living-is-a-project')).toBe(true)
   })
 })
