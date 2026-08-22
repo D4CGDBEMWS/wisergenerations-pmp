@@ -21,6 +21,8 @@ import {
   contentIsComplete,
   activeFaq,
   unansweredFaq,
+  heldBrandStrings,
+  heldBrandLeaks,
 } from '@/lib/liap/journey/content'
 import { LIAP_EVENTS, trackLiap } from '@/lib/liap/analytics'
 import { PARTNER_DESTINATIONS } from '@/lib/liap/partners'
@@ -368,5 +370,61 @@ describe('campaign landing points', () => {
       const anchor = path.split('#')[1]!
       expect(SECTION_IDS).toContain(anchor)
     }
+  })
+})
+
+// ---------------------------------------------------------------------------
+// J-2, ruled 22 August 2026.
+//
+//   BE READY.                            RETIRED as a standalone tagline.
+//   LIFE IS A JOURNEY. ENJOY THE RIDE!™  HELD, not rendered.
+//   The three pillars                    HELD, not rendered as canonical
+//                                        LIAP pillars.
+//
+// "Held, not rendered" is only worth what the mechanism behind it is worth,
+// so it is a test rather than a note. The strings stay in BRAND.held — the
+// owner asked for them preserved — and nothing may put them on a surface.
+// ---------------------------------------------------------------------------
+
+describe('J-2 — held brand language', () => {
+  it('keeps all four strings, retired and held alike', () => {
+    expect(heldBrandStrings()).toEqual([
+      'BE READY.',
+      'LIFE IS A JOURNEY. ENJOY THE RIDE!™',
+      'FIND HIDDEN RESOURCES',
+      'NAVIGATE RISKS',
+      'BUILD SUSTAINABLE SUCCESS',
+    ])
+  })
+
+  it('records that the imperative was retired rather than deleting it', () => {
+    expect(BRAND.held.imperative.text).toBe('BE READY.')
+    expect(BRAND.held.imperativeRetired).toContain('Retired as a standalone tagline')
+  })
+
+  it('renders none of it — not in a section, a CTA, an image alt or the FAQ', () => {
+    expect(heldBrandLeaks()).toEqual([])
+  })
+
+  it('would catch a leak, including one hidden in a pending slot', () => {
+    const leaky = [
+      { ...JOURNEY[0]!, headline: approved('LIFE IS A JOURNEY. ENJOY THE RIDE!™') },
+      ...JOURNEY.slice(1),
+    ]
+    expect(heldBrandLeaks(leaky, FAQ)).toContain('LIFE IS A JOURNEY. ENJOY THE RIDE!™')
+
+    const plannedLeak = [{ ...JOURNEY[0]!, supporting: pending('Open with NAVIGATE RISKS.') }, ...JOURNEY.slice(1)]
+    expect(heldBrandLeaks(plannedLeak, FAQ)).toContain('NAVIGATE RISKS')
+  })
+
+  it('keeps the signature concept live, because that is the one that survived', () => {
+    expect(copyText(BRAND.signature)).toBe('The bend is not the end. Be ready to make the turn.')
+  })
+
+  it('does not treat the product name as the retired tagline', () => {
+    // "...Are You Ready?™" is part of the approved name. The retired string is
+    // the standalone imperative, and they are separate values for that reason.
+    expect(copyText(BRAND.name)).toContain('Are You Ready?™')
+    expect(heldBrandLeaks()).not.toContain('BE READY.')
   })
 })

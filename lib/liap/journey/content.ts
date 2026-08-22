@@ -139,16 +139,39 @@ export const BRAND = {
   author: approved('Crystal Glover Stewart, PMP®'),
 
   /**
-   * Held pending an owner ruling, and rendered nowhere.
+   * The canonical signature concept, approved 22 August 2026.
    *
-   * These four were approved reference under the previous handoff and do not
-   * appear anywhere in the fourteen sections of the current one. Whether they
-   * are retired or reserved for the book cover and collateral is finding J-2
-   * in the Change Impact Report, and it is not mine to decide — so they stay
-   * here, unused, rather than being deleted on inference.
+   * It is the one line that survived the J-2 ruling as live language. The
+   * cycle's own copy in lib/liap/scoring.ts holds the same sentence for the
+   * readiness report; this is its home for the journey page.
+   */
+  signature: approved('The bend is not the end. Be ready to make the turn.'),
+
+  /**
+   * J-2, ruled 22 August 2026. Rendered nowhere, kept on purpose.
+   *
+   *   BE READY.                              RETIRED as a standalone tagline.
+   *   LIFE IS A JOURNEY. ENJOY THE RIDE!™    HELD, not rendered.
+   *   FIND HIDDEN RESOURCES /
+   *   NAVIGATE RISKS /
+   *   BUILD SUSTAINABLE SUCCESS              HELD, not rendered as canonical
+   *                                          LIAP pillars.
+   *
+   * The owner asked for the held material to be preserved here, so retiring
+   * is recorded rather than performed: `imperative` keeps its approved string
+   * and carries `retired`, because a line that was once the tagline of the
+   * brand should leave a trace of having been one. Nothing in this object has
+   * a render path — `renderedBrandStrings()` below proves it, and the test
+   * suite fails if any of it reaches a section, a CTA or the FAQ.
+   *
+   * "BE READY." remains a fragment of the approved product name
+   * ("...Are You Ready?™"). That is the name, not the tagline, and the two are
+   * separate strings for exactly that reason.
    */
   held: {
     imperative: approved('BE READY.'),
+    /** Set on anything ruled retired rather than merely held. */
+    imperativeRetired: 'Retired as a standalone tagline, J-2, 22 August 2026.',
     ride: approved('LIFE IS A JOURNEY. ENJOY THE RIDE!™'),
     pillars: [
       approved('FIND HIDDEN RESOURCES'),
@@ -421,4 +444,64 @@ export function contentIsComplete(sections: readonly SectionContent[] = JOURNEY)
     sections.length === SECTION_IDS.length &&
     sections.every((section, index) => section.id === SECTION_IDS[index])
   )
+}
+
+// ---------------------------------------------------------------------------
+// J-2, checked against the content itself.
+//
+// "HELD, not rendered" is a claim, and a claim about copy is worth what the
+// mechanism behind it is worth. So rather than trusting that nobody pastes
+// LIFE IS A JOURNEY. ENJOY THE RIDE!™ into a hero six months from now, the
+// held strings are compared against every string this file can put in front
+// of a visitor, and the suite fails if one of them appears.
+// ---------------------------------------------------------------------------
+
+/**
+ * Every string the journey can render — approved or pending, section or FAQ.
+ *
+ * Pending copy is included deliberately. It never reaches production, but a
+ * held tagline sitting in a pending slot is still somebody having decided to
+ * use it, and that decision should surface now rather than on the day the
+ * copy is approved.
+ */
+export function renderedBrandStrings(
+  sections: readonly SectionContent[] = JOURNEY,
+  faq: readonly FaqEntry[] = FAQ
+): string[] {
+  const out: string[] = []
+  const take = (copy: Copy | undefined) => {
+    if (!copy) return
+    // A pending slot's note counts. It is not shown to a visitor, but a held
+    // tagline written into one is somebody planning to use it.
+    out.push(copy.state === 'approved' ? copy.text : copy.note)
+  }
+
+  for (const section of sections) {
+    take(section.eyebrow)
+    take(section.headline)
+    take(section.supporting)
+    take(section.price)
+    take(section.cta?.label)
+    take(section.media?.alt)
+    if (section.productName) out.push(section.productName)
+  }
+  for (const entry of faq) {
+    take(entry.question)
+    take(entry.answer)
+  }
+  return out
+}
+
+/** The J-2 material, flattened. Retired and held alike — neither renders. */
+export function heldBrandStrings(): string[] {
+  return [BRAND.held.imperative.text, BRAND.held.ride.text, ...BRAND.held.pillars.map((p) => p.text)]
+}
+
+/** Any held or retired J-2 string that has found its way onto a surface. */
+export function heldBrandLeaks(
+  sections: readonly SectionContent[] = JOURNEY,
+  faq: readonly FaqEntry[] = FAQ
+): string[] {
+  const rendered = renderedBrandStrings(sections, faq)
+  return heldBrandStrings().filter((held) => rendered.some((text) => text.includes(held)))
 }

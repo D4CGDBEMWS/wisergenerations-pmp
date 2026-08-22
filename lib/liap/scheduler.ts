@@ -56,6 +56,17 @@ export type TaskType = (typeof TASK_TYPES)[number]
 
 const TASK_SET = new Set<string>(TASK_TYPES)
 
+/** Ordinary work. Lower numbers run first. */
+export const DEFAULT_PRIORITY = 100
+
+/**
+ * Retention work, which outranks everything.
+ *
+ * A published privacy commitment is the one thing on this queue that has a
+ * date attached to it in writing.
+ */
+export const RETENTION_PRIORITY = 0
+
 /** Identifiers only. Never content, never anything a person wrote. */
 export type TaskPayload = Record<string, string | number>
 
@@ -64,6 +75,7 @@ export interface ScheduledTask {
   task_type: TaskType
   payload: TaskPayload
   attempts: number
+  priority: number
 }
 
 /**
@@ -110,6 +122,16 @@ export interface EnqueueInput {
    * week-3 reflection per reader. Re-enqueueing the same key does nothing.
    */
   idempotencyKey: string
+  /**
+   * Lower runs first; the default is 100.
+   *
+   * Only one thing needs this today, and it needs it badly: a privacy purge
+   * must not queue behind reminder email. The dispatcher claims a bounded
+   * batch, so on a day with five hundred due reader sends a retention
+   * deletion at the default priority could be pushed past the day it was
+   * promised for.
+   */
+  priority?: number
 }
 
 /**
@@ -125,11 +147,17 @@ export async function enqueue(input: EnqueueInput): Promise<boolean> {
   }
 
   const rows = await getDb().query<{ id: string }>(
-    `INSERT INTO scheduled_tasks (task_type, run_after, payload, idempotency_key)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO scheduled_tasks (task_type, run_after, payload, idempotency_key, priority)
+     VALUES ($1, $2, $3, $4, $5)
      ON CONFLICT (idempotency_key) DO NOTHING
      RETURNING id`,
-    [input.type, input.runAfter.toISOString(), JSON.stringify(input.payload ?? {}), input.idempotencyKey]
+    [
+      input.type,
+      input.runAfter.toISOString(),
+      JSON.stringify(input.payload ?? {}),
+      input.idempotencyKey,
+      input.priority ?? DEFAULT_PRIORITY,
+    ]
   )
   return rows.length > 0
 }
@@ -240,15 +268,25 @@ export async function dispatchDueTasks(limit = 50): Promise<DispatchResult> {
       WHERE id IN (
         SELECT id FROM scheduled_tasks
          WHERE status = 'pending' AND run_after <= now()
-         ORDER BY run_after
+         ORDER BY priority, run_after
          LIMIT $1
          FOR UPDATE SKIP LOCKED
       )
-      RETURNING id, task_type, payload, attempts`,
+      RETURNING id, task_type, payload, attempts, priority`,
     [limit]
   )
 
   result.claimed = due.length
+
+  // The subquery's ORDER BY decides WHICH rows get claimed; it does not decide
+  // the order RETURNING hands them back, which Postgres leaves unspecified. So
+  // the batch is re-sorted before it is run.
+  //
+  // It matters for the same reason the priority column does: if a run is cut
+  // short — a timeout, a cold database, the sixty-second ceiling on this
+  // function — the work that survives should be the work with a published
+  // date attached to it, not whichever row the planner happened to emit first.
+  due.sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id))
 
   for (const task of due) {
     const handler = handlers.get(task.task_type)
@@ -300,6 +338,46 @@ export async function dispatchDueTasks(limit = 50): Promise<DispatchResult> {
   }
 
   return result
+}
+
+/**
+ * When each task type last completed successfully.
+ *
+ * ── WHY THIS EXISTS ────────────────────────────────────────────────────────
+ *
+ * A Vercel cron job gives you an invocation history for free: you can open the
+ * dashboard and see that the purge ran at 04:00 and what it returned. Move
+ * that work inside a dispatcher and the platform stops knowing about it — the
+ * dashboard shows one job that ran, not the six things it did or did not do.
+ *
+ * That loss is the real cost of consolidation, and it is not acceptable for a
+ * privacy purge: a retention job that silently stops leaves the business
+ * believing it is honouring a published commitment it is not. So the history
+ * is reconstructed here, from the queue itself.
+ */
+export async function lastSuccessByType(): Promise<Map<string, Date>> {
+  const rows = await getDb().query<{ task_type: string; last_success: string }>(
+    `SELECT task_type, max(completed_at) AS last_success
+       FROM scheduled_tasks
+      WHERE status = 'done' AND completed_at IS NOT NULL
+      GROUP BY task_type`
+  )
+  return new Map(rows.map((r) => [r.task_type, new Date(r.last_success)]))
+}
+
+/** Anything overdue, oldest first — the queue's own backlog report. */
+export async function overdueTasks(olderThanHours = 24): Promise<
+  Array<{ task_type: string; waiting: number; oldest_due: string }>
+> {
+  return getDb().query(
+    `SELECT task_type, count(*)::int AS waiting, min(run_after)::text AS oldest_due
+       FROM scheduled_tasks
+      WHERE status = 'pending'
+        AND run_after <= now() - ($1 || ' hours')::interval
+      GROUP BY task_type
+      ORDER BY min(run_after)`,
+    [String(olderThanHours)]
+  )
 }
 
 /** What is waiting, and why. For the owner view once II-B's dashboard exists. */

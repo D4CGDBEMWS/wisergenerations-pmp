@@ -224,7 +224,11 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
     'Gather the information you are currently missing, rather than deciding without it.',
   ]
   if (report.steady) {
-    first.unshift('Work the WISER Pivots™ cycle before committing to anything larger — wait, inspect, select, embrace, then make the turn.')
+    // Owner-approved wording, 22 August 2026. Verbatim; not to be rewritten.
+    first.unshift(
+      'Use the WISER Pivots™ cycle before committing to anything larger — Wait. Inspect. ' +
+        'Select. Embrace. Then make your Pivot. Review what you learned.'
+    )
   }
   if (decision) {
     first.push(`Set a decision date for: “${decision}”`)

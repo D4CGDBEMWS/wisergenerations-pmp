@@ -13,7 +13,9 @@
 -- merged in either order without a renumber, and the runner applies files in
 -- filename order regardless of which lands first.
 --
--- Additive only. Not run against any database.
+-- Additive only. Not run against any database — which is why the priority
+-- column below is edited into this file rather than added by an 0008: nothing
+-- has ever applied 0007, so there is no deployed shape to migrate away from.
 -- ===========================================================================
 
 -- ---------------------------------------------------------------------------
@@ -58,15 +60,22 @@ CREATE TABLE IF NOT EXISTS scheduled_tasks (
   completed_at  timestamptz,
   attempts      integer NOT NULL DEFAULT 0,
   last_error    text,
+  -- Lower runs first. Exists so a long queue of reminder email cannot starve
+  -- a privacy purge: the dispatcher claims a bounded batch each run, and
+  -- without an ordering rule five hundred due reader emails would push a
+  -- retention deletion past the day it was promised for. Retention sits at 0;
+  -- everything else takes the default.
+  priority      smallint NOT NULL DEFAULT 100,
   -- Stops the same task being enqueued twice for the same subject — a
   -- day-5 reminder for one registration, week 3 for one reader.
   idempotency_key text NOT NULL UNIQUE,
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
--- The dispatcher's only hot query: what is due and unclaimed?
+-- The dispatcher's only hot query: what is due and unclaimed, most important
+-- first? The index carries the same ordering the claim uses.
 CREATE INDEX IF NOT EXISTS scheduled_tasks_due_idx
-  ON scheduled_tasks (run_after)
+  ON scheduled_tasks (priority, run_after)
   WHERE status = 'pending';
 CREATE INDEX IF NOT EXISTS scheduled_tasks_type_idx
   ON scheduled_tasks (task_type, status);

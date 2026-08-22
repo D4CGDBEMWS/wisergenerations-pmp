@@ -134,6 +134,14 @@ describe('S.T.E.A.D.Y. is retired from everything a customer reads', () => {
     expect(CUSTOMER_TEXT.toLowerCase()).not.toContain('steady')
   })
 
+  it('names the cycle in the owner-approved words', () => {
+    const full = buildFullReport(uniform(3), { changeType: 'unexpected', urgency: 5 })
+    expect(full.plan.phases[0]!.items[0]).toBe(
+      'Use the WISER Pivots™ cycle before committing to anything larger — Wait. Inspect. ' +
+        'Select. Embrace. Then make your Pivot. Review what you learned.'
+    )
+  })
+
   it('does not appear in the plan a routed customer is sent', () => {
     const full = buildFullReport(uniform(3), { changeType: 'unexpected', urgency: 5 })
     const everything = JSON.stringify(full)
@@ -167,5 +175,24 @@ describe('the internals the rename deliberately did not touch', () => {
 
   it('still persists the routing decision under its original column', () => {
     expect(source('lib/liap/assessment-service.ts')).toContain('steady_routed')
+  })
+})
+
+describe('the two capitalizations, approved 22 August 2026', () => {
+  // WISER Pivots™ is the cycle. Wiser Pivot™ is one personal, intentional
+  // action taken inside it. They are different things and the difference is
+  // carried by the capital letters, which makes this exactly the kind of
+  // detail a well-meaning edit flattens.
+  it('names the cycle in caps', () => {
+    expect(PIVOTS_INTRO.heading).toBe('WISER Pivots™')
+  })
+
+  it('names the individual action in title case', () => {
+    expect(PIVOT_STEP.body.join(' ')).toContain('A Wiser Pivot™')
+    expect(PIVOT_STEP.body.join(' ')).not.toContain('A WISER Pivot™')
+  })
+
+  it('never writes the cycle in title case anywhere a customer reads', () => {
+    expect(CUSTOMER_TEXT).not.toContain('Wiser Pivots™')
   })
 })
