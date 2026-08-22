@@ -1,16 +1,9 @@
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import Link from 'next/link'
 import { upsertCustomer } from '@/lib/customers'
 import { grantEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
-import {
-  createSession,
-  SESSION_COOKIE,
-  LEGACY_COOKIE,
-  sessionCookieOptions,
-  SESSION_MAX_AGE_SECONDS,
-} from '@/lib/auth/session'
+import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 
 export default async function AccessSuccessPage({
   searchParams,
@@ -32,6 +25,18 @@ export default async function AccessSuccessPage({
     })
 
     const session = await stripe.checkout.sessions.retrieve(sessionId as string)
+
+    // ── B-1. Paid is not the same as "paid for THIS product" ──────────────
+    //
+    // This page used to grant Study Access to any paid checkout session whose
+    // id arrived in the query string. Every LIAP book buyer is handed a real
+    // session id on their own success page, so pasting it here bought a
+    // $49/month PMP product for the price of a book — and a future Boot Camp
+    // purchase would have done the same.
+    //
+    // The product is now identified before anything is granted, and an
+    // unrecognised, absent or foreign marker grants nothing.
+    const product = identifyCheckoutSession(session)
 
     if (session.payment_status !== 'paid') {
       redirect('/access')
@@ -61,21 +66,52 @@ export default async function AccessSuccessPage({
         stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
       })
 
-      await grantEntitlement({
-        customerId: customer.id,
-        entitlementKey: STUDY_ACCESS,
-        sourceType: session.subscription ? 'subscription' : 'order',
-        sourceId:
-          (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
-        idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
-      })
+      // Fails closed. A session this system cannot name, or one belonging to
+      // another Wiser Generations program, reaches here and grants nothing —
+      // the page still confirms their purchase, because it was real.
+      if (productGrants(product, STUDY_ACCESS)) {
+        await grantEntitlement({
+          customerId: customer.id,
+          entitlementKey: STUDY_ACCESS,
+          sourceType: session.subscription ? 'subscription' : 'order',
+          sourceId:
+            (typeof session.subscription === 'string' ? session.subscription : null) ?? session.id,
+          idempotencyKey: `checkout:${session.id}:${STUDY_ACCESS}`,
+        })
+      } else {
+        console.warn(
+          `[/access/success] no Study Access grant: session ${session.id} identifies as ` +
+            `${product ? `${product.program}/${product.marker}` : 'an unrecognised product'}`
+        )
+      }
 
-      const { token } = await createSession({ customerId: customer.id })
-      const cookieStore = await cookies()
-      cookieStore.set(SESSION_COOKIE, token, sessionCookieOptions(SESSION_MAX_AGE_SECONDS))
-      cookieStore.set(LEGACY_COOKIE, '', { path: '/', maxAge: 0 })
+      // ── NO SESSION IS OPENED HERE, AND THAT IS THE POINT ────────────────
+      //
+      // Owner ruling, 22 August 2026: a Stripe checkout session id is
+      // TRANSACTION EVIDENCE, NOT IDENTITY PROOF.
+      //
+      // This page used to mint an authenticated session for whoever held the
+      // id. The id is not a secret in any meaningful sense — it sits in the
+      // buyer's address bar, in their history, in a screenshot they send to
+      // support, in a link they paste to a colleague. Anyone who came by one
+      // was signed in AS THE BUYER, with no password, no email round-trip and
+      // nothing they had to prove.
+      //
+      // Granting the entitlement is a different matter and stays. It attaches
+      // to the address Stripe says paid, not to the visitor, so a stranger
+      // holding the id can at most cause the real customer to receive what
+      // they already bought. Authorization without authentication is inert:
+      // the entitlement does nothing until somebody proves the address is
+      // theirs.
+      //
+      //   Payment       confirms the transaction.   (here)
+      //   Authentication confirms identity.          (magic link)
+      //   Entitlement   determines authorization.    (the grant above)
+      //
+      // The visitor signs in from the button below, which is the same
+      // program-aware flow everybody else uses.
     } catch (grantErr) {
-      console.error('[/access/success] could not record entitlement or open session:', grantErr)
+      console.error('[/access/success] could not record entitlement:', grantErr)
     }
   } catch (err) {
     console.error('[/access/success] error:', err)
@@ -117,18 +153,15 @@ export default async function AccessSuccessPage({
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/exam-simulator"
+            href="/access/login"
             className="bg-yellow-400 hover:bg-yellow-300 text-[#0a1628] font-bold py-4 px-8 rounded-xl text-lg transition-colors"
           >
-            Start Exam Simulator
-          </Link>
-          <Link
-            href="/flashcards"
-            className="border-2 border-[#0a1628] text-[#0a1628] hover:bg-paper font-bold py-4 px-8 rounded-xl text-lg transition-colors"
-          >
-            Study Flashcards
+            Sign in to your tools
           </Link>
         </div>
+        <p className="text-sm text-gray-600 mt-4">
+          {'We\u2019ll email a secure sign-in link' + emailNote + '. No password to remember.'}
+        </p>
 
         <p className="text-sm text-gray-500 mt-8">
           A confirmation has been sent to you by Stripe.
