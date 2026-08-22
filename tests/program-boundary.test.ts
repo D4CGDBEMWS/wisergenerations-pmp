@@ -13,7 +13,19 @@ import {
 } from '@/lib/programs'
 import { STUDY_ACCESS } from '@/lib/entitlements'
 import { LIAP_ASSESSMENT_ACCESS, LIAP_BOOK_PREORDER } from '@/lib/liap/entitlements'
-import { LOGIN_PRODUCTS, resolveRedirect, allowedDestinations } from '@/lib/auth/login-token'
+import {
+  LOGIN_PRODUCTS,
+  resolveRedirect,
+  allowedDestinations,
+  productForDestination,
+} from '@/lib/auth/login-token'
+import {
+  programLogin,
+  readProgram,
+  firstNameOf,
+  loginEmailHtml,
+  loginEmailText,
+} from '@/lib/auth/program-login'
 
 // ---------------------------------------------------------------------------
 // The Wiser Generations program boundary.
@@ -267,5 +279,184 @@ describe('the corrected grant paths ask before they grant', () => {
   it('keeps LIAP fulfilment on its own marker, untouched', () => {
     expect(code('lib/liap/fulfilment.ts')).toContain('LIAP_BOOK.metadataKey')
     expect(code('app/api/stripe/webhook/route.ts')).toContain('isLiapPreorder')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Transaction Reference ≠ Authentication.
+//
+// Owner ruling, 22 August 2026. A Stripe checkout session id is transaction
+// evidence. It is not a secret and it is not identity proof: it sits in the
+// buyer's address bar, their browser history, a screenshot sent to support, a
+// link pasted to a colleague.
+//
+// /access/success used to mint an authenticated session for whoever held one.
+// These tests assert the mechanism is gone from the source, because the
+// property is an absence and an absence is what a refactor quietly restores.
+// ---------------------------------------------------------------------------
+
+describe('transaction reference does not authenticate', () => {
+  const successPage = code('app/access/success/page.tsx')
+
+  it('opens no session on the confirmation page', () => {
+    expect(successPage).not.toContain('createSession')
+    expect(successPage).not.toContain('SESSION_COOKIE')
+    expect(successPage).not.toContain('sessionCookieOptions')
+  })
+
+  it('sets no cookie at all', () => {
+    // cookies() was imported for exactly one purpose. Its absence is the proof.
+    expect(successPage).not.toContain("from 'next/headers'")
+    expect(successPage).not.toContain('cookieStore')
+  })
+
+  it('still records the entitlement, which authorizes nobody on its own', () => {
+    // The grant attaches to the address Stripe says paid, never to the
+    // visitor. Authorization without authentication is inert.
+    expect(successPage).toContain('grantEntitlement')
+    expect(successPage).toContain('productGrants(product, STUDY_ACCESS)')
+  })
+
+  it('routes the visitor to the login flow to become authenticated', () => {
+    expect(successPage).toContain("href=\"/access/login\"")
+  })
+
+  it('still confirms the purchase, which is what the page is for', () => {
+    expect(successPage).toContain('You are In!')
+    expect(successPage).toContain('payment_status')
+  })
+
+  it('leaves the magic link as the only thing that opens a session', () => {
+    // One authentication path across every program: a single-use token sent
+    // to an address, consumed atomically.
+    const login = code('app/api/access/login/route.ts')
+    expect(login).toContain('consumeLoginToken')
+    expect(login).toContain('createSession')
+  })
+})
+
+describe('program-aware sign-in cannot become privilege escalation', () => {
+  it('derives the required entitlement from the program, never from the caller', () => {
+    expect(programLogin('study').entitlementKey).toBe(STUDY_ACCESS)
+    expect(programLogin('liap').entitlementKey).toBe(LIAP_ASSESSMENT_ACCESS)
+  })
+
+  it('gives each program a distinct required entitlement', () => {
+    const keys = LOGIN_PRODUCTS.map((p) => programLogin(p).entitlementKey)
+    expect(new Set(keys).size).toBe(keys.length)
+  })
+
+  it('falls back to Study Access for an absent or unrecognised program', () => {
+    // Every existing caller sends no program at all, and must keep working.
+    for (const raw of [undefined, null, '', '   ', 'bootcamp', 'admin', 42, {}]) {
+      expect(readProgram(raw)).toBe('study')
+    }
+    expect(readProgram('liap')).toBe('liap')
+  })
+
+  it('does not let a program name choose another program\u2019s destination', () => {
+    for (const product of LOGIN_PRODUCTS) {
+      const destination = programLogin(product).defaultDestination
+      expect(productForDestination(destination)).toBe(product)
+      expect(allowedDestinations(product)).toContain(destination)
+    }
+  })
+
+  it('checks the program\u2019s entitlement on both halves of the flow', () => {
+    const login = code('app/api/access/login/route.ts')
+    // POST: which entitlement is required comes from programLogin(program).
+    expect(login).toContain('hasEntitlement(existing.id, config.entitlementKey)')
+    // GET: asked again, because a grant can be revoked between send and click.
+    expect(login).toContain('hasEntitlement(customer.id, config.entitlementKey)')
+    // And the hardcoded single-program gate is gone.
+    expect(login).not.toContain('hasEntitlement(customer.id, STUDY_ACCESS)')
+  })
+
+  it('runs the Stripe reconciliation for Study Access only', () => {
+    // No other program has a backfill, and none should acquire one by
+    // accident: a reconciliation that ran for every program would be a third
+    // place for "payment implies product" to come back.
+    expect(code('app/api/access/login/route.ts')).toContain("program === 'study'")
+  })
+
+  it('keeps the login product set and the program set in step', () => {
+    expect([...LOGIN_PRODUCTS].sort()).toEqual([...PROGRAMS].sort())
+  })
+})
+
+describe('program-aware email language', () => {
+  const url = 'https://www.wisergenerations.com/api/access/login?token=abc'
+
+  it('uses the owner-approved LIAP wording, verbatim', () => {
+    const liap = programLogin('liap')
+    expect(liap.emailSubject).toBe('Your secure LIAP access link')
+    expect(liap.emailIntro).toBe('Use the secure link below to continue your LIAP journey.')
+    expect(liap.emailCta).toBe('CONTINUE MY LIAP JOURNEY')
+    expect(liap.emailIgnore).toBe('If you didn\u2019t request this link, you can ignore this email.')
+  })
+
+  it('never mentions another program in a LIAP email', () => {
+    const html = loginEmailHtml('liap', url, 'Crystal')
+    const text = loginEmailText('liap', url, 'Crystal')
+    for (const body of [html, text]) {
+      expect(body).not.toContain('Study Access')
+      expect(body).not.toContain('PMP')
+      expect(body).not.toContain('exam')
+    }
+  })
+
+  it('keeps Study Access email language unchanged', () => {
+    expect(programLogin('study').emailSubject).toBe(
+      'Your Wiser Generations Study Access login link'
+    )
+    expect(loginEmailText('study', url, null)).toContain('Study Access')
+  })
+
+  it('preserves the expiry and single-use facts in every program', () => {
+    // Mechanism, not marketing: the same fact for everybody, and it must
+    // survive any rewording of the lines around it.
+    for (const product of LOGIN_PRODUCTS) {
+      expect(loginEmailHtml(product, url, null)).toContain('15 minutes')
+      expect(loginEmailText(product, url, null)).toContain('expires in 15 minutes')
+    }
+  })
+
+  it('greets by first name, and omits the greeting rather than getting it wrong', () => {
+    expect(firstNameOf('Crystal Glover Stewart')).toBe('Crystal')
+    expect(firstNameOf('  ')).toBeNull()
+    expect(firstNameOf(null)).toBeNull()
+    expect(loginEmailHtml('liap', url, 'Crystal')).toContain('Hi Crystal,')
+    expect(loginEmailHtml('liap', url, null)).not.toContain('Hi ,')
+    expect(loginEmailText('liap', url, null)).not.toContain('Hi ,')
+  })
+
+  it('escapes a name rather than letting it become markup', () => {
+    expect(loginEmailHtml('liap', url, '<script>')).not.toContain('<script>')
+    expect(loginEmailHtml('liap', url, '<script>')).toContain('&lt;script&gt;')
+  })
+})
+
+describe('program-specific entry experience', () => {
+  it('gives LIAP its own sign-in page with the approved copy', () => {
+    const page = source('app/living-is-a-project/access/page.tsx')
+    expect(page).toContain('Continue Your LIAP Journey')
+    expect(page).toContain('Enter the email associated with your LIAP access')
+  })
+
+  it('asks for LIAP by name from the LIAP form', () => {
+    expect(code('components/liap/LiapAccessForm.tsx')).toContain("program: 'liap'")
+  })
+
+  it('sends a signed-out reader to the LIAP page, not the Study Access one', () => {
+    const assessment = code('app/living-is-a-project/assessment/page.tsx')
+    expect(assessment).toContain("redirect('/living-is-a-project/access')")
+    expect(assessment).not.toContain('/access/login')
+  })
+
+  it('answers identically whether or not the address has access', () => {
+    // No enumeration of customers, and none of which programs they belong to.
+    const form = code('components/liap/LiapAccessForm.tsx')
+    expect(form).toContain('If that address has LIAP access')
+    expect(code('app/api/access/login/route.ts')).toContain('return NextResponse.json({ ok: true })')
   })
 })

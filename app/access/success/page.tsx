@@ -1,17 +1,9 @@
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import Link from 'next/link'
 import { upsertCustomer } from '@/lib/customers'
 import { grantEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
-import {
-  createSession,
-  SESSION_COOKIE,
-  LEGACY_COOKIE,
-  sessionCookieOptions,
-  SESSION_MAX_AGE_SECONDS,
-} from '@/lib/auth/session'
 
 export default async function AccessSuccessPage({
   searchParams,
@@ -93,12 +85,33 @@ export default async function AccessSuccessPage({
         )
       }
 
-      const { token } = await createSession({ customerId: customer.id })
-      const cookieStore = await cookies()
-      cookieStore.set(SESSION_COOKIE, token, sessionCookieOptions(SESSION_MAX_AGE_SECONDS))
-      cookieStore.set(LEGACY_COOKIE, '', { path: '/', maxAge: 0 })
+      // ── NO SESSION IS OPENED HERE, AND THAT IS THE POINT ────────────────
+      //
+      // Owner ruling, 22 August 2026: a Stripe checkout session id is
+      // TRANSACTION EVIDENCE, NOT IDENTITY PROOF.
+      //
+      // This page used to mint an authenticated session for whoever held the
+      // id. The id is not a secret in any meaningful sense — it sits in the
+      // buyer's address bar, in their history, in a screenshot they send to
+      // support, in a link they paste to a colleague. Anyone who came by one
+      // was signed in AS THE BUYER, with no password, no email round-trip and
+      // nothing they had to prove.
+      //
+      // Granting the entitlement is a different matter and stays. It attaches
+      // to the address Stripe says paid, not to the visitor, so a stranger
+      // holding the id can at most cause the real customer to receive what
+      // they already bought. Authorization without authentication is inert:
+      // the entitlement does nothing until somebody proves the address is
+      // theirs.
+      //
+      //   Payment       confirms the transaction.   (here)
+      //   Authentication confirms identity.          (magic link)
+      //   Entitlement   determines authorization.    (the grant above)
+      //
+      // The visitor signs in from the button below, which is the same
+      // program-aware flow everybody else uses.
     } catch (grantErr) {
-      console.error('[/access/success] could not record entitlement or open session:', grantErr)
+      console.error('[/access/success] could not record entitlement:', grantErr)
     }
   } catch (err) {
     console.error('[/access/success] error:', err)
@@ -140,18 +153,15 @@ export default async function AccessSuccessPage({
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/exam-simulator"
+            href="/access/login"
             className="bg-yellow-400 hover:bg-yellow-300 text-[#0a1628] font-bold py-4 px-8 rounded-xl text-lg transition-colors"
           >
-            Start Exam Simulator
-          </Link>
-          <Link
-            href="/flashcards"
-            className="border-2 border-[#0a1628] text-[#0a1628] hover:bg-paper font-bold py-4 px-8 rounded-xl text-lg transition-colors"
-          >
-            Study Flashcards
+            Sign in to your tools
           </Link>
         </div>
+        <p className="text-sm text-gray-600 mt-4">
+          {'We\u2019ll email a secure sign-in link' + emailNote + '. No password to remember.'}
+        </p>
 
         <p className="text-sm text-gray-500 mt-8">
           A confirmation has been sent to you by Stripe.

@@ -3,7 +3,19 @@ import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { upsertCustomer, findCustomerByEmail } from '@/lib/customers'
 import { grantEntitlement, hasEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
-import { issueLoginToken, consumeLoginToken } from '@/lib/auth/login-token'
+import {
+  issueLoginToken,
+  consumeLoginToken,
+  productForDestination,
+  type LoginProduct,
+} from '@/lib/auth/login-token'
+import {
+  programLogin,
+  readProgram,
+  firstNameOf,
+  loginEmailHtml,
+  loginEmailText,
+} from '@/lib/auth/program-login'
 import { identifyCheckoutSession, identifySubscription, productGrants } from '@/lib/programs'
 import {
   createSession,
@@ -64,41 +76,44 @@ const MAGIC_LINK_FROM =
   process.env.MAGIC_LINK_FROM_EMAIL ||
   process.env.RESEND_FROM_EMAIL ||
   'info@wisergenerations.com'
-const MAGIC_LINK_SUBJECT = 'Your Wiser Generations Study Access login link'
-
-function magicLinkHtml(loginUrl: string): string {
-  return (
-    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">` +
-    `<div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">` +
-    `<h1 style="color:#C9A84C;margin:0;font-size:24px">Wiser Generations</h1></div>` +
-    `<div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">` +
-    `<h2 style="color:#0A1628;margin-top:0">Your login link</h2>` +
-    `<p style="color:#374151;line-height:1.6">This link signs you in to Study Access and expires in <strong>15 minutes</strong>.</p>` +
-    `<p style="text-align:center;margin:32px 0"><a href="${loginUrl}" style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">Sign in</a></p>` +
-    `<p style="color:#6b7280;font-size:14px">If you didn't request this, you can ignore it.</p></div></div>`
-  )
+// Subject, greeting, body and call to action all come from the program the
+// sign-in started in — see lib/auth/program-login. A LIAP reader receives LIAP
+// language; a Study Access customer receives exactly what they received before
+// programs became a concept.
+interface MagicLinkMessage {
+  subject: string
+  html: string
+  text: string
 }
 
-function magicLinkText(loginUrl: string): string {
-  return `Your Wiser Generations login link:\n\n${loginUrl}\n\nIt expires in 15 minutes.`
+function magicLinkMessage(
+  product: LoginProduct,
+  loginUrl: string,
+  firstName: string | null
+): MagicLinkMessage {
+  return {
+    subject: programLogin(product).emailSubject,
+    html: loginEmailHtml(product, loginUrl, firstName),
+    text: loginEmailText(product, loginUrl, firstName),
+  }
 }
 
-async function sendViaResend(apiKey: string, toEmail: string, loginUrl: string): Promise<number> {
+async function sendViaResend(apiKey: string, toEmail: string, message: MagicLinkMessage): Promise<number> {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: `Wiser Generations <${MAGIC_LINK_FROM}>`,
       to: [toEmail],
-      subject: MAGIC_LINK_SUBJECT,
-      html: magicLinkHtml(loginUrl),
-      text: magicLinkText(loginUrl),
+      subject: message.subject,
+      html: message.html,
+      text: message.text,
     }),
   })
   return res.status
 }
 
-async function sendViaMandrill(apiKey: string, toEmail: string, loginUrl: string): Promise<number> {
+async function sendViaMandrill(apiKey: string, toEmail: string, message: MagicLinkMessage): Promise<number> {
   const res = await fetch('https://mandrillapp.com/api/1.0/messages/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -108,16 +123,16 @@ async function sendViaMandrill(apiKey: string, toEmail: string, loginUrl: string
         from_email: MAGIC_LINK_FROM,
         from_name: 'Wiser Generations',
         to: [{ email: toEmail, type: 'to' }],
-        subject: MAGIC_LINK_SUBJECT,
-        html: magicLinkHtml(loginUrl),
-        text: magicLinkText(loginUrl),
+        subject: message.subject,
+        html: message.html,
+        text: message.text,
       },
     }),
   })
   return res.status
 }
 
-async function sendMagicLinkEmail(toEmail: string, loginUrl: string): Promise<void> {
+async function sendMagicLinkEmail(toEmail: string, message: MagicLinkMessage): Promise<void> {
   const resendKey = process.env.RESEND_API_KEY
   const mandrillKey = process.env.MANDRILL_API_KEY
   const provider = resendKey ? 'resend' : mandrillKey ? 'mandrill' : null
@@ -134,8 +149,8 @@ async function sendMagicLinkEmail(toEmail: string, loginUrl: string): Promise<vo
   try {
     const status =
       provider === 'resend'
-        ? await sendViaResend(resendKey!, toEmail, loginUrl)
-        : await sendViaMandrill(mandrillKey!, toEmail, loginUrl)
+        ? await sendViaResend(resendKey!, toEmail, message)
+        : await sendViaMandrill(mandrillKey!, toEmail, message)
 
     // Only the provider name and HTTP status are recorded. Response bodies can
     // echo the address or the key back, and neither belongs in an audit row.
@@ -232,32 +247,46 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = (await req.json()) as { email?: string; from?: string }
+    const body = (await req.json()) as { email?: string; from?: string; program?: string }
     const email = (body.email ?? '').trim().toLowerCase()
 
     if (!email || !EMAIL_RE.test(email)) {
       return NextResponse.json({ error: 'Valid email required.' }, { status: 400 })
     }
 
-    const existing = await findCustomerByEmail(email)
-    let entitled = existing ? await hasEntitlement(existing.id, STUDY_ACCESS) : false
+    // The caller chooses the program. That choice selects which entitlement is
+    // REQUIRED and which language the email uses — it is never itself a claim
+    // of access. Asking for 'study' does not grant Study Access; it asks
+    // whether this address already holds it. An omitted or unrecognised value
+    // is Study Access, which is what every existing caller sends: nothing.
+    const program = readProgram(body.program)
+    const config = programLogin(program)
 
-    if (!entitled) {
+    const existing = await findCustomerByEmail(email)
+    let entitled = existing ? await hasEntitlement(existing.id, config.entitlementKey) : false
+
+    // Stripe reconciliation exists only for Study Access, whose grandfathered
+    // purchasers predate the entitlement table. No other program has a
+    // backfill, and none should acquire one by accident.
+    if (!entitled && program === 'study') {
       entitled = await backfillEntitlementFromStripe(email)
     }
 
     if (entitled) {
-      // Explicitly the Study Access product: this route grants a session only
-      // after checking STUDY_ACCESS above, so a link issued here can never be
-      // a LIAP sign-in. Naming it stops the default from being load-bearing.
-      const { token } = await issueLoginToken({ email, product: 'study', redirectTo: body.from })
+      const { token } = await issueLoginToken({ email, product: program, redirectTo: body.from })
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wisergenerations.com'
       // The email is NOT in the URL: the token alone identifies the request,
       // so there is no address to tamper with and no destination to smuggle.
-      await sendMagicLinkEmail(email, `${siteUrl}/api/access/login?token=${token}`)
+      await sendMagicLinkEmail(
+        email,
+        magicLinkMessage(program, `${siteUrl}/api/access/login?token=${token}`, firstNameOf(existing?.name))
+      )
     }
 
-    // Always ok, so the response cannot be used to enumerate customers.
+    // Always ok — for a wrong address, an unentitled one, and a program this
+    // address has no standing in alike. The response cannot be used to
+    // enumerate customers, nor to discover which programs an address belongs
+    // to.
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[api/access/login] error:', err)
@@ -278,14 +307,25 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL('/access?error=expired', req.url))
   }
 
+  // Which program this link belongs to is derived from the destination stored
+  // against the token — a value only this system writes, chosen from a
+  // per-program allow-list. It is not carried in the callback URL, so there is
+  // nothing here for a holder of the link to change.
+  const program = productForDestination(consumed.redirectTo) ?? 'study'
+  const config = programLogin(program)
+
   const customer = await upsertCustomer({ email: consumed.email })
-  if (!(await hasEntitlement(customer.id, STUDY_ACCESS))) {
+
+  // Authentication succeeded; authorization is a separate question, asked
+  // again here because an entitlement can be revoked between the link being
+  // sent and the link being clicked.
+  if (!(await hasEntitlement(customer.id, config.entitlementKey))) {
     await recordAuditEvent({
       eventType: 'login.failed',
       customerId: customer.id,
-      metadata: { result: 'not_entitled' },
+      metadata: { result: 'not_entitled', reason: program },
     })
-    return NextResponse.redirect(new URL('/access?error=no-access', req.url))
+    return NextResponse.redirect(new URL(`${config.signInPath}?error=no-access`, req.url))
   }
 
   const { token: sessionToken } = await createSession({
@@ -297,7 +337,7 @@ export async function GET(req: NextRequest) {
   await recordAuditEvent({
     eventType: 'login.success',
     customerId: customer.id,
-    metadata: { result: 'ok' },
+    metadata: { result: 'ok', reason: program },
   })
 
   // Already resolved, and resolved within the product the link was issued

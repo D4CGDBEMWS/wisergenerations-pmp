@@ -73,7 +73,12 @@ const DESTINATIONS: Record<LoginProduct, { allowed: readonly string[]; home: str
     home: '/exam-simulator',
   },
   liap: {
-    allowed: ['/living-is-a-project', '/living-is-a-project/assessment', '/living-is-a-project/book'],
+    allowed: [
+      '/living-is-a-project',
+      '/living-is-a-project/assessment',
+      '/living-is-a-project/book',
+      '/living-is-a-project/access',
+    ],
     home: '/living-is-a-project',
   },
 }
