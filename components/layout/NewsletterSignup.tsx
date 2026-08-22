@@ -1,6 +1,8 @@
 'use client'
 
 import { FormEvent, useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { shellForPath } from '@/lib/shell'
 
 // ---------------------------------------------------------------------------
 // NewsletterSignup
@@ -21,6 +23,14 @@ declare global {
 }
 
 export default function NewsletterSignup() {
+  // Owner ruling, 22 August 2026: suppressed on LIAP pages. This band tags
+  // subscribers `newsletter`, which is the PMP audience's list — mixing a book
+  // reader into it is a segmentation decision nobody made. A LIAP-specific
+  // nurture path with its own tag is separate work.
+  //
+  // Hooks run before the early return so the order stays stable across
+  // renders, which is what the rules of hooks require.
+  const suppressed = !shellForPath(usePathname()).showNewsletter
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -123,6 +133,9 @@ export default function NewsletterSignup() {
       resetWidget()
     }
   }
+
+  // After every hook, so hook order never varies between renders.
+  if (suppressed) return null
 
   return (
     <section className="bg-navy text-white">
