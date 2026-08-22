@@ -30,7 +30,10 @@ export default async function AssessmentPage() {
   const access = await readLiapAccess()
 
   if (!access) {
-    redirect('/access/login?from=liap-assessment')
+    // The LIAP sign-in page, not the Study Access one. Shared authentication
+    // infrastructure must not be visible to a reader as another product's
+    // branding — owner ruling, 22 August 2026.
+    redirect('/life-is-a-project/access')
   }
 
   if (!access.entitled) {
