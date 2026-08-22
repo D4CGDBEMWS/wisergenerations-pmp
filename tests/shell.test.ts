@@ -213,3 +213,72 @@ describe('the chrome reads the shell rather than knowing links', () => {
     expect(code('components/layout/NewsletterSignup.tsx')).toContain('showNewsletter')
   })
 })
+
+// ---------------------------------------------------------------------------
+// The LIAP-aware 404 — completion of the shell boundary.
+//
+// The default 404 offers "View Programs" pointing at the PMP catalogue. A
+// reader who mistyped a URL from a printed book would be told the page does
+// not exist and then invited to browse project-management certifications.
+//
+// Verified over HTTP against a production build in both flag states, because
+// which 404 renders is a routing question that unit tests cannot settle.
+// ---------------------------------------------------------------------------
+
+describe('the 404 belongs to the shell it happened in', () => {
+  it('chooses on shell AND on the flag, not on the shell alone', () => {
+    // The flag is the part that is easy to leave out and expensive to leave
+    // out: see the next test.
+    const view = code('components/NotFoundView.tsx')
+    expect(view).toContain('shellForPath')
+    expect(view).toContain('liapEnabled')
+    expect(view).toContain("shell.key === 'liap' && liapEnabled")
+  })
+
+  it('keeps LIAP undiscoverable while the section is off', () => {
+    // Every LIAP route 404s while FEATURE_LIAP is off so an unannounced
+    // product is indistinguishable from a route that was never built. A 404
+    // headed "Return to LIAP" would undo precisely that — and would point at
+    // a hub that is itself 404ing.
+    const root = code('app/not-found.tsx')
+    expect(root).toContain("isEnabled('LIAP')")
+    expect(root).toContain("dynamic = 'force-dynamic'")
+  })
+
+  it('uses the owner-approved recovery copy', () => {
+    const liap = source('components/liap/LiapNotFound.tsx')
+    expect(liap).toContain('find that page')
+    expect(liap).toContain('Return to LIAP')
+    expect(liap).toContain('Need help?')
+  })
+
+  it('offers no PMP recovery navigation', () => {
+    // Comments stripped: this file explains what it is NOT doing, and prose
+    // about "View Programs" must not satisfy an assertion about its absence.
+    const liap = code('components/liap/LiapNotFound.tsx')
+    for (const surface of STUDY_SURFACES) {
+      expect(liap, surface).not.toContain(`href="${surface}"`)
+    }
+    expect(liap).not.toContain('View Programs')
+  })
+
+  it('recovers only to LIAP or shared infrastructure', () => {
+    const hrefs = [...source('components/liap/LiapNotFound.tsx').matchAll(/href="([^"]+)"/g)].map(
+      (m) => m[1]!
+    )
+    expect(hrefs.length).toBeGreaterThan(0)
+    for (const href of hrefs) {
+      const ok =
+        shell('liap').pathPrefixes.some((p) => href.startsWith(p)) ||
+        SHARED_INFRASTRUCTURE.includes(href)
+      expect(ok, href).toBe(true)
+    }
+  })
+
+  it('leaves the general 404 exactly as it was', () => {
+    const fallback = source('components/DefaultNotFound.tsx')
+    expect(fallback).toContain('View Programs')
+    expect(fallback).toContain('Page Not Found')
+    expect(fallback).toContain('href="/programs"')
+  })
+})
