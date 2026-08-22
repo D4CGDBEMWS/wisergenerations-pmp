@@ -29,7 +29,7 @@ export default function PreorderCompletePage() {
       </h1>
 
       <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-        <p>Your preorder is confirmed. Your copy ships when the book publishes in October 2026.</p>
+        <p>Your preorder is confirmed. Your copy ships on publication.</p>
         <p>
           Now let&rsquo;s determine where you are and what deserves your attention next. It takes
           about fifteen minutes, and it saves as you go.
@@ -37,7 +37,7 @@ export default function PreorderCompletePage() {
       </div>
 
       <Link
-        href="/life-is-a-project/assessment"
+        href="/living-is-a-project/assessment"
         className="mt-9 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-gold px-8 text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy sm:w-auto"
       >
         Begin my assessment

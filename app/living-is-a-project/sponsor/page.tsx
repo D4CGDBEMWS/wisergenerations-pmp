@@ -15,7 +15,7 @@ import { RetreatInterestForm } from '@/components/liap/RetreatInterestForm'
 // ---------------------------------------------------------------------------
 
 export const metadata: Metadata = {
-  title: 'Sponsorship — Life Is a Project™',
+  title: 'Sponsorship — Living Is a Project...Are You Ready?™',
   description: 'Support a participant or partner with Wiser Generations International.',
   robots: { index: false, follow: false },
 }
@@ -24,7 +24,7 @@ export default function SponsorPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
       <p className="text-xs font-bold uppercase tracking-widest text-gold">
-        Life Is a Project™
+        Living Is a Project...Are You Ready?™
       </p>
       <h1 className="mt-3 text-4xl font-bold text-navy">Sponsor a participant</h1>
       <p className="mt-4 text-lg text-gray-700">

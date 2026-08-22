@@ -20,6 +20,33 @@ const nextConfig = {
     return [
       // Consolidated duplicate routes onto a single canonical URL
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
+
+      // Life Is a Project™ → Living Is a Project...Are You Ready?™
+      //
+      // The customer-facing brand changed, and the slug followed it. These
+      // redirects exist so that nothing which ever pointed at the old path
+      // breaks — printed material, a bookmark, a link in an email sent before
+      // the rename.
+      //
+      // Permanent (308) rather than temporary: the new path is canonical and
+      // search engines should transfer any accumulated signal to it. Done now
+      // rather than after launch because the LIAP section has never been
+      // public and no partner QR code has been printed, so there is nothing
+      // to unwind — this is the cheapest this migration will ever be.
+      //
+      // The wildcard covers every child in one rule: /book, /assessment,
+      // /results/:token, /retreat, /retreat/group, /sponsor,
+      // /verify-preorder, /preorder-complete.
+      {
+        source: '/life-is-a-project',
+        destination: '/living-is-a-project',
+        permanent: true,
+      },
+      {
+        source: '/life-is-a-project/:path*',
+        destination: '/living-is-a-project/:path*',
+        permanent: true,
+      },
       { source: '/resources/blog', destination: '/blog', permanent: true },
       // WIOA offering removed — redirect any inbound links to Programs
       { source: '/wioa', destination: '/programs', permanent: true },

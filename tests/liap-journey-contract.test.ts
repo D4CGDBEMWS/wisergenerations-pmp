@@ -19,6 +19,8 @@ import {
   copyText,
   firewallViolations,
   contentIsComplete,
+  activeFaq,
+  unansweredFaq,
 } from '@/lib/liap/journey/content'
 import { LIAP_EVENTS, trackLiap } from '@/lib/liap/analytics'
 import { PARTNER_DESTINATIONS } from '@/lib/liap/partners'
@@ -76,7 +78,7 @@ describe('the conversion firewall', () => {
     // The regression this exists for. Proving the check bites, rather than
     // trusting that it would.
     const tampered = JOURNEY.map((s) =>
-      s.id === 'direction' ? { ...s, price: '$24.99' } : s
+      s.id === 'direction' ? { ...s, price: approved('$24.99') } : s
     )
     const found = firewallViolations(tampered)
     expect(found).toHaveLength(1)
@@ -86,7 +88,7 @@ describe('the conversion firewall', () => {
 
   it('catches a product name added above the firewall', () => {
     const tampered = JOURNEY.map((s) =>
-      s.id === 'risk' ? { ...s, productName: 'LIAP Journey Workshop' } : s
+      s.id === 'risk' ? { ...s, productName: 'LIAP Virtual Workshop' } : s
     )
     expect(firewallViolations(tampered)[0]?.problem).toContain('names a product')
   })
@@ -137,11 +139,12 @@ describe('the content contract', () => {
     // approved prices, the approved product display names, the journey rung
     // labels and the FAQ questions she supplied.
     const ALLOWED_APPROVED = new Set([
-      ...BRAND.pillars.map((p) => p.text),
       BRAND.name.text,
-      BRAND.imperative.text,
-      BRAND.ride.text,
+      BRAND.way.text,
       BRAND.author.text,
+      ...BRAND.held.pillars.map((p) => p.text),
+      BRAND.held.imperative.text,
+      BRAND.held.ride.text,
       'START',
       'BUILD',
       'EXPERIENCE',
@@ -156,11 +159,27 @@ describe('the content contract', () => {
     }
   })
 
-  it('holds the approved brand language exactly, including the trademarks', () => {
-    expect(BRAND.name.text).toBe('LIFE IS A PROJECT™')
-    expect(BRAND.imperative.text).toBe('BE READY.')
-    expect(BRAND.ride.text).toBe('LIFE IS A JOURNEY. ENJOY THE RIDE!™')
-    expect(BRAND.pillars.map((p) => p.text)).toEqual([
+  it('carries the canonical brand name, with the trademark intact', () => {
+    expect(BRAND.name.text).toBe('Living Is a Project...Are You Ready?™')
+    expect(BRAND.way.text).toBe('The LIAP Way™')
+  })
+
+  it('no longer presents the superseded brand name anywhere', () => {
+    // The rename is the point of the 22 August handoff. If this string comes
+    // back into an approved slot, something was reverted.
+    const approvedText = JSON.stringify(
+      JOURNEY.map((s) => [s.eyebrow, s.headline, s.supporting, s.cta?.label, s.productName])
+    )
+    expect(approvedText).not.toContain('Life Is a Project™')
+    expect(approvedText).not.toContain('Life Is a Project…')
+  })
+
+  it('keeps the previously approved language held, unused, pending a ruling', () => {
+    // Absent from the new fourteen sections but approved under the previous
+    // handoff. Held rather than deleted — that call is the owner's (J-2).
+    expect(BRAND.held.imperative.text).toBe('BE READY.')
+    expect(BRAND.held.ride.text).toBe('LIFE IS A JOURNEY. ENJOY THE RIDE!™')
+    expect(BRAND.held.pillars.map((p) => p.text)).toEqual([
       'FIND HIDDEN RESOURCES',
       'NAVIGATE RISKS',
       'BUILD SUSTAINABLE SUCCESS',
@@ -173,19 +192,58 @@ describe('the content contract', () => {
     expect(BRAND.author.text).not.toBe('Crystal Stewart')
   })
 
-  it('carries the approved prices and display names, unchanged', () => {
+  it('holds every price, so no unconfirmed number can render', () => {
+    // All three prices are on HOLD as of 22 August 2026. A held price and a
+    // missing price look identical to a visitor, which is correct — an
+    // unconfirmed price is worse than none.
     const byId = Object.fromEntries(JOURNEY.map((s) => [s.id, s]))
-    expect(byId.start!.price).toBe('$24.99')
-    expect(byId.build!.price).toBe('$49')
-    expect(byId.build!.productName).toBe('LIAP Journey Workshop')
-    expect(byId.experience!.price).toBe('$1,499.99 per person')
-    expect(byId.experience!.productName).toBe('LIAP Weekend Experience')
+    for (const id of ['start', 'build', 'experience'] as const) {
+      expect(byId[id]!.price?.state).toBe('pending')
+      expect(copyText(byId[id]!.price)).toBeNull()
+    }
   })
 
-  it('lists the owner’s nine questions with every answer still pending', () => {
-    expect(FAQ).toHaveLength(9)
+  it('carries the canonical product display names', () => {
+    const byId = Object.fromEntries(JOURNEY.map((s) => [s.id, s]))
+    expect(byId.build!.productName).toBe('LIAP Virtual Workshop')
+    expect(byId.experience!.productName).toBe('LIAP Retreat')
+    expect(byId.start!.productName).toContain('Living Is a Project...Are You Ready?™')
+  })
+
+  it('places no fixed limit on how many questions there are', () => {
+    // The "exactly nine" constraint lived only here and was removed on the
+    // owner's 22 August ruling. Questions may be added; obsolete ones may be
+    // retired. What must hold is that every question is approved.
+    expect(FAQ.length).toBeGreaterThan(9)
     expect(FAQ.every((f) => f.question.state === 'approved')).toBe(true)
-    expect(FAQ.every((f) => f.answer.state === 'pending')).toBe(true)
+  })
+
+  it('answers only what the owner actually supplied', () => {
+    // Two answers were given verbatim in the handoff. Everything else waits.
+    const answered = activeFaq()
+    expect(answered).toHaveLength(2)
+
+    const text = answered.map((f) => copyText(f.answer)).join(' ')
+    expect(text).toContain('non-refundable')
+    expect(text).toContain('replay')
+    expect(text).toContain('info@wisergenerations.com')
+  })
+
+  it('shows nothing for a question awaiting an answer', () => {
+    for (const entry of unansweredFaq()) {
+      expect(copyText(entry.answer)).toBeNull()
+    }
+    expect(unansweredFaq().length).toBeGreaterThan(0)
+  })
+
+  it('can retire a question without deleting it', () => {
+    const withRetired = [...FAQ, {
+      question: approved('An obsolete question'),
+      answer: approved('An obsolete answer'),
+      retired: '2026-08-22',
+    }]
+    expect(activeFaq(withRetired).map((f) => copyText(f.question)))
+      .not.toContain('An obsolete question')
   })
 
   it('invents no proof — section 12 carries no testimonial or statistic', () => {

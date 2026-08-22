@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
-import { STEADY_STEPS } from '@/lib/liap/scoring'
+import { STEADY_STEPS, PIVOTS_INTRO } from '@/lib/liap/scoring'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
 import { InterestButton } from '@/components/liap/InterestButton'
@@ -12,7 +12,7 @@ import { queryOne } from '@/lib/db/client'
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'Your Life Project-Ready™ Plan | Wiser Generations',
+  title: 'Life Project-Ready™ Readiness Report | Wiser Generations',
   robots: { index: false, follow: false, nocache: true },
 }
 
@@ -128,16 +128,16 @@ export default async function ResultsPage({
           </section>
         )}
 
-        {/* S.T.E.A.D.Y., before any expansion advice. §17. */}
+        {/* Change navigation, before any expansion advice. §17.
+            Heading, introduction and cards all come from lib/liap/scoring so
+            the approved Wiser Pivots™ content can replace them without this
+            component changing. See PIVOTS_INTRO. */}
         {report.steady && (
           <section aria-labelledby="steady-heading">
             <h2 id="steady-heading" className="text-xl font-bold text-navy">
-              Start with S.T.E.A.D.Y.
+              {PIVOTS_INTRO.heading}
             </h2>
-            <p className="mt-2 leading-relaxed text-gray-600">
-              What you described is the kind of change that rewards steadying before planning. Work
-              these in order — it is how you move from reacting to choosing.
-            </p>
+            <p className="mt-2 leading-relaxed text-gray-600">{PIVOTS_INTRO.body}</p>
             <ol className="mt-5 space-y-3">
               {STEADY_STEPS.map((s) => (
                 <li key={s.letter} className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4">
@@ -285,7 +285,7 @@ export default async function ResultsPage({
                 Coming soon
               </p>
               <h3 className="mt-1 font-bold text-navy">
-                Life Is a Project™ 90-Minute Workshop
+                LIAP Virtual Workshop
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 Ninety minutes working your plan alongside others going through their own change.
@@ -306,8 +306,8 @@ export default async function ResultsPage({
         </section>
 
         <p className="text-sm text-gray-500">
-          <Link href="/life-is-a-project" className="underline underline-offset-2 hover:text-navy">
-            Back to Life Is a Project™
+          <Link href="/living-is-a-project" className="underline underline-offset-2 hover:text-navy">
+            Back to Living Is a Project...Are You Ready?™
           </Link>
         </p>
       </div>

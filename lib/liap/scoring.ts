@@ -125,14 +125,59 @@ export function needsSteady(intake: Intake): boolean {
   return intake.changeType === 'unexpected' || (intake.urgency ?? 0) >= 4
 }
 
-export const STEADY_STEPS = [
+/**
+ * The change-navigation steps shown on the readiness report.
+ *
+ * ── AWAITING WISER PIVOTS™ CONTENT ─────────────────────────────────────────
+ *
+ * Owner ruling, 22 August 2026: S.T.E.A.D.Y. is retired from customer-facing
+ * LIAP and Wiser Pivots™ is the approved replacement concept — but the six
+ * replacement cards are being written separately, and the instruction was
+ * explicit that they must not be invented here.
+ *
+ * So the copy below is unchanged and still renders. That is deliberate: the
+ * alternative is a report with a hole in it for anyone navigating an
+ * unexpected change, which is precisely the reader who most needs something
+ * on the page.
+ *
+ * WHAT WAS PREPARED: the render site now reads its heading and introduction
+ * from `PIVOTS_INTRO` rather than having them inline, and every card is typed
+ * as a `PivotStep`. When the approved content arrives, replacing it is one
+ * edit to this array and one to that constant — no component changes, no
+ * layout work, and nothing else in the engine moves.
+ *
+ * The identifier stays `STEADY_STEPS`. It is referenced by the persona suite
+ * and seen by nobody, and renaming an internal symbol to follow a marketing
+ * decision is the blind replacement the handoff warns against.
+ */
+export interface PivotStep {
+  /** Currently the S.T.E.A.D.Y. initial. Wiser Pivots™ may use something else. */
+  readonly letter: string
+  readonly title: string
+  readonly body: string
+}
+
+/**
+ * Heading and introduction for that section.
+ *
+ * Lifted out of the page so the retired acronym appears in exactly one place
+ * a writer has to touch.
+ */
+export const PIVOTS_INTRO = {
+  heading: 'Start with S.T.E.A.D.Y.',
+  body:
+    'What you described is the kind of change that rewards steadying before planning. Work ' +
+    'these in order — it is how you move from reacting to choosing.',
+} as const
+
+export const STEADY_STEPS: readonly PivotStep[] = [
   { letter: 'S', title: 'Stabilize what is urgent', body: 'Deal first with anything that gets worse if left. Not everything — the things with a clock on them.' },
   { letter: 'T', title: 'Take inventory', body: 'Write down what you actually have: money, people, time, options, obligations. Most situations look different once they are on paper.' },
   { letter: 'E', title: 'Evaluate the impact', body: 'Separate what has genuinely changed from what you fear might change. They are rarely the same list.' },
   { letter: 'A', title: 'Assess risks and resources', body: 'Name what would hurt most if it went wrong, and what you already have that would help.' },
   { letter: 'D', title: 'Determine the next best steps', body: 'Choose the smallest number of actions that move you forward. Three is usually enough.' },
   { letter: 'Y', title: 'Yield, review and adjust', body: 'Set a date to look again. A plan made in the first week of a change is a draft, not a commitment.' },
-] as const
+]
 
 // ---------------------------------------------------------------------------
 // §15's critical rule, made explicit.

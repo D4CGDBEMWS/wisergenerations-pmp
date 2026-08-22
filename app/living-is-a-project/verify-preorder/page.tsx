@@ -2,7 +2,7 @@ import { VerifyPreorderForm } from '@/components/liap/VerifyPreorderForm'
 
 export const metadata = {
   title: 'Verify your preorder | Wiser Generations',
-  description: 'Preordered Life Is a Project… Be Ready. from another retailer? Verify it here to unlock your assessment.',
+  description: 'Preordered Living Is a Project...Are You Ready?™ from another retailer? Verify it here to unlock your assessment.',
 }
 
 // ---------------------------------------------------------------------------
@@ -21,7 +21,7 @@ export default function VerifyPreorderPage() {
       </h1>
       <p className="mt-4 leading-relaxed text-gray-700">
         The Life Project-Ready™ Assessment comes with every preorder of{' '}
-        <em>Life Is a Project… Be Ready.</em> — including ones placed through another retailer.
+        <em>Living Is a Project...Are You Ready?™</em> — including ones placed through another retailer.
         Send us the details and we&rsquo;ll unlock it.
       </p>
       <p className="mt-3 text-sm leading-relaxed text-gray-500">

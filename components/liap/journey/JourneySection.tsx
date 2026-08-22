@@ -93,10 +93,14 @@ export function JourneySection({ content, children }: Props) {
                 <dd className="font-semibold text-navy">{content.productName}</dd>
               </div>
             )}
-            {content.price && (
+            {/* A held price renders nothing. copyText returns null for a
+                pending value, so an unconfirmed number has no path to a
+                visitor — the same guarantee that covers every other string
+                on this page. */}
+            {content.price && copyText(content.price) && (
               <div>
                 <dt className="text-sm text-gray-600">Price</dt>
-                <dd className="font-semibold text-navy">{content.price}</dd>
+                <dd className="font-semibold text-navy">{copyText(content.price)}</dd>
               </div>
             )}
           </dl>

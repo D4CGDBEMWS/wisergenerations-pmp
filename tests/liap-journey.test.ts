@@ -167,11 +167,15 @@ describe('the complete journey', () => {
     expect(resolve.body).toContain('Whether to take the contract')
 
     // --- the email ----------------------------------------------------------
-    const url = `${ORIGIN}/life-is-a-project/results/${resultToken}`
+    const url = `${ORIGIN}/living-is-a-project/results/${resultToken}`
     const html = resultsEmailHtml(report, url)
     const text = resultsEmailText(report, url)
 
-    expect(RESULTS_SUBJECT).toBe('Your Life Project-Ready™ Plan Is Ready')
+    // Renamed on the owner's 22 August ruling: the Assessment produces a
+    // Readiness Report, never a Plan. Life Project Plan™ is reserved for the
+    // Retreat outcome, and the two must not blur.
+    expect(RESULTS_SUBJECT).toBe('Your Life Project-Ready™ Readiness Report')
+    expect(RESULTS_SUBJECT).not.toContain('Plan')
     expect(html).toContain(url)
     expect(html).toContain('Ready to Move')
     expect(text).toContain(url)

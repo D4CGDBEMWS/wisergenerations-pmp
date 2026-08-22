@@ -37,12 +37,12 @@ import { getDb } from '@/lib/db/client'
  * code pointing at somebody else's site.
  */
 export const PARTNER_DESTINATIONS = {
-  hub: '/life-is-a-project',
-  book: '/life-is-a-project/book',
-  assessment: '/life-is-a-project/assessment',
-  retreat: '/life-is-a-project/retreat',
-  group: '/life-is-a-project/retreat/group',
-  sponsor: '/life-is-a-project/sponsor',
+  hub: '/living-is-a-project',
+  book: '/living-is-a-project/book',
+  assessment: '/living-is-a-project/assessment',
+  retreat: '/living-is-a-project/retreat',
+  group: '/living-is-a-project/retreat/group',
+  sponsor: '/living-is-a-project/sponsor',
 
   // Phase II-J. Section anchors, so a campaign short can land the viewer at
   // the point in the story it just told them — the website continuing the
@@ -53,14 +53,14 @@ export const PARTNER_DESTINATIONS = {
   // partner still stores a KEY, and there is no request input anywhere in
   // this path that reaches the fragment. Adding a landing point is a code
   // change and a review, which is the point.
-  'section-destination': '/life-is-a-project#destination',
-  'section-direction': '/life-is-a-project#direction',
-  'section-resources': '/life-is-a-project#resources',
-  'section-risk': '/life-is-a-project#risk',
-  'section-change': '/life-is-a-project#change',
-  'section-start': '/life-is-a-project#start',
-  'section-build': '/life-is-a-project#build',
-  'section-experience': '/life-is-a-project#experience',
+  'section-destination': '/living-is-a-project#destination',
+  'section-direction': '/living-is-a-project#direction',
+  'section-resources': '/living-is-a-project#resources',
+  'section-risk': '/living-is-a-project#risk',
+  'section-change': '/living-is-a-project#change',
+  'section-start': '/living-is-a-project#start',
+  'section-build': '/living-is-a-project#build',
+  'section-experience': '/living-is-a-project#experience',
 } as const
 
 export type PartnerDestination = keyof typeof PARTNER_DESTINATIONS

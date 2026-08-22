@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: "Fractional PM Leadership | Enterprise Academy Pods",
-  description: "Fractional senior project management for growing teams. Starting at $5,000/month, 3-month minimum. LIAP™ framework. Delivered by Crystal Stewart and vetted pod leaders.",
+  description: "Fractional senior project management for growing teams. Starting at $5,000/month, 3-month minimum. The LIAP Way™. Delivered by Crystal Stewart and vetted pod leaders.",
 }
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -27,7 +27,7 @@ const WHO_ITS_FOR = [
 
 const WHAT_INCLUDES = [
   'Weekly delivery cadence embedded with your team',
-  'LIAP™ framework applied to your specific project',
+  'The LIAP Way™ applied to your specific project',
   'Monthly executive reporting',
   'Team mentoring — we upskill your people while we execute',
   'Access to the full 17-artifact template library',
@@ -54,7 +54,7 @@ export default function PodsPage() {
             Fractional Project Management Leadership for Growing Teams
           </h1>
           <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 max-w-3xl">
-            Senior PM capacity when you need it, without the full-time hire. Delivered by Enterprise Academy&apos;s vetted pod leaders, using the LIAP™ framework.
+            Senior PM capacity when you need it, without the full-time hire. Delivered by Enterprise Academy&apos;s vetted pod leaders, using The LIAP Way™.
           </p>
           <a
             href={CALENDLY}

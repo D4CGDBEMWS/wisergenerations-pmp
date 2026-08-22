@@ -31,7 +31,7 @@ import { LIAP_RETREAT } from '@/lib/liap/retreat'
 // ---------------------------------------------------------------------------
 
 export const metadata: Metadata = {
-  title: 'Weekend Masterclass Retreat — Life Is a Project™',
+  title: 'Weekend Masterclass Retreat — Living Is a Project...Are You Ready?™',
   description:
     'An immersive weekend masterclass. Lodging and meals included. Join the interest list.',
   // Not indexed while the copy is a draft and no date is announced.
@@ -42,7 +42,7 @@ export default function RetreatPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
       <p className="text-xs font-bold uppercase tracking-widest text-gold">
-        Life Is a Project™
+        Living Is a Project...Are You Ready?™
       </p>
       <h1 className="mt-3 text-4xl font-bold text-navy">
         The Weekend Masterclass Retreat
@@ -96,7 +96,7 @@ export default function RetreatPage() {
 
       <p className="mt-8 text-sm text-gray-700">
         Coming as a group of five or more?{' '}
-        <Link href="/life-is-a-project/retreat/group" className="font-semibold underline">
+        <Link href="/living-is-a-project/retreat/group" className="font-semibold underline">
           Request group information
         </Link>
         .

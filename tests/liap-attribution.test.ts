@@ -109,7 +109,7 @@ describe('the destination allow-list', () => {
   it('resolves every known key to an internal LIAP path', () => {
     for (const [key, path] of Object.entries(PARTNER_DESTINATIONS)) {
       expect(destinationPath(key)).toBe(path)
-      expect(path.startsWith('/life-is-a-project')).toBe(true)
+      expect(path.startsWith('/living-is-a-project')).toBe(true)
     }
   })
 
@@ -126,7 +126,7 @@ describe('the destination allow-list', () => {
       null,
       undefined,
     ]) {
-      expect(destinationPath(attempt)).toBe('/life-is-a-project')
+      expect(destinationPath(attempt)).toBe('/living-is-a-project')
     }
   })
 
@@ -136,7 +136,7 @@ describe('the destination allow-list', () => {
       // Same-origin, root-relative, no scheme, no protocol-relative escape.
       // Section anchors added in Phase II-J are still internal paths — the
       // fragment is part of a fixed stored value, not request input.
-      expect(p.startsWith('/life-is-a-project')).toBe(true)
+      expect(p.startsWith('/living-is-a-project')).toBe(true)
       expect(p.startsWith('//')).toBe(false)
       expect(p).not.toContain(':')
       expect(p).not.toContain('\\')
@@ -154,7 +154,7 @@ describe('the destination allow-list', () => {
       expect(key.startsWith('section-')).toBe(true)
       // Exactly one fragment, on the hub, and nothing after it but the id.
       expect(path.split('#')).toHaveLength(2)
-      expect(path.startsWith('/life-is-a-project#')).toBe(true)
+      expect(path.startsWith('/living-is-a-project#')).toBe(true)
       expect(path.split('#')[1]).toMatch(/^[a-z-]+$/)
     }
   })
@@ -164,11 +164,11 @@ describe('the destination allow-list', () => {
     // landing point, let alone an off-site one.
     for (const attempt of [
       'hub#evil',
-      '/life-is-a-project#\u0000',
+      '/living-is-a-project#\u0000',
       'section-destination extra',
       'https://evil.example.com#risk',
     ]) {
-      expect(destinationPath(attempt)).toBe('/life-is-a-project')
+      expect(destinationPath(attempt)).toBe('/living-is-a-project')
     }
   })
 })

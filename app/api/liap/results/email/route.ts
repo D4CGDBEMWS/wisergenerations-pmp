@@ -49,7 +49,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const report = await rebuildReport(found.id)
   const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wisergenerations.com'
-  const url = `${origin}/life-is-a-project/results/${token}`
+  const url = `${origin}/living-is-a-project/results/${token}`
 
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.MAGIC_LINK_FROM_EMAIL || process.env.RESEND_FROM_EMAIL || 'info@wisergenerations.com'

@@ -16,7 +16,7 @@ import { LIAP_RETREAT } from '@/lib/liap/retreat'
 // ---------------------------------------------------------------------------
 
 export const metadata: Metadata = {
-  title: 'Group enquiries — Life Is a Project™ Retreat',
+  title: 'Group enquiries — LIAP Retreat',
   description: 'Bringing a group to the Weekend Masterclass Retreat. Request information.',
   robots: { index: false, follow: false },
 }
@@ -25,7 +25,7 @@ export default function GroupPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
       <p className="text-xs font-bold uppercase tracking-widest text-gold">
-        Life Is a Project™ Retreat
+        LIAP Retreat
       </p>
       <h1 className="mt-3 text-4xl font-bold text-navy">Bringing a group</h1>
       <p className="mt-4 text-lg text-gray-700">

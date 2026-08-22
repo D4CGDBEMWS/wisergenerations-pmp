@@ -15,7 +15,7 @@ import { CONSENT_VERSION } from '@/lib/consent'
 // decision a person makes after reading what was submitted here.
 //
 // The partner code is read from the URL rather than a cookie. Somebody who
-// scanned a QR code in a barbershop arrived at /life-is-a-project/retreat?p=CODE,
+// scanned a QR code in a barbershop arrived at /living-is-a-project/retreat?p=CODE,
 // and submitting this form is an intentional act, so attribution attaches
 // without any tracking cookie and therefore without depending on what they
 // chose in the consent banner.
@@ -221,7 +221,7 @@ export function RetreatInterestForm({ inquiryType, submitLabel, confirmation }: 
           className="mt-1"
         />
         <span>
-          Send me occasional Life Is a Project™ updates by email. You can
+          Send me occasional Living Is a Project...Are You Ready?™ updates by email. You can
           unsubscribe at any time, and we will reply to this enquiry either way.
         </span>
       </label>

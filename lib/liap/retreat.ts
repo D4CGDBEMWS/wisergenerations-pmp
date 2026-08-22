@@ -19,7 +19,7 @@ const AMOUNT_CENTS = 149999
 
 export const LIAP_RETREAT = {
   productKey: 'LIAP_RETREAT',
-  name: 'Life Is a Project™ Weekend Masterclass Retreat',
+  name: 'LIAP Retreat',
   /** Cents. The only place this number exists. */
   amount: AMOUNT_CENTS,
   priceLabel: `$${(AMOUNT_CENTS / 100).toLocaleString('en-US', {

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CRM segmentation for Life Is a Project™. §28.
+// CRM segmentation for Living Is a Project...Are You Ready?™. §28.
 //
 // Server-only: it holds the Mailchimp key. Split from lib/liap/analytics.ts,
 // which runs in the browser, so that neither can accidentally import the

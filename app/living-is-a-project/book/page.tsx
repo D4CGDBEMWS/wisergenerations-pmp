@@ -4,9 +4,9 @@ import { LiapCta } from '@/components/liap/LiapCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
 
 export const metadata = {
-  title: 'Life Is a Project… Be Ready. | Wiser Generations',
+  title: 'Living Is a Project...Are You Ready?™ | Wiser Generations',
   description:
-    'Preorder Life Is a Project… Be Ready. and receive the Life Project-Ready™ Assessment at no additional charge. Publishing October 2026 from Goshen Publishing.',
+    'Preorder Living Is a Project...Are You Ready?™ and receive the Life Project-Ready™ Assessment at no additional charge. From Goshen Publishing.',
 }
 
 // ---------------------------------------------------------------------------
@@ -21,7 +21,7 @@ export const metadata = {
 const FAQ = [
   {
     q: 'When does the book ship?',
-    a: 'Publication is October 2026. Preorder customers are charged now and receive their copy on release.',
+    a: 'Preorder customers are charged now and receive their copy on release. The publication date will be announced.',
   },
   {
     q: 'When do I get the assessment?',
@@ -54,10 +54,10 @@ export default function LiapBookPage() {
         <div className="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-              Goshen Publishing · October 2026
+              Goshen Publishing
             </p>
             <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-5xl">
-              Life Is a Project… Be Ready.
+              Living Is a Project...Are You Ready?™
             </h1>
 
             <div className="mt-6 max-w-xl space-y-4 text-lg leading-relaxed text-gray-200">
@@ -76,7 +76,7 @@ export default function LiapBookPage() {
               <p className="font-semibold text-gold">Your book begins the journey.</p>
               <p className="text-gold">Your assessment tells you where to begin.</p>
               <p className="mt-3 text-sm leading-relaxed text-gray-300">
-                Preorder <em>Life Is a Project… Be Ready.</em> and receive the Life Project-Ready™
+                Preorder <em>Living Is a Project...Are You Ready?™</em> and receive the Life Project-Ready™
                 Assessment at no additional charge.
               </p>
             </div>
@@ -87,7 +87,7 @@ export default function LiapBookPage() {
             <div
               className="mx-auto flex aspect-[2/3] w-full max-w-[280px] flex-col justify-between rounded-lg bg-gradient-to-br from-[#12233c] to-[#0A1628] p-6 text-center shadow-2xl ring-1 ring-white/10"
               role="img"
-              aria-label="Cover of Life Is a Project… Be Ready."
+              aria-label="Cover of Living Is a Project...Are You Ready?™"
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
                 Wiser Generations
@@ -111,10 +111,15 @@ export default function LiapBookPage() {
                 <dt className="text-gray-400">Format</dt>
                 <dd className="font-semibold text-white">{LIAP_BOOK.format}</dd>
               </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-gray-400">Publishes</dt>
-                <dd className="font-semibold text-white">October 2026</dd>
-              </div>
+              {/* Publication date is on HOLD. The row renders only once a
+                  date is authorised — an absent row is honest; a placeholder
+                  date is a promise nobody made. */}
+              {LIAP_BOOK.publishesOn && (
+                <div className="flex justify-between gap-4">
+                  <dt className="text-gray-400">Publishes</dt>
+                  <dd className="font-semibold text-white">{LIAP_BOOK.publishesOn}</dd>
+                </div>
+              )}
             </dl>
           </div>
         </div>
@@ -134,7 +139,7 @@ export default function LiapBookPage() {
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}
             <Link
-              href="/life-is-a-project/verify-preorder"
+              href="/living-is-a-project/verify-preorder"
               className="font-semibold text-brand-blue underline underline-offset-2 hover:text-navy"
             >
               Preordered from another retailer?
@@ -148,7 +153,7 @@ export default function LiapBookPage() {
         <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
           <h2 className="text-xl font-bold text-navy">About the author</h2>
           <p className="mt-4 leading-relaxed text-gray-700">
-            Crystal Stewart is the founder of Wiser Generations, where she has spent her career
+            Crystal Glover Stewart, PMP® is the founder of Wiser Generations, where she has spent her career
             teaching people to plan work that matters and finish it. <em>Life Is a Project… Be
             Ready.</em> turns that same discipline toward the projects nobody assigns you — the
             ones that arrive with a phone call.

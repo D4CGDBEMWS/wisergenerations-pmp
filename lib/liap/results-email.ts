@@ -13,7 +13,13 @@ import type { FullReport } from './recommendations'
 // works, which is the whole point of sending it.
 // ---------------------------------------------------------------------------
 
-export const RESULTS_SUBJECT = 'Your Life Project-Ready™ Plan Is Ready'
+// Renaming the output to the approved "Life Project-Ready™ Readiness Report"
+// turned the old subject into "…Readiness Report Is Ready" — Ready three
+// times in six words. Fixed by DELETING the trailing clause rather than
+// writing a new line: the subject is now exactly the approved product name
+// and nothing invented. Flagged for owner approval; a better subject is a
+// copy decision, not mine.
+export const RESULTS_SUBJECT = 'Your Life Project-Ready™ Readiness Report'
 
 export function resultsEmailHtml(report: FullReport, resultsUrl: string): string {
   const actions = report.actions
@@ -31,7 +37,7 @@ export function resultsEmailHtml(report: FullReport, resultsUrl: string): string
   return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;padding:20px">
   <div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">
     <h1 style="color:#C9A84C;margin:0;font-size:22px">Wiser Generations</h1>
-    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Life Is a Project™</p>
+    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Living Is a Project...Are You Ready?™</p>
   </div>
 
   <div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">

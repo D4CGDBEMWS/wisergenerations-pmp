@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// The Life Is a Project™ book preorder.
+// The Living Is a Project...Are You Ready?™ book preorder.
 //
 // Its own module with its own numbers. §8: do not reuse PMP product ids,
 // membership permissions or business logic. A PMP price change must not be
@@ -17,14 +17,21 @@ const AMOUNT_CENTS = 2499
 
 export const LIAP_BOOK = {
   productKey: 'LIAP_BOOK_PREORDER',
-  name: 'Life Is a Project… Be Ready.',
+  name: 'Living Is a Project...Are You Ready?™',
   /** Cents. The only place this number exists. */
   amount: AMOUNT_CENTS,
   priceLabel: `$${(AMOUNT_CENTS / 100).toFixed(2)}`,
   currency: 'usd',
   format: 'Hardcover',
   publisher: 'Goshen Publishing',
-  publishesOn: 'October 2026',
+  /**
+   * HOLD — no publication date is authorised as of 22 August 2026.
+   *
+   * Null rather than a placeholder date, so every surface that would have
+   * printed one prints nothing instead. Goshen Publishing remains the
+   * publisher; only the date is withheld.
+   */
+  publishesOn: null as string | null,
   /** Stripe metadata marker the webhook matches on. */
   metadataKey: 'liap-book-preorder',
 } as const

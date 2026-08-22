@@ -41,17 +41,17 @@ export default async function AssessmentPage() {
         </h1>
         <p className="mt-4 leading-relaxed text-gray-600">
           The Life Project-Ready™ Assessment comes with a preorder of{' '}
-          <em>Life Is a Project… Be Ready.</em> We can&rsquo;t find a preorder on this account yet.
+          <em>Living Is a Project...Are You Ready?™</em> We can&rsquo;t find a preorder on this account yet.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/life-is-a-project/book"
+            href="/living-is-a-project/book"
             className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-navy px-6 font-bold text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             Preorder the book
           </Link>
           <Link
-            href="/life-is-a-project/verify-preorder"
+            href="/living-is-a-project/verify-preorder"
             className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-gray-300 px-6 font-semibold text-navy transition-colors hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
           >
             I preordered elsewhere
