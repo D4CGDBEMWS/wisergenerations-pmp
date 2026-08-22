@@ -63,10 +63,14 @@ export const SHARED_INFRASTRUCTURE: readonly string[] = [
 export interface Shell {
   readonly key: ShellKey
   /**
-   * The path prefix this shell owns, or null for the default shell, which
-   * owns everything not claimed by another.
+   * The path prefixes this shell owns. Empty for the default shell, which owns
+   * everything not claimed by another.
+   *
+   * A list rather than one string because LIAP legitimately occupies two
+   * namespaces: the product tree, which is free to move, and the /liap seam,
+   * which goes on paper and must not.
    */
-  readonly pathPrefix: string | null
+  readonly pathPrefixes: readonly string[]
   /** Where the Wiser Generations logo goes. */
   readonly homeHref: string
   readonly nav: readonly ShellLink[]
@@ -90,7 +94,7 @@ export interface Shell {
 
 const DEFAULT_SHELL: Shell = {
   key: 'default',
-  pathPrefix: null,
+  pathPrefixes: [],
   homeHref: '/',
   nav: [
     { label: 'Programs', href: '/programs' },
@@ -161,7 +165,12 @@ const DEFAULT_SHELL: Shell = {
  */
 const LIAP_SHELL: Shell = {
   key: 'liap',
-  pathPrefix: '/living-is-a-project',
+  // Two namespaces, on purpose. /living-is-a-project is the product tree and
+  // has already been renamed once. /liap is the durable seam — /liap/book is
+  // what a printed QR code points at, and it survived that rename untouched.
+  // A reader arriving from a book must not meet PMP navigation, so the seam
+  // belongs to this shell as much as the tree does.
+  pathPrefixes: ['/living-is-a-project', '/liap'],
   homeHref: '/living-is-a-project',
   nav: [{ label: 'Need help?', href: '/contact' }],
   mobileNav: [],
@@ -185,10 +194,10 @@ const SHELLS: Record<ShellKey, Shell> = {
   liap: LIAP_SHELL,
 }
 
-/** Every shell that claims a path prefix, longest first so nesting resolves. */
-const PREFIXED_SHELLS: readonly Shell[] = SHELL_KEYS.map((key) => SHELLS[key])
-  .filter((shell): shell is Shell & { pathPrefix: string } => shell.pathPrefix !== null)
-  .sort((a, b) => b.pathPrefix.length - a.pathPrefix.length)
+/** Every claimed prefix, longest first so a nested claim wins over its parent. */
+const CLAIMS: readonly { prefix: string; shell: Shell }[] = SHELL_KEYS.flatMap((key) =>
+  SHELLS[key].pathPrefixes.map((prefix) => ({ prefix, shell: SHELLS[key] }))
+).sort((a, b) => b.prefix.length - a.prefix.length)
 
 /**
  * Which shell a path renders in.
@@ -200,9 +209,9 @@ const PREFIXED_SHELLS: readonly Shell[] = SHELL_KEYS.map((key) => SHELLS[key])
  */
 export function shellForPath(pathname: string | null | undefined): Shell {
   if (!pathname) return DEFAULT_SHELL
-  for (const shell of PREFIXED_SHELLS) {
-    if (pathname === shell.pathPrefix || pathname.startsWith(`${shell.pathPrefix}/`)) {
-      return shell
+  for (const claim of CLAIMS) {
+    if (pathname === claim.prefix || pathname.startsWith(`${claim.prefix}/`)) {
+      return claim.shell
     }
   }
   return DEFAULT_SHELL
@@ -231,9 +240,10 @@ export function shellLinks(target: Shell): string[] {
  * linking to everything is its job.
  */
 export function foreignShellLinks(target: Shell): string[] {
-  if (target.pathPrefix === null) return []
+  if (target.pathPrefixes.length === 0) return []
   return shellLinks(target).filter(
     (href) =>
-      !href.startsWith(target.pathPrefix!) && !SHARED_INFRASTRUCTURE.includes(href)
+      !target.pathPrefixes.some((prefix) => href.startsWith(prefix)) &&
+      !SHARED_INFRASTRUCTURE.includes(href)
   )
 }

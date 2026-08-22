@@ -54,6 +54,9 @@ describe('shell resolution', () => {
       '/living-is-a-project/assessment',
       '/living-is-a-project/book',
       '/living-is-a-project/results/abc123',
+      // The durable seam. /liap/book is what a printed QR points at, and it
+      // must wear the LIAP shell as surely as the product tree does.
+      '/liap/book',
     ]) {
       expect(shellForPath(path).key, path).toBe('liap')
     }
@@ -111,6 +114,10 @@ describe('a program shell links only within its program', () => {
 
 describe('the LIAP shell, as the owner ruled it', () => {
   const liap = shell('liap')
+
+  it('owns both the product tree and the durable /liap seam', () => {
+    expect(liap.pathPrefixes).toEqual(['/living-is-a-project', '/liap'])
+  })
 
   it('sends the logo to the LIAP hub, not the PMP homepage', () => {
     expect(liap.homeHref).toBe('/living-is-a-project')
@@ -173,7 +180,7 @@ describe('the default shell is unchanged', () => {
   })
 
   it('owns no prefix, because it is the general site', () => {
-    expect(base.pathPrefix).toBeNull()
+    expect(base.pathPrefixes).toEqual([])
     expect(base.homeHref).toBe('/')
   })
 })
