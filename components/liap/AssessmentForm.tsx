@@ -243,7 +243,7 @@ export function AssessmentForm() {
       }
 
       trackLiap('liap_assessment_completed')
-      router.push(`/life-is-a-project/results/${data.resultToken}`)
+      router.push(`/living-is-a-project/results/${data.resultToken}`)
     } catch {
       setError('You appear to be offline. Your answers are saved — reconnect and submit again.')
       setBusy(false)

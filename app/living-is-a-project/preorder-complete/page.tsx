@@ -37,7 +37,7 @@ export default function PreorderCompletePage() {
       </div>
 
       <Link
-        href="/life-is-a-project/assessment"
+        href="/living-is-a-project/assessment"
         className="mt-9 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-gold px-8 text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy sm:w-auto"
       >
         Begin my assessment

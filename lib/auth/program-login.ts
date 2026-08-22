@@ -69,8 +69,8 @@ const PROGRAM_LOGIN: Record<LoginProduct, ProgramLogin> = {
   // Owner-approved wording, 22 August 2026. Verbatim; not to be rewritten.
   liap: {
     entitlementKey: 'LIAP_ASSESSMENT_ACCESS',
-    signInPath: '/life-is-a-project/access',
-    defaultDestination: '/life-is-a-project/assessment',
+    signInPath: '/living-is-a-project/access',
+    defaultDestination: '/living-is-a-project/assessment',
     emailSubject: 'Your secure LIAP access link',
     emailIntro: 'Use the secure link below to continue your LIAP journey.',
     emailCta: 'CONTINUE MY LIAP JOURNEY',

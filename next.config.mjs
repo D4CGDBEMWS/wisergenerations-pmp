@@ -18,6 +18,25 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // ── The canonical LIAP rename, 22 August 2026 ──────────────────────
+      //
+      // /life-is-a-project → /living-is-a-project, permanent (308).
+      //
+      // Landed before the book-activation work so the durable /liap/book seam
+      // is never written against a path already known to be obsolete. Doing it
+      // now rather than after launch is the cheapest this will ever be: the
+      // LIAP section has never been public, every page is behind FEATURE_LIAP,
+      // and no QR code has been printed — so there is nothing to unwind.
+      //
+      // The wildcard covers every child in one rule: /access, /assessment,
+      // /book, /results/:token, /preorder-complete, /verify-preorder.
+      { source: '/life-is-a-project', destination: '/living-is-a-project', permanent: true },
+      {
+        source: '/life-is-a-project/:path*',
+        destination: '/living-is-a-project/:path*',
+        permanent: true,
+      },
+
       // Consolidated duplicate routes onto a single canonical URL
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
       { source: '/resources/blog', destination: '/blog', permanent: true },

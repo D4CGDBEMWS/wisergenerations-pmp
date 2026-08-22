@@ -1,6 +1,30 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { shellForPath } from '@/lib/shell'
+
+// ---------------------------------------------------------------------------
+// The footer draws whatever the current shell declares — see lib/shell.ts.
+//
+// It used to hold three hardcoded columns of PMP and CAPM links, which meant
+// a LIAP reader arriving from a printed book was offered an exam simulator, a
+// $49/month practice subscription and a pass guarantee for a certification
+// they had not come for.
+//
+// The brand blurb and the two legal paragraphs are shell-dependent for the
+// same reason. A PMI trademark notice is required where PMI marks appear; a
+// pass-rate disclaimer exists because the PMP business makes a pass-rate
+// claim. On a page that makes neither claim they are not just unnecessary,
+// they are confusing.
+//
+// NO REPLACEMENT LEGAL TEXT IS INVENTED HERE. Whether LIAP needs disclaimers
+// of its own is a question for the owner and her counsel, and it is recorded
+// as LEGAL REVIEW REQUIRED rather than answered by a developer.
+// ---------------------------------------------------------------------------
 
 export function Footer() {
+  const shell = shellForPath(usePathname())
   return (
     <footer className="bg-navy text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -19,10 +43,12 @@ export function Footer() {
               className="h-auto w-[225px] max-w-full mb-3"
             />
             <p className="text-gray-400 text-sm mb-4">An Enterprise Academy Program</p>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs mb-6">
-              PMP® and CAPM® certification prep for career transitioners, corporate teams, and veterans.
-              Mentor-led. PMI-aligned. Delivered by Crystal Stewart, PMP.
-            </p>
+            {shell.showProgramDisclaimers && (
+              <p className="text-gray-400 text-sm leading-relaxed max-w-xs mb-6">
+                PMP® and CAPM® certification prep for career transitioners, corporate teams, and veterans.
+                Mentor-led. PMI-aligned. Delivered by Crystal Stewart, PMP.
+              </p>
+            )}
             <div className="flex gap-4">
               <a href="https://www.facebook.com/wisergenerations" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gold transition-colors" aria-label="Facebook">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -39,59 +65,28 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Programs */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Programs</h3>
-            <ul className="space-y-2">
-              {[
-                { label: 'PMP Certification Prep', href: '/pmp' },
-                { label: 'CAPM Career Launcher', href: '/capm' },
-                { label: 'Veterans PM Pathway', href: '/veterans' },
-                { label: 'Corporate Training', href: '/corporate' },
-                { label: 'All Programs', href: '/programs' },
-              ].map(item => (
-                <li key={item.href}><Link href={item.href} className="text-gray-400 text-sm hover:text-gold transition-colors">{item.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2">
-              {[
-                { label: 'Free PMP Guide', href: '/free-guide' },
-                { label: 'Practice Studio — $49/mo', href: '/access' },
-                { label: 'Exam Simulator', href: '/exam-simulator' },
-{ label: 'Try Free Practice Questions →', href: '/free-practice' },
-                { label: 'PMBOK Flashcards', href: '/flashcards' },
-                { label: 'Blog & Insights', href: '/blog' },
-                { label: 'Free Webinars', href: '/webinars' },
-                { label: 'FAQ', href: '/faq' },
-                { label: 'Pass Guarantee', href: '/guarantee' },
-              ].map(item => (
-                <li key={item.href}><Link href={item.href} className="text-gray-400 text-sm hover:text-gold transition-colors">{item.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
-              {[
-                { label: 'About Crystal', href: '/about' },
-                { label: 'Contact Us', href: '/contact' },
-                { label: 'Privacy Policy', href: '/privacy-policy' },
-                { label: 'Terms of Service', href: '/terms' },
-              ].map(item => (
-                <li key={item.href}><Link href={item.href} className="text-gray-400 text-sm hover:text-gold transition-colors">{item.label}</Link></li>
-              ))}
-            </ul>
-            <div className="mt-6">
-              <p className="text-gray-400 text-xs mb-1">Metro Atlanta & Virtual</p>
-              <a href="mailto:info@wisergenerations.com" className="text-gold text-sm hover:underline">info@wisergenerations.com</a>
+          {/* Link columns, from the shell. */}
+          {shell.footerColumns.map((column) => (
+            <div key={column.title}>
+              <h3 className="text-white font-semibold mb-4">{column.title}</h3>
+              <ul className="space-y-2">
+                {column.links.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className="text-gray-400 text-sm hover:text-gold transition-colors">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
+          ))}
+
+          {/* How to reach a person. Shared infrastructure, every shell. */}
+          <div>
+            <p className="text-gray-400 text-xs mb-1">Metro Atlanta &amp; Virtual</p>
+            <a href="mailto:info@wisergenerations.com" className="text-gold text-sm hover:underline">
+              info@wisergenerations.com
+            </a>
           </div>
 
         </div>
@@ -100,18 +95,30 @@ export function Footer() {
         <div className="border-t border-white/10 pt-8 space-y-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-xs">&copy; {new Date().getFullYear()} Wiser Generations Int&apos;l. An Enterprise Academy Program. All rights reserved.</p>
-            <p className="text-gray-600 text-xs text-center md:text-right max-w-md">
-              PMP&reg;, CAPM&reg;, and PMI&reg; are registered marks of the Project Management Institute, Inc. Wiser Generations Int&apos;l is not affiliated with PMI.
-            </p>
+            {/* The PMI trademark notice is required where PMI marks appear.
+                It appears here because this footer names PMP, CAPM and PMI —
+                on a shell that names none of them it is not applicable. */}
+            {shell.showProgramDisclaimers && (
+              <p className="text-gray-600 text-xs text-center md:text-right max-w-md">
+                PMP&reg;, CAPM&reg;, and PMI&reg; are registered marks of the Project Management Institute, Inc. Wiser Generations Int&apos;l is not affiliated with PMI.
+              </p>
+            )}
           </div>
-          <p className="text-gray-600 text-[11px] leading-relaxed text-center md:text-left max-w-4xl">
-            Individual results vary. The 87% first-attempt pass rate, &quot;500+ professionals trained,&quot; and similar
-            figures reflect historical results from prior students and are not a guarantee of your outcome. Salary
-            and earnings figures are general industry data, not a promise of income or employment. Testimonials
-            reflect individual experiences and may not be typical. See our{' '}
-            <Link href="/terms" className="underline hover:text-gold">Terms of Service</Link> and{' '}
-            <Link href="/guarantee" className="underline hover:text-gold">Pass Guarantee</Link> for details.
-          </p>
+          {/* The results disclaimer qualifies specific PMP claims — a pass
+              rate, a number of students trained, salary figures. None of those
+              claims is made on a LIAP page, and a first-attempt pass-rate
+              disclaimer under a page about navigating a bereavement reads as a
+              mistake. Suppressed rather than rewritten: LEGAL REVIEW REQUIRED. */}
+          {shell.showProgramDisclaimers && (
+            <p className="text-gray-600 text-[11px] leading-relaxed text-center md:text-left max-w-4xl">
+              Individual results vary. The 87% first-attempt pass rate, &quot;500+ professionals trained,&quot; and similar
+              figures reflect historical results from prior students and are not a guarantee of your outcome. Salary
+              and earnings figures are general industry data, not a promise of income or employment. Testimonials
+              reflect individual experiences and may not be typical. See our{' '}
+              <Link href="/terms" className="underline hover:text-gold">Terms of Service</Link> and{' '}
+              <Link href="/guarantee" className="underline hover:text-gold">Pass Guarantee</Link> for details.
+            </p>
+          )}
         </div>
 
       </div>

@@ -438,7 +438,7 @@ describe('program-aware email language', () => {
 
 describe('program-specific entry experience', () => {
   it('gives LIAP its own sign-in page with the approved copy', () => {
-    const page = source('app/life-is-a-project/access/page.tsx')
+    const page = source('app/living-is-a-project/access/page.tsx')
     expect(page).toContain('Continue Your LIAP Journey')
     expect(page).toContain('Enter the email associated with your LIAP access')
   })
@@ -448,8 +448,8 @@ describe('program-specific entry experience', () => {
   })
 
   it('sends a signed-out reader to the LIAP page, not the Study Access one', () => {
-    const assessment = code('app/life-is-a-project/assessment/page.tsx')
-    expect(assessment).toContain("redirect('/life-is-a-project/access')")
+    const assessment = code('app/living-is-a-project/assessment/page.tsx')
+    expect(assessment).toContain("redirect('/living-is-a-project/access')")
     expect(assessment).not.toContain('/access/login')
   })
 

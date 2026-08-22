@@ -134,7 +134,7 @@ export default function LiapBookPage() {
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}
             <Link
-              href="/life-is-a-project/verify-preorder"
+              href="/living-is-a-project/verify-preorder"
               className="font-semibold text-brand-blue underline underline-offset-2 hover:text-navy"
             >
               Preordered from another retailer?

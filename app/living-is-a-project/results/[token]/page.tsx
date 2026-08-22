@@ -306,7 +306,7 @@ export default async function ResultsPage({
         </section>
 
         <p className="text-sm text-gray-500">
-          <Link href="/life-is-a-project" className="underline underline-offset-2 hover:text-navy">
+          <Link href="/living-is-a-project" className="underline underline-offset-2 hover:text-navy">
             Back to Life Is a Project™
           </Link>
         </p>

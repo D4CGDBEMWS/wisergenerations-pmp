@@ -304,10 +304,10 @@ describe('§27 — additional security requirements', () => {
 
 describe('magic-link destinations are scoped to their product', () => {
   it('resolves a LIAP sign-in only to LIAP destinations', () => {
-    expect(resolveRedirect('/life-is-a-project/assessment', 'liap')).toBe(
-      '/life-is-a-project/assessment'
+    expect(resolveRedirect('/living-is-a-project/assessment', 'liap')).toBe(
+      '/living-is-a-project/assessment'
     )
-    expect(resolveRedirect(null, 'liap')).toBe('/life-is-a-project')
+    expect(resolveRedirect(null, 'liap')).toBe('/living-is-a-project')
   })
 
   it('preserves Study Access behaviour exactly', () => {
@@ -334,9 +334,9 @@ describe('magic-link destinations are scoped to their product', () => {
 
   it('sends a LIAP sign-in asking for a PMP page to a LIAP page', () => {
     // The specific regression, stated plainly.
-    expect(resolveRedirect('/exam-simulator', 'liap')).toBe('/life-is-a-project')
-    expect(resolveRedirect('/flashcards', 'liap')).toBe('/life-is-a-project')
-    expect(resolveRedirect('/life-is-a-project/assessment', 'study')).toBe('/exam-simulator')
+    expect(resolveRedirect('/exam-simulator', 'liap')).toBe('/living-is-a-project')
+    expect(resolveRedirect('/flashcards', 'liap')).toBe('/living-is-a-project')
+    expect(resolveRedirect('/living-is-a-project/assessment', 'study')).toBe('/exam-simulator')
   })
 
   it('keeps the allow-lists disjoint, which is what makes the product derivable', () => {
@@ -363,9 +363,9 @@ describe('magic-link destinations are scoped to their product', () => {
   it('never stores an unresolved destination, whatever was asked for', async () => {
     const cases: Array<[string | null, 'study' | 'liap', string]> = [
       ['https://evil.example/steal', 'study', '/exam-simulator'],
-      ['/exam-simulator', 'liap', '/life-is-a-project'],
-      ['/life-is-a-project/book', 'liap', '/life-is-a-project/book'],
-      [null, 'liap', '/life-is-a-project'],
+      ['/exam-simulator', 'liap', '/living-is-a-project'],
+      ['/living-is-a-project/book', 'liap', '/living-is-a-project/book'],
+      [null, 'liap', '/living-is-a-project'],
     ]
 
     for (const [requested, product, expected] of cases) {
@@ -383,10 +383,10 @@ describe('magic-link destinations are scoped to their product', () => {
     const { token } = await issueLoginToken({
       email: 'reader@example.com',
       product: 'liap',
-      redirectTo: '/life-is-a-project/assessment',
+      redirectTo: '/living-is-a-project/assessment',
     })
     const consumed = await consumeLoginToken(token)
-    expect(consumed!.redirectTo).toBe('/life-is-a-project/assessment')
-    expect(consumed!.redirectTo.startsWith('/life-is-a-project')).toBe(true)
+    expect(consumed!.redirectTo).toBe('/living-is-a-project/assessment')
+    expect(consumed!.redirectTo.startsWith('/living-is-a-project')).toBe(true)
   })
 })

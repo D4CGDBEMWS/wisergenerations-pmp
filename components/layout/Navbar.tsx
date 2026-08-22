@@ -3,43 +3,35 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
+import { shellForPath } from '@/lib/shell'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
-// Slimmed to core nav items — secondary links moved to footer.
+// The link sets moved to lib/shell.ts, where they are data rather than markup.
 //
-// Practice Studio earns a slot despite that slimming: it is the only
-// subscription product, and until now nothing on the site linked to /access.
-// It was reachable only by typing the URL or by hitting the paywall on a
-// gated page, which meant the recurring-revenue product was found mainly by
-// people bumping into a locked door.
-const navLinks = [
-  { label: 'Programs', href: '/programs' },
-  { label: 'Veterans', href: '/veterans' },
-  { label: 'Corporate', href: '/corporate' },
-  { label: 'About', href: '/about' },
-  { label: 'Free Guide', href: '/free-guide' },
-  { label: 'Practice Studio', href: '/access' },
-]
-
-// Mobile menu includes secondary links so nothing is lost
-const mobileExtraLinks = [
-  { label: 'Blog', href: '/blog' },
-  { label: 'FAQ', href: '/faq' },
-  { label: 'Flashcards', href: '/flashcards' },
-  { label: 'Pods', href: '/pods' },
-  { label: 'Contact', href: '/contact' },
-]
+// A LIAP reader must not be shown PMP/CAPM navigation, and the way to make
+// that true once is to stop this file from knowing any links at all. It asks
+// which shell the current path renders in and draws what that shell declares.
+//
+// There is no flash of the wrong navigation: this component is already a
+// client component reading usePathname() — it has done so since the CTAs
+// started hiding on /free-practice — and the App Router resolves that during
+// the server render, so the first paint is already correct.
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const shell = shellForPath(pathname)
+  const navLinks = shell.nav
+  const mobileExtraLinks = shell.mobileNav
 
   // Hide the CTA buttons when the visitor is already on the free-practice page —
   // "Try Free Practice" would link back to the current page, and "Book a Call"
-  // pulls focus away from someone who's mid-session.
-  const hideCTAs = pathname === '/free-practice'
+  // pulls focus away from someone who's mid-session. A shell that declares no
+  // header CTAs hides them everywhere: the PM-pod Calendly is a PMP offer and
+  // has no business in front of a book reader.
+  const hideCTAs = pathname === '/free-practice' || !shell.showHeaderCtas
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -56,7 +48,7 @@ export default function Navbar() {
               it reads as a plaque against the white bar. Sized as tall as the
               64px bar allows — see the note in the footer about the tagline,
               which is only ~1.5px at this height. */}
-          <Link href="/" className="flex-shrink-0 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Wiser Generations home">
+          <Link href={shell.homeHref} className="flex-shrink-0 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Wiser Generations home">
             <img
               src="/wg-logo.png"
               alt="Wiser Generations"
@@ -120,7 +112,10 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {/* Secondary links in mobile */}
+            {/* Secondary links in mobile. Suppressed entirely when the shell
+                declares none, so a minimal shell does not render a rule with
+                nothing under it. */}
+            {mobileExtraLinks.length > 0 && (
             <div className="pt-2 border-t border-gray-200 mt-2">
               {mobileExtraLinks.map((link) => (
                 <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
@@ -129,8 +124,9 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
+            )}
 
-            {/* Mobile CTAs — hidden on /free-practice */}
+            {/* Mobile CTAs — hidden on /free-practice and in shells with none */}
             {!hideCTAs && (
               <div className="pt-4 border-t border-gray-200 flex flex-col gap-3">
                 <Link href="/free-practice" onClick={() => setIsOpen(false)}

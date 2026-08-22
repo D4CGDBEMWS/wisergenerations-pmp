@@ -67,7 +67,7 @@ export const DEFAULT_PRODUCT: LoginProduct = 'study'
  * that route does not exist yet, and a default that 404s is worse than one
  * that is merely general. It moves here, in one line, when the route ships.
  *
- * The /life-is-a-project prefix is the tree as it stands in production today.
+ * The /living-is-a-project prefix is the tree as it stands in production today.
  * The canonical rename to /living-is-a-project is prepared on its own branch
  * with permanent redirects, and moves these four strings with it. Every LIAP
  * page is behind FEATURE_LIAP and unreachable either way.
@@ -79,12 +79,12 @@ const DESTINATIONS: Record<LoginProduct, { allowed: readonly string[]; home: str
   },
   liap: {
     allowed: [
-      '/life-is-a-project',
-      '/life-is-a-project/assessment',
-      '/life-is-a-project/book',
-      '/life-is-a-project/access',
+      '/living-is-a-project',
+      '/living-is-a-project/assessment',
+      '/living-is-a-project/book',
+      '/living-is-a-project/access',
     ],
-    home: '/life-is-a-project',
+    home: '/living-is-a-project',
   },
 }
 

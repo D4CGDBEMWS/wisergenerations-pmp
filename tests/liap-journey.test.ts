@@ -167,7 +167,7 @@ describe('the complete journey', () => {
     expect(resolve.body).toContain('Whether to take the contract')
 
     // --- the email ----------------------------------------------------------
-    const url = `${ORIGIN}/life-is-a-project/results/${resultToken}`
+    const url = `${ORIGIN}/living-is-a-project/results/${resultToken}`
     const html = resultsEmailHtml(report, url)
     const text = resultsEmailText(report, url)
 
