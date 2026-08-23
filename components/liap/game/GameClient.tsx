@@ -10,6 +10,7 @@ import {
   type GameAction,
 } from '@/lib/game/engine'
 import type { GameState } from '@/lib/game/types'
+import { GAME_NAME } from '@/lib/game/naming'
 import { HealthDashboard } from './HealthDashboard'
 import { RoadmapRail } from './RoadmapRail'
 import { PivotCycle } from './PivotCycle'
@@ -23,7 +24,7 @@ import {
 } from './GameScreens'
 
 // ---------------------------------------------------------------------------
-// A Day in the Life of a Project Manager — the client shell.
+// Living Life as a Project Manager — the client shell.
 //
 // ── PARTICIPANT DATA: THERE ISN'T ANY ──────────────────────────────────────
 //
@@ -100,9 +101,7 @@ export function GameClient() {
         <p className="text-xs font-bold uppercase tracking-[0.14em] text-gold">
           Living Is a Project&hellip;Are You Ready?&trade;
         </p>
-        <h1 className="mt-1 text-xl font-bold text-navy sm:text-2xl">
-          A Day in the Life of a Project Manager
-        </h1>
+        <h1 className="mt-1 text-xl font-bold text-navy sm:text-2xl">{GAME_NAME}</h1>
       </header>
 
       {/*

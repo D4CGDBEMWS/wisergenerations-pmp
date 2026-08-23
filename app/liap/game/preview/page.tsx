@@ -4,7 +4,8 @@ import { PreviewClient } from '@/components/liap/game/PreviewClient'
 import { PREVIEW_TITLE } from '@/lib/game/preview'
 
 export const metadata = {
-  title: `${PREVIEW_TITLE} | Wiser Generations`,
+  // Bare, so the root layout's template supplies the brand exactly once.
+  title: PREVIEW_TITLE,
   robots: { index: false, follow: false },
   // Cleared for the same reason as every other LIAP route: metadata merges
   // field by field, and the PMP keyword list and Open Graph image belong to a
@@ -16,7 +17,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 
 // ---------------------------------------------------------------------------
-// /liap/game/preview — Living Life as a Project Manager — Game Preview.
+// /liap/game/preview — Living Life as a Project Manager, one-scenario teaser.
 //
 // ── ITS OWN FLAG ───────────────────────────────────────────────────────────
 //

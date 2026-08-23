@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
 import { isEnabled } from '@/lib/flags'
 import { GameClient } from '@/components/liap/game/GameClient'
+import { GAME_NAME } from '@/lib/game/naming'
 
 export const metadata = {
-  title: 'A Day in the Life of a Project Manager | Wiser Generations',
+  // Bare. The root layout's title template appends the brand; adding one here
+  // would render it twice. See lib/game/naming.ts.
+  title: GAME_NAME,
   robots: { index: false, follow: false },
   // Cleared for the same reason as every other LIAP route: metadata merges
   // field by field, and the PMP keyword list and Open Graph image belong to a
@@ -17,7 +20,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 
 // ---------------------------------------------------------------------------
-// /liap/game — A Day in the Life of a Project Manager, Version 1.
+// /liap/game — Living Life as a Project Manager, Version 1.
 //
 // ── OFF ────────────────────────────────────────────────────────────────────
 //

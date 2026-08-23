@@ -1,9 +1,10 @@
 import { SCENARIOS, PROJECT_BRIEF } from './scenarios'
 import { initialState, reduce } from './engine'
 import type { GameState, Scenario } from './types'
+import { GAME_NAME, GAME_SUPPORTING_LINE } from './naming'
 
 // ---------------------------------------------------------------------------
-// Living Life as a Project Manager — Game Preview.
+// Living Life as a Project Manager — the one-scenario teaser.
 //
 // One hour of one day, for someone who has never met any of this.
 //
@@ -49,10 +50,13 @@ const PREVIEW_INDEX = SCENARIOS.findIndex((s) => s.id === PREVIEW_SCENARIO_ID)
 
 export const PREVIEW_SCENARIO: Scenario = SCENARIOS[PREVIEW_INDEX]
 
-/** Owner-approved, verbatim. */
-export const PREVIEW_TITLE = 'Living Life as a Project Manager — Game Preview'
-export const PREVIEW_SUPPORTING_LINE =
-  'Experience the decisions. Live with the consequences. Discover the wisdom.'
+/**
+ * Owner-approved. The teaser is titled with the product name and nothing else.
+ * "That was one decision. The full day is coming soon." is what marks it as a
+ * taste of something larger — a title suffix would say it twice.
+ */
+export const PREVIEW_TITLE = GAME_NAME
+export const PREVIEW_SUPPORTING_LINE = GAME_SUPPORTING_LINE
 export const PREVIEW_CLOSING = 'That was one decision. The full day is coming soon.'
 export const PREVIEW_CTA_LABEL = 'YES, KEEP ME IN THE LOOP!'
 

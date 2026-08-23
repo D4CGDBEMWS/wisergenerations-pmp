@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// A Day in the Life of a Project Manager — types.
+// Living Life as a Project Manager — types.
 //
 // Version 1, owner-authorised. Part of the Living Is a Project...Are You
 // Ready?™ experience, associated with the Virtual Workshop.

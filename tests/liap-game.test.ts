@@ -32,9 +32,10 @@ import {
   type PreviewState,
 } from '@/lib/game/preview'
 import { SHARED_INFRASTRUCTURE, shell } from '@/lib/shell'
+import { GAME_NAME, GAME_SUPPORTING_LINE } from '@/lib/game/naming'
 
 // ---------------------------------------------------------------------------
-// A Day in the Life of a Project Manager — Version 1.
+// Living Life as a Project Manager — Version 1.
 //
 // The suite is in four parts, in descending order of what it would cost to get
 // wrong:
@@ -845,6 +846,69 @@ describe('the day holds together as content', () => {
   })
 })
 
+// ── THE NAME ───────────────────────────────────────────────────────────────
+
+describe('the game is called one thing everywhere', () => {
+  const RETIRED = 'A Day in the Life of a Project Manager'
+
+  it('carries the owner-approved name verbatim', () => {
+    expect(GAME_NAME).toBe('Living Life as a Project Manager')
+    expect(GAME_SUPPORTING_LINE).toBe(
+      'Experience the decisions. Live with the consequences. Discover the wisdom.'
+    )
+  })
+
+  it('titles the teaser with the product name and no suffix', () => {
+    // Owner ruling: the game is called one thing. The teaser is not a
+    // separately-named product, and "— Game Preview" is not part of the name.
+    expect(PREVIEW_TITLE).toBe(GAME_NAME)
+    // Comment-stripped, unlike the retired-name check below. A retired name in
+    // a comment teaches the next person the wrong name; a comment explaining
+    // that "Game Preview" is NOT part of the name is the opposite, and this
+    // assertion would otherwise fail on the sentence documenting it.
+    for (const module of GAME_MODULES) {
+      expect(code(module), module).not.toContain('Game Preview')
+    }
+  })
+
+  it('shows the retired name nowhere in the built ecosystem', () => {
+    // Comments included, not just strings: a module header titling itself with
+    // a retired product name is how the next person learns the wrong name.
+    for (const module of [...GAME_MODULES, 'lib/flags.ts']) {
+      expect(source(module), module).not.toContain(RETIRED)
+    }
+  })
+
+  it('reads the heading and the browser tab from the one home', () => {
+    const client = code('components/liap/game/GameClient.tsx')
+    expect(client).toContain('{GAME_NAME}')
+    const page = code('app/liap/game/page.tsx')
+    expect(page).toContain('title: GAME_NAME')
+    // No literal title anywhere — that is what lets one edit move all of them.
+    expect(page).not.toContain("'Living Life as a Project Manager")
+  })
+
+  it('lets the root layout brand the tab, exactly once', () => {
+    // app/layout.tsx appends "| Wiser Generations Int'l" to every title. A page
+    // that appends its own brand gets it twice, which is what most of this site
+    // still does — see the note in lib/game/naming.ts.
+    for (const page of ['app/liap/game/page.tsx', 'app/liap/game/preview/page.tsx']) {
+      expect(code(page), page).not.toContain('Wiser Generations')
+    }
+  })
+
+  it('leaves every technical identifier alone', () => {
+    // Owner ruling: identifiers do not follow a public name. The printed QR
+    // seam and the flags matter more than matching a marketing decision.
+    expect(code('lib/flags.ts')).toContain("| 'LIAP_GAME'")
+    expect(code('lib/flags.ts')).toContain("| 'LIAP_GAME_PREVIEW'")
+    expect(readdirSync(join(root, 'app/liap'))).toContain('game')
+    expect(readdirSync(join(root, 'app/liap/game'))).toContain('preview')
+    expect(code('components/liap/game/GameClient.tsx')).toContain('export function GameClient')
+    expect(SCENARIOS.map((s) => s.id)).toContain('backlog')
+  })
+})
+
 // ── THE GAME PREVIEW ───────────────────────────────────────────────────────
 
 const PREVIEW_MODULES = ['lib/game/preview.ts', 'components/liap/game/PreviewClient.tsx',
@@ -971,8 +1035,8 @@ describe('the preview is one hour and cannot become the day', () => {
     expect(ownPath || sharedPath, PREVIEW_CTA_HREF).toBe(true)
   })
 
-  it('carries the owner-approved names verbatim', () => {
-    expect(PREVIEW_TITLE).toBe('Living Life as a Project Manager — Game Preview')
+  it('carries the owner-approved copy verbatim', () => {
+    expect(PREVIEW_TITLE).toBe('Living Life as a Project Manager')
     expect(PREVIEW_SUPPORTING_LINE).toBe(
       'Experience the decisions. Live with the consequences. Discover the wisdom.'
     )
