@@ -20,7 +20,7 @@ const JOURNEY = [
   {
     step: 'Step 1',
     title: 'Read',
-    name: 'Life Is a Project… Be Ready.',
+    name: 'Living Is a Project…Are You Ready?',
     body: 'The book that frames the change you are in as something you can actually manage.',
     status: 'available' as const,
   },
@@ -81,7 +81,7 @@ export default function LiapHubPage() {
           <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-5xl">
             Your life is your most important project.
           </h1>
-          <p className="mt-4 text-xl text-gold sm:text-2xl">Life Is a Project… Be Ready.</p>
+          <p className="mt-4 text-xl text-gold sm:text-2xl">Living Is a Project&hellip;Are You Ready?</p>
 
           <div className="mt-8 max-w-2xl space-y-4 text-base leading-relaxed text-gray-200 sm:text-lg">
             <p>
@@ -175,7 +175,7 @@ export default function LiapHubPage() {
         <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-6 sm:p-8">
           <h2 className="text-xl font-bold text-navy">Start with the book</h2>
           <p className="mt-2 max-w-2xl text-gray-600">
-            Preorder <em>Life Is a Project… Be Ready.</em> and receive the Life Project-Ready™
+            Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive the Life Project-Ready&trade;
             Assessment at no additional charge.
           </p>
           <Link

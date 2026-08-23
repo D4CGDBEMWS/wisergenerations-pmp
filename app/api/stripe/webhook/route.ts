@@ -388,7 +388,7 @@ export async function POST(request: NextRequest) {
       }
 
       // ───────────────────────────────────────────────────────────────
-      // Life Is a Project™ book preorder.
+      // Living Is a Project…Are You Ready? book preorder.
       //
       // Matched on metadata rather than on amount or product name: the marker
       // is set in one place, app/api/liap/preorder, and nothing else uses it.

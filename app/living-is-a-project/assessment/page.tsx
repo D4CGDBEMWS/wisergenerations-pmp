@@ -44,7 +44,7 @@ export default async function AssessmentPage() {
         </h1>
         <p className="mt-4 leading-relaxed text-gray-600">
           The Life Project-Ready™ Assessment comes with a preorder of{' '}
-          <em>Life Is a Project… Be Ready.</em> We can&rsquo;t find a preorder on this account yet.
+          <em>Living Is a Project&hellip;Are You Ready?</em> We can&rsquo;t find a preorder on this account yet.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link

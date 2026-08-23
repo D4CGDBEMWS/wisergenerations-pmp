@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// The Life Is a Project™ book preorder.
+// The Living Is a Project…Are You Ready? book preorder.
 //
 // Its own module with its own numbers. §8: do not reuse PMP product ids,
 // membership permissions or business logic. A PMP price change must not be
