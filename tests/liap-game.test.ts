@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   advance,
@@ -31,7 +31,8 @@ import {
   type PreviewAction,
   type PreviewState,
 } from '@/lib/game/preview'
-import { SHARED_INFRASTRUCTURE, shell } from '@/lib/shell'
+import { SHARED_INFRASTRUCTURE, shell, shellForPath } from '@/lib/shell'
+import { decidePlayEntry, PLAY_SOFT_LANDING } from '@/lib/game/play-entry'
 import { GAME_NAME, GAME_SUPPORTING_LINE } from '@/lib/game/naming'
 
 // ---------------------------------------------------------------------------
@@ -74,6 +75,7 @@ const GAME_MODULES = [
   ...readdirSync(join(root, 'components/liap/game')).map((f) => `components/liap/game/${f}`),
   'app/liap/game/page.tsx',
   'app/liap/game/preview/page.tsx',
+  'app/liap/play/page.tsx',
 ]
 
 /** Modules a player can actually reach. The matrix is deliberately excluded. */
@@ -843,6 +845,96 @@ describe('the day holds together as content', () => {
       )
       expect(scenario.glossary.options.length, scenario.id).toBeGreaterThanOrEqual(3)
     }
+  })
+})
+
+// ── THE DURABLE SEAM ───────────────────────────────────────────────────────
+
+describe('/liap/play is what goes on paper', () => {
+  it('never dead-ends, whatever the flags say', () => {
+    // The rule that matters most. Every other gated route 404s when its flag
+    // is off; this one cannot, because someone holding a printed code must
+    // never be told by the business's own site that the page does not exist.
+    for (const gameEnabled of [true, false]) {
+      for (const previewEnabled of [true, false]) {
+        const entry = decidePlayEntry({ gameEnabled, previewEnabled })
+        expect(['play', 'soft-landing']).toContain(entry.action)
+      }
+    }
+    const page = code('app/liap/play/page.tsx')
+    expect(page).not.toContain('notFound')
+    expect(page).not.toContain('assertEnabledOrNotFound')
+  })
+
+  it('resolves to the teaser during pre-launch', () => {
+    expect(decidePlayEntry({ gameEnabled: false, previewEnabled: true })).toEqual({
+      action: 'play',
+      href: '/liap/game/preview',
+    })
+  })
+
+  it('carries a scan forward to the full day once it ships', () => {
+    // A code printed during pre-launch must not strand its holder on a teaser
+    // they have outgrown, so the full day wins when both are live.
+    expect(decidePlayEntry({ gameEnabled: true, previewEnabled: true })).toEqual({
+      action: 'play',
+      href: '/liap/game',
+    })
+    expect(decidePlayEntry({ gameEnabled: true, previewEnabled: false })).toEqual({
+      action: 'play',
+      href: '/liap/game',
+    })
+  })
+
+  it('soft-lands when nothing is live — which is today', () => {
+    expect(decidePlayEntry({ gameEnabled: false, previewEnabled: false })).toEqual({
+      action: 'soft-landing',
+    })
+  })
+
+  it('only ever sends a scan to a route that exists', () => {
+    const routes = new Set(['/liap/game', '/liap/game/preview'])
+    for (const gameEnabled of [true, false]) {
+      for (const previewEnabled of [true, false]) {
+        const entry = decidePlayEntry({ gameEnabled, previewEnabled })
+        if (entry.action === 'play') {
+          expect(routes.has(entry.href), entry.href).toBe(true)
+          const file = `app${entry.href}/page.tsx`
+          expect(existsSync(join(root, file)), file).toBe(true)
+        }
+      }
+    }
+  })
+
+  it('lives in the seam, outside the product tree that gets renamed', () => {
+    // /liap survived the rename that turned /life-is-a-project into
+    // /living-is-a-project across fourteen files. That is the whole argument
+    // for putting paper here rather than in the tree.
+    expect(existsSync(join(root, 'app/liap/play/page.tsx'))).toBe(true)
+    expect(existsSync(join(root, 'app/living-is-a-project/play'))).toBe(false)
+    expect(shellForPath('/liap/play').key).toBe('liap')
+  })
+
+  it('keeps the decision out of the file that goes on paper', () => {
+    const page = code('app/liap/play/page.tsx')
+    expect(page).toContain('decidePlayEntry')
+    expect(page).not.toContain("'/liap/game/preview'")
+  })
+
+  it('holds its soft-landing copy as unapproved and promises nothing', () => {
+    const text = Object.values(PLAY_SOFT_LANDING).join(' ').toLowerCase()
+    for (const promise of ['october', 'next week', 'tomorrow', 'guarantee', 'free',
+      'sign up', 'subscribe', 'email']) {
+      expect(text, promise).not.toContain(promise)
+    }
+    // And captures nothing. A "tell me when it's ready" field is the obvious
+    // thing to add to a soft landing and it is an acquisition decision with a
+    // segmentation tag attached — LIAP readers are not to be mixed into the
+    // generic newsletter list.
+    const page = code('app/liap/play/page.tsx')
+    expect(page).not.toMatch(/<input/i)
+    expect(page).not.toMatch(/<form/i)
+    expect(page).not.toMatch(/\bfetch\s*\(/)
   })
 })
 
