@@ -29,6 +29,7 @@
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.460.0",
     "next": "^16.2.2",
+    "pdfkit": "^0.15.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "resend": "^6.10.0",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.5",
     "@types/node": "^20",
+    "@types/pdfkit": "^0.17.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.5",

@@ -274,6 +274,22 @@ export default async function ResultsPage({
           <EmailPlanButton token={token} />
         </section>
 
+        {/* Owner ruling: "Yours to keep" needs something to keep. A plain link
+            rather than a script-driven download, so it works with JavaScript
+            off and behaves like a file in every browser. */}
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-bold text-navy">Keep a copy</h2>
+          <p className="mt-2 text-sm leading-relaxed text-gray-600">
+            A one-page snapshot of your position, your eight dimensions and your 30/60/90 plan.
+          </p>
+          <a
+            href={`/living-is-a-project/results/${token}/snapshot`}
+            className="mt-4 inline-block rounded-lg bg-navy px-6 py-3 font-bold text-white transition-colors hover:bg-brand-blue-dark"
+          >
+            Download My Life Project Snapshot
+          </a>
+        </section>
+
         {/* §30: name what is coming, sell nothing that does not exist. */}
         <section aria-labelledby="next-heading" className="border-t border-gray-200 pt-10">
           <h2 id="next-heading" className="text-xl font-bold text-navy">

@@ -1,4 +1,4 @@
-import type { FullReport } from './recommendations'
+import type { RenderedReport } from './recommendations'
 
 // ---------------------------------------------------------------------------
 // The results email. §23.
@@ -15,7 +15,7 @@ import type { FullReport } from './recommendations'
 
 export const RESULTS_SUBJECT = 'Your Life Project-Ready™ Plan Is Ready'
 
-export function resultsEmailHtml(report: FullReport, resultsUrl: string): string {
+export function resultsEmailHtml(report: RenderedReport, resultsUrl: string): string {
   const actions = report.actions
     .map(
       (a) => `
@@ -70,7 +70,7 @@ export function resultsEmailHtml(report: FullReport, resultsUrl: string): string
 </div>`
 }
 
-export function resultsEmailText(report: FullReport, resultsUrl: string): string {
+export function resultsEmailText(report: RenderedReport, resultsUrl: string): string {
   const actions = report.actions
     .map((a) => `  ${a.kind.toUpperCase()}: ${a.headline}`)
     .join('\n')

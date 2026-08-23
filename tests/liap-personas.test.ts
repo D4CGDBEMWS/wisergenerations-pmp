@@ -10,7 +10,7 @@ import {
   type Answers,
   type Intake,
 } from '@/lib/liap/scoring'
-import { buildFullReport, nextBestThree, buildPlan } from '@/lib/liap/recommendations'
+import { buildFullReport, nextBestThree, buildPlan, renderReport } from '@/lib/liap/recommendations'
 
 // ---------------------------------------------------------------------------
 // The twelve personas, plus the boundaries.
@@ -120,7 +120,7 @@ describe('persona 2 — unexpected job loss, weak money and risk, urgency 5', ()
   })
 
   it('opens the plan with stabilisation, not expansion', () => {
-    expect(full.plan.phases[0]!.items[0]).toContain('S.T.E.A.D.Y.')
+    expect(full.plan.phases[0]!.items[0]!.text).toContain('S.T.E.A.D.Y.')
   })
 })
 
@@ -356,36 +356,62 @@ describe('the engine is deterministic', () => {
 describe('the customer’s own words come back to them', () => {
   const answers = uniform(3)
 
+  // Their words are resolved at RENDER time now, not baked into the stored
+  // report — that is what makes the 90-day purge honest. So these assert on
+  // the rendered view, which is what the customer actually reads, and a
+  // companion block below asserts the stored form carries no sentence at all.
+  const DECISION = 'Whether to take the role in Atlanta'
+  const BETTER = 'Sleeping through the night and knowing where the money is'
+
   it('uses the decision they named rather than a generic one', () => {
-    const full = buildFullReport(answers, {
-      changeType: 'expected',
-      urgency: 2,
-      importantDecision: 'Whether to take the role in Atlanta',
+    const intake = { changeType: 'expected' as const, urgency: 2, importantDecision: DECISION }
+    const rendered = renderReport(buildFullReport(answers, intake), {
+      important_decision: DECISION,
     })
-    expect(full.actions[1]!.body).toContain('Whether to take the role in Atlanta')
-    expect(full.actions[1]!.basis).toBe('stated')
+    expect(rendered.actions[1]!.body).toContain(DECISION)
+    expect(rendered.actions[1]!.basis).toBe('stated')
   })
 
   it('measures the 90-day plan against their own definition of better', () => {
-    const full = buildFullReport(answers, {
-      ninetyDayBetter: 'Sleeping through the night and knowing where the money is',
-    })
-    const finalPhase = full.plan.phases[2]!.items.join(' ')
-    expect(finalPhase).toContain('Sleeping through the night')
+    const full = buildFullReport(answers, { ninetyDayBetter: BETTER })
+    const rendered = renderReport(full, { ninety_day_better: BETTER })
+    expect(rendered.plan.phases[2]!.items.join(' ')).toContain('Sleeping through the night')
   })
 
   it('truncates a long answer rather than pasting an essay into the report', () => {
-    const full = buildFullReport(answers, { importantDecision: 'x'.repeat(500) })
-    expect(full.actions[1]!.body.length).toBeLessThan(600)
-    expect(full.actions[1]!.body).toContain('…')
+    const essay = 'x'.repeat(500)
+    const full = buildFullReport(answers, { importantDecision: essay })
+    const rendered = renderReport(full, { important_decision: essay })
+    expect(rendered.actions[1]!.body.length).toBeLessThan(600)
+    expect(rendered.actions[1]!.body).toContain('…')
   })
 
   it('falls back cleanly when they skipped the narrative questions', () => {
     const full = buildFullReport(answers, { changeType: 'expected', urgency: 2 })
-    expect(full.actions).toHaveLength(3)
-    expect(full.actions[1]!.basis).not.toBe('stated')
-    expect(full.actions[1]!.body).not.toContain('undefined')
-    expect(full.actions[1]!.body).not.toContain('“”')
+    const rendered = renderReport(full, {})
+    expect(rendered.actions).toHaveLength(3)
+    expect(rendered.actions[1]!.basis).not.toBe('stated')
+    expect(rendered.actions[1]!.body).not.toContain('undefined')
+    expect(rendered.actions[1]!.body).not.toContain('“”')
+  })
+
+  it('stores a reference, never the sentence', () => {
+    const intake = { changeType: 'expected' as const, urgency: 2, importantDecision: DECISION, ninetyDayBetter: BETTER }
+    const stored = JSON.stringify(buildFullReport(answers, intake))
+    expect(stored).not.toContain(DECISION)
+    expect(stored).not.toContain(BETTER)
+    expect(stored).toContain('important_decision')
+  })
+
+  it('reads correctly once the narratives are gone', () => {
+    const intake = { changeType: 'expected' as const, urgency: 2, importantDecision: DECISION, ninetyDayBetter: BETTER }
+    const purged = renderReport(buildFullReport(answers, intake), {})
+    expect(purged.actions[1]!.body).not.toContain(DECISION)
+    expect(purged.actions[1]!.body).not.toContain('“”')
+    expect(purged.actions[1]!.body).not.toMatch(/[:“]\s*$/)
+    for (const phase of purged.plan.phases) {
+      for (const item of phase.items) expect(item).not.toMatch(/[:“]\s*$/)
+    }
   })
 })
 

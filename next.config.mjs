@@ -6,6 +6,14 @@ const nextConfig = {
   // builds its path from process.cwd(). Without these the files are absent from
   // the deployed bundle and both routes fail in production while working
   // perfectly in development.
+  // pdfkit and its font engine are required at runtime rather than bundled.
+  // Turbopack cannot bundle fontkit's ESM build — it imports
+  // `applyDecoratedDescriptor` from @swc/helpers, which no longer exports that
+  // name, and the build fails outright. Externalising is also the correct
+  // shape regardless: these are Node-only packages that read font metrics from
+  // disk, and the snapshot route already pins `runtime = 'nodejs'`.
+  serverExternalPackages: ['pdfkit', 'fontkit'],
+
   outputFileTracingIncludes: {
     '/api/chat': ['./content/knowledge-base/**/*'],
     '/api/studio': ['./content/studio/**'],
