@@ -27,6 +27,15 @@ export type FeatureFlag =
   // Default off, and off in every environment: Version 1 is built and tested
   // but not authorised for customers.
   | 'LIAP_GAME'
+  // The one-scenario teaser, "Living Life as a Project Manager — Game Preview".
+  //
+  // Its own flag, separate from LIAP_GAME, because the whole point is that the
+  // teaser can go out during pre-launch while the full twelve-scenario day
+  // stays closed. Two flags is what makes "do not expose the full game through
+  // the preview CTA" a property of the deployment rather than a promise.
+  //
+  // Default off. Version 1 of both is built and tested, neither is authorised.
+  | 'LIAP_GAME_PREVIEW'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */

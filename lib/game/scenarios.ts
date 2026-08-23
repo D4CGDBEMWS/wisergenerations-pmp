@@ -650,7 +650,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'The work met the written requirements, but it still didn’t work for the member. What should the project manager check?',
-      options: ['Fitness for use', 'Conformance', 'Requirements', 'Baseline'],
+      options: ['Fitness for use', 'Deliverable', 'Requirements', 'Baseline'],
       answer: 'Fitness for use',
       // Owner ruling: the answer is fitness for use; the term the participant
       // leaves with is Conformance, which is the canonical entry.

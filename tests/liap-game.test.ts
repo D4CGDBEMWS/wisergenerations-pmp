@@ -19,6 +19,19 @@ import { PIVOT_STEPS, PIVOT_WISDOM } from '@/lib/game/pivot'
 import { dayResults, dimensionResults, lowestDimension, projectStanding } from '@/lib/game/results'
 import { GLOSSARY_TERMS, glossaryRows } from '@/lib/game/glossary'
 import { OUTCOME_MATRIX, danglingMappings, domainCoverage, unmappedScenarios } from '@/lib/game/validation'
+import {
+  PREVIEW_CTA_HREF,
+  PREVIEW_SCENARIO,
+  PREVIEW_SCENARIO_ID,
+  PREVIEW_TITLE,
+  PREVIEW_SUPPORTING_LINE,
+  PREVIEW_CLOSING,
+  previewInitialState,
+  previewReduce,
+  type PreviewAction,
+  type PreviewState,
+} from '@/lib/game/preview'
+import { SHARED_INFRASTRUCTURE, shell } from '@/lib/shell'
 
 // ---------------------------------------------------------------------------
 // A Day in the Life of a Project Manager — Version 1.
@@ -59,6 +72,7 @@ const GAME_MODULES = [
   ...readdirSync(join(root, 'lib/game')).map((f) => `lib/game/${f}`),
   ...readdirSync(join(root, 'components/liap/game')).map((f) => `components/liap/game/${f}`),
   'app/liap/game/page.tsx',
+  'app/liap/game/preview/page.tsx',
 ]
 
 /** Modules a player can actually reach. The matrix is deliberately excluded. */
@@ -828,6 +842,149 @@ describe('the day holds together as content', () => {
       )
       expect(scenario.glossary.options.length, scenario.id).toBeGreaterThanOrEqual(3)
     }
+  })
+})
+
+// ── THE GAME PREVIEW ───────────────────────────────────────────────────────
+
+const PREVIEW_MODULES = ['lib/game/preview.ts', 'components/liap/game/PreviewClient.tsx',
+  'app/liap/game/preview/page.tsx']
+
+function playPreview(...actions: PreviewAction[]): PreviewState {
+  return actions.reduce(previewReduce, previewInitialState())
+}
+
+describe('the preview is one hour and cannot become the day', () => {
+  it('imports the approved scenario rather than carrying a copy of it', () => {
+    // Identity, not equality: the preview and the full game hold the same
+    // object, so re-approving the hour changes both or neither.
+    expect(PREVIEW_SCENARIO).toBe(SCENARIOS.find((s) => s.id === PREVIEW_SCENARIO_ID))
+    const src = code('lib/game/preview.ts')
+    expect(src).not.toContain('situation:')
+    expect(src).not.toContain('outcome:')
+    expect(src).not.toContain('focusCost')
+  })
+
+  it('cannot express the action that moves the clock', () => {
+    // The containment argument, asserted rather than described. `advance()` is
+    // reachable only through the engine's `continue`, and no preview module
+    // contains that string.
+    for (const module of PREVIEW_MODULES) {
+      expect(code(module), module).not.toContain("'continue'")
+      expect(code(module), module).not.toContain('advance')
+      // Nor any other way of walking the array: no index arithmetic, and none
+      // of the engine's positional lookups. The single SCENARIOS[] read in
+      // preview.ts resolves the one approved hour and nothing else.
+      expect(code(module), module).not.toMatch(/scenarioIndex\s*[+-]/)
+      expect(code(module), module).not.toContain('scenarioAt')
+      expect(code(module), module).not.toContain('currentScenario')
+    }
+  })
+
+  it('never leaves the one scenario, whatever it is sent', () => {
+    const index = SCENARIOS.findIndex((s) => s.id === PREVIEW_SCENARIO_ID)
+    const junk: PreviewAction[] = [
+      { type: 'next' }, { type: 'next' }, { type: 'next' }, { type: 'begin' },
+      { type: 'choose', choiceId: 'clarify' }, { type: 'next' }, { type: 'next' },
+      { type: 'answer-glossary', option: 'Scope creep' }, { type: 'next' },
+      { type: 'next' }, { type: 'next' }, { type: 'begin' },
+    ]
+    let state = previewInitialState()
+    for (const action of junk) {
+      state = previewReduce(state, action)
+      expect(state.game.scenarioIndex, action.type).toBe(index)
+    }
+  })
+
+  it('walks its six beats in order', () => {
+    let s = previewInitialState()
+    expect(s.phase).toBe('brief')
+    s = previewReduce(s, { type: 'begin' });                          expect(s.phase).toBe('situation')
+    s = previewReduce(s, { type: 'choose', choiceId: 'clarify' });    expect(s.phase).toBe('outcome')
+    s = previewReduce(s, { type: 'next' });                           expect(s.phase).toBe('glossary')
+    s = previewReduce(s, { type: 'answer-glossary', option: 'Scope creep' })
+    expect(s.phase).toBe('reveal')
+    s = previewReduce(s, { type: 'next' });                           expect(s.phase).toBe('cta')
+    s = previewReduce(s, { type: 'next' });                           expect(s.phase).toBe('cta')
+  })
+
+  it('uses the real engine, so the consequence is the real consequence', () => {
+    const s = playPreview({ type: 'begin' }, { type: 'choose', choiceId: 'absorb' })
+    const engine = reduce(
+      { ...initialState(), phase: 'situation', scenarioIndex: SCENARIOS.findIndex((x) => x.id === 'backlog') },
+      { type: 'choose', choiceId: 'absorb' }
+    )
+    expect(s.game.health).toEqual(engine.health)
+    expect(s.game.decisions).toEqual(engine.decisions)
+  })
+
+  it('rejects a choice id that is not on the hour', () => {
+    const started = playPreview({ type: 'begin' })
+    expect(previewReduce(started, { type: 'choose', choiceId: 'not-a-choice' })).toEqual(started)
+  })
+
+  it('restarts to exactly the opening state', () => {
+    const played = playPreview({ type: 'begin' }, { type: 'choose', choiceId: 'refuse' },
+      { type: 'next' }, { type: 'answer-glossary', option: 'Fast tracking' }, { type: 'next' })
+    expect(previewReduce(played, { type: 'restart' })).toEqual(previewInitialState())
+  })
+
+  it('costs nothing to miss the term here either', () => {
+    const right = playPreview({ type: 'begin' }, { type: 'choose', choiceId: 'clarify' },
+      { type: 'next' }, { type: 'answer-glossary', option: 'Scope creep' })
+    const wrong = playPreview({ type: 'begin' }, { type: 'choose', choiceId: 'clarify' },
+      { type: 'next' }, { type: 'answer-glossary', option: 'Requirement' })
+    expect(wrong.game.health).toEqual(right.game.health)
+    expect(wrong.game.termsDiscovered).toEqual(right.game.termsDiscovered)
+    expect(wrong.game.glossaryPoints).toBe(0)
+  })
+
+  it('shows none of the machinery the owner ruled out', () => {
+    const client = code('components/liap/game/PreviewClient.tsx')
+    for (const absent of ['HealthDashboard', 'RoadmapRail', 'PivotCycle', 'ResultsScreen',
+      'Focus', 'focusOverdrawn', 'dayResults', 'LESSON_CHOICES', 'landed', 'pending']) {
+      expect(client, `preview renders ${absent}`).not.toContain(absent)
+    }
+  })
+
+  it('collects nothing and posts nowhere', () => {
+    for (const module of PREVIEW_MODULES) {
+      const src = code(module)
+      expect(src, module).not.toMatch(/\bfetch\s*\(/)
+      expect(src, module).not.toContain('localStorage')
+      expect(src, module).not.toContain('sessionStorage')
+      expect(src, module).not.toContain('document.cookie')
+      expect(src, module).not.toContain("'use server'")
+      expect(src, module).not.toMatch(/<input/i)
+      expect(src, module).not.toMatch(/<textarea/i)
+      expect(src, module).not.toContain('mailchimp')
+      expect(src, module).not.toContain('/api/')
+    }
+  })
+
+  it('sends the CTA somewhere that belongs to this program', () => {
+    // Never the exam simulator, never the $49/month studio — the same
+    // allow-list rule the LIAP shell follows.
+    const liap = shell('liap')
+    const ownPath = liap.pathPrefixes.some((p) => PREVIEW_CTA_HREF.startsWith(p))
+    const sharedPath = SHARED_INFRASTRUCTURE.includes(PREVIEW_CTA_HREF)
+    expect(ownPath || sharedPath, PREVIEW_CTA_HREF).toBe(true)
+  })
+
+  it('carries the owner-approved names verbatim', () => {
+    expect(PREVIEW_TITLE).toBe('Living Life as a Project Manager — Game Preview')
+    expect(PREVIEW_SUPPORTING_LINE).toBe(
+      'Experience the decisions. Live with the consequences. Discover the wisdom.'
+    )
+    expect(PREVIEW_CLOSING).toBe('That was one decision. The full day is coming soon.')
+  })
+
+  it('gates on its own flag, not the full game\'s', () => {
+    const page = code('app/liap/game/preview/page.tsx')
+    expect(page).toContain("isEnabled('LIAP_GAME_PREVIEW')")
+    expect(page).toContain('notFound()')
+    expect(page).not.toContain("isEnabled('LIAP_GAME')")
+    expect(code('lib/flags.ts')).toContain("| 'LIAP_GAME_PREVIEW'")
   })
 })
 
