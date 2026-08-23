@@ -111,7 +111,7 @@ export const OUTCOME_MATRIX: readonly OutcomeMapping[] = [
     domain: 'Process',
     outcome: 'Communicate project status to the level of detail the audience can act on',
     rationale:
-      'Fifteen minutes with the sponsor. Everything and nothing are both failures of communication; a decision-shaped update is the one that uses the sponsor for what only a sponsor can do.',
+      'Twenty minutes with the sponsor. Everything and nothing are both failures of communication; a decision-shaped update is the one that uses the sponsor for what only a sponsor can do.',
     strongestChoice: 'decision-shaped',
   },
   {

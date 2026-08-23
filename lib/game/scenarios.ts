@@ -426,7 +426,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Impact assessment', 'Fast tracking', 'Resource leveling', 'Lessons learned'],
       answer: 'Impact assessment',
       reveal:
-        'Impact assessment — working out what a change actually costs before you agree to it. Once approved, the plans and the people who depend on them have to be brought back into line.',
+        'Impact assessment — understanding what a change affects before you commit to it. Once you know the impact, you can make a better decision about what needs to change.',
     },
   },
 
@@ -485,7 +485,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Hybrid', 'Fast tracking', 'Rolling-wave planning', 'Progressive elaboration'],
       answer: 'Hybrid',
       reveal:
-        'Hybrid — choosing the approach that fits the work, not the habit. Uncertainty, rate of change and how clear the requirements are decide it; seniority and preference do not.',
+        'Hybrid — using different approaches within the same project when the work calls for it. Some work needs room to adapt. Other work needs more predictability. The project manager brings them together.',
     },
   },
 
@@ -544,7 +544,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Stage gate', 'Milestone', 'Baseline', 'Retrospective'],
       answer: 'Stage gate',
       reveal:
-        'Stage gate — a governance decision point confirming the project is still worth continuing against agreed criteria. A milestone marks progress; a gate asks whether to go on.',
+        'Stage gate — a decision point where leaders determine whether the project is ready and still makes sense to continue. A milestone shows progress. A gate asks whether to move forward.',
     },
   },
 
