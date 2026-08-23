@@ -158,7 +158,7 @@ export const SCENARIOS: readonly Scenario[] = [
       },
       {
         id: 'unblock',
-        label: 'Find out what’s holding up the approval and help remove the blocker.',
+        label: 'Find out what’s holding up the approval and help remove the blocker',
         outcome:
           'You find out the approver has been out sick and nobody covered the queue. Twenty minutes and one phone call later there is a named deputy and a date. Priya ships tomorrow.',
         focusCost: 2,
