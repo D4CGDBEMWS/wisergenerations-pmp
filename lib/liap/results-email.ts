@@ -63,7 +63,11 @@ export function resultsEmailHtml(report: RenderedReport, resultsUrl: string): st
       <a href="${resultsUrl}" style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">View my personalized plan</a>
     </p>
 
-    <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:24px 0 0">
+    <p style="color:#374151;font-size:14px;line-height:1.6;margin:20px 0 0">
+      Your downloadable Life Project Snapshot is available from your secure results page so you can keep it and use it as you move forward.
+    </p>
+
+    <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:16px 0 0">
       This link opens your plan. Keep it private — anyone with the link can read it.
     </p>
   </div>
@@ -92,6 +96,8 @@ use, priority areas, and your 30/60/90-day starting plan.
 
 View your personalized plan:
 ${resultsUrl}
+
+Your downloadable Life Project Snapshot is available from your secure results page so you can keep it and use it as you move forward.
 
 This link opens your plan. Keep it private — anyone with the link can read it.`
 }

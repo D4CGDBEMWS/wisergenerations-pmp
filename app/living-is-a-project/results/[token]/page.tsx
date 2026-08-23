@@ -265,7 +265,7 @@ export default async function ResultsPage({
         {/* §24: reuse the checkout email rather than asking for it again. */}
         <section aria-labelledby="email-heading" className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
           <h2 id="email-heading" className="text-lg font-bold text-navy">
-            Send my plan to me
+            Resend My Results Email
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
             We&rsquo;ll send it to <span className="font-semibold text-navy">{maskedEmail}</span> so

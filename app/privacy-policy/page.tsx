@@ -201,8 +201,158 @@ export default function PrivacyPolicyPage() {
           </p>
         </section>
 
+        {/* Owner-approved substance, 23 August 2026. Every factual claim in
+            this section is asserted against the implementation by
+            tests/liap-privacy-copy.test.ts — the question count, the dimension
+            count, the narrative count, the absence of AI scoring, the 90-day
+            purge, the hashed token, the automatic email, and the exclusion of
+            narrative from both the Snapshot and the email.
+
+            The recovery-history paragraph is OWNER-VERIFIED EXTERNAL
+            CONFIGURATION. It describes Neon settings the owner checked in the
+            console; nothing in this repository can confirm or change them, and
+            no code here should try. */}
         <section>
-          <h2 className="text-xl font-bold text-navy mb-3">13. Contact Us</h2>
+          <h2 className="text-xl font-bold text-navy mb-3">
+            13. Life Project-Ready&trade; Assessment Privacy
+          </h2>
+          <p>
+            Wiser Generations International LLC respects the personal nature of the reflection
+            involved in the Life Project-Ready&trade; Assessment. This section explains how
+            information submitted through the assessment is used, retained, and protected.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">Information You Provide</h3>
+          <p className="mt-2">
+            The assessment contains 40 scored questions across eight dimensions, along with three
+            optional narrative questions that allow you to provide additional context in your own
+            words.
+          </p>
+          <p className="mt-2">
+            The assessment also uses information necessary to provide access to and deliver your
+            results, including the customer information associated with your eligible book
+            pre-purchase.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">How Your Results Are Determined</h3>
+          <p className="mt-2">
+            Assessment results are produced through established, deterministic scoring rules.
+          </p>
+          <p className="mt-2">
+            Artificial intelligence does not calculate, modify, override, or determine your
+            assessment score or readiness position.
+          </p>
+          <p className="mt-2">
+            The assessment is intended as a personal planning and reflection resource. It is not a
+            clinical, medical, psychological, financial, legal, or other professional evaluation.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">Narrative Responses and Retention</h3>
+          <p className="mt-2">
+            The Life Project-Ready&trade; Assessment includes three optional narrative questions
+            that allow you to provide additional context in your own words.
+          </p>
+          <p className="mt-2">
+            Narrative responses are retained in the active application for up to 90 days and are
+            then automatically removed. Your verbatim narrative responses are not included in your
+            downloadable Life Project Snapshot or results email.
+          </p>
+          <p className="mt-2">
+            Once the applicable retention period has passed and the automated purge occurs, your
+            narrative responses are no longer available through your assessment results in the
+            active application.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">Infrastructure Recovery History</h3>
+          <p className="mt-2">
+            Our database provider maintains limited point-in-time recovery history for operational
+            recovery purposes.
+          </p>
+          <p className="mt-2">
+            Under our current production configuration, that recovery history is retained for up to
+            6 hours.
+          </p>
+          <p className="mt-2">
+            As a result, information removed from the active application may remain temporarily
+            recoverable within this limited recovery history before expiring through the
+            provider&rsquo;s normal retention process.
+          </p>
+          <p className="mt-2">
+            We currently maintain no separate database snapshots or scheduled snapshots that extend
+            this retention period.
+          </p>
+          <p className="mt-2">
+            Recovery-history settings may change as our infrastructure needs evolve. Any such change
+            will be managed in accordance with our applicable privacy and data-retention
+            obligations.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">Your Life Project Snapshot</h3>
+          <p className="mt-2">
+            After completing the assessment, you receive access to your personalized results and a
+            downloadable Life Project Snapshot.
+          </p>
+          <p className="mt-2">
+            The Snapshot may include your dimension scores, strengths, areas requiring attention,
+            hidden-urgency indicators when applicable, actionable focus areas, Protect &middot;
+            Resolve &middot; Move recommendations, and your 30/60/90-day plan.
+          </p>
+          <p className="mt-2">
+            Your verbatim narrative responses are not included in the downloadable Snapshot.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">Secure Results Access</h3>
+          <p className="mt-2">
+            Assessment results are made available through a secure, randomly generated results link.
+            The underlying result token is stored in hashed form.
+          </p>
+          <p className="mt-2">
+            Treat your results link as private. Anyone who obtains a usable results link may
+            potentially be able to view the information available through that link.
+          </p>
+          <p className="mt-2">At present, the results link does not automatically expire.</p>
+
+          <h3 className="mt-5 font-bold text-navy">Email Delivery</h3>
+          <p className="mt-2">
+            After successful assessment submission, the system automatically sends your results
+            email to the email address associated with your assessment access.
+          </p>
+          <p className="mt-2">Your narrative responses are not included in the results email.</p>
+          <p className="mt-2">
+            Your secure results page also provides access to your downloadable Life Project
+            Snapshot. A resend option is available if you need the results email again.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">Your Choices</h3>
+          <p className="mt-2">
+            You control what you write in the narrative portions of the assessment. Please avoid
+            entering Social Security numbers, financial-account credentials, passwords, detailed
+            medical information, or other highly sensitive information that is not necessary to use
+            the assessment.
+          </p>
+
+          <h3 className="mt-5 font-bold text-navy">
+            Questions About Your Assessment Information
+          </h3>
+          <p className="mt-2">
+            Questions concerning the Life Project-Ready&trade; Assessment or the handling of
+            assessment information may be directed to:
+          </p>
+          <div className="mt-3 bg-paper rounded-xl p-5 border border-gray-200">
+            <p className="font-bold text-navy">Wiser Generations International LLC</p>
+            <p>
+              <a
+                href="mailto:info@wisergenerations.com"
+                className="text-gold hover:underline font-medium"
+              >
+                info@wisergenerations.com
+              </a>
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold text-navy mb-3">14. Contact Us</h2>
           <p>
             If you have questions or concerns about this Privacy Policy or our data practices, please contact:
           </p>
