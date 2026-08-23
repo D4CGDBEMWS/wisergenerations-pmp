@@ -694,8 +694,29 @@ describe('§26 — the results describe the project, never the participant', () 
 describe('Terms I Discovered', () => {
   it('is derived from the day rather than maintained beside it', () => {
     expect(GLOSSARY_TERMS.map((t) => t.term)).toEqual(
-      SCENARIOS.filter((s) => s.glossary).map((s) => s.glossary!.answer)
+      SCENARIOS.filter((s) => s.glossary).map(
+        (s) => s.glossary!.term ?? s.glossary!.answer
+      )
     )
+  })
+
+  it('records the canonical term, not the answer, where a bonus says so', () => {
+    // 4:00 PM. The participant picks "Fitness for use" and leaves with
+    // "Conformance", which is the entry in the approved vocabulary. Without
+    // this the panel would name a term the guide says is not a term.
+    const seam = SCENARIOS.find((s) => s.id === 'seam')!
+    expect(seam.glossary!.answer).toBe('Fitness for use')
+    expect(seam.glossary!.term).toBe('Conformance')
+
+    const state = playDay({ picks: { seam: 'end-to-end' }, correctGlossary: true })
+    expect(state.termsDiscovered).toContain('Conformance')
+    expect(state.termsDiscovered).not.toContain('Fitness for use')
+  })
+
+  it('records the term on a wrong answer too', () => {
+    const state = playDay({ picks: { seam: 'end-to-end' }, correctGlossary: false })
+    expect(state.termsDiscovered).toContain('Conformance')
+    expect(state.glossaryPoints).toBe(0)
   })
 
   it('shows undiscovered terms without revealing them', () => {
@@ -806,6 +827,114 @@ describe('the day holds together as content', () => {
         scenario.glossary.options.length
       )
       expect(scenario.glossary.options.length, scenario.id).toBeGreaterThanOrEqual(3)
+    }
+  })
+})
+
+// ── THE APPROVED VOCABULARY ────────────────────────────────────────────────
+
+/**
+ * Destiny Projects — Words to Know. The thirty approved introductory terms,
+ * owner-governed, in the guide's own order.
+ *
+ * The game does not have to teach all thirty and deliberately does not — it is
+ * an experience, not a vocabulary test. What it may not do is put a word in
+ * front of a participant, as a right answer or a wrong one, that the approved
+ * guide does not contain. A wrong answer is still teaching: offer "resource
+ * leveling" four times and the participant leaves believing it is a term they
+ * were meant to know.
+ */
+const CANONICAL_30 = [
+  'project', 'objective', 'scope', 'scope creep', 'requirement', 'deliverable',
+  'milestone', 'baseline', 'stakeholder', 'sponsor', 'backlog', 'priority',
+  'dependency', 'impediment', 'risk', 'issue', 'trigger', 'assumption',
+  'constraint', 'variance', 'change control', 'impact assessment',
+  'rolling-wave planning', 'progressive elaboration', 'cause-and-effect analysis',
+  'pareto / 80-20', 'conformance', 'agile', 'hybrid', 'lessons learned',
+] as const
+
+/**
+ * The one string a participant can see that is not a canonical term.
+ *
+ * Owner-approved: fitness for use is taught as an extension of Conformance
+ * rather than as an entry of its own, so it may be the ANSWER at 4:00 PM while
+ * Conformance is the term recorded. It is allow-listed by name here so that
+ * adding a second exception is a deliberate act with a reviewer, not a
+ * side-effect of writing a question.
+ */
+const APPROVED_NON_CANONICAL = ['fitness for use']
+
+/** Plural and shorthand forms count as the canonical term. */
+function isCanonical(option: string): boolean {
+  const value = option.toLowerCase().trim()
+  if (APPROVED_NON_CANONICAL.includes(value)) return true
+  return CANONICAL_30.some(
+    (term) => value === term || value === `${term}s` || value === term.replace(/y$/, 'ies')
+  )
+}
+
+describe('the glossary stays inside the approved vocabulary', () => {
+  it('offers no answer outside the thirty, bar the one approved exception', () => {
+    for (const scenario of SCENARIOS) {
+      if (!scenario.glossary) continue
+      expect(isCanonical(scenario.glossary.answer), scenario.glossary.answer).toBe(true)
+    }
+  })
+
+  it('offers no DISTRACTOR outside the thirty', () => {
+    for (const scenario of SCENARIOS) {
+      if (!scenario.glossary) continue
+      for (const option of scenario.glossary.options) {
+        if (option === scenario.glossary.answer) continue
+        expect(isCanonical(option), `${scenario.id}: "${option}"`).toBe(true)
+      }
+    }
+  })
+
+  it('records only canonical terms in Terms I Discovered', () => {
+    for (const entry of GLOSSARY_TERMS) {
+      const value = entry.term.toLowerCase()
+      expect(
+        CANONICAL_30.some((t) => value === t || value === `${t}s`),
+        entry.term
+      ).toBe(true)
+    }
+  })
+
+  it('never names a term the approved guide does not contain', () => {
+    // Stage gate is a real practice and is deliberately not in the thirty. The
+    // 3:00 PM scenario still turns on the sponsor's decision — the concept is
+    // preserved — but the participant is not handed the label as vocabulary.
+    expect(GLOSSARY_TERMS.map((t) => t.term)).not.toContain('Stage gate')
+    const sponsor = SCENARIOS.find((s) => s.id === 'sponsor')!
+    expect(sponsor.glossary).toBeUndefined()
+    expect(sponsor.situation.join(' ')).toContain('stage gate')
+    expect(sponsor.choices.find((c) => c.id === 'decision-shaped')!.wisdom).toBe(10)
+  })
+
+  it('retires the two overused non-canonical distractors entirely', () => {
+    const everyOption = SCENARIOS.flatMap((s) => s.glossary?.options ?? [])
+      .join(' | ')
+      .toLowerCase()
+    expect(everyOption).not.toContain('resource leveling')
+    expect(everyOption).not.toContain('fast tracking')
+    expect(everyOption).not.toContain('nonconformity')
+    expect(everyOption).not.toContain('retrospective')
+    expect(everyOption).not.toContain('approvers')
+  })
+
+  it('leans on no single distractor the way the first draft did', () => {
+    const counts = new Map<string, number>()
+    for (const scenario of SCENARIOS) {
+      if (!scenario.glossary) continue
+      for (const option of scenario.glossary.options) {
+        if (option === scenario.glossary.answer) continue
+        const key = option.toLowerCase()
+        counts.set(key, (counts.get(key) ?? 0) + 1)
+      }
+    }
+    for (const [option, count] of counts) {
+      expect(count, `"${option}" appears ${count} times`).toBeLessThanOrEqual(3)
     }
   })
 })

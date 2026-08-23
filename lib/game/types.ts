@@ -65,6 +65,20 @@ export interface GlossaryBonus {
   readonly prompt: string
   readonly options: readonly string[]
   readonly answer: string
+  /**
+   * What Terms I Discovered records, when that differs from the answer.
+   *
+   * Almost always it does not, and this stays absent. It exists because the
+   * best question does not always have the canonical term as its answer.
+   *
+   * At 4:00 PM the honest question is "what should the project manager
+   * check?" and the honest answer is fitness for use — but the approved
+   * vocabulary in Destiny Projects — Words to Know has one entry there,
+   * Conformance, and teaches fitness for use as part of it. Without this
+   * field the panel would hand the participant a term the guide says is not
+   * a term, and the two assets would disagree about their own vocabulary.
+   */
+  readonly term?: string
   /** Shown on both a correct and an incorrect answer. Naming, not scoring. */
   readonly reveal: string
 }

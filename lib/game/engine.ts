@@ -248,7 +248,9 @@ function answerGlossary(state: GameState, option: string): GameState {
   if (state.glossaryAnswered.includes(scenario.id)) return state
 
   const correct = option === scenario.glossary.answer
-  const term = scenario.glossary.answer
+  // The answer is what the participant picks; the term is what they leave
+  // with. They are the same string unless a bonus says otherwise.
+  const term = scenario.glossary.term ?? scenario.glossary.answer
 
   return {
     ...state,

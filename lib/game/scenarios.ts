@@ -174,7 +174,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'What do project managers call the thing Priya was stuck behind?',
-      options: ['Impediment', 'Milestone', 'Baseline', 'Resource leveling'],
+      options: ['Impediment', 'Risk', 'Issue', 'Constraint'],
       answer: 'Impediment',
       reveal:
         'Impediment — something that is keeping the team from moving forward. Recognizing it matters. Helping remove it matters more.',
@@ -239,7 +239,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'Three small undocumented additions had already gone in this month. What is that called?',
-      options: ['Scope creep', 'Progressive elaboration', 'Resource leveling', 'Fast tracking'],
+      options: ['Scope creep', 'Progressive elaboration', 'Change control', 'Requirement'],
       answer: 'Scope creep',
       reveal:
         'Scope creep — work that gets added without being properly considered or approved. Progressive elaboration is different: the work was already part of the project; you are simply learning more about it as you go.',
@@ -298,7 +298,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'Dana and Ray both have a legitimate interest in this project. What are they?',
-      options: ['Stakeholders', 'Sponsors', 'Approvers', 'Dependencies'],
+      options: ['Stakeholders', 'Sponsors', 'Dependencies', 'Constraints'],
       answer: 'Stakeholders',
       reveal:
         'Stakeholder — anyone who can affect the project or is affected by it. A sponsor is a stakeholder with a specific role: helping champion, support, and provide direction for the project.',
@@ -363,7 +363,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'The gap between planned spend and actual spend has a name. What is it?',
-      options: ['Variance', 'Baseline', 'Trigger', 'Nonconformity'],
+      options: ['Variance', 'Baseline', 'Trigger', 'Issue'],
       answer: 'Variance',
       reveal:
         'Variance — the difference between what you planned and what actually happened. It tells you something changed. Then you need to understand why.',
@@ -423,7 +423,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'Before agreeing to a change of this size, what should happen?',
-      options: ['Impact assessment', 'Fast tracking', 'Resource leveling', 'Lessons learned'],
+      options: ['Impact assessment', 'Baseline', 'Constraint', 'Lessons learned'],
       answer: 'Impact assessment',
       reveal:
         'Impact assessment — understanding what a change affects before you commit to it. Once you know the impact, you can make a better decision about what needs to change.',
@@ -482,7 +482,7 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'Running predictive and adaptive approaches together in one project is called what?',
-      options: ['Hybrid', 'Fast tracking', 'Rolling-wave planning', 'Progressive elaboration'],
+      options: ['Hybrid', 'Agile', 'Rolling-wave planning', 'Progressive elaboration'],
       answer: 'Hybrid',
       reveal:
         'Hybrid — using different approaches within the same project when the work calls for it. Some work needs room to adapt. Other work needs more predictability. The project manager brings them together.',
@@ -539,13 +539,10 @@ export const SCENARIOS: readonly Scenario[] = [
         wisdom: 2,
       },
     ],
-    glossary: {
-      prompt: 'Dana’s Thursday decision — does this phase remain justified and ready to continue — is what?',
-      options: ['Stage gate', 'Milestone', 'Baseline', 'Retrospective'],
-      answer: 'Stage gate',
-      reveal:
-        'Stage gate — a decision point where leaders determine whether the project is ready and still makes sense to continue. A milestone shows progress. A gate asks whether to move forward.',
-    },
+    // No glossary bonus. Owner ruling: the sponsor's Thursday decision stays
+    // exactly as written — it is what makes "bring her the decision" the
+    // strongest choice — but "stage gate" is not one of the thirty approved
+    // terms, so the game does not hand it to the participant as one.
   },
 
   // ── 3:45 PM ──────────────────────────────────────────────────────────────
@@ -653,13 +650,11 @@ export const SCENARIOS: readonly Scenario[] = [
     ],
     glossary: {
       prompt: 'The work met the written requirements, but it still didn’t work for the member. What should the project manager check?',
-      options: [
-        'Fitness for use',
-        'The requirement was not baselined',
-        'The team needed resource leveling',
-        'The project needed fast tracking',
-      ],
+      options: ['Fitness for use', 'Conformance', 'Requirements', 'Baseline'],
       answer: 'Fitness for use',
+      // Owner ruling: the answer is fitness for use; the term the participant
+      // leaves with is Conformance, which is the canonical entry.
+      term: 'Conformance',
       reveal:
         'Conformance means the work meets the agreed requirements. Fitness for use asks whether it actually works for the person who needs it. Something can meet every requirement and still miss the real need.',
     },
@@ -724,9 +719,9 @@ export const SCENARIOS: readonly Scenario[] = [
       prompt: 'The same defect has now come back three times. What technique helps you find why?',
       options: [
         'Cause-and-effect analysis',
-        'Fast tracking',
-        'Rolling-wave planning',
-        'Resource leveling',
+        'Lessons learned',
+        'Impact assessment',
+        'Variance',
       ],
       answer: 'Cause-and-effect analysis',
       reveal:
@@ -788,9 +783,9 @@ export const SCENARIOS: readonly Scenario[] = [
       prompt: 'Detailing near-term work while leaving distant work at a higher level is called what?',
       options: [
         'Rolling-wave planning',
-        'Fast tracking',
+        'Progressive elaboration',
         'Change control',
-        'Resource leveling',
+        'Backlog',
       ],
       answer: 'Rolling-wave planning',
       reveal:

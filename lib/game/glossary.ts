@@ -36,7 +36,7 @@ export const GLOSSARY_TERMS: readonly GlossaryTerm[] = SCENARIOS.flatMap((scenar
   scenario.glossary
     ? [
         {
-          term: scenario.glossary.answer,
+          term: scenario.glossary.term ?? scenario.glossary.answer,
           definition: scenario.glossary.reveal,
           metAt: `${scenario.time} · ${scenario.title}`,
         },
