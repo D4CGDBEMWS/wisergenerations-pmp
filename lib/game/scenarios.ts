@@ -242,7 +242,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Scope creep', 'Progressive elaboration', 'Resource leveling', 'Fast tracking'],
       answer: 'Scope creep',
       reveal:
-        'Scope creep — work added without going through a decision. Not the same as progressive elaboration, where known work simply becomes clearer as you learn more.',
+        'Scope creep — work that gets added without being properly considered or approved. Progressive elaboration is different: the work was already part of the project; you are simply learning more about it as you go.',
     },
   },
 
@@ -301,7 +301,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Stakeholders', 'Sponsors', 'Approvers', 'Dependencies'],
       answer: 'Stakeholders',
       reveal:
-        'Stakeholder — anyone affected by the project or able to affect it. Dana is also the sponsor; the two are not the same thing.',
+        'Stakeholder — anyone who can affect the project or is affected by it. A sponsor is a stakeholder with a specific role: helping champion, support, and provide direction for the project.',
     },
   },
 
@@ -366,7 +366,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Variance', 'Baseline', 'Trigger', 'Nonconformity'],
       answer: 'Variance',
       reveal:
-        'Variance — the difference between what was planned and what happened. It tells you to look. It does not tell you why.',
+        'Variance — the difference between what you planned and what actually happened. It tells you something changed. Then you need to understand why.',
     },
   },
 
@@ -652,14 +652,14 @@ export const SCENARIOS: readonly Scenario[] = [
       },
     ],
     glossary: {
-      prompt: 'The deliverable met its written specification and still failed the member. What does that distinction show?',
+      prompt: 'The work met the written requirements, but it still didn’t work for the member. What should the project manager check?',
       options: [
-        'Conformance is not the same as fitness for use',
+        'Fitness for use',
         'The requirement was not baselined',
         'The team needed resource leveling',
         'The project needed fast tracking',
       ],
-      answer: 'Conformance is not the same as fitness for use',
+      answer: 'Fitness for use',
       reveal:
         'Conformance means the work meets the agreed requirements. Fitness for use asks whether it actually works for the person who needs it. Something can meet every requirement and still miss the real need.',
     },
