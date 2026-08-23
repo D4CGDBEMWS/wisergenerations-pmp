@@ -265,13 +265,29 @@ export default async function ResultsPage({
         {/* §24: reuse the checkout email rather than asking for it again. */}
         <section aria-labelledby="email-heading" className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
           <h2 id="email-heading" className="text-lg font-bold text-navy">
-            Send my plan to me
+            Resend My Results Email
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
             We&rsquo;ll send it to <span className="font-semibold text-navy">{maskedEmail}</span> so
             you can come back to it.
           </p>
           <EmailPlanButton token={token} />
+        </section>
+
+        {/* Owner ruling: "Yours to keep" needs something to keep. A plain link
+            rather than a script-driven download, so it works with JavaScript
+            off and behaves like a file in every browser. */}
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-bold text-navy">Keep a copy</h2>
+          <p className="mt-2 text-sm leading-relaxed text-gray-600">
+            A one-page snapshot of your position, your eight dimensions and your 30/60/90 plan.
+          </p>
+          <a
+            href={`/living-is-a-project/results/${token}/snapshot`}
+            className="mt-4 inline-block rounded-lg bg-navy px-6 py-3 font-bold text-white transition-colors hover:bg-brand-blue-dark"
+          >
+            Download My Life Project Snapshot
+          </a>
         </section>
 
         {/* §30: name what is coming, sell nothing that does not exist. */}
@@ -285,7 +301,7 @@ export default async function ResultsPage({
                 Coming soon
               </p>
               <h3 className="mt-1 font-bold text-navy">
-                Life Is a Project™ 90-Minute Workshop
+                Living Is a Project Virtual Workshop
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 Ninety minutes working your plan alongside others going through their own change.
@@ -307,7 +323,7 @@ export default async function ResultsPage({
 
         <p className="text-sm text-gray-500">
           <Link href="/living-is-a-project" className="underline underline-offset-2 hover:text-navy">
-            Back to Life Is a Project™
+            Back to Living Is a Project
           </Link>
         </p>
       </div>

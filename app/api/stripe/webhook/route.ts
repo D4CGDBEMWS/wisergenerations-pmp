@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { claimEvent, markEventProcessed, markEventFailed } from '@/lib/payments/events'
 import { queryOne } from '@/lib/db/client'
 import { upsertCustomer } from '@/lib/customers'
-import { grantEntitlement, revokeEntitlementsBySource, STUDY_ACCESS } from '@/lib/entitlements'
+import {
+  grantEntitlement,
+  revokeEntitlementsBySource,
+  revokeEntitlementsForRefund,
+  STUDY_ACCESS,
+} from '@/lib/entitlements'
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
@@ -388,7 +393,7 @@ export async function POST(request: NextRequest) {
       }
 
       // ───────────────────────────────────────────────────────────────
-      // Life Is a Project™ book preorder.
+      // Living Is a Project…Are You Ready? book preorder.
       //
       // Matched on metadata rather than on amount or product name: the marker
       // is set in one place, app/api/liap/preorder, and nothing else uses it.
@@ -408,6 +413,8 @@ export async function POST(request: NextRequest) {
             stripeCustomerId:
               typeof liapSession.customer === 'string' ? liapSession.customer : null,
             sourceId: liapSession.id,
+            paymentIntentId:
+              typeof liapSession.payment_intent === 'string' ? liapSession.payment_intent : null,
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
           })
@@ -418,10 +425,13 @@ export async function POST(request: NextRequest) {
       // product, because an entitlement outlives the payment that created it.
       if (event.type === 'charge.refunded') {
         const charge = event.data.object as Stripe.Charge
-        await revokeEntitlementsBySource({
-          sourceType: 'order',
-          sourceId:
-            (typeof charge.payment_intent === 'string' ? charge.payment_intent : null) ?? charge.id,
+        // Resolves the payment back to whatever identifier the entitlement
+        // recorded. The old single-identifier revoke silently matched nothing
+        // for book preorders — see revokeEntitlementsForRefund.
+        await revokeEntitlementsForRefund({
+          paymentIntentId:
+            typeof charge.payment_intent === 'string' ? charge.payment_intent : null,
+          chargeId: charge.id,
           reason: 'charge.refunded',
         })
       }

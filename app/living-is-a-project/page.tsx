@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 
 export const metadata = {
-  title: 'Life Is a Project™ | Wiser Generations',
+  title: 'Living Is a Project | Wiser Generations',
   description:
     'Assess where you are, understand what changed, protect what matters and forge your next best steps.',
 }
 
 // ---------------------------------------------------------------------------
-// The Life Is a Project™ hub. §4, §5.
+// The Living Is a Project hub. §4, §5.
 //
 // The journey has six steps and two of them exist. Showing all six is the
 // point — someone should be able to see where this goes — but only the book
@@ -20,7 +20,7 @@ const JOURNEY = [
   {
     step: 'Step 1',
     title: 'Read',
-    name: 'Life Is a Project… Be Ready.',
+    name: 'Living Is a Project…Are You Ready?',
     body: 'The book that frames the change you are in as something you can actually manage.',
     status: 'available' as const,
   },
@@ -41,7 +41,7 @@ const JOURNEY = [
   {
     step: 'Step 4',
     title: 'Experience',
-    name: 'Life Is a Project™ Workshop',
+    name: 'Living Is a Project Virtual Workshop',
     body: 'Ninety minutes working the plan alongside others going through their own change.',
     status: 'soon' as const,
   },
@@ -81,7 +81,7 @@ export default function LiapHubPage() {
           <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-5xl">
             Your life is your most important project.
           </h1>
-          <p className="mt-4 text-xl text-gold sm:text-2xl">Life Is a Project… Be Ready.</p>
+          <p className="mt-4 text-xl text-gold sm:text-2xl">Living Is a Project&hellip;Are You Ready?</p>
 
           <div className="mt-8 max-w-2xl space-y-4 text-base leading-relaxed text-gray-200 sm:text-lg">
             <p>
@@ -89,7 +89,7 @@ export default function LiapHubPage() {
               never saw coming.
             </p>
             <p>
-              Life Is a Project™ helps you assess where you are, understand what changed, protect
+              Living Is a Project helps you assess where you are, understand what changed, protect
               what matters and forge your next best steps.
             </p>
           </div>
@@ -175,7 +175,7 @@ export default function LiapHubPage() {
         <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-6 sm:p-8">
           <h2 className="text-xl font-bold text-navy">Start with the book</h2>
           <p className="mt-2 max-w-2xl text-gray-600">
-            Preorder <em>Life Is a Project… Be Ready.</em> and receive the Life Project-Ready™
+            Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive the Life Project-Ready&trade;
             Assessment at no additional charge.
           </p>
           <Link

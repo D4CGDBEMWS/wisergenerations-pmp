@@ -40,14 +40,14 @@ export function BookChooser({ signedIn }: Props) {
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-lg flex-col justify-center px-5 py-14 sm:py-20">
       <p className="text-xs font-bold uppercase tracking-[0.14em] text-gold">
-        Life Is a Project&trade;
+        Living Is a Project&hellip;Are You Ready?&trade;
       </p>
 
       <h1 className="mt-3 text-3xl font-bold leading-tight text-navy sm:text-4xl">
         Ready for Your Next Step?
       </h1>
       <p className="mt-4 leading-relaxed text-gray-700">
-        Your copy of <em>Life Is a Project&trade;</em> includes access to the Life
+        Your copy of <em>Living Is a Project&hellip;Are You Ready?&trade;</em> includes access to the Life
         Project-Ready&trade; Assessment.
       </p>
 

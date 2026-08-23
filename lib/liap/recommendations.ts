@@ -8,7 +8,7 @@ import {
   type Answers,
   type ScoreReport,
 } from './scoring'
-import type { DimensionKey } from './assessment/v1'
+import type { DimensionKey, NarrativeKey } from './assessment/v1'
 
 // ---------------------------------------------------------------------------
 // Protect • Resolve • Move, and the 30/60/90 plan.
@@ -25,12 +25,60 @@ import type { DimensionKey } from './assessment/v1'
 // cannot act on. Choosing three is the product.
 // ---------------------------------------------------------------------------
 
+/**
+ * A pointer to something the participant wrote. NEVER the text itself.
+ *
+ * ── WHY THIS TYPE EXISTS ───────────────────────────────────────────────────
+ *
+ * The 90-day promise is that free text is deleted. Before this, the engine
+ * interpolated the participant's sentence directly into the action body, and
+ * that body was JSON-encoded into assessment_results — so purging
+ * assessment_narratives left a verbatim copy behind in a table the purge never
+ * touched, and the results page went on quoting it at day 91. An audit proved
+ * it end to end.
+ *
+ * A reference cannot leak, because there is nothing in it to leak. The stored
+ * report says "here is where a quotation goes and here is the approved prose
+ * around it"; the text is fetched from assessment_narratives at render time,
+ * and once that row is gone the reference resolves to nothing.
+ *
+ * The rule that makes it safe rather than merely tidy: `body` must read
+ * naturally on its own. A body that needs the quotation to make sense would
+ * turn a purged report into nonsense, which is its own kind of failure. Every
+ * `lead`/`trail` pair below is written so the sentence survives its removal —
+ * and a test asserts every stored body is non-empty and quote-free.
+ */
+export interface NarrativeRef {
+  /** Which narrative answer to resolve. A key, not a value. */
+  readonly narrative: NarrativeKey
+  /** Approved prose introducing the quotation. */
+  readonly lead: string
+  /** Approved prose after it. Omitted where none is needed. */
+  readonly trail?: string
+  /** Characters retained when the quotation is rendered. */
+  readonly limit: number
+}
+
+/** Narratives as loaded for rendering. Empty once the retention window closes. */
+export type NarrativeMap = Partial<Record<NarrativeKey, string>>
+
 export interface Action {
   kind: 'protect' | 'resolve' | 'move'
   headline: string
+  /** Approved prose. Must stand alone; never contains participant text. */
   body: string
   /** Which dimension drove this, for the "why am I seeing this" line. */
   basis: DimensionKey | 'stated'
+  /** Resolved at render time, if the narrative still exists. */
+  quote?: NarrativeRef
+}
+
+/** An action with its quotation already resolved — what a page or PDF renders. */
+export interface RenderedAction {
+  kind: Action['kind']
+  headline: string
+  body: string
+  basis: Action['basis']
 }
 
 /**
@@ -128,12 +176,44 @@ const MOVE_BY_POSITION = {
   },
 } as const
 
-/** A short, safe echo of the customer's own words. Never re-published raw. */
-function quote(text: string | null | undefined, limit = 180): string | null {
-  if (!text) return null
-  const clean = text.replace(/\s+/g, ' ').trim()
+/** Whether the participant wrote anything. A boolean, safe to store. */
+function stated(text: string | null | undefined): boolean {
+  return typeof text === 'string' && text.trim().length > 0
+}
+
+/**
+ * Resolves a reference against whatever narratives still exist.
+ *
+ * Returns null when the narrative is absent — which is the state after the
+ * 90-day purge, and the state this whole design exists to make safe.
+ */
+export function resolveNarrative(
+  ref: NarrativeRef | undefined,
+  narratives: NarrativeMap
+): string | null {
+  if (!ref) return null
+  const raw = narratives[ref.narrative]
+  if (!raw) return null
+  const clean = raw.replace(/\s+/g, ' ').trim()
   if (!clean) return null
-  return clean.length > limit ? clean.slice(0, limit - 1).trimEnd() + '…' : clean
+  return clean.length > ref.limit ? clean.slice(0, ref.limit - 1).trimEnd() + '…' : clean
+}
+
+/** Approved prose, plus the quotation if it is still available. */
+function withQuote(body: string, ref: NarrativeRef | undefined, narratives: NarrativeMap): string {
+  const text = resolveNarrative(ref, narratives)
+  if (!text || !ref) return body
+  const trail = ref.trail ? ` ${ref.trail}` : ''
+  return `${body} ${ref.lead} \u201c${text}\u201d${trail}`
+}
+
+export function renderAction(action: Action, narratives: NarrativeMap): RenderedAction {
+  return {
+    kind: action.kind,
+    headline: action.headline,
+    body: withQuote(action.body, action.quote, narratives),
+    basis: action.basis,
+  }
 }
 
 /**
@@ -159,14 +239,21 @@ export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
     basis: protectSource.key,
   }
 
-  const statedDecision = quote(intake.importantDecision)
   const resolveCopy = RESOLVE_BY_DIMENSION[resolveSource.key]
-  const resolve: Action = statedDecision
+  // The BOOLEAN is stored, never the sentence. Whether they wrote something
+  // decides which headline they get; what they wrote is resolved at render.
+  const resolve: Action = stated(intake.importantDecision)
     ? {
         kind: 'resolve',
         headline: 'Resolve the decision you named',
-        body: `You told us this is what feels most important right now: “${statedDecision}” Give it a decision date rather than more thinking time. ${resolveCopy.body}`,
+        // Reads correctly with the quotation and without it.
+        body: `Give it a decision date rather than more thinking time. ${resolveCopy.body}`,
         basis: 'stated',
+        quote: {
+          narrative: 'important_decision',
+          lead: 'You told us this is what feels most important right now:',
+          limit: 180,
+        },
       }
     : { kind: 'resolve', headline: resolveCopy.headline, body: resolveCopy.body, basis: resolveSource.key }
 
@@ -175,14 +262,24 @@ export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
   // been upended.
   const moveKey = report.steady && report.position === 'move' ? 'plan' : report.position
   const moveCopy = MOVE_BY_POSITION[moveKey]
-  const desired = quote(intake.ninetyDayBetter)
+  const describedBetter = stated(intake.ninetyDayBetter)
   const move: Action = {
     kind: 'move',
     headline: moveCopy.headline,
-    body: desired
-      ? `${moveCopy.body} You described better as: “${desired}” Let that be the test for whichever step you choose.`
-      : moveCopy.body,
-    basis: desired ? 'stated' : report.strengths[0]?.key ?? protectSource.key,
+    // Approved prose only. The trail lives on the reference, because "let that
+    // be the test" has nothing to point at once the quotation is gone.
+    body: moveCopy.body,
+    basis: describedBetter ? 'stated' : report.strengths[0]?.key ?? protectSource.key,
+    ...(describedBetter
+      ? {
+          quote: {
+            narrative: 'ninety_day_better' as const,
+            lead: 'You described better as:',
+            trail: 'Let that be the test for whichever step you choose.',
+            limit: 180,
+          },
+        }
+      : {}),
   }
 
   return [protect, resolve, move]
@@ -196,16 +293,51 @@ export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
 // printed before they answered anything is not worth sending.
 // ---------------------------------------------------------------------------
 
+/**
+ * One line of the plan.
+ *
+ * Same rule as an Action: `text` is approved prose that stands alone, and any
+ * quotation is a reference resolved at render time. A stored plan contains no
+ * participant sentence, so purging the narratives purges it everywhere.
+ */
+export interface PlanItem {
+  text: string
+  quote?: NarrativeRef
+}
+
 export interface PlanPhase {
   window: string
   title: string
-  items: string[]
+  items: PlanItem[]
 }
 
 export interface Plan {
   phases: PlanPhase[]
   /** ISO date, 90 days out. Passed in so the engine stays clock-free. */
   reviewOn: string | null
+}
+
+/** A phase with its quotations resolved — plain strings, as a page expects. */
+export interface RenderedPlanPhase {
+  window: string
+  title: string
+  items: string[]
+}
+
+export interface RenderedPlan {
+  phases: RenderedPlanPhase[]
+  reviewOn: string | null
+}
+
+export function renderPlan(plan: Plan, narratives: NarrativeMap): RenderedPlan {
+  return {
+    reviewOn: plan.reviewOn,
+    phases: plan.phases.map((phase) => ({
+      window: phase.window,
+      title: phase.title,
+      items: phase.items.map((item) => withQuote(item.text, item.quote, narratives)),
+    })),
+  }
 }
 
 function name(score: DimensionScore | undefined): string {
@@ -216,39 +348,47 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
   const lowest = report.ranked[0]
   const second = report.ranked[1]
   const strongest = report.strengths[0]
-  const desired = quote(intake.ninetyDayBetter, 120)
-  const decision = quote(intake.importantDecision, 120)
+  const describedBetter = stated(intake.ninetyDayBetter)
+  const namedDecision = stated(intake.importantDecision)
 
-  const first: string[] = [
-    `Protect the essentials in ${name(lowest)} — this is where your answers show the least room right now.`,
-    'Gather the information you are currently missing, rather than deciding without it.',
+  const first: PlanItem[] = [
+    { text: `Protect the essentials in ${name(lowest)} — this is where your answers show the least room right now.` },
+    { text: 'Gather the information you are currently missing, rather than deciding without it.' },
   ]
   if (report.steady) {
-    first.unshift('Work the S.T.E.A.D.Y. sequence before committing to anything larger. Stabilise first; the plan will hold better for it.')
+    first.unshift({ text: 'Work the S.T.E.A.D.Y. sequence before committing to anything larger. Stabilise first; the plan will hold better for it.' })
   }
-  if (decision) {
-    first.push(`Set a decision date for: “${decision}”`)
+  if (namedDecision) {
+    // Complete as a sentence on its own; the quotation adds their words while
+    // they exist, and its absence at day 91 costs the line nothing.
+    first.push({
+      text: 'Set a decision date for the decision you named.',
+      quote: { narrative: 'important_decision', lead: 'You wrote:', limit: 120 },
+    })
   }
-  first.push('Choose one milestone you can reach inside 30 days, and write down how you will know you reached it.')
+  first.push({ text: 'Choose one milestone you can reach inside 30 days, and write down how you will know you reached it.' })
 
-  const secondPhase: string[] = [
-    `Act on your Move step rather than revisiting it.`,
-    `Give ${name(second)} deliberate attention — it is the next area that will limit progress.`,
+  const secondPhase: PlanItem[] = [
+    { text: `Act on your Move step rather than revisiting it.` },
+    { text: `Give ${name(second)} deliberate attention — it is the next area that will limit progress.` },
   ]
   if (strongest) {
-    secondPhase.push(`Use ${strongest.name}, your strongest area at ${strongest.score}/25, to carry the parts that feel heaviest.`)
+    secondPhase.push({ text: `Use ${strongest.name}, your strongest area at ${strongest.score}/25, to carry the parts that feel heaviest.` })
   }
-  secondPhase.push('Track what actually happened each week. Two lines is enough.')
+  secondPhase.push({ text: 'Track what actually happened each week. Two lines is enough.' })
 
-  const third: string[] = [
-    'Review what changed, honestly — including anything that did not.',
-    `Re-score ${name(lowest)} and see whether the work moved it.`,
-    'Update the risks: some will have closed, and new ones will have appeared.',
+  const third: PlanItem[] = [
+    { text: 'Review what changed, honestly — including anything that did not.' },
+    { text: `Re-score ${name(lowest)} and see whether the work moved it.` },
+    { text: 'Update the risks: some will have closed, and new ones will have appeared.' },
   ]
   third.push(
-    desired
-      ? `Measure against what you said better would look like: “${desired}”`
-      : 'Decide what the next 90 days are for, now that this period has a shape.'
+    describedBetter
+      ? {
+          text: 'Measure against what you said better would look like.',
+          quote: { narrative: 'ninety_day_better', lead: 'You wrote:', limit: 120 },
+        }
+      : { text: 'Decide what the next 90 days are for, now that this period has a shape.' }
   )
 
   let reviewOn: string | null = null
@@ -268,12 +408,41 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
   }
 }
 
+/** What is BUILT and STORED. Carries references; contains no participant text. */
 export interface FullReport extends ScoreReport {
   positionLabel: string
   positionMeaning: string
   actions: Action[]
   plan: Plan
   classificationLabels: typeof CLASSIFICATION_LABELS
+}
+
+/**
+ * What is RENDERED — by the results page, the email and the PDF alike.
+ *
+ * Identical in shape to what those callers consumed before this change, which
+ * is deliberate: the fix moves where the text lives, not what a page expects.
+ */
+export interface RenderedReport extends ScoreReport {
+  positionLabel: string
+  positionMeaning: string
+  actions: RenderedAction[]
+  plan: RenderedPlan
+  classificationLabels: typeof CLASSIFICATION_LABELS
+}
+
+/**
+ * Resolves a stored report against whatever narratives remain.
+ *
+ * Pass an empty map and you get exactly what a participant sees at day 91.
+ * That is the whole safety property, and it is one function call to test.
+ */
+export function renderReport(report: FullReport, narratives: NarrativeMap): RenderedReport {
+  return {
+    ...report,
+    actions: report.actions.map((a) => renderAction(a, narratives)),
+    plan: renderPlan(report.plan, narratives),
+  }
 }
 
 /** The whole report, from answers to plan, with no I/O anywhere in the path. */

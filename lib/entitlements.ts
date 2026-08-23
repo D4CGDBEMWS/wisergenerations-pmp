@@ -191,6 +191,61 @@ export async function revokeEntitlementsBySource(input: {
 }
 
 /**
+ * Revokes everything a refunded payment paid for.
+ *
+ * ── WHY THIS IS NOT JUST revokeEntitlementsBySource ────────────────────────
+ *
+ * A Stripe refund event carries a charge and a payment intent. An entitlement
+ * records whatever identifier its grant path happened to use — for the book
+ * preorder that is the CHECKOUT SESSION id, because that is what
+ * checkout.session.completed delivers. The two never matched, so
+ * `charge.refunded` revoked zero rows and a refunded reader kept the
+ * assessment indefinitely. An audit proved it: 0 rows revoked, access still
+ * true, while revoking by the stored id worked perfectly.
+ *
+ * So this resolves rather than guesses. It tries the identifiers the refund
+ * carries, and then follows orders.stripe_payment_intent_id back to the
+ * checkout session that the entitlement actually recorded. Any of the three
+ * may match; matching more than one is harmless, because revocation is
+ * idempotent — `revoked_at IS NULL` means a replayed event revokes nothing a
+ * second time.
+ *
+ * Deliberately narrow: only exact identifier matches, so one customer's refund
+ * can never reach another customer's entitlement.
+ */
+export async function revokeEntitlementsForRefund(input: {
+  paymentIntentId?: string | null
+  chargeId?: string | null
+  reason: string
+}): Promise<number> {
+  const direct = [input.paymentIntentId, input.chargeId].filter(
+    (id): id is string => typeof id === 'string' && id.length > 0
+  )
+
+  const sourceIds = new Set<string>(direct)
+
+  if (input.paymentIntentId) {
+    const orders = await getDb().query<{ stripe_checkout_session_id: string | null }>(
+      `SELECT stripe_checkout_session_id FROM orders WHERE stripe_payment_intent_id = $1`,
+      [input.paymentIntentId]
+    )
+    for (const order of orders) {
+      if (order.stripe_checkout_session_id) sourceIds.add(order.stripe_checkout_session_id)
+    }
+  }
+
+  let revoked = 0
+  for (const sourceId of sourceIds) {
+    revoked += await revokeEntitlementsBySource({
+      sourceType: 'order',
+      sourceId,
+      reason: input.reason,
+    })
+  }
+  return revoked
+}
+
+/**
  * Looks up what a product grants. Data-driven by design: adding
  * LIAP_BOOK_BUNDLE → {assessment, starter kit} is an INSERT, not a deploy,
  * and no route component ever asks "did they buy the book?".

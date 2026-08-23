@@ -21,8 +21,17 @@ export interface PreorderInput {
   email: string
   name?: string | null
   stripeCustomerId?: string | null
-  /** Checkout session or payment intent id — whatever a refund will reference. */
+  /** Checkout session id. This is what the entitlement records as its source. */
   sourceId: string
+  /**
+   * The payment intent behind the session, when Stripe supplies one.
+   *
+   * Recorded so a refund can find its way back. A refund event carries the
+   * payment intent, the entitlement records the checkout session, and before
+   * this the two never met — so `charge.refunded` revoked nothing and a
+   * refunded reader kept the assessment. This column is the join.
+   */
+  paymentIntentId?: string | null
   /** Stripe event id, so a replayed webhook cannot grant twice. */
   idempotencyKey: string
   amount?: number | null
@@ -68,12 +77,21 @@ export async function fulfilPreorder(input: PreorderInput): Promise<PreorderResu
       // Postgres cannot infer a partial index from the column list alone. Without
       // it this raises "no unique or exclusion constraint matching the ON CONFLICT
       // specification" — at which point a paying customer's webhook throws.
-      `INSERT INTO orders (customer_id, stripe_checkout_session_id, status, amount, currency)
-       VALUES ($1, $2, 'paid', $3, $4)
+      `INSERT INTO orders
+         (customer_id, stripe_checkout_session_id, stripe_payment_intent_id, status, amount, currency)
+       VALUES ($1, $2, $3, 'paid', $4, $5)
        ON CONFLICT (stripe_checkout_session_id) WHERE stripe_checkout_session_id IS NOT NULL
-       DO UPDATE SET status = 'paid'
+       DO UPDATE SET status = 'paid',
+                     stripe_payment_intent_id =
+                       COALESCE(EXCLUDED.stripe_payment_intent_id, orders.stripe_payment_intent_id)
        RETURNING id`,
-      [customer.id, input.sourceId, input.amount ?? LIAP_BOOK.amount, LIAP_BOOK.currency]
+      [
+        customer.id,
+        input.sourceId,
+        input.paymentIntentId ?? null,
+        input.amount ?? LIAP_BOOK.amount,
+        LIAP_BOOK.currency,
+      ]
     )
     orderId = orders[0]?.id ?? null
 

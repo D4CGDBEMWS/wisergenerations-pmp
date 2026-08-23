@@ -4,7 +4,7 @@ import { isEnabled } from '@/lib/flags'
 import { queryOne } from '@/lib/db/client'
 import { recordAuditEvent } from '@/lib/audit'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
-import { RESULTS_SUBJECT, resultsEmailHtml, resultsEmailText } from '@/lib/liap/results-email'
+import { deliverResults } from '@/lib/liap/results-delivery'
 import { positionTag, tagLiapContact } from '@/lib/liap/crm'
 
 // ---------------------------------------------------------------------------
@@ -47,50 +47,36 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   )
   if (!customer?.email) return NextResponse.json({ error: 'Not found.' }, { status: 404 })
 
-  const report = await rebuildReport(found.id)
-  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wisergenerations.com'
-  const url = `${origin}/living-is-a-project/results/${token}`
+  // Manual resend. Distinct from the automatic first delivery: it is
+  // throttled rather than once-only, and it never clears the automatic marker.
+  const delivery = await deliverResults({
+    assessmentId: found.id,
+    resultToken: token,
+    mode: 'resend',
+  })
 
-  const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.MAGIC_LINK_FROM_EMAIL || process.env.RESEND_FROM_EMAIL || 'info@wisergenerations.com'
-
-  if (!apiKey) {
+  if (delivery.outcome === 'throttled') {
+    return NextResponse.json(
+      { error: 'We sent that a moment ago. Check your inbox, then try again shortly.' },
+      { status: 429 }
+    )
+  }
+  if (delivery.outcome === 'not-configured') {
     // §35: the customer must not be told it was sent when it was not. Their
     // plan is still on screen and still reachable by the same link.
-    console.error('[liap/results/email] RESEND_API_KEY not set; plan not sent')
     return NextResponse.json(
       { error: 'Email is not available right now. Your plan is saved at this link.' },
       { status: 503 }
     )
   }
-
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: `Wiser Generations <${from}>`,
-        to: [customer.email],
-        subject: RESULTS_SUBJECT,
-        html: resultsEmailHtml(report, url),
-        text: resultsEmailText(report, url),
-      }),
-    })
-
-    if (!res.ok) {
-      console.error(`[liap/results/email] Resend rejected the send: HTTP ${res.status}`)
-      return NextResponse.json(
-        { error: 'We could not send it just now. Your plan is saved at this link.' },
-        { status: 502 }
-      )
-    }
-  } catch (err) {
-    console.error('[liap/results/email] send threw:', err)
+  if (!delivery.delivered) {
     return NextResponse.json(
       { error: 'We could not send it just now. Your plan is saved at this link.' },
       { status: 502 }
     )
   }
+
+  const report = await rebuildReport(found.id)
 
   // The position only. Never a score, never the narrative. §26, §28.
   const tag = positionTag(report.position)

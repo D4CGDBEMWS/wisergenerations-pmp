@@ -3,7 +3,7 @@ import { SESSION_COOKIE, validateSession, type SessionCustomer } from '@/lib/aut
 import { hasEntitlement } from '@/lib/entitlements'
 
 // ---------------------------------------------------------------------------
-// Life Is a Project™ access.
+// Living Is a Project access.
 //
 // Its own key, its own module, deliberately. §8 of the Phase I brief: do not
 // reuse PMP product ids, membership permissions or business logic merely

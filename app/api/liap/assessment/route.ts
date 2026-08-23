@@ -10,6 +10,7 @@ import {
   type SavePayload,
 } from '@/lib/liap/assessment-service'
 import { queryOne } from '@/lib/db/client'
+import { deliverResults } from '@/lib/liap/results-delivery'
 import { FINAL_STEP } from '@/lib/liap/assessment/v1'
 
 // ---------------------------------------------------------------------------
@@ -147,7 +148,23 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ ok: true, alreadyCompleted: true })
     }
 
-    return NextResponse.json({ ok: true, resultToken: result.resultToken })
+    // Owner ruling: the first delivery is automatic. Deliberately AFTER the
+    // result exists and is reachable, and deliberately not awaited into the
+    // success of the request — a mail provider having a bad minute must not
+    // turn a completed assessment into an error page. deliverResults never
+    // throws; it reports, and the claim it takes is released on failure so
+    // the participant can ask again from the results page.
+    const delivery = await deliverResults({
+      assessmentId,
+      resultToken: result.resultToken,
+      mode: 'automatic',
+    })
+
+    return NextResponse.json({
+      ok: true,
+      resultToken: result.resultToken,
+      emailed: delivery.delivered,
+    })
   } catch (err) {
     console.error('[liap/assessment] submit failed:', err)
     return NextResponse.json(

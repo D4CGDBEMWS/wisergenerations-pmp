@@ -8,7 +8,13 @@ import {
   definitionFingerprint,
   type NarrativeKey,
 } from './assessment/v1'
-import { buildFullReport, type FullReport } from './recommendations'
+import {
+  buildFullReport,
+  renderReport,
+  type FullReport,
+  type NarrativeMap,
+  type RenderedReport,
+} from './recommendations'
 import type { Answers, Intake } from './scoring'
 import { createHash } from 'crypto'
 
@@ -246,7 +252,7 @@ export async function loadAssessment(assessmentId: string): Promise<LoadedAssess
 }
 
 export interface SubmitResult {
-  report: FullReport
+  report: RenderedReport
   resultToken: string
   alreadyCompleted: boolean
 }
@@ -332,7 +338,22 @@ export async function submitAssessment(
     metadata: { version: VERSION_KEY, result: report.position },
   })
 
-  return { report, resultToken: token, alreadyCompleted: false }
+  // Rendered with the narratives that were just saved, so the response the
+  // customer sees immediately after submitting is exactly what it was before
+  // this change. What is STORED is the reference-bearing report above.
+  const narrativesNow = Object.fromEntries(
+    Object.entries({
+      what_changed: loaded.intake.whatChanged,
+      important_decision: loaded.intake.importantDecision,
+      ninety_day_better: loaded.intake.ninetyDayBetter,
+    }).filter(([, v]) => typeof v === 'string' && v.length > 0)
+  ) as NarrativeMap
+
+  return {
+    report: renderReport(report, narrativesNow),
+    resultToken: token,
+    alreadyCompleted: false,
+  }
 }
 
 /**
@@ -342,8 +363,31 @@ export async function submitAssessment(
  * days, so recomputing would silently produce a thinner report than the one
  * the customer was sent. What someone was told is a fact about the past.
  */
-export async function rebuildReport(assessmentId: string): Promise<FullReport> {
+export async function rebuildReport(
+  assessmentId: string,
+  options: { includeNarratives?: boolean } = {}
+): Promise<RenderedReport> {
   const db = getDb()
+
+  // The narratives, IF THEY STILL EXIST. After the 90-day purge this comes
+  // back empty and every quotation in the stored report resolves to nothing —
+  // which is the point. The stored report holds references, never sentences.
+  //
+  // `includeNarratives: false` asks for that same purged view on demand. The
+  // downloadable Snapshot uses it: a PDF leaves the system entirely and
+  // outlives every retention rule here, so it must never carry a quotation
+  // even while the narrative is still live. A test proves the PDF is free of
+  // it on day 1, not merely on day 91.
+  const narrativeRows =
+    options.includeNarratives === false
+      ? []
+      : await db.query<{ question_key: string; value: string }>(
+          `SELECT question_key, value FROM assessment_narratives WHERE assessment_id = $1`,
+          [assessmentId]
+        )
+  const narratives = Object.fromEntries(
+    narrativeRows.map((r) => [r.question_key, r.value])
+  ) as NarrativeMap
   const stored = await queryOne<{
     total_score: number
     position_key: string
@@ -382,7 +426,7 @@ export async function rebuildReport(assessmentId: string): Promise<FullReport> {
 
   const positionKey = (stored?.position_key ?? 'stabilize') as keyof typeof POSITION_LABELS
 
-  return {
+  const storedReport: FullReport = {
     scores,
     total: stored?.total_score ?? 40,
     position: positionKey,
@@ -396,6 +440,8 @@ export async function rebuildReport(assessmentId: string): Promise<FullReport> {
     plan: (stored?.plan ?? { phases: [], reviewOn: null }) as never,
     classificationLabels: CLASSIFICATION_LABELS,
   }
+
+  return renderReport(storedReport, narratives)
 }
 
 /**

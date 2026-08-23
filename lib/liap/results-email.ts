@@ -1,4 +1,4 @@
-import type { FullReport } from './recommendations'
+import type { RenderedReport } from './recommendations'
 
 // ---------------------------------------------------------------------------
 // The results email. §23.
@@ -15,7 +15,7 @@ import type { FullReport } from './recommendations'
 
 export const RESULTS_SUBJECT = 'Your Life Project-Ready™ Plan Is Ready'
 
-export function resultsEmailHtml(report: FullReport, resultsUrl: string): string {
+export function resultsEmailHtml(report: RenderedReport, resultsUrl: string): string {
   const actions = report.actions
     .map(
       (a) => `
@@ -31,7 +31,7 @@ export function resultsEmailHtml(report: FullReport, resultsUrl: string): string
   return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;padding:20px">
   <div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">
     <h1 style="color:#C9A84C;margin:0;font-size:22px">Wiser Generations</h1>
-    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Life Is a Project™</p>
+    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Living Is a Project</p>
   </div>
 
   <div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">
@@ -63,14 +63,18 @@ export function resultsEmailHtml(report: FullReport, resultsUrl: string): string
       <a href="${resultsUrl}" style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">View my personalized plan</a>
     </p>
 
-    <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:24px 0 0">
+    <p style="color:#374151;font-size:14px;line-height:1.6;margin:20px 0 0">
+      Your downloadable Life Project Snapshot is available from your secure results page so you can keep it and use it as you move forward.
+    </p>
+
+    <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:16px 0 0">
       This link opens your plan. Keep it private — anyone with the link can read it.
     </p>
   </div>
 </div>`
 }
 
-export function resultsEmailText(report: FullReport, resultsUrl: string): string {
+export function resultsEmailText(report: RenderedReport, resultsUrl: string): string {
   const actions = report.actions
     .map((a) => `  ${a.kind.toUpperCase()}: ${a.headline}`)
     .join('\n')
@@ -92,6 +96,8 @@ use, priority areas, and your 30/60/90-day starting plan.
 
 View your personalized plan:
 ${resultsUrl}
+
+Your downloadable Life Project Snapshot is available from your secure results page so you can keep it and use it as you move forward.
 
 This link opens your plan. Keep it private — anyone with the link can read it.`
 }

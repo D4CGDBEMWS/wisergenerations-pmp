@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { AssessmentPrivacyNotice } from '@/components/liap/AssessmentPrivacyNotice'
 import {
   AREAS,
   CHANGE_TYPES,
@@ -317,6 +318,9 @@ export function AssessmentForm() {
       )}
 
       <div className="mt-8">
+        {/* Above the step that collects the narratives, not after it. */}
+        {step === 1 && <AssessmentPrivacyNotice />}
+
         {step === 1 && (
           <IntakeStep
             intake={intake}
