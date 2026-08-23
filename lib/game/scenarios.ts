@@ -69,7 +69,7 @@ export const SCENARIOS: readonly Scenario[] = [
         id: 'inbox',
         label: 'Clear the inbox so nothing is missed',
         outcome:
-          'Ninety minutes gone and you have read everything. Two of the forty-one messages mattered. You arrive at the team meeting having spent your best thinking time on other people’s filing.',
+          'Ninety minutes are gone. You read everything, but only two messages required your attention. You arrive at the team meeting having spent your best thinking time reacting instead of leading.',
         focusCost: 3,
         health: { time: -3, people: -2 },
         wisdom: 0,
@@ -87,7 +87,7 @@ export const SCENARIOS: readonly Scenario[] = [
         id: 'plan',
         label: 'Rebuild the plan for the next nine days in detail',
         outcome:
-          'You produce a careful hour-by-hour plan for nine days. By eleven, two of its assumptions are already wrong. Planning the distance in the detail of the near term is expensive and does not survive contact with the day.',
+          'You build a detailed plan for the next nine days. By eleven, two assumptions have already changed. The plan looked complete, but the day had more information to give you.',
         focusCost: 3,
         health: { time: -2, value: -1 },
         wisdom: 2,
@@ -158,7 +158,7 @@ export const SCENARIOS: readonly Scenario[] = [
       },
       {
         id: 'unblock',
-        label: 'Go and get the approver moving yourself',
+        label: 'Find out what’s holding up the approval and help remove the blocker.',
         outcome:
           'You find out the approver has been out sick and nobody covered the queue. Twenty minutes and one phone call later there is a named deputy and a date. Priya ships tomorrow.',
         focusCost: 2,
@@ -177,7 +177,7 @@ export const SCENARIOS: readonly Scenario[] = [
       options: ['Impediment', 'Milestone', 'Baseline', 'Resource leveling'],
       answer: 'Impediment',
       reveal:
-        'Impediment — anything stopping the team from making progress. Removing it is the job; noticing it is only the start.',
+        'Impediment — something that is keeping the team from moving forward. Recognizing it matters. Helping remove it matters more.',
     },
   },
 
@@ -281,7 +281,7 @@ export const SCENARIOS: readonly Scenario[] = [
         id: 'facilitate',
         label: 'Get them in a room and find what is underneath both positions',
         outcome:
-          'Twenty minutes. Dana needs to be able to reach members; Ray needs the form completed. Neither of those requires a mandatory field — an optional number with a clear reason for giving it satisfies both, and they design it together.',
+          'Twenty minutes. Dana needs a reliable way to reach members; Ray needs members to complete the form. Once they stop arguing over required versus optional, they can explore solutions that address both needs. Now the team is solving the real problem together.',
         focusCost: 2,
         health: { people: 6, value: 5, quality: 2 },
         wisdom: 10,
