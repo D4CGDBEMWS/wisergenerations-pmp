@@ -19,6 +19,14 @@ export type FeatureFlag =
   // can never be turned off again without stranding a reader holding the book.
   // It protects the pre-print period and nothing after it.
   | 'LIAP_BOOK_ACTIVATION'
+  // A Day in the Life of a Project Manager, Version 1. Its own flag rather
+  // than riding on LIAP, because the game is an experience associated with the
+  // Virtual Workshop and can be turned on for a workshop date without turning
+  // on the assessment, the book activation route or anything else in LIAP.
+  //
+  // Default off, and off in every environment: Version 1 is built and tested
+  // but not authorised for customers.
+  | 'LIAP_GAME'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */
