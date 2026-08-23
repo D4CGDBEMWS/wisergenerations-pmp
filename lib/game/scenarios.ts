@@ -661,7 +661,7 @@ export const SCENARIOS: readonly Scenario[] = [
       ],
       answer: 'Conformance is not the same as fitness for use',
       reveal:
-        'Conformance means it matches the specification. Fitness for use means it does what the customer actually needed. A deliverable can pass every test it was given and still be useless — which is why validation asks the customer, not the test suite.',
+        'Conformance means the work meets the agreed requirements. Fitness for use asks whether it actually works for the person who needs it. Something can meet every requirement and still miss the real need.',
     },
   },
 
@@ -730,7 +730,7 @@ export const SCENARIOS: readonly Scenario[] = [
       ],
       answer: 'Cause-and-effect analysis',
       reveal:
-        'Cause-and-effect analysis — sometimes drawn as a fishbone. Pair it with Pareto: a small number of causes usually produce most of the trouble. Fixing the symptom three times is more expensive than finding the cause once.',
+        'Cause-and-effect analysis helps you look beyond the problem you can see and find what is causing it. Pareto, or 80/20 thinking, helps you focus on the few causes creating most of the trouble.',
     },
   },
 
@@ -742,8 +742,8 @@ export const SCENARIOS: readonly Scenario[] = [
     stage: 'close',
     situation: [
       'The office empties. Nine days to the demo, and the project is not finished — projects rarely are at five o’clock.',
-      'What today produced is not just work done. It produced information you did not have this morning: what the variance was really about, where the join was missing, what Marcus actually needed.',
-      'Tomorrow is clearer than it was, because of today.',
+      'But the day gave you more information than you had this morning. Some things became clearer. Other things may still need your attention.',
+      'Tomorrow doesn’t need a perfect plan. It needs a wise place to begin.',
     ],
     question: 'What is tomorrow’s first priority?',
     choices: [
@@ -769,7 +769,7 @@ export const SCENARIOS: readonly Scenario[] = [
         id: 'plan-detail',
         label: 'Plan the remaining nine days in full detail',
         outcome:
-          'Detail the next few days; leave the rest at the level you can actually know. Today is proof of why — this morning’s nine-day plan would already be wrong twice over.',
+          'You plan the next few days in detail and leave the rest at the level you can reasonably know. As more becomes clear, the rest of the plan can become clearer too.',
         focusCost: 0,
         health: { time: -1 },
         wisdom: 4,
@@ -794,7 +794,7 @@ export const SCENARIOS: readonly Scenario[] = [
       ],
       answer: 'Rolling-wave planning',
       reveal:
-        'Rolling-wave planning — plan the near term in detail and the distance in outline, then fill it in as you learn. Planning does not stop when the work starts.',
+        'Rolling-wave planning — planning what you know now in enough detail to move forward, then adding detail as you learn more. The plan grows with the project.',
     },
   },
 ]
