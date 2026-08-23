@@ -73,19 +73,27 @@ export function decidePlayEntry(input: PlayEntryInput): PlayEntry {
 }
 
 /**
- * The soft landing's copy.
+ * The soft landing's copy. Owner-approved, 23 August 2026, verbatim.
  *
- * SYSTEM-WRITTEN, NOT OWNER-APPROVED. Held to the minimum a scan needs: what
- * this is, that it is not open, and a way to reach a person. It says nothing
- * about a date, makes no promise, and captures no email — a "tell me when it
- * is ready" field is an acquisition decision with a segmentation tag attached,
- * and LIAP readers are not to be mixed into the generic newsletter list.
+ * This is what a scan meets for the whole pre-launch period, which makes it
+ * the most-read page in the product for a while — a printed code has no other
+ * destination until the experience opens.
  *
- * Flagged in the delivery notes as copy requiring approval before any code is
- * printed that points at it.
+ * ── WHAT IT DELIBERATELY DOES NOT DO ───────────────────────────────────────
+ *
+ * No launch date, no countdown, no email capture, no purchase call to action.
+ * A date on a page a QR points at becomes a promise the moment ink dries, and
+ * a "tell me when it's ready" field is an acquisition decision with a
+ * segmentation tag attached — LIAP readers are not to be mixed into the
+ * generic newsletter list. A test asserts all four absences.
+ *
+ * The closing line is the approved WISER Pivots™ signature.
  */
 export const PLAY_SOFT_LANDING = {
   eyebrow: 'Living Is a Project…Are You Ready?™',
-  heading: `${GAME_NAME} isn’t open yet`,
-  body: 'Thanks for scanning. This is an interactive experience where you make a project manager’s decisions and live with what follows. It opens soon.',
+  heading: GAME_NAME,
+  comingSoon: 'The experience is coming soon.',
+  body: 'You’ll step into real project-management decisions, choose what you would do, and discover what happens next.',
+  promise: 'Real choices. Real consequences. Practical wisdom.',
+  signature: 'The bend is not the end. Be ready to make the turn.',
 } as const

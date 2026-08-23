@@ -921,10 +921,30 @@ describe('/liap/play is what goes on paper', () => {
     expect(page).not.toContain("'/liap/game/preview'")
   })
 
-  it('holds its soft-landing copy as unapproved and promises nothing', () => {
+  it('carries the owner-approved soft-landing copy verbatim', () => {
+    expect(PLAY_SOFT_LANDING.heading).toBe('Living Life as a Project Manager')
+    expect(PLAY_SOFT_LANDING.comingSoon).toBe('The experience is coming soon.')
+    expect(PLAY_SOFT_LANDING.body).toBe(
+      'You’ll step into real project-management decisions, choose what you would do, ' +
+        'and discover what happens next.'
+    )
+    expect(PLAY_SOFT_LANDING.promise).toBe('Real choices. Real consequences. Practical wisdom.')
+    expect(PLAY_SOFT_LANDING.signature).toBe(
+      'The bend is not the end. Be ready to make the turn.'
+    )
+    // The retired system-written wording is gone.
+    const text = Object.values(PLAY_SOFT_LANDING).join(' ')
+    expect(text).not.toContain('isn’t open yet')
+    expect(text).not.toContain('Thanks for scanning')
+    expect(text).not.toContain('Game Preview')
+  })
+
+  it('promises nothing it cannot keep, and captures nothing', () => {
     const text = Object.values(PLAY_SOFT_LANDING).join(' ').toLowerCase()
-    for (const promise of ['october', 'next week', 'tomorrow', 'guarantee', 'free',
-      'sign up', 'subscribe', 'email']) {
+    // No launch date, no countdown, no purchase CTA, no email capture.
+    for (const promise of ['october', 'november', 'next week', 'tomorrow', 'guarantee',
+      'sign up', 'subscribe', 'email', 'countdown', 'days left', 'notify me',
+      'buy', 'purchase', 'preorder', 'pre-order', '$']) {
       expect(text, promise).not.toContain(promise)
     }
     // And captures nothing. A "tell me when it's ready" field is the obvious

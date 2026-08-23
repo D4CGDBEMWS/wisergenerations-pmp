@@ -48,8 +48,17 @@ export default function PlayEntryPage() {
       <h1 className="mt-3 text-3xl font-bold leading-tight text-navy sm:text-4xl">
         {PLAY_SOFT_LANDING.heading}
       </h1>
+      <p className="mt-3 text-lg font-semibold text-brand-blue">
+        {PLAY_SOFT_LANDING.comingSoon}
+      </p>
       <p className="mt-4 leading-relaxed text-gray-700">{PLAY_SOFT_LANDING.body}</p>
-      <p className="mt-6 text-sm leading-relaxed text-gray-500">
+      <p className="mt-5 font-semibold leading-relaxed text-navy">
+        {PLAY_SOFT_LANDING.promise}
+      </p>
+      <p className="mt-6 border-l-4 border-gold pl-4 text-lg font-bold leading-snug text-navy">
+        {PLAY_SOFT_LANDING.signature}
+      </p>
+      <p className="mt-8 text-sm leading-relaxed text-gray-500">
         Think this is a mistake?{' '}
         <Link href="/contact" className="font-semibold text-gold underline underline-offset-4">
           Get in touch
