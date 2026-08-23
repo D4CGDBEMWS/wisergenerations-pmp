@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 
 export const metadata = {
-  title: 'Life Is a Project™ | Wiser Generations',
+  title: 'Living Is a Project | Wiser Generations',
   description:
     'Assess where you are, understand what changed, protect what matters and forge your next best steps.',
 }
 
 // ---------------------------------------------------------------------------
-// The Life Is a Project™ hub. §4, §5.
+// The Living Is a Project hub. §4, §5.
 //
 // The journey has six steps and two of them exist. Showing all six is the
 // point — someone should be able to see where this goes — but only the book
@@ -41,7 +41,7 @@ const JOURNEY = [
   {
     step: 'Step 4',
     title: 'Experience',
-    name: 'Life Is a Project™ Workshop',
+    name: 'Living Is a Project Virtual Workshop',
     body: 'Ninety minutes working the plan alongside others going through their own change.',
     status: 'soon' as const,
   },
@@ -89,7 +89,7 @@ export default function LiapHubPage() {
               never saw coming.
             </p>
             <p>
-              Life Is a Project™ helps you assess where you are, understand what changed, protect
+              Living Is a Project helps you assess where you are, understand what changed, protect
               what matters and forge your next best steps.
             </p>
           </div>

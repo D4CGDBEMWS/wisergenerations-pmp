@@ -285,7 +285,7 @@ export default async function ResultsPage({
                 Coming soon
               </p>
               <h3 className="mt-1 font-bold text-navy">
-                Life Is a Project™ 90-Minute Workshop
+                Living Is a Project Virtual Workshop
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 Ninety minutes working your plan alongside others going through their own change.
@@ -307,7 +307,7 @@ export default async function ResultsPage({
 
         <p className="text-sm text-gray-500">
           <Link href="/living-is-a-project" className="underline underline-offset-2 hover:text-navy">
-            Back to Life Is a Project™
+            Back to Living Is a Project
           </Link>
         </p>
       </div>

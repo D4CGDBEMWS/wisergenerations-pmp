@@ -31,7 +31,7 @@ export function resultsEmailHtml(report: FullReport, resultsUrl: string): string
   return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;padding:20px">
   <div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">
     <h1 style="color:#C9A84C;margin:0;font-size:22px">Wiser Generations</h1>
-    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Life Is a Project™</p>
+    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Living Is a Project</p>
   </div>
 
   <div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">
