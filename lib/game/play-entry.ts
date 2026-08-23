@@ -88,9 +88,17 @@ export function decidePlayEntry(input: PlayEntryInput): PlayEntry {
  * generic newsletter list. A test asserts all four absences.
  *
  * The closing line is the approved WISER Pivots™ signature.
+ *
+ * ── NO SECOND PRODUCT TITLE ────────────────────────────────────────────────
+ *
+ * There is deliberately no eyebrow line here, unlike the game and the preview.
+ * Those pages sit inside the LIAP journey and wear the book title above the
+ * experience name. This one is what a printed code resolves to, and somebody
+ * scanning it has not necessarily met the book — putting "Living Is a
+ * Project…Are You Ready?™" above "Living Life as a Project Manager" gives them
+ * two product titles to parse before they learn what they scanned.
  */
 export const PLAY_SOFT_LANDING = {
-  eyebrow: 'Living Is a Project…Are You Ready?™',
   heading: GAME_NAME,
   comingSoon: 'The experience is coming soon.',
   body: 'You’ll step into real project-management decisions, choose what you would do, and discover what happens next.',

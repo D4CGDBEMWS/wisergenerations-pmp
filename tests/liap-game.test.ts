@@ -939,6 +939,25 @@ describe('/liap/play is what goes on paper', () => {
     expect(text).not.toContain('Game Preview')
   })
 
+  it('shows exactly the five approved lines and nothing else', () => {
+    // Owner ruling: one product title on this page. The book title is not an
+    // eyebrow here, and there is no second line of soft-landing copy — a
+    // printed code can be scanned by somebody who has never met the book.
+    expect(Object.keys(PLAY_SOFT_LANDING).sort()).toEqual(
+      ['body', 'comingSoon', 'heading', 'promise', 'signature']
+    )
+    const text = Object.values(PLAY_SOFT_LANDING).join(' ')
+    expect(text).not.toContain('Living Is a Project')
+    expect(text).not.toContain('Think this is a mistake')
+
+    const page = code('app/liap/play/page.tsx')
+    expect(page).not.toContain('eyebrow')
+    expect(page).not.toContain('Get in touch')
+    // The shell still carries "Need help?" → /contact, so a route to a person
+    // survives without a second product title on the page.
+    expect(shell('liap').nav.map((l) => l.href)).toContain('/contact')
+  })
+
   it('promises nothing it cannot keep, and captures nothing', () => {
     const text = Object.values(PLAY_SOFT_LANDING).join(' ').toLowerCase()
     // No launch date, no countdown, no purchase CTA, no email capture.
