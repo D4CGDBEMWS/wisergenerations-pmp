@@ -13,7 +13,16 @@ import type { ImpactTarget } from './types'
 // ---------------------------------------------------------------------------
 
 /**
- * PROVENANCE: SYSTEM-WRITTEN, pending owner approval.
+ * PROVENANCE: SYSTEM-WRITTEN, pending owner review.
+ *
+ * The approved artifacts phrase this moment as a QUESTION — Artifact 3's
+ * ROADMAP CHECK, and Artifact 4's log column "WHAT PART OF THE ROAD CHANGED?"
+ * — and let the team write the answer in their own words. There is no approved
+ * set of answer labels to reconcile these against, so they remain mine and
+ * remain pending.
+ *
+ * The vocabulary, at least, is now the approved vocabulary: "later milestone"
+ * rather than a second "Next Milestone", matching Artifact 3.
  *
  * 'none' becomes a sentence rather than a blank, because deciding an
  * interruption changes nothing is a project-management judgement worth seeing
@@ -26,8 +35,9 @@ export function impactLabel(impact: ImpactTarget): string {
     case 'decision-check':
       return 'You changed your Decision / Milestone Check'
     case 'milestone-2':
+      return 'You changed your Next Milestone'
     case 'milestone-3':
-      return 'You changed a Next Milestone'
+      return 'You changed a later milestone'
     case 'destination':
       return 'You changed your Destination'
     case 'none':
@@ -35,12 +45,19 @@ export function impactLabel(impact: ImpactTarget): string {
   }
 }
 
-/** What the facilitator picks from, after the team has argued it out. */
+/**
+ * What the facilitator picks from, after the team has argued it out.
+ *
+ * Labels are the five named in Artifact 3's ROADMAP CHECK, in its order and
+ * its words. 'Nothing' has no approved equivalent — the card ends "If yes,
+ * revise the road", which implies a no without labelling one — so that option
+ * is system-written and pending.
+ */
 export const IMPACT_CHOICES: readonly { readonly id: ImpactTarget; readonly label: string }[] = [
   { id: 'first-move', label: 'First Move' },
-  { id: 'decision-check', label: 'Decision / Milestone Check' },
-  { id: 'milestone-2', label: 'Next Milestone (first)' },
-  { id: 'milestone-3', label: 'Next Milestone (second)' },
+  { id: 'decision-check', label: 'Decision/Milestone Check' },
+  { id: 'milestone-2', label: 'Next Milestone' },
+  { id: 'milestone-3', label: 'later milestone' },
   { id: 'destination', label: 'Destination' },
   { id: 'none', label: 'Nothing' },
 ]

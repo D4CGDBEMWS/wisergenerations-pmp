@@ -1,8 +1,17 @@
-import { DEBRIEF_SEQUENCE } from './debrief'
-import { IMPACT_CHOICES } from './impact'
-import { impactLabel } from './impact'
-import { ROAD_EVENT_LIBRARY, RECALCULATION_PROMPTS } from './events'
-import { MY_PROJECT_EXIT_WARNING, MY_PROJECT_EXTRAS, MY_PROJECT_STEPS } from './my-project'
+import { DEBRIEF_DO_NOT, DEBRIEF_FINAL_REMINDER, DEBRIEF_SEQUENCE } from './debrief'
+import { DISPLAY_STRINGS } from './display-copy'
+import { ROADMAP_CHECK, ROAD_EVENT_LIBRARY, RECALCULATION_PROMPTS } from './events'
+import { IMPACT_CHOICES, impactLabel } from './impact'
+import {
+  MAKE_IT_REAL_COLUMNS,
+  MY_PROJECT_CLOSING,
+  MY_PROJECT_EXIT_WARNING,
+  MY_PROJECT_EXTRAS,
+  MY_PROJECT_INTRO,
+  MY_PROJECT_OPENING,
+  MY_PROJECT_SIGNOFF,
+  MY_PROJECT_STEPS,
+} from './my-project'
 import { PROGRESS_PROMPTS } from './prompts'
 
 // ---------------------------------------------------------------------------
@@ -11,30 +20,33 @@ import { PROGRESS_PROMPTS } from './prompts'
 //
 // ── WHY IT IS GENERATED RATHER THAN WRITTEN ────────────────────────────────
 //
-// A hand-typed inventory in a document starts accurate and drifts within a
-// week: somebody edits a prompt in prompts.ts and the review table quietly
-// stops describing the product. This one is assembled FROM the constants the
-// interface actually renders, so a changed string changes the inventory, and a
-// new string that nobody classified fails the count assertion in
-// tests/liap-journey.test.ts.
+// A hand-typed inventory drifts within a week: somebody edits a prompt and the
+// review table quietly stops describing the product. This one is assembled
+// FROM the constants the interface renders, so a changed string changes the
+// inventory.
+//
+// ── AND WHY THAT WAS NOT ENOUGH ────────────────────────────────────────────
+//
+// The first version of this file read only the content modules, so it missed
+// eight participant-facing lines hardcoded in the display component's JSX —
+// projected onto a wall, never reviewed by anyone. They now live as data in
+// display-copy.ts and are read here. A generated inventory is only as complete
+// as the surface it reads; that hole is the reason display-copy.ts exists.
 //
 // ── PROVENANCE IS THE POINT ────────────────────────────────────────────────
 //
-// 'owner-approved' means the words came from an approved artifact — the Road
-// Event names, the five GPS: Recalculating… questions, the MY PROJECT exit
-// warning.
+// 'owner-approved' means the words came from an approved artifact, and `source`
+// names which one. 'system-written' means I wrote it and it is NOT cleared for
+// production.
 //
-// 'system-written' means I wrote it and it is NOT cleared for production. The
-// physical Journey Map, Scenario Cards, Road-Event Deck, MY PROJECT Roadmap,
-// Facilitator Guide and Debrief Guide are the authority; where one of them
-// carries a line for one of these moments, the approved wording REPLACES the
-// draft rather than sitting beside it. A parallel digital vocabulary is the
-// failure this file exists to prevent.
+// 'conflict' means two approved artifacts word the same moment differently.
+// Those are not mine to decide, so they are carried at one artifact's wording
+// provisionally and surfaced here for the owner.
 // ---------------------------------------------------------------------------
 
 export type ContentAudience = 'participant' | 'facilitator'
 
-export type ContentProvenance = 'owner-approved' | 'system-written'
+export type ContentProvenance = 'owner-approved' | 'system-written' | 'conflict'
 
 export type ContentGroup =
   | 'A. Road Event participant text'
@@ -43,6 +55,7 @@ export type ContentGroup =
   | 'D. MY PROJECT prompts'
   | 'E. MY PROJECT nudges/warnings'
   | 'F. Debrief prompts/cues'
+  | 'G. Participant Display copy'
 
 export interface ContentEntry {
   readonly group: ContentGroup
@@ -54,39 +67,81 @@ export interface ContentEntry {
   readonly provenance: ContentProvenance
   /** Which approved artifact it came from, where one exists. */
   readonly source?: string
+  /** What the disagreement is, for conflict entries. */
+  readonly conflict?: string
 }
 
-/** Ratified on owner review: they support the moment without giving an answer. */
-const APPROVED_PROMPT_IDS = new Set(['research', 'help-needed'])
+const CARDS = 'Artifact 3 — Facilitator Road-Event Cards'
+const ROADMAP = 'Artifact 5 — MY PROJECT Personal Roadmap'
+const DEBRIEF = 'Artifact 6 — 30-Minute Facilitator Debrief Guide'
+
+// ── A. Road Event participant text ─────────────────────────────────────────
 
 const eventNames: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
   group: 'A. Road Event participant text',
   id: `event.${event.id}.name`,
   text: event.name,
-  where: 'Participant Display, event card heading; Facilitator Console, event button; Journey Record',
+  where: 'Participant Display, event card heading; Facilitator Console; Journey Record',
   audience: 'participant',
-  provenance: 'owner-approved',
-  source: 'Owner ruling — Road Event names, Section B',
+  provenance: event.id === 'recalculating' ? 'conflict' : 'owner-approved',
+  source: CARDS,
+  ...(event.id === 'recalculating'
+    ? {
+        conflict:
+          'Artifacts 2, 3, 4, 5 and 6 spell it "GPS: Recalculating..." with three periods; Artifact 7 §1 uses the ellipsis character "GPS: Recalculating…".',
+      }
+    : {}),
 }))
 
-const recalculationQuestions: ContentEntry[] = RECALCULATION_PROMPTS.map((prompt) => ({
+const eventTaglines: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
   group: 'A. Road Event participant text',
-  id: `recalculation.${prompt.key}`,
-  text: prompt.label,
-  where: 'Participant Display during GPS: Recalculating…; Facilitator Console capture form',
+  id: `event.${event.id}.tagline`,
+  text: event.tagline,
+  where: 'Participant Display, under the event name; Facilitator Console',
   audience: 'participant',
   provenance: 'owner-approved',
-  source: 'Owner ruling — Section K, five questions',
+  source: CARDS,
 }))
 
-const eventIntents: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
-  group: 'B. Road Event facilitator intent/note',
-  id: `event.${event.id}.intent`,
-  text: event.intent,
-  where: 'Facilitator Console only, under the event button',
-  audience: 'facilitator',
-  provenance: 'system-written',
+const eventReadToTeam: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
+  group: 'A. Road Event participant text',
+  id: `event.${event.id}.readToTeam`,
+  text: event.readToTeam,
+  where: 'Participant Display, the event card body',
+  audience: 'participant',
+  provenance: 'owner-approved',
+  source: `${CARDS} — READ TO TEAM`,
 }))
+
+const roadmapCheck: ContentEntry = {
+  group: 'A. Road Event participant text',
+  id: 'event.roadmap-check',
+  text: ROADMAP_CHECK,
+  where: 'Participant Display, under a revealed event until the team answers',
+  audience: 'participant',
+  provenance: 'owner-approved',
+  source: `${CARDS} — ROADMAP CHECK, identical on all eight cards`,
+}
+
+const recalculationQuestions: ContentEntry[] = RECALCULATION_PROMPTS.map((prompt) => {
+  const conflicts: Partial<Record<string, string>> = {
+    destinationValid:
+      'Artifact 3 GPS card: "Is the Destination the same?" · Owner instruction §K: "Does the Destination still make sense?"',
+    milestoneToChange:
+      'Artifact 3 GPS card: "Which milestone needs to move?" · Owner instruction §K: "Which milestone needs to change?" · Artifact 4: "Which part of the roadmap changes?" · Artifact 5: "What part of my road needs to move?"',
+  }
+  const conflict = conflicts[prompt.key]
+  return {
+    group: 'A. Road Event participant text',
+    id: `recalculation.${prompt.key}`,
+    text: prompt.label,
+    where: 'Participant Display during GPS: Recalculating…; Facilitator Console capture form',
+    audience: 'participant',
+    provenance: conflict ? 'conflict' : 'owner-approved',
+    source: `${CARDS} — GPS card, PUSH WITHOUT SOLVING`,
+    ...(conflict ? { conflict } : {}),
+  }
+})
 
 const impactLabels: ContentEntry[] = IMPACT_CHOICES.map((choice) => ({
   group: 'A. Road Event participant text',
@@ -97,27 +152,61 @@ const impactLabels: ContentEntry[] = IMPACT_CHOICES.map((choice) => ({
   provenance: 'system-written',
 }))
 
+// ── B. Road Event facilitator fields ───────────────────────────────────────
+
+const facilitatorCardFields: ContentEntry[] = ROAD_EVENT_LIBRARY.flatMap((event) =>
+  (
+    [
+      ['whenToPlay', 'WHEN TO PLAY', event.whenToPlay],
+      ['watchFor', 'WATCH FOR', event.watchFor],
+      ['pushWithoutSolving', 'PUSH WITHOUT SOLVING', event.pushWithoutSolving],
+    ] as const
+  ).map(([key, label, text]) => ({
+    group: 'B. Road Event facilitator intent/note' as const,
+    id: `event.${event.id}.${key}`,
+    text,
+    where: 'Facilitator Console only, under the event button',
+    audience: 'facilitator' as const,
+    provenance: 'owner-approved' as const,
+    source: `${CARDS} — ${label}`,
+  })),
+)
+
+// ── C. Progress prompts ────────────────────────────────────────────────────
+
 const progressPromptText: ContentEntry[] = PROGRESS_PROMPTS.map((prompt) => ({
   group: 'C. Journey progress prompts',
   id: `prompt.${prompt.id}`,
   text: prompt.text,
   where: 'Participant Display, when the facilitator puts it up',
   audience: 'participant',
-  // Two were ratified on review as approved progress prompts; the rest are
-  // still mine and still pending.
-  provenance: APPROVED_PROMPT_IDS.has(prompt.id) ? 'owner-approved' : 'system-written',
-  ...(APPROVED_PROMPT_IDS.has(prompt.id)
-    ? { source: 'Owner review — approved progress prompts, Sections I and J' }
-    : {}),
+  provenance: prompt.conflict ? 'conflict' : 'owner-approved',
+  source: prompt.source,
+  ...(prompt.conflict ? { conflict: prompt.conflict } : {}),
 }))
 
-const progressPromptGuidance: ContentEntry[] = PROGRESS_PROMPTS.map((prompt) => ({
-  group: 'C. Journey progress prompts',
-  id: `prompt.${prompt.id}.whenToUse`,
-  text: prompt.whenToUse,
-  where: 'Facilitator Console only',
-  audience: 'facilitator',
-  provenance: 'system-written',
+const progressPromptGuidance: ContentEntry[] = PROGRESS_PROMPTS.filter((p) => p.whenToUse).map(
+  (prompt) => ({
+    group: 'C. Journey progress prompts',
+    id: `prompt.${prompt.id}.whenToUse`,
+    text: prompt.whenToUse!,
+    where: 'Facilitator Console only',
+    audience: 'facilitator',
+    provenance: 'owner-approved',
+    source: prompt.source,
+  }),
+)
+
+// ── D. MY PROJECT prompts ──────────────────────────────────────────────────
+
+const myProjectOpening: ContentEntry[] = MY_PROJECT_OPENING.map((field) => ({
+  group: 'D. MY PROJECT prompts',
+  id: `my-project.opening.${field.id}`,
+  text: field.prompt,
+  where: 'MY PROJECT, above the road',
+  audience: 'participant',
+  provenance: 'owner-approved',
+  source: ROADMAP,
 }))
 
 const myProjectPrompts: ContentEntry[] = MY_PROJECT_STEPS.map((step) => ({
@@ -126,17 +215,60 @@ const myProjectPrompts: ContentEntry[] = MY_PROJECT_STEPS.map((step) => ({
   text: step.prompt,
   where: 'MY PROJECT, on the participant’s own device',
   audience: 'participant',
-  provenance: 'system-written',
+  provenance: 'owner-approved',
+  source: ROADMAP,
 }))
 
-const myProjectExtras: ContentEntry[] = MY_PROJECT_EXTRAS.map((extra) => ({
+const myProjectExtras: ContentEntry[] = MY_PROJECT_EXTRAS.filter((e) => e.prompt).map((extra) => ({
   group: 'D. MY PROJECT prompts',
   id: `my-project.extra.${extra.id}`,
   text: extra.prompt,
-  where: 'MY PROJECT, optional fields',
+  where: 'MY PROJECT, CHECK THE ROAD BEFORE YOU GO',
   audience: 'participant',
-  provenance: 'system-written',
+  provenance: 'owner-approved',
+  source: ROADMAP,
 }))
+
+const myProjectStructure: ContentEntry[] = [
+  ...MAKE_IT_REAL_COLUMNS.map((column) => ({
+    group: 'D. MY PROJECT prompts' as const,
+    id: `my-project.make-it-real.${column}`,
+    text: column,
+    where: 'MY PROJECT, MAKE IT REAL table header',
+    audience: 'participant' as const,
+    provenance: 'owner-approved' as const,
+    source: ROADMAP,
+  })),
+  ...MY_PROJECT_CLOSING.map((field) => ({
+    group: 'D. MY PROJECT prompts' as const,
+    id: `my-project.closing.${field.id}`,
+    text: field.prompt,
+    where: 'MY PROJECT, below MAKE IT REAL',
+    audience: 'participant' as const,
+    provenance: 'owner-approved' as const,
+    source: ROADMAP,
+  })),
+  {
+    group: 'D. MY PROJECT prompts',
+    id: 'my-project.intro',
+    text: MY_PROJECT_INTRO,
+    where: 'MY PROJECT, page header',
+    audience: 'participant',
+    provenance: 'owner-approved',
+    source: ROADMAP,
+  },
+  {
+    group: 'D. MY PROJECT prompts',
+    id: 'my-project.signoff',
+    text: MY_PROJECT_SIGNOFF,
+    where: 'MY PROJECT, closing line',
+    audience: 'participant',
+    provenance: 'owner-approved',
+    source: ROADMAP,
+  },
+]
+
+// ── E. MY PROJECT nudges and warnings ──────────────────────────────────────
 
 const myProjectNudges: ContentEntry[] = MY_PROJECT_STEPS.map((step) => ({
   group: 'E. MY PROJECT nudges/warnings',
@@ -157,48 +289,102 @@ const exitWarning: ContentEntry = {
   source: 'Owner ruling — Section O, approved functional copy, verbatim',
 }
 
-const debriefCues: ContentEntry[] = DEBRIEF_SEQUENCE.flatMap((cue) => [
-  {
+// ── F. Debrief ─────────────────────────────────────────────────────────────
+
+const debriefAsks: ContentEntry[] = DEBRIEF_SEQUENCE.flatMap((moment) =>
+  moment.asks.map((ask, index) => ({
     group: 'F. Debrief prompts/cues' as const,
-    id: `debrief.${cue.id}.cue`,
-    text: cue.cue,
-    where: 'Facilitator Console, debrief panel. Spoken aloud; never rendered to the room',
+    id: `debrief.${moment.id}.ask-${index + 1}`,
+    text: ask,
+    where: `Facilitator Console, debrief panel, ${moment.time}. Spoken aloud; never rendered to the room`,
     audience: 'facilitator' as const,
     provenance:
-      cue.id === 'sponsor' ? ('owner-approved' as const) : ('system-written' as const),
-    ...(cue.id === 'sponsor'
-      ? { source: 'Owner ruling — Section L.1, asked and never answered for participants' }
+      moment.id === 'sponsor' && index < 2 ? ('conflict' as const) : ('owner-approved' as const),
+    source: DEBRIEF,
+    ...(moment.id === 'sponsor' && index < 2
+      ? {
+          conflict:
+            'Artifact 9 §8 gives a shorter lead-in: "You managed the project. You built a team. You found resources. You made decisions. There is another project role we have not talked about yet—the Sponsor." The final question is identical in both.',
+        }
       : {}),
-  },
-  {
+  })),
+)
+
+const debriefNotes: ContentEntry[] = DEBRIEF_SEQUENCE.map((moment) => ({
+  group: 'F. Debrief prompts/cues',
+  id: `debrief.${moment.id}.note`,
+  text: moment.note,
+  where: 'Facilitator Console, debrief panel',
+  audience: 'facilitator',
+  provenance: 'owner-approved',
+  source: `${DEBRIEF} — FACILITATOR NOTE`,
+}))
+
+const debriefRules: ContentEntry[] = [
+  ...DEBRIEF_DO_NOT.map((rule, index) => ({
     group: 'F. Debrief prompts/cues' as const,
-    id: `debrief.${cue.id}.note`,
-    text: cue.note,
+    id: `debrief.do-not-${index + 1}`,
+    text: rule,
     where: 'Facilitator Console, debrief panel',
     audience: 'facilitator' as const,
-    provenance: 'system-written' as const,
-  },
-])
+    provenance: 'owner-approved' as const,
+    source: `${DEBRIEF} — Do Not Do During the Debrief`,
+  })),
+  ...DEBRIEF_FINAL_REMINDER.map((line, index) => ({
+    group: 'F. Debrief prompts/cues' as const,
+    id: `debrief.final-reminder-${index + 1}`,
+    text: line,
+    where: 'Facilitator Console, debrief panel',
+    audience: 'facilitator' as const,
+    provenance: 'owner-approved' as const,
+    source: `${DEBRIEF} — Facilitator Final Reminder`,
+  })),
+]
+
+// ── G. Participant Display copy ────────────────────────────────────────────
+
+const displayCopy: ContentEntry[] = DISPLAY_STRINGS.map((entry) => ({
+  group: 'G. Participant Display copy',
+  id: entry.id,
+  text: entry.text,
+  where: entry.where,
+  audience: 'participant',
+  provenance: entry.source ? 'owner-approved' : 'system-written',
+  ...(entry.source ? { source: entry.source } : {}),
+}))
 
 export const CONTENT_INVENTORY: readonly ContentEntry[] = [
   ...eventNames,
+  ...eventTaglines,
+  ...eventReadToTeam,
+  roadmapCheck,
   ...recalculationQuestions,
   ...impactLabels,
-  ...eventIntents,
+  ...facilitatorCardFields,
   ...progressPromptText,
   ...progressPromptGuidance,
+  ...myProjectOpening,
   ...myProjectPrompts,
   ...myProjectExtras,
+  ...myProjectStructure,
   ...myProjectNudges,
   exitWarning,
-  ...debriefCues,
+  ...debriefAsks,
+  ...debriefNotes,
+  ...debriefRules,
+  ...displayCopy,
 ]
 
 export function inventoryByGroup(group: ContentGroup): readonly ContentEntry[] {
   return CONTENT_INVENTORY.filter((entry) => entry.group === group)
 }
 
-/** What still needs owner wording review before this ships to a room. */
+/** What still needs owner wording before this ships to a room. */
 export function pendingOwnerReview(): readonly ContentEntry[] {
   return CONTENT_INVENTORY.filter((entry) => entry.provenance === 'system-written')
+}
+
+/** Where two approved artifacts disagree. Owner decision, not mine. */
+export function wordingConflicts(): readonly ContentEntry[] {
+  return CONTENT_INVENTORY.filter((entry) => entry.provenance === 'conflict')
 }

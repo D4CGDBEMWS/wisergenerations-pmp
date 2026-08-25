@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import {
+  MAKE_IT_REAL_COLUMNS,
+  MY_PROJECT_CLOSING,
   MY_PROJECT_EXIT_WARNING,
   MY_PROJECT_EXTRAS,
+  MY_PROJECT_INTRO,
+  MY_PROJECT_OPENING,
+  MY_PROJECT_SIGNOFF,
   MY_PROJECT_STEPS,
   buildMyProjectRoadmap,
   draftHasContent,
@@ -72,28 +77,37 @@ export function MyProject() {
     <div className="mx-auto max-w-3xl px-6 py-12">
       <header className="print:hidden">
         <h1 className="text-3xl font-semibold text-slate-900">My Project</h1>
-        <p className="mt-3 text-slate-600">
-          The same six points you just walked — on the project you brought.
-        </p>
+        {/* Artifact 5's own header line, verbatim. */}
+        <p className="mt-3 text-slate-600">{MY_PROJECT_INTRO}</p>
         <p className="mt-6 rounded-md border border-slate-300 bg-slate-50 p-4 text-sm text-slate-700">
           {MY_PROJECT_EXIT_WARNING}
         </p>
       </header>
 
-      <label className="mt-10 block">
-        <span className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          What is this project?
-        </span>
-        <input
-          type="text"
-          value={draft.title}
-          onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))}
-          className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-lg"
-          // Nothing here is submitted anywhere, but an autofilled personal
-          // detail is still a personal detail sitting on screen in a room.
-          autoComplete="off"
-        />
-      </label>
+      <div className="mt-10 space-y-6">
+        {MY_PROJECT_OPENING.map((field) => (
+          <label key={field.id} className="block">
+            <span className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              {field.label}
+            </span>
+            <span className="mt-1 block text-slate-800">{field.prompt}</span>
+            <textarea
+              value={draft.opening[field.id] ?? ''}
+              onChange={(event) =>
+                setDraft((current) => ({
+                  ...current,
+                  opening: { ...current.opening, [field.id]: event.target.value },
+                }))
+              }
+              rows={2}
+              className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2"
+              // Nothing here is submitted anywhere, but an autofilled personal
+              // detail is still a personal detail sitting on screen in a room.
+              autoComplete="off"
+            />
+          </label>
+        ))}
+      </div>
 
       <ol className="mt-10 space-y-8">
         {MY_PROJECT_STEPS.map((step) => (
@@ -121,15 +135,19 @@ export function MyProject() {
       </button>
 
       <section className="mt-12">
-        <h2 className="text-lg font-semibold text-slate-900">Optional</h2>
+        {/* Artifact 5's own section heading and line, verbatim. */}
+        <h2 className="text-lg font-semibold text-slate-900">CHECK THE ROAD BEFORE YOU GO</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Fill in what is useful. Your roadmap is complete with the six points above.
+          Your roadmap is more than milestones. Look at what can help, what can interfere, and what
+          you will do when the road changes.
         </p>
         <div className="mt-6 space-y-6">
           {MY_PROJECT_EXTRAS.map((extra) => (
             <label key={extra.id} className="block">
               <span className="text-sm font-semibold text-slate-700">{extra.label}</span>
-              <span className="mt-1 block text-sm text-slate-600">{extra.prompt}</span>
+              {extra.prompt ? (
+                <span className="mt-1 block text-sm text-slate-600">{extra.prompt}</span>
+              ) : null}
               <textarea
                 value={draft.extras[extra.id] ?? ''}
                 onChange={(event) => setExtra(extra.id, event.target.value)}
@@ -141,6 +159,77 @@ export function MyProject() {
           ))}
         </div>
       </section>
+
+      <section className="mt-12">
+        <h2 className="text-lg font-semibold text-slate-900">MAKE IT REAL</h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                {MAKE_IT_REAL_COLUMNS.map((column) => (
+                  <th
+                    key={column}
+                    className="border border-slate-300 bg-slate-50 px-2 py-1.5 text-left font-semibold text-slate-700"
+                  >
+                    {column}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {draft.makeItReal.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex} className="border border-slate-300 p-0">
+                      <input
+                        value={cell}
+                        onChange={(event) =>
+                          setDraft((current) => ({
+                            ...current,
+                            makeItReal: current.makeItReal.map((r, i) =>
+                              i === rowIndex
+                                ? r.map((c, j) => (j === cellIndex ? event.target.value : c))
+                                : r,
+                            ),
+                          }))
+                        }
+                        className="w-full px-2 py-1.5"
+                        autoComplete="off"
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="mt-12 space-y-6">
+        {MY_PROJECT_CLOSING.map((field) => (
+          <label key={field.id} className="block">
+            <span className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              {field.label}
+            </span>
+            <span className="mt-1 block text-slate-800">{field.prompt}</span>
+            <textarea
+              value={draft.closing[field.id] ?? ''}
+              onChange={(event) =>
+                setDraft((current) => ({
+                  ...current,
+                  closing: { ...current.closing, [field.id]: event.target.value },
+                }))
+              }
+              rows={2}
+              className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2"
+              autoComplete="off"
+            />
+          </label>
+        ))}
+      </section>
+
+      {/* Artifact 5's closing line, verbatim. */}
+      <p className="mt-12 text-center text-slate-600">{MY_PROJECT_SIGNOFF}</p>
 
       <div className="mt-12 flex flex-wrap gap-3 print:hidden">
         <button

@@ -1,71 +1,153 @@
 // ---------------------------------------------------------------------------
-// Progress prompts — the short lines a facilitator puts on the wall.
+// The facilitation prompts — reconciled against the approved artifacts.
 //
-// ── PROVENANCE ─────────────────────────────────────────────────────────────
+// ── WHAT CHANGED HERE ──────────────────────────────────────────────────────
 //
-// Two of the six `text` lines are OWNER-APPROVED: 'Research before you decide.'
-// and 'What kind of help do you need?'. The other four, and every `whenToUse`
-// line, are system-written and NOT approved production copy.
-// Where the physical Facilitator Guide, Journey Map or Road-Event Deck already
-// carries a line for one of these moments, the approved wording replaces the
-// draft here rather than the two coexisting — a parallel digital vocabulary is
-// exactly the failure the owner ruled against.
+// This file used to hold six prompts I wrote. Four of them are gone. The
+// approved artifacts already carry a complete, ratified set of push questions
+// — Artifact 3, "Quick Facilitation Prompts", and Artifact 9 §6, "How to Push
+// Without Rescuing" — and keeping mine beside them would have been the
+// parallel vocabulary the owner ruled against.
 //
-// lib/journey/content.ts collects these for the owner wording review, and a
-// test asserts nothing in this file escapes that inventory.
+// Two survive because the owner ratified them directly: "Research before you
+// decide." and "What kind of help do you need?".
 //
-// ── WHY THE FACILITATOR CHOOSES, AND NOT THE SYSTEM ────────────────────────
+// ── THREE OF THE APPROVED PROMPTS CONFLICT WITH EACH OTHER ─────────────────
 //
-// Nothing here fires automatically, on a timer, or because a rule matched. A
-// prompt appears because a facilitator read the room and pressed a button.
+// Artifacts 3 and 9 give the same prompt in different words. Those three are
+// marked below and carry the Artifact 3 wording provisionally, because
+// choosing between two approved artifacts is the owner's decision, not mine.
+//
+// ── THEY ARE ALL QUESTIONS, AND THAT IS THE POINT ──────────────────────────
+//
+// Artifact 3: "If the team stalls, push with a question, not an answer."
+// Artifact 9: "Ask short questions that move the team" / "DO NOT: Give the
+// answer because you know it."
+//
+// Nothing here fires on a timer or because a rule matched. A prompt reaches
+// the wall because a facilitator read the room and pressed a button.
 // ---------------------------------------------------------------------------
 
 export interface ProgressPrompt {
   readonly id: string
   /** Shown on the projected display, in the room. */
   readonly text: string
-  /** Facilitator-only. When this prompt is the right one to reach for. */
-  readonly whenToUse: string
+  /** Which approved artifact the wording came from. */
+  readonly source: string
+  /**
+   * Facilitator-only. Present only where an approved artifact states the
+   * condition; absent rather than invented where none does.
+   */
+  readonly whenToUse?: string
+  /** True where two approved artifacts word this prompt differently. */
+  readonly conflict?: string
 }
+
+const A3 = 'Artifact 3 — Quick Facilitation Prompts'
+const A9 = 'Artifact 9 §6 — How to Push Without Rescuing'
+const A7 = 'Artifact 7 §8 — Pace Management'
 
 export const PROGRESS_PROMPTS: readonly ProgressPrompt[] = [
   {
     id: 'research',
-    // OWNER-APPROVED. Section I, ratified on review: the interface may prompt
-    // this and must not then supply the answer. There is no lookup behind this
-    // button and no model call — the team goes and finds out, which is the
-    // learning.
     text: 'Research before you decide.',
+    source: 'Owner ruling — approved progress prompt, Section I',
     whenToUse:
-      'The team is about to guess at something knowable — a cost, a rule, a timeline, an entitlement. Send them to find out rather than telling them.',
+      'When a scenario requires research, direct the team toward legitimate professional/resource categories rather than pretending the facilitator is the expert.',
   },
   {
     id: 'help-needed',
-    // OWNER-APPROVED. Section J, ratified on review: asked BEFORE a Lifeline is
-    // granted, never after.
     text: 'What kind of help do you need?',
+    source: 'Owner ruling — approved progress prompt, Section J',
     whenToUse:
-      'A team has reached for the Lifeline. Put this up first and make them name it. Naming the help you need is most of the skill.',
+      'When the team is genuinely stuck or when asking for appropriate help is itself part of the learning.',
   },
   {
-    id: 'land-it',
-    text: 'Land your decision, then move.',
-    whenToUse: 'The discussion has stopped producing new information and is now circling.',
+    id: 'where-on-road',
+    text: 'Show me where you are on the road.',
+    source: `${A3}; identical in ${A9}`,
   },
   {
-    id: 'who-owns-it',
-    text: 'Who owns this, and by when?',
-    whenToUse: 'A decision has been made in the abstract with nobody attached to it.',
+    id: 'next-decision',
+    text: 'What is the next decision you need to make?',
+    source: `${A7}; identical in Artifact 9 §5`,
+    whenToUse: 'If a team is stalled.',
   },
   {
-    id: 'what-does-it-cost',
-    text: 'What does this cost you — and what does it cost you not to?',
-    whenToUse: 'An Opening Ahead is being taken because it is attractive rather than because it serves the Destination.',
+    id: 'need-to-know',
+    text: 'What do you need to know before you can move?',
+    source: `${A7}; identical in Artifact 9 §5`,
+    whenToUse: 'If discussion is expanding without movement.',
   },
   {
-    id: 'still-the-destination',
-    text: 'Does this still take you to the Destination?',
-    whenToUse: 'The plan has drifted and nobody has said so out loud yet.',
+    id: 'next-milestone',
+    text: 'What is your next milestone?',
+    source: A3,
+  },
+  {
+    id: 'avoiding',
+    text: 'What decision are you avoiding?',
+    source: `${A3}; identical in ${A9}`,
+  },
+  {
+    id: 'assumption',
+    text: 'What assumption are you making?',
+    source: `${A3}; also Artifact 9 §5 as the prompt for a team moving too quickly`,
+    whenToUse: 'If a team is moving too quickly, ask what assumption or dependency it may be overlooking.',
+  },
+  {
+    id: 'who-else',
+    text: 'Who else belongs in this decision?',
+    source: `${A3}; identical in ${A9}`,
+  },
+  {
+    id: 'depending-on',
+    text: 'What are you depending on?',
+    source: A9,
+  },
+  {
+    id: 'running-low',
+    text: 'What are you running low on?',
+    source: `${A3}; identical in ${A9}`,
+  },
+  {
+    id: 'overlooking',
+    text: 'What opportunity might you be overlooking?',
+    source: A9,
+  },
+  {
+    id: 'progress',
+    text: 'What would tell you that you are making progress?',
+    source: A9,
+  },
+  {
+    id: 'do-nothing',
+    text: 'What happens if you do nothing?',
+    source: A3,
+    conflict: `${A9} gives "What happens if nothing changes?" for the same moment.`,
+  },
+  {
+    id: 'still-true',
+    text: 'What is still true?',
+    source: `${A9}; identical in Artifacts 2, 3, 4 and 5`,
+  },
+  {
+    id: 'what-changed',
+    text: 'What changed?',
+    source: `${A3}; identical in ${A9}`,
+  },
+  {
+    id: 'road-or-destination',
+    text: 'Does the road change, or does the Destination change?',
+    source: A3,
+    conflict: `${A9} gives "Does the route change, or does the destination change?" — different nouns and different capitalisation.`,
+  },
+  {
+    id: 'next-wise-move',
+    text: 'What is the next wise move?',
+    source: A3,
+    conflict:
+      'Artifact 9 and the Artifact 3 GPS card both give "What is your next wise move?" — the possessive differs.',
   },
 ]
 

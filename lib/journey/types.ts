@@ -61,12 +61,28 @@ export const ROAD_EVENTS = [
 
 export type RoadEventId = (typeof ROAD_EVENTS)[number]
 
+/**
+ * One Road Event, in the six fields the approved printed card carries.
+ *
+ * The card is marked FACILITATOR ONLY, so the fields split by audience:
+ * `name`, `tagline` and `readToTeam` are read aloud and may be projected;
+ * `whenToPlay`, `watchFor` and `pushWithoutSolving` are the facilitator's own
+ * and are never copied onto the wire.
+ */
 export interface RoadEvent {
   readonly id: RoadEventId
   /** Owner-approved display name. */
   readonly name: string
-  /** What the facilitator is inviting the team to do. */
-  readonly intent: string
+  /** The card's one-line statement of what has happened. Read to the team. */
+  readonly tagline: string
+  /** READ TO TEAM. Participant-facing. */
+  readonly readToTeam: string
+  /** WHEN TO PLAY. Facilitator only. */
+  readonly whenToPlay: string
+  /** WATCH FOR. Facilitator only. */
+  readonly watchFor: string
+  /** PUSH WITHOUT SOLVING. Facilitator only — questions, never answers. */
+  readonly pushWithoutSolving: string
   /**
    * True where the event is a gift rather than a pressure. Kept explicit so
    * the participant view can style it honestly instead of making everything

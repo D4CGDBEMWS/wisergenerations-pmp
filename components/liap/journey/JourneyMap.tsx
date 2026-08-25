@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { openChannel } from '@/lib/journey/channel'
+import { DISPLAY_COPY } from '@/lib/journey/display-copy'
 import type { ProjectedJourney } from '@/lib/journey/types'
 
 // ---------------------------------------------------------------------------
@@ -9,7 +10,10 @@ import type { ProjectedJourney } from '@/lib/journey/types'
 //
 // ── LOOK AT THE IMPORTS ────────────────────────────────────────────────────
 //
-// Two, and one of them is erased at compile time. This component has no access
+// Three, and one of them is erased at compile time. The third is this screen's
+// own fixed copy, kept as data in lib/journey/display-copy.ts so the content
+// inventory can read it — reconciliation caught eight participant-facing lines
+// hardcoded here that no wording review had ever seen. This component has no access
 // to the event library, the progress-prompt library, the timing constants, the
 // dependency register, the facilitator's stored session, or the debrief — not
 // because it declines to render them, but because they are not in the bundle
@@ -95,7 +99,7 @@ export function JourneyMap() {
     <div className="min-h-screen bg-slate-950 px-8 py-10 text-slate-100">
       <div className="mx-auto flex min-h-[80vh] max-w-6xl flex-col">
         <header className="flex items-baseline justify-between border-b border-slate-800 pb-6">
-          <h1 className="text-2xl font-semibold tracking-wide text-slate-300">THE JOURNEY</h1>
+          <h1 className="text-2xl font-semibold tracking-wide text-slate-300">{DISPLAY_COPY.heading}</h1>
           <TaskWindow minutesRemaining={journey.minutesRemaining} windowMinutes={journey.windowMinutes} />
         </header>
 
@@ -114,7 +118,7 @@ export function JourneyMap() {
 
         {journey.destinationRevised ? (
           <p className="mt-6 border-t border-slate-800 pt-4 text-center text-lg text-slate-400">
-            Your Destination has been revised. That is a decision, not a setback.
+            {DISPLAY_COPY.roadCanChange}
           </p>
         ) : null}
       </div>
@@ -125,7 +129,7 @@ export function JourneyMap() {
 function WaitingForFacilitator() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950 px-8 text-slate-400">
-      <p className="text-2xl">Waiting for the facilitator…</p>
+      <p className="text-2xl">{DISPLAY_COPY.waiting}</p>
     </div>
   )
 }
@@ -146,7 +150,9 @@ function TaskWindow({
 }) {
   return (
     <div className="text-right">
-      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{windowMinutes}-minute task window</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+        {windowMinutes}-minute {DISPLAY_COPY.taskWindow}
+      </p>
       <p className="text-4xl font-semibold tabular-nums text-slate-100">
         {minutesRemaining === null ? '—' : `${minutesRemaining} min`}
       </p>
@@ -217,7 +223,7 @@ function EventCard({
       <p className="mt-4 text-3xl leading-snug text-slate-50">{event.revealText}</p>
       {event.becauseOf ? (
         <p className="mt-6 border-l-2 border-slate-700 pl-4 text-lg text-slate-400">
-          Because you decided: “{event.becauseOf}”
+          {DISPLAY_COPY.becauseYouDecided} “{event.becauseOf}”
         </p>
       ) : null}
       {/* GPS: Recalculating… is the major interaction, so the room reads the
@@ -233,9 +239,7 @@ function EventCard({
       ) : event.impactLabel ? (
         <p className="mt-6 text-lg font-medium text-slate-300">{event.impactLabel}</p>
       ) : (
-        <p className="mt-8 text-lg text-slate-400">
-          Does this change your First Move, your Decision Check, a Next Milestone, your Destination — or nothing?
-        </p>
+        <p className="mt-8 text-lg text-slate-400">{DISPLAY_COPY.roadmapCheck}</p>
       )}
     </section>
   )
@@ -245,11 +249,15 @@ function EventCard({
 function RecentDecision({ journey }: { journey: ProjectedJourney }) {
   const latest = journey.decisions.at(-1)
   if (!latest) {
-    return <p className="pt-10 text-center text-xl text-slate-500">Work from your Scenario Cards.</p>
+    return (
+      <p className="pt-10 text-center text-2xl text-slate-400">{DISPLAY_COPY.startingPrompt}</p>
+    )
   }
   return (
     <section className="rounded-lg border border-slate-800 p-8">
-      <h2 className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">You decided</h2>
+      <h2 className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
+        {DISPLAY_COPY.decidedLabel}
+      </h2>
       <p className="mt-4 text-3xl leading-snug text-slate-100">{latest.text}</p>
     </section>
   )

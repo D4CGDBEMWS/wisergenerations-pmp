@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DEBRIEF_SEQUENCE } from '@/lib/journey/debrief'
+import { DEBRIEF_DO_NOT, DEBRIEF_FINAL_REMINDER, DEBRIEF_SEQUENCE } from '@/lib/journey/debrief'
 import { buildJourneyRecord } from '@/lib/journey/record'
 import type { JourneyState } from '@/lib/journey/types'
 
@@ -40,7 +40,10 @@ export function DebriefPanel({ state }: { state: JourneyState }) {
           return (
             <li key={cue.id} className="rounded border border-slate-800 p-3">
               <div className="flex items-baseline justify-between gap-3">
-                <h3 className="font-medium text-slate-200">{cue.heading}</h3>
+                <h3 className="font-medium text-slate-200">
+                  <span className="mr-2 font-mono text-xs text-slate-500">{cue.time}</span>
+                  {cue.heading}
+                </h3>
                 {!isOpen ? (
                   <button
                     type="button"
@@ -56,19 +59,43 @@ export function DebriefPanel({ state }: { state: JourneyState }) {
                   before the facilitator has decided to give it. */}
               {isOpen ? (
                 <div className="mt-3">
-                  <p className="text-slate-100">{cue.cue}</p>
-                  <p className="mt-2 text-sm text-slate-400">{cue.note}</p>
-                  {cue.participantAnswers ? (
-                    <p className="mt-2 text-xs uppercase tracking-wide text-amber-300/80">
-                      Their answer, not yours. Ask it and stop talking.
-                    </p>
-                  ) : null}
+                  <p className="text-xs uppercase tracking-wide text-slate-500">{cue.purpose}</p>
+                  <ul className="mt-2 space-y-1.5">
+                    {cue.asks.map((ask) => (
+                      <li key={ask} className="text-slate-100">
+                        {ask}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-3 text-sm text-slate-400">
+                    <span className="text-slate-500">FACILITATOR NOTE </span>
+                    {cue.note}
+                  </p>
                 </div>
               ) : null}
             </li>
           )
         })}
       </ol>
+
+      {/* Artifact 6, "Do Not Do During the Debrief" — always open, because a
+          rule you have to click to see is a rule you forget in a live room. */}
+      <div className="mt-6 rounded border border-amber-800/60 bg-amber-500/5 p-3">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-200/80">
+          Do not do during the debrief
+        </h3>
+        <ul className="mt-2 space-y-1 text-xs text-slate-400">
+          {DEBRIEF_DO_NOT.map((rule) => (
+            <li key={rule}>{rule}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-4 text-xs italic text-slate-500">
+        {DEBRIEF_FINAL_REMINDER.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </div>
 
       <div className="mt-6 border-t border-slate-800 pt-4">
         <div className="flex items-center justify-between">

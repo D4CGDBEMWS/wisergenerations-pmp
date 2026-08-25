@@ -21,6 +21,21 @@ import { ROADMAP_POINTS, type RoadmapPointId } from './types'
 // getting right. tests/liap-journey.test.ts asserts no module here can
 // transmit or persist.
 //
+// ── EVERY PROMPT HERE IS THE OWNER'S ───────────────────────────────────────
+//
+// Reconciled against Artifact 5, LIAP_MY_PROJECT_Personal_Roadmap.docx. The
+// sixteen prompts I had written are gone, replaced verbatim by the printed
+// sheet's own questions, so a participant who fills this in on a laptop is
+// answering the same words as the participant beside them filling in paper.
+//
+// Four approved sections were missing from the digital version entirely and
+// are added here: WHY THIS MATTERS, MAKE IT REAL, MY NEXT WISE MOVE (with its
+// 24–48 hour window) and LEGACY MATTERS.
+//
+// The six per-point "nudges" remain system-written. Artifact 5 has no second
+// question for a participant who stalls, so there was nothing to reconcile
+// them against — they are held pending owner review, not shipped as approved.
+//
 // ── WHAT AI MAY AND MAY NOT DO ─────────────────────────────────────────────
 //
 // May: prompt, and organise what the participant already wrote.
@@ -36,113 +51,214 @@ import { ROADMAP_POINTS, type RoadmapPointId } from './types'
 export interface MyProjectStep {
   readonly pointId: RoadmapPointId
   readonly label: string
-  /** Asked, never answered. */
+  /** Asked, never answered. Verbatim from Artifact 5. */
   readonly prompt: string
-  /** A second, narrower question for someone who stalls. Still a question. */
+  /**
+   * A second, narrower question for someone who stalls.
+   *
+   * SYSTEM-WRITTEN, PENDING OWNER REVIEW. Artifact 5 has no equivalent; these
+   * are held behind a "Stuck?" control and are not approved copy.
+   */
   readonly nudge: string
 }
 
 /**
- * The six roadmap steps — the same permanent architecture the team just walked
- * in the facilitated game, now on the project the participant actually brought.
+ * The six roadmap steps. Prompts verbatim from Artifact 5.
  *
- * PROVENANCE: SYSTEM-WRITTEN, PENDING OWNER APPROVAL. Where the physical MY
- * PROJECT Roadmap already carries a prompt for one of these points, the
- * approved wording replaces the draft rather than sitting alongside it.
- *
- * Every line is interrogative on purpose: the moment one of them becomes a
- * suggestion, the roadmap stops being the participant's.
+ * The printed sheet lays DESTINATION out above SECOND NEXT MILESTONE, which is
+ * a page-layout artifact; the canonical sequence stated identically in
+ * Artifacts 6, 7 and 9 is TODAY → FIRST MOVE → DECISION / MILESTONE CHECK →
+ * NEXT MILESTONE → NEXT MILESTONE → DESTINATION, and that is the order used
+ * here.
  */
 export const MY_PROJECT_STEPS: readonly MyProjectStep[] = [
   {
     pointId: 'start',
     label: ROADMAP_POINTS[0].label,
-    prompt: 'Where are you actually starting from today — not where you meant to be?',
+    prompt: 'Where am I right now? What is true today?',
     nudge: 'What is true right now that you would rather not write down?',
   },
   {
     pointId: 'first-move',
     label: ROADMAP_POINTS[1].label,
-    prompt: 'What is the first move — the one you could make this week?',
+    prompt: 'What will I do first?',
     nudge: 'What is the smallest thing that would count as having started?',
   },
   {
     pointId: 'decision-check',
     label: ROADMAP_POINTS[2].label,
-    prompt: 'What decision has to be made before you can go further, and what does it turn on?',
+    prompt: 'What decision or result will tell me I am moving?',
     nudge: 'What are you waiting to find out, and who has that answer?',
   },
   {
     pointId: 'milestone-2',
     label: ROADMAP_POINTS[3].label,
-    prompt: 'What is the next milestone, and how will you know you have reached it?',
+    prompt: 'What must I accomplish next?',
     nudge: 'What would somebody else be able to see that tells them it happened?',
   },
   {
     pointId: 'milestone-3',
     label: ROADMAP_POINTS[4].label,
-    prompt: 'And the one after that?',
+    prompt: 'What must happen after the first milestone?',
     nudge: 'What has to be true before this one is even possible?',
   },
   {
     pointId: 'destination',
     label: ROADMAP_POINTS[5].label,
-    prompt: 'What is the Destination — and how would you know you had arrived?',
+    prompt: 'What does finished/successful look like?',
     nudge: 'If this went well, what is different a year from now?',
   },
 ]
 
 /**
- * The optional fields, owner-specified in Section N.
+ * The two framing questions Artifact 5 opens with, before the road begins.
+ *
+ * Both verbatim. WHY THIS MATTERS was missing from the digital version
+ * altogether, and it is the question that makes the rest of the sheet worth
+ * filling in.
+ */
+export const MY_PROJECT_OPENING = [
+  { id: 'project', label: 'MY PROJECT', prompt: 'What project did I bring with me?' },
+  {
+    id: 'why',
+    label: 'WHY THIS MATTERS',
+    prompt: 'Why is completing this important to me—and who else may benefit?',
+  },
+] as const
+
+export type MyProjectOpeningId = (typeof MY_PROJECT_OPENING)[number]['id']
+
+/**
+ * CHECK THE ROAD BEFORE YOU GO — Artifact 5, verbatim, in the printed order.
+ *
+ * "Your roadmap is more than milestones. Look at what can help, what can
+ * interfere, and what you will do when the road changes."
  *
  * OPTIONAL MEANS OPTIONAL. A roadmap is complete when the six points are
- * answered; nothing here is required, nothing is flagged as missing, and an
- * empty one is not marked incomplete. A participant who only wants the spine
- * should be able to print after six answers.
+ * answered; nothing here is required and an empty field is simply not printed.
  *
- * The Road Event names are reused deliberately — a participant who has just
- * spent ninety minutes with Risk Ahead and Low Fuel should meet the same words
- * on their own roadmap, not synonyms for them.
- *
- * PROVENANCE: labels are the owner-approved Road Event names; the prompts are
- * SYSTEM-WRITTEN and pending approval.
+ * The Road Event names are reused deliberately and are the approved ones — a
+ * participant who has just spent ninety minutes with Risk Ahead and Low Fuel
+ * meets the same words on their own sheet, not synonyms for them.
  */
 export const MY_PROJECT_EXTRAS = [
-  { id: 'team', label: 'Team / support', prompt: 'Who is with you on this, and what do they actually do?' },
-  { id: 'resources', label: 'Resources', prompt: 'What do you have to work with — money, time, access, skill, information?' },
-  { id: 'risk-ahead', label: 'Risk Ahead', prompt: 'What could go wrong that has not gone wrong yet?' },
-  { id: 'issue-now', label: 'Issue Now', prompt: 'What has already gone wrong that you are still carrying?' },
-  { id: 'opening-ahead', label: 'Opening Ahead', prompt: 'What opportunity is in front of you, and what would taking it cost?' },
-  { id: 'low-fuel', label: 'Low Fuel', prompt: 'What is running low, and what will you protect when it does?' },
-  { id: 'lifeline', label: 'Lifeline', prompt: 'What kind of help do you need, and who could give it?' },
-  { id: 'backup', label: 'Backup / dependency', prompt: 'What does this plan rest on — and what is your plan if that is taken away?' },
-  { id: 'recalculating', label: 'GPS: Recalculating…', prompt: 'What has already changed since you started thinking about this?' },
-  { id: 'target-dates', label: 'Target dates', prompt: 'When do you want each milestone to happen?' },
+  { id: 'team', label: 'TEAM / SUPPORT', prompt: 'Who needs to be part of this journey?' },
+  { id: 'resources', label: 'RESOURCES', prompt: 'What do I already have? What do I still need?' },
+  { id: 'risk-ahead', label: 'RISK AHEAD', prompt: 'What might get in the way?' },
+  { id: 'issue-now', label: 'ISSUE NOW', prompt: 'What is already a problem?' },
+  { id: 'opening-ahead', label: 'OPENING AHEAD', prompt: 'What opportunity could help?' },
+  {
+    id: 'low-fuel',
+    label: 'LOW FUEL',
+    prompt: 'Where could I run short—time, money, energy, skills, or focus?',
+  },
+  {
+    id: 'backup',
+    label: 'NO SIGNAL / BACKUP',
+    prompt: 'What am I depending on? What is my backup?',
+  },
+  { id: 'lifeline', label: 'LIFELINE', prompt: 'Who can I call when I need help?' },
+  {
+    id: 'recalculating',
+    label: 'GPS: RECALCULATING...',
+    prompt:
+      'When something changes: What is still true? What changed? What part of my road needs to move?',
+  },
+  {
+    id: 'revised-next-move',
+    label: 'My revised next move',
+    // Artifact 5 prints this as a bare labelled line under GPS: Recalculating…
+    // with no question, so none is invented here.
+    prompt: '',
+  },
+  {
+    id: 'target-date',
+    label: 'Target date',
+    // Likewise a bare labelled line, attached to the second Next Milestone.
+    // Artifact 7 §11: "Require target dates where appropriate."
+    prompt: '',
+  },
 ] as const
 
 export type MyProjectExtraId = (typeof MY_PROJECT_EXTRAS)[number]['id']
 
 /**
+ * MAKE IT REAL — Artifact 5's four-column table, verbatim.
+ *
+ * The columns are the difference between a wish and a plan, and the sheet is
+ * not finished without them.
+ */
+export const MAKE_IT_REAL_COLUMNS = [
+  'WHAT HAPPENS NEXT?',
+  'WHO?',
+  'BY WHEN?',
+  "HOW WILL I KNOW IT'S DONE?",
+] as const
+
+/**
+ * MY NEXT WISE MOVE and LEGACY MATTERS — Artifact 5, verbatim.
+ *
+ * The 24–48 hour window is the whole point of the first one: a roadmap that
+ * does not name something happening this week is a document, not a plan.
+ */
+export const MY_PROJECT_CLOSING = [
+  {
+    id: 'next-wise-move',
+    label: 'MY NEXT WISE MOVE',
+    prompt: 'Within the next 24–48 hours, I will:',
+  },
+  {
+    id: 'legacy',
+    label: 'LEGACY MATTERS',
+    prompt:
+      'When I complete this project, what changes—in me, for someone else, or because I kept going?',
+  },
+] as const
+
+export type MyProjectClosingId = (typeof MY_PROJECT_CLOSING)[number]['id']
+
+/** Artifact 5's closing lines, verbatim. */
+export const MY_PROJECT_SIGNOFF =
+  'Keep the destination in sight. When the road changes, recalculate—and keep moving.'
+
+/** Artifact 5's header line, verbatim. */
+export const MY_PROJECT_INTRO = 'You practiced the road. Now build yours.'
+
+/**
  * One participant's roadmap in progress.
  *
  * Lives in React state and nowhere else. There is no id, no owner, no session
- * key and no timestamp on this type, because there is nothing for those to be
- * useful to — nothing ever looks this up again.
+ * key and no timestamp on this type, because nothing ever looks it up again.
  */
 export interface MyProjectDraft {
-  readonly title: string
+  readonly opening: Partial<Record<MyProjectOpeningId, string>>
   readonly points: Partial<Record<RoadmapPointId, string>>
   readonly extras: Partial<Record<MyProjectExtraId, string>>
+  readonly makeItReal: readonly (readonly string[])[]
+  readonly closing: Partial<Record<MyProjectClosingId, string>>
 }
 
 export function emptyDraft(): MyProjectDraft {
-  return { title: '', points: {}, extras: {} }
+  return {
+    opening: {},
+    points: {},
+    extras: {},
+    makeItReal: [
+      ['', '', '', ''],
+      ['', '', '', ''],
+      ['', '', '', ''],
+    ],
+    closing: {},
+  }
 }
 
 export interface MyProjectRoadmap {
   readonly title: string
+  readonly why: string
   readonly steps: readonly { readonly label: string; readonly text: string }[]
   readonly extras: readonly { readonly label: string; readonly text: string }[]
+  readonly makeItReal: readonly (readonly string[])[]
+  readonly closing: readonly { readonly label: string; readonly text: string }[]
   /** True once all six roadmap points are answered. Optional fields never count. */
   readonly complete: boolean
 }
@@ -152,8 +268,7 @@ export interface MyProjectRoadmap {
  *
  * The only transformation is whitespace tidying — no rewriting, no expanding,
  * no summarising, no "improving", no suggestion, no completion. A test compares
- * every output string against its input and asserts they match after
- * normalising whitespace.
+ * every output string against its input.
  */
 export function buildMyProjectRoadmap(draft: MyProjectDraft): MyProjectRoadmap {
   const tidy = (value: string | undefined) => (value ?? '').replace(/\s+/g, ' ').trim()
@@ -164,34 +279,44 @@ export function buildMyProjectRoadmap(draft: MyProjectDraft): MyProjectRoadmap {
   }))
 
   return {
-    title: tidy(draft.title),
+    title: tidy(draft.opening.project),
+    why: tidy(draft.opening.why),
     steps,
-    // Only what the participant filled in. An empty optional field is simply
-    // not on the printed roadmap, rather than printed as a blank to be
-    // embarrassed by.
+    // Only what the participant filled in. An empty optional field is not on
+    // the printed roadmap, rather than printed as a blank to be embarrassed by.
     extras: MY_PROJECT_EXTRAS.map((extra) => ({
       label: extra.label,
       text: tidy(draft.extras[extra.id]),
     })).filter((extra) => extra.text.length > 0),
+    makeItReal: draft.makeItReal
+      .map((row) => row.map(tidy))
+      .filter((row) => row.some((cell) => cell.length > 0)),
+    closing: MY_PROJECT_CLOSING.map((item) => ({
+      label: item.label,
+      text: tidy(draft.closing[item.id]),
+    })).filter((item) => item.text.length > 0),
     complete: steps.every((s) => s.text.length > 0),
   }
 }
 
 /** True once the participant has typed anything at all worth losing. */
 export function draftHasContent(draft: MyProjectDraft): boolean {
-  if (draft.title.trim()) return true
-  return [...Object.values(draft.points), ...Object.values(draft.extras)].some(
-    (value) => (value ?? '').trim().length > 0,
-  )
+  const values = [
+    ...Object.values(draft.opening),
+    ...Object.values(draft.points),
+    ...Object.values(draft.extras),
+    ...Object.values(draft.closing),
+    ...draft.makeItReal.flat(),
+  ]
+  return values.some((value) => (value ?? '').trim().length > 0)
 }
 
 /**
  * OWNER-APPROVED COPY. Verbatim, and not to be expanded.
  *
- * Shown before reset and on tab close. It is deliberately two short sentences:
- * one instruction and one fact. Adding reassurance, elaboration or a second
- * privacy promise around it would turn approved functional copy into new
- * unapproved policy language.
+ * Shown before reset and on tab close. Two short sentences: one instruction
+ * and one fact. Adding reassurance or a second privacy promise around it would
+ * turn approved functional copy into new unapproved policy language.
  */
 export const MY_PROJECT_EXIT_WARNING =
   'Save or print your roadmap if you want to keep it. Your project information is not stored by Wiser Generations.'

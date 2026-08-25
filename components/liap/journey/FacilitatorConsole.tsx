@@ -339,6 +339,12 @@ function EventPalette({
 
   return (
     <Panel title="Road Events">
+      {/* Artifact 3, How to Use the Deck — verbatim. The rule that keeps a
+          Road Event a test of the team's road rather than a way to steer it. */}
+      <p className="mb-3 text-[11px] italic text-slate-500">
+        Do not play every event in every scenario. Select the event that naturally tests the team&rsquo;s
+        current plan.
+      </p>
       {broken.length ? (
         <div className="mb-3 rounded border border-amber-600/60 bg-amber-500/5 p-2 text-xs text-amber-200">
           {/* A suggestion, never an action. The system remembers; a human decides. */}
@@ -368,12 +374,33 @@ function EventPalette({
 
       {definition ? (
         <>
-          <p className="mt-3 text-xs italic text-slate-400">{definition.intent}</p>
+          {/* The approved card, in the approved fields. WHEN TO PLAY, WATCH
+              FOR and PUSH WITHOUT SOLVING are facilitator-only and never
+              projected; READ TO TEAM is what the room hears. */}
+          <div className="mt-3 space-y-2 text-xs">
+            <p className="font-semibold text-slate-300">{definition.tagline}</p>
+            <p className="text-slate-400">
+              <span className="text-slate-500">READ TO TEAM </span>
+              {definition.readToTeam}
+            </p>
+            <p className="text-amber-200/70">
+              <span className="text-slate-500">WHEN TO PLAY </span>
+              {definition.whenToPlay}
+            </p>
+            <p className="text-amber-200/70">
+              <span className="text-slate-500">WATCH FOR </span>
+              {definition.watchFor}
+            </p>
+            <p className="text-amber-200/70">
+              <span className="text-slate-500">PUSH WITHOUT SOLVING </span>
+              {definition.pushWithoutSolving}
+            </p>
+          </div>
           <textarea
             value={revealText}
             onChange={(event) => setRevealText(event.target.value)}
             rows={2}
-            placeholder="What the room sees"
+            placeholder="Scenario detail for the room (optional — the card's own words are shown)"
             className="mt-2 w-full rounded border border-slate-700 bg-slate-950 px-2 py-1.5 text-sm"
           />
           <textarea
@@ -498,7 +525,12 @@ function PromptPanel({
             >
               {prompt.text}
             </button>
-            <p className="mt-0.5 text-[11px] text-slate-500">{prompt.whenToUse}</p>
+            {prompt.whenToUse ? (
+              <p className="mt-0.5 text-[11px] text-slate-500">{prompt.whenToUse}</p>
+            ) : null}
+            {prompt.conflict ? (
+              <p className="mt-0.5 text-[11px] text-amber-300/70">Wording conflict: {prompt.conflict}</p>
+            ) : null}
           </div>
         ))}
       </div>

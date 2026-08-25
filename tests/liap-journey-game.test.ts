@@ -8,11 +8,16 @@ import { BUFFER_MINUTES, TOTAL_MINUTES, WINDOW_MINUTES, facilitatorClock } from 
 import { ROAD_EVENT_LIBRARY, RECALCULATION_PROMPTS } from '@/lib/journey/events'
 import { SCENARIOS } from '@/lib/journey/scenarios'
 import { BARE_SURFACES, isBareSurface } from '@/lib/shell'
-import { CONTENT_INVENTORY, pendingOwnerReview } from '@/lib/journey/content'
+import { CONTENT_INVENTORY, pendingOwnerReview, wordingConflicts } from '@/lib/journey/content'
+import { DISPLAY_STRINGS } from '@/lib/journey/display-copy'
+import { IMPACT_CHOICES } from '@/lib/journey/impact'
 import { PROGRESS_PROMPTS } from '@/lib/journey/prompts'
-import { DEBRIEF_SEQUENCE } from '@/lib/journey/debrief'
+import { DEBRIEF_DO_NOT, DEBRIEF_FINAL_REMINDER, DEBRIEF_SEQUENCE } from '@/lib/journey/debrief'
 import {
+  MAKE_IT_REAL_COLUMNS,
+  MY_PROJECT_CLOSING,
   MY_PROJECT_EXTRAS,
+  MY_PROJECT_OPENING,
   MY_PROJECT_STEPS,
   buildMyProjectRoadmap,
   emptyDraft,
@@ -247,11 +252,11 @@ describe('participant display data boundary', () => {
     // And the library the facilitator picks from is not on the wire, so the
     // room cannot read the names of events still to come.
     const unrevealed = ROAD_EVENT_LIBRARY.filter((e) => e.id !== 'issue-now')
-    for (const event of unrevealed) expect(wire).not.toContain(event.intent)
+    for (const event of unrevealed) expect(wire).not.toContain(event.readToTeam)
   })
 
   it('carries no facilitator guidance on the active prompt', () => {
-    const guidance = PROGRESS_PROMPTS.find((p) => p.id === 'research')!.whenToUse
+    const guidance = PROGRESS_PROMPTS.find((p) => p.id === 'research')!.whenToUse!
     expect(wire).not.toContain(guidance)
     // The prompt TEXT is on the wire — that is the point of putting it up.
     expect(wire).toContain(PROGRESS_PROMPTS.find((p) => p.id === 'research')!.text)
@@ -307,8 +312,8 @@ describe('participant display data boundary', () => {
     expect([...seen]).toContain('components/liap/journey/JourneyMap.tsx')
     expect([...seen]).toContain('lib/journey/channel.ts')
 
-    const sponsorCue = DEBRIEF_SEQUENCE.find((c) => c.id === 'sponsor')!.cue
-    for (const file of seen) expect(code(file), file).not.toContain(sponsorCue)
+    const sponsorAsk = DEBRIEF_SEQUENCE.find((c) => c.id === 'sponsor')!.asks.at(-1)!
+    for (const file of seen) expect(code(file), file).not.toContain(sponsorAsk)
   })
 })
 
@@ -397,20 +402,22 @@ describe('MY PROJECT never touches a server', () => {
 
   it('organises what the participant wrote and adds nothing', () => {
     const draft = {
-      title: '  Move   my mother  ',
+      ...emptyDraft(),
+      opening: { project: '  Move   my mother  ' },
       points: { start: '  Living   two hours away ', destination: 'She is safe and near me' },
       extras: { 'risk-ahead': ' Her lease  ends in May ' },
-    } as ReturnType<typeof emptyDraft>
+    }
     const roadmap = buildMyProjectRoadmap(draft)
 
     expect(roadmap.title).toBe('Move my mother')
     expect(roadmap.steps[0].text).toBe('Living two hours away')
-    expect(roadmap.extras).toEqual([{ label: 'Risk Ahead', text: 'Her lease ends in May' }])
+    // The label is the approved artifact's, in the approved capitalisation.
+    expect(roadmap.extras).toEqual([{ label: 'RISK AHEAD', text: 'Her lease ends in May' }])
 
     // Every output word came from the input. Nothing was suggested, expanded,
     // summarised or completed.
     const inputWords = new Set(
-      [draft.title, ...Object.values(draft.points), ...Object.values(draft.extras)]
+      [...Object.values(draft.opening), ...Object.values(draft.points), ...Object.values(draft.extras)]
         .join(' ')
         .toLowerCase()
         .split(/\s+/)
@@ -432,7 +439,7 @@ describe('MY PROJECT never touches a server', () => {
     const roadmap = buildMyProjectRoadmap({ ...draft, points })
     expect(roadmap.complete).toBe(true)
     expect(roadmap.extras).toEqual([])
-    expect(MY_PROJECT_EXTRAS.length).toBe(10)
+    expect(MY_PROJECT_EXTRAS.length).toBe(11)
   })
 
   it('asks questions and never proposes an answer', () => {
@@ -440,7 +447,13 @@ describe('MY PROJECT never touches a server', () => {
       expect(step.prompt.trim().endsWith('?'), step.pointId).toBe(true)
       expect(step.nudge.trim().endsWith('?'), step.pointId).toBe(true)
     }
-    for (const extra of MY_PROJECT_EXTRAS) {
+    for (const field of MY_PROJECT_OPENING) {
+      expect(field.prompt.trim().endsWith('?'), field.id).toBe(true)
+    }
+    // Two approved fields are bare labelled lines with no question at all —
+    // "My revised next move" and "Target date". Artifact 5 asks nothing there,
+    // so nothing is invented.
+    for (const extra of MY_PROJECT_EXTRAS.filter((e) => e.prompt)) {
       expect(extra.prompt.trim().endsWith('?'), extra.id).toBe(true)
     }
   })
@@ -616,28 +629,63 @@ describe('scenario content stays where the owner put it', () => {
 
 describe('the content inventory', () => {
   it('covers every string the interface renders', () => {
-    // Assembled from the constants themselves, so a new prompt that nobody
-    // classified fails here rather than reaching a room unreviewed.
+    // Derived from the constants themselves rather than a magic number, so a
+    // new prompt that nobody classified fails here rather than reaching a room
+    // unreviewed.
     const expected =
-      ROAD_EVENT_LIBRARY.length * 2 + // names + intents
+      ROAD_EVENT_LIBRARY.length * 6 + // name, tagline, readToTeam, whenToPlay, watchFor, push
+      1 + // the shared ROADMAP CHECK
       RECALCULATION_PROMPTS.length +
-      6 + // impact labels
-      PROGRESS_PROMPTS.length * 2 + // text + whenToUse
+      IMPACT_CHOICES.length +
+      PROGRESS_PROMPTS.length +
+      PROGRESS_PROMPTS.filter((p) => p.whenToUse).length +
+      MY_PROJECT_OPENING.length +
       MY_PROJECT_STEPS.length * 2 + // prompts + nudges
-      MY_PROJECT_EXTRAS.length +
+      MY_PROJECT_EXTRAS.filter((e) => e.prompt).length +
+      MAKE_IT_REAL_COLUMNS.length +
+      MY_PROJECT_CLOSING.length +
+      2 + // MY PROJECT intro and signoff
       1 + // exit warning
-      DEBRIEF_SEQUENCE.length * 2 // cue + note
+      DEBRIEF_SEQUENCE.reduce((n, m) => n + m.asks.length, 0) +
+      DEBRIEF_SEQUENCE.length + // one note each
+      DEBRIEF_DO_NOT.length +
+      DEBRIEF_FINAL_REMINDER.length +
+      DISPLAY_STRINGS.length
     expect(CONTENT_INVENTORY).toHaveLength(expected)
   })
 
-  it('marks the owner-approved language as approved and everything else as pending', () => {
+  it("reads the display component's own copy, which it once missed entirely", () => {
+    // The hole reconciliation found: eight participant-facing lines hardcoded
+    // in JSX, projected onto a wall, invisible to a generated inventory that
+    // only read the content modules.
+    for (const entry of DISPLAY_STRINGS) {
+      expect(CONTENT_INVENTORY.some((c) => c.id === entry.id), entry.id).toBe(true)
+    }
+    // And the component renders them from the constant rather than inline.
+    const display = code('components/liap/journey/JourneyMap.tsx')
+    expect(display).toContain('DISPLAY_COPY')
+    for (const entry of DISPLAY_STRINGS) {
+      expect(display, entry.id).not.toContain(entry.text)
+    }
+  })
+
+  it('names an approved source for every approved string', () => {
     const approved = CONTENT_INVENTORY.filter((e) => e.provenance === 'owner-approved')
-    // The eight Road Event names, the five recalculation questions, the two
-    // ratified progress prompts, the Sponsor question and the MY PROJECT exit
-    // warning.
-    expect(approved.length).toBe(ROAD_EVENT_LIBRARY.length + RECALCULATION_PROMPTS.length + 4)
     for (const entry of approved) expect(entry.source, entry.id).toBeTruthy()
+    // Reconciliation moved the great majority across; some remain mine.
+    expect(approved.length).toBeGreaterThan(CONTENT_INVENTORY.length / 2)
     expect(pendingOwnerReview().length).toBeGreaterThan(0)
+  })
+
+  it('describes every conflict rather than resolving one', () => {
+    // Where two approved artifacts word the same moment differently, the
+    // entry carries both readings and no decision.
+    const conflicts = wordingConflicts()
+    expect(conflicts.length).toBeGreaterThan(0)
+    for (const entry of conflicts) {
+      expect(entry.conflict, entry.id).toBeTruthy()
+      expect(entry.conflict!.length, entry.id).toBeGreaterThan(40)
+    }
   })
 
   it('says who sees each string', () => {
