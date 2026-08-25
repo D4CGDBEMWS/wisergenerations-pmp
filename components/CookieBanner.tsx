@@ -1,15 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { writeConsent } from '@/lib/consent'
 import { useConsent } from '@/components/useConsent'
+import { isBareSurface } from '@/lib/shell'
 
 export default function CookieBanner() {
   // The banner now writes the value Analytics actually reads. Previously it
   // wrote 'cookie-consent' and nothing consulted it, so declining changed
   // nothing — GA4 was already running.
   const consent = useConsent()
+  const pathname = usePathname()
   const [dismissed, setDismissed] = useState(false)
 
   function accept() {
@@ -21,6 +24,11 @@ export default function CookieBanner() {
     writeConsent('essential')
     setDismissed(true)
   }
+
+  // Never over a projected wall. A consent dialog covering a team's Road Event
+  // in a paid Intensive is the wrong company showing up mid-session — and the
+  // bare surfaces set no cookies of their own to consent to.
+  if (isBareSurface(pathname)) return null
 
   if (consent !== null || dismissed) return null
 

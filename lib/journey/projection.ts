@@ -1,5 +1,7 @@
 import { ROADMAP_POINTS, type JourneyState, type ProjectedEvent, type ProjectedJourney } from './types'
 import { roadEvent } from './events'
+import { impactLabel } from './impact'
+import { progressPrompt } from './prompts'
 import { projectedMinutesRemaining, WINDOW_MINUTES } from './timing'
 
 // ---------------------------------------------------------------------------
@@ -16,6 +18,14 @@ import { projectedMinutesRemaining, WINDOW_MINUTES } from './timing'
 //   unrevealed events      the entire library, and anything queued
 //   BUFFER_MINUTES         and TOTAL_MINUTES, and elapsed time, and overrun
 //   linkedDecisionId       replaced by the team's OWN WORDS, or by nothing
+//   dependencies           the register of what rests on what, and what has
+//                          quietly become unavailable — a team that can read
+//                          it can see the consequence coming
+//   whenToUse              the facilitator's guidance on each progress prompt
+//   the debrief            Sponsor / Higher Power and the autobiographical
+//                          reveal are not merely excluded here: the display
+//                          route never imports lib/journey/debrief.ts, so they
+//                          are not in its bundle at all
 //   Sponsor / Higher Power and the closing reveal — not modelled here at all
 //
 // The projection is built by listing what goes on, never by deleting what
@@ -43,6 +53,10 @@ export function projectJourney(state: JourneyState, now: number): ProjectedJourn
       // chose rather than something done to them. Never the facilitator's
       // private note about it.
       becauseOf: e.linkedDecisionId ? decisionText.get(e.linkedDecisionId) ?? null : null,
+      // What the team decided it changes. Their conclusion, shown back to
+      // them — not a verdict on whether they were right.
+      impact: e.impact ?? null,
+      impactLabel: e.impact ? impactLabel(e.impact) : null,
     }
   })
 
@@ -52,11 +66,15 @@ export function projectJourney(state: JourneyState, now: number): ProjectedJourn
     points: ROADMAP_POINTS,
     decisions: state.decisions.map((d) => ({ pointId: d.pointId, text: d.text })),
     events,
-    lifelines: state.lifelines.map((l) => ({ note: l.note })),
+    lifelines: state.lifelines.map((l) => ({ asked: l.asked, note: l.note })),
     resources: state.resources.map((r) => ({ note: r.note })),
     recalculations: state.recalculations,
     destinationRevised: state.destinationRevised,
     activeEventId: state.activeEventId,
+    // Resolved to text here. The display never receives the prompt library, so
+    // it cannot render one the facilitator did not put up — and never receives
+    // `whenToUse`, which is the facilitator's own reasoning.
+    activePrompt: state.activePromptId ? progressPrompt(state.activePromptId)?.text ?? null : null,
     minutesRemaining: projectedMinutesRemaining(state.startedAt, now),
     windowMinutes: WINDOW_MINUTES,
   }

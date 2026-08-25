@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
-import { shellForPath } from '@/lib/shell'
+import { isBareSurface, shellForPath } from '@/lib/shell'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
@@ -22,6 +22,9 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  // Projected walls and the facilitator's working console get no chrome. See
+  // BARE_SURFACES in lib/shell.ts.
+  const bare = isBareSurface(pathname)
   const shell = shellForPath(pathname)
   const navLinks = shell.nav
   const mobileExtraLinks = shell.mobileNav
@@ -38,6 +41,8 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  if (bare) return null
 
   return (
     <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 transition-all duration-200 ${scrolled ? 'shadow-md' : ''}`}>

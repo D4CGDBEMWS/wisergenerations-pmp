@@ -1,4 +1,10 @@
-import { ROADMAP_POINTS, type JourneyState, type RoadEventId, type RoadmapPointId } from './types'
+import {
+  ROADMAP_POINTS,
+  type ImpactTarget,
+  type JourneyState,
+  type RoadEventId,
+  type RoadmapPointId,
+} from './types'
 import { roadEvent } from './events'
 
 // ---------------------------------------------------------------------------
@@ -34,8 +40,10 @@ export function initialJourney(): JourneyState {
     lifelines: [],
     resources: [],
     recalculations: [],
+    dependencies: [],
     destinationRevised: false,
     activeEventId: null,
+    activePromptId: null,
     startedAt: null,
   }
 }
@@ -43,7 +51,7 @@ export function initialJourney(): JourneyState {
 export type JourneyAction =
   /** Starts the 90-minute task window. */
   | { type: 'begin'; at: number }
-  | { type: 'record-decision'; text: string; at: number }
+  | { type: 'record-decision'; text: string; dependsOn?: string; at: number }
   | {
       type: 'reveal-event'
       eventId: RoadEventId
@@ -53,7 +61,9 @@ export type JourneyAction =
       at: number
     }
   | { type: 'clear-event' }
-  | { type: 'grant-lifeline'; note: string; at: number }
+  /** What the TEAM decided the event changes. Section B; 'none' is an answer. */
+  | { type: 'record-event-impact'; eventRecordId: string; impact: ImpactTarget }
+  | { type: 'grant-lifeline'; asked: string; note: string; at: number }
   | { type: 'grant-resource'; note: string; at: number }
   | { type: 'open-recalculation' }
   | {
@@ -65,9 +75,23 @@ export type JourneyAction =
       nextMove: string
       at: number
     }
+  | { type: 'register-dependency'; decisionId: string; label: string; at: number }
+  | { type: 'set-dependency-available'; dependencyId: string; available: boolean }
+  | { type: 'show-prompt'; promptId: string }
+  | { type: 'clear-prompt' }
   | { type: 'advance-point' }
   | { type: 'complete' }
+  /** Facilitator ends the session. Identical to reset; named for what it is. */
   | { type: 'reset' }
+  /**
+   * Restores a snapshot the facilitator chose to resume.
+   *
+   * A stored session is a snapshot, not an action log, so there is nothing to
+   * replay — it is adopted whole. Deliberately the only action that can set
+   * state arbitrarily, and it exists for exactly one caller: the console's
+   * resume prompt, after a human said yes. Nothing calls it automatically.
+   */
+  | { type: 'adopt'; state: JourneyState }
 
 const lastPointIndex = ROADMAP_POINTS.length - 1
 
@@ -85,6 +109,9 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
     case 'reset':
       return initialJourney()
 
+    case 'adopt':
+      return action.state
+
     case 'begin':
       return state.phase === 'briefing'
         ? { ...state, phase: 'at-point', startedAt: action.at }
@@ -93,17 +120,36 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
     case 'record-decision': {
       const text = action.text.trim()
       if (!text) return state
+      const dependsOn = action.dependsOn?.trim()
+      const decisionId = nextId('decision', state.decisions.length)
       return {
         ...state,
         decisions: [
           ...state.decisions,
           {
-            id: nextId('decision', state.decisions.length),
+            id: decisionId,
             pointId: currentPointId(state),
             text,
+            ...(dependsOn ? { dependsOn } : {}),
             at: action.at,
           },
         ],
+        // Capturing a dependency at the moment of the decision is what makes a
+        // consequence possible later. Registering it here rather than as a
+        // second chore means the facilitator does it while the team is still
+        // saying it out loud.
+        dependencies: dependsOn
+          ? [
+              ...state.dependencies,
+              {
+                id: nextId('dependency', state.dependencies.length),
+                label: dependsOn,
+                decisionId,
+                available: true,
+                at: action.at,
+              },
+            ]
+          : state.dependencies,
       }
     }
 
@@ -133,14 +179,67 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
         ? { ...state, phase: 'at-point', activeEventId: null }
         : state
 
-    case 'grant-lifeline':
+    case 'record-event-impact':
+      return {
+        ...state,
+        events: state.events.map((e) =>
+          e.id === action.eventRecordId ? { ...e, impact: action.impact } : e,
+        ),
+      }
+
+    case 'grant-lifeline': {
+      // The ask comes first and is kept, so the record shows what the team
+      // said they needed as well as what they were given.
+      const asked = action.asked.trim()
+      if (!asked) return state
       return {
         ...state,
         lifelines: [
           ...state.lifelines,
-          { id: nextId('lifeline', state.lifelines.length), note: action.note.trim(), at: action.at },
+          {
+            id: nextId('lifeline', state.lifelines.length),
+            asked,
+            note: action.note.trim(),
+            at: action.at,
+          },
         ],
       }
+    }
+
+    case 'register-dependency': {
+      const label = action.label.trim()
+      if (!label) return state
+      return {
+        ...state,
+        dependencies: [
+          ...state.dependencies,
+          {
+            id: nextId('dependency', state.dependencies.length),
+            label,
+            decisionId: action.decisionId,
+            available: true,
+            at: action.at,
+          },
+        ],
+      }
+    }
+
+    case 'set-dependency-available':
+      // Marking something unavailable SURFACES a suggestion on the console. It
+      // does not create an event, does not move anybody, and does not appear
+      // on the wall. A human decides what to do about it.
+      return {
+        ...state,
+        dependencies: state.dependencies.map((d) =>
+          d.id === action.dependencyId ? { ...d, available: action.available } : d,
+        ),
+      }
+
+    case 'show-prompt':
+      return { ...state, activePromptId: action.promptId }
+
+    case 'clear-prompt':
+      return { ...state, activePromptId: null }
 
     case 'grant-resource':
       return {
@@ -183,11 +282,12 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
         pointIndex: state.pointIndex + 1,
         phase: 'at-point',
         activeEventId: null,
+        activePromptId: null,
       }
     }
 
     case 'complete':
-      return { ...state, phase: 'complete', activeEventId: null }
+      return { ...state, phase: 'complete', activeEventId: null, activePromptId: null }
 
     default:
       return state
@@ -197,6 +297,29 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
 /** Decisions made so far, newest last — what a facilitator links an event to. */
 export function linkableDecisions(state: JourneyState) {
   return state.decisions
+}
+
+/**
+ * Consequences the facilitator COULD land, given what has become unavailable.
+ *
+ * FACILITATOR-ONLY, and a suggestion rather than an action: this returns the
+ * decisions that rest on something now marked unavailable, so the console can
+ * say "decision 2 rests on the car" and the facilitator can choose to land an
+ * Issue Now on it — or choose not to.
+ *
+ * Deterministic. No scoring, no ranking, no model call, and nothing fires by
+ * itself.
+ */
+export function brokenDependencies(state: JourneyState) {
+  const decisionText = new Map(state.decisions.map((d) => [d.id, d.text]))
+  return state.dependencies
+    .filter((d) => !d.available)
+    .map((d) => ({
+      dependencyId: d.id,
+      label: d.label,
+      decisionId: d.decisionId,
+      decisionText: decisionText.get(d.decisionId) ?? '',
+    }))
 }
 
 export function pointAt(index: number) {

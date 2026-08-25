@@ -36,6 +36,19 @@ export type FeatureFlag =
   //
   // Default off. Version 1 of both is built and tested, neither is authorised.
   | 'LIAP_GAME_PREVIEW'
+  // The LIAP Journey Game — the facilitated team experience run at an
+  // Intensive: a private facilitator console, a projected participant map, and
+  // MY PROJECT on each participant's own device.
+  //
+  // DELIBERATELY STANDALONE. It does not ride on LIAP and it is not coupled to
+  // LIAP_GAME. Turning the Journey Game on for one Intensive date must not
+  // turn on the assessment, the book QR, or Living Life as a Project Manager —
+  // and turning any of those on must never expose the Journey Game. Coupling
+  // these would make a release decision about one product silently a release
+  // decision about another.
+  //
+  // Default off, and off in every environment.
+  | 'LIAP_JOURNEY'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */

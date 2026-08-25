@@ -1,5 +1,6 @@
 import { ROADMAP_POINTS, type JourneyState, type RoadmapPointId } from './types'
 import { roadEvent } from './events'
+import { impactLabel } from './impact'
 
 // ---------------------------------------------------------------------------
 // The Journey Record.
@@ -28,6 +29,8 @@ export interface RecordEntry {
   readonly body: string
   /** The team's own earlier words, where a consequence pointed back at one. */
   readonly becauseOf?: string
+  /** What the team decided the event changed. Their call, recorded as made. */
+  readonly changed?: string
   readonly favourable?: boolean
 }
 
@@ -48,6 +51,12 @@ export interface JourneyRecord {
   }
   readonly destinationRevised: boolean
   readonly reachedDestination: boolean
+  /**
+   * The last thing the team said they would do next — taken from their most
+   * recent recalculation, because that is where they said it. Null if they
+   * never recalculated.
+   */
+  readonly finalNextMove: string | null
 }
 
 export function buildJourneyRecord(state: JourneyState): JourneyRecord {
@@ -70,6 +79,7 @@ export function buildJourneyRecord(state: JourneyState): JourneyRecord {
         ...(event.linkedDecisionId
           ? { becauseOf: decisionText.get(event.linkedDecisionId) ?? undefined }
           : {}),
+        ...(event.impact ? { changed: impactLabel(event.impact) } : {}),
       })
     }
 
@@ -102,7 +112,9 @@ export function buildJourneyRecord(state: JourneyState): JourneyRecord {
     ...state.lifelines.map((l) => ({
       kind: 'lifeline' as const,
       heading: 'Lifeline',
-      body: l.note,
+      // Both halves: what the team said they needed, and what they were given.
+      // The ask is the part worth reading back in the debrief.
+      body: l.asked ? `You asked for: ${l.asked}\n${l.note}`.trim() : l.note,
       favourable: true,
     })),
     ...state.resources.map((r) => ({
@@ -128,5 +140,6 @@ export function buildJourneyRecord(state: JourneyState): JourneyRecord {
     },
     destinationRevised: state.destinationRevised,
     reachedDestination: state.pointIndex >= ROADMAP_POINTS.length - 1,
+    finalNextMove: state.recalculations.at(-1)?.nextMove ?? null,
   }
 }

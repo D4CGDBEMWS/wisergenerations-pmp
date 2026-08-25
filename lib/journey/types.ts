@@ -83,6 +83,55 @@ export interface DecisionRecord {
   readonly pointId: RoadmapPointId
   /** The team's own words, entered by the facilitator as they capture them. */
   readonly text: string
+  /**
+   * What this decision rests on, in the team's words — "the car", "Marcus's
+   * yes", "the deposit". Optional, and only ever what the facilitator was told.
+   *
+   * This is half of the consequence model: see DependencyRecord.
+   */
+  readonly dependsOn?: string
+  readonly at: number
+}
+
+/**
+ * What a team decided a Road Event changes.
+ *
+ * Owner-specified, fixed, and exhaustive: after an event the team must say
+ * whether it moves the First Move, the Decision / Milestone Check, either Next
+ * Milestone, the Destination — or nothing.
+ *
+ * 'none' is a real answer, not a skip. Deciding an interruption changes
+ * nothing is a project-management judgement, and the record should show the
+ * team made it rather than show a blank.
+ */
+export type ImpactTarget =
+  | 'first-move'
+  | 'decision-check'
+  | 'milestone-2'
+  | 'milestone-3'
+  | 'destination'
+  | 'none'
+
+/**
+ * Something a decision rests on, and whether it is still available.
+ *
+ * The other half of the consequence model. A team builds an income plan around
+ * a vehicle; two milestones later the vehicle is gone. Marking it unavailable
+ * lets the console SURFACE that link to the facilitator — "decision 2 rests on
+ * the car; land Issue Now on it?" — and the facilitator decides.
+ *
+ * Nothing here fires on its own. There is no rule engine, no scheduler and no
+ * model call: the system remembers, a human chooses.
+ *
+ * FACILITATOR-PRIVATE. The register is not projected — a team that can read
+ * the dependency list can see the consequence coming.
+ */
+export interface DependencyRecord {
+  readonly id: string
+  /** The team's own words for the thing depended on. */
+  readonly label: string
+  readonly decisionId: string
+  readonly available: boolean
   readonly at: number
 }
 
@@ -110,11 +159,29 @@ export interface EventRecord {
    */
   readonly facilitatorNote: string
   readonly linkedDecisionId?: string
+  /**
+   * What the TEAM decided this event changes. Recorded after the fact, once
+   * they have argued it out. Undefined until they answer.
+   */
+  readonly impact?: ImpactTarget
   readonly at: number
 }
 
+/**
+ * A Lifeline, which is deliberately two steps rather than one.
+ *
+ * `asked` is what the team said when the facilitator put the question to them
+ * — what kind of help do you need? — and it is captured BEFORE any help is
+ * given. That ordering is the pedagogy: naming the help you need is most of
+ * the skill, and a Lifeline handed over without it teaches nothing.
+ *
+ * `note` is what the facilitator then gave: information, another perspective,
+ * a category of professional, permission to consult another team, a clue.
+ * Never a solution to the project.
+ */
 export interface LifelineRecord {
   readonly id: string
+  readonly asked: string
   readonly note: string
   readonly at: number
 }
@@ -160,8 +227,12 @@ export interface JourneyState {
   readonly recalculations: readonly RecalculationRecord[]
   /** Set once a recalculation concludes the Destination itself must change. */
   readonly destinationRevised: boolean
+  /** FACILITATOR-PRIVATE. Never projected. */
+  readonly dependencies: readonly DependencyRecord[]
   /** The event currently on screen, if any. */
   readonly activeEventId: string | null
+  /** The progress prompt currently on the wall, if any. */
+  readonly activePromptId: string | null
   /** Milliseconds since the facilitator started the task window. */
   readonly startedAt: number | null
 }
@@ -199,6 +270,16 @@ export interface ProjectedEvent {
   readonly favourable: boolean
   /** The team's own earlier words, when the facilitator chose to show them. */
   readonly becauseOf: string | null
+  /** What the team decided it changes. Null until they have decided. */
+  readonly impact: ImpactTarget | null
+  /**
+   * The same answer as a sentence, resolved here rather than in the display.
+   *
+   * The projected window then needs no module from lib/journey but the channel
+   * itself — it renders strings it was handed and imports nothing that could
+   * carry private content into its bundle.
+   */
+  readonly impactLabel: string | null
 }
 
 export interface ProjectedJourney {
@@ -209,11 +290,17 @@ export interface ProjectedJourney {
   readonly decisions: readonly { readonly pointId: RoadmapPointId; readonly text: string }[]
   /** ONLY events already revealed. Never anything queued or upcoming. */
   readonly events: readonly ProjectedEvent[]
-  readonly lifelines: readonly { readonly note: string }[]
+  readonly lifelines: readonly { readonly asked: string; readonly note: string }[]
   readonly resources: readonly { readonly note: string }[]
   readonly recalculations: readonly RecalculationRecord[]
   readonly destinationRevised: boolean
   readonly activeEventId: string | null
+  /**
+   * The progress prompt on the wall, resolved to its TEXT here rather than
+   * left as an id, so the display never needs the prompt library and cannot
+   * render one the facilitator did not choose.
+   */
+  readonly activePrompt: string | null
   /**
    * The 90-minute task window only.
    *

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { shellForPath } from '@/lib/shell'
+import { isBareSurface, shellForPath } from '@/lib/shell'
 
 // ---------------------------------------------------------------------------
 // The footer draws whatever the current shell declares — see lib/shell.ts.
@@ -24,7 +24,10 @@ import { shellForPath } from '@/lib/shell'
 // ---------------------------------------------------------------------------
 
 export function Footer() {
-  const shell = shellForPath(usePathname())
+  const pathname = usePathname()
+  const shell = shellForPath(pathname)
+  // No footer on a projected display or the facilitator console.
+  if (isBareSurface(pathname)) return null
   return (
     <footer className="bg-navy text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">

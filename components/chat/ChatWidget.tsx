@@ -16,10 +16,18 @@ import { useBottomChromeOffset } from './useBottomChromeOffset'
 // API, which keeps every request a valid, self-contained message list.
 //
 // Routes where the widget is suppressed: the timed study tools, where a
-// floating bubble would be a distraction rather than a help.
+// floating bubble would be a distraction rather than a help — and the whole
+// LIAP Journey Game.
+//
+// The Journey Game entry is not about distraction. Its two facilitated screens
+// are projected or driven live in a room, and MY PROJECT is a page whose one
+// guarantee is that what a participant types about their real life never
+// leaves the browser. A chat bubble in the corner of that page is an
+// invitation to paste the same text into something that DOES post to a server
+// — the guarantee would be technically intact and practically broken.
 // ---------------------------------------------------------------------------
 
-const SUPPRESSED_PREFIXES = ['/exam-simulator', '/flashcards']
+const SUPPRESSED_PREFIXES = ['/exam-simulator', '/flashcards', '/liap/journey']
 
 export type ChatWidgetProps = {
   assistantName: string

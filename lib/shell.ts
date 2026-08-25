@@ -207,6 +207,36 @@ const CLAIMS: readonly { prefix: string; shell: Shell }[] = SHELL_KEYS.flatMap((
  * seeing the general Wiser Generations site, never a LIAP page acquiring PMP
  * navigation, because only an explicit prefix match produces the LIAP shell.
  */
+// ---------------------------------------------------------------------------
+// Bare surfaces — pages that render no site chrome at all.
+//
+// ── WHY THE JOURNEY DISPLAY NEEDS THIS ─────────────────────────────────────
+//
+// The Participant Display is PROJECTED onto a wall in a paid Intensive. The
+// standard chrome — navigation, a newsletter form, a footer, a cookie consent
+// banner, a chat bubble — is correct on a marketing page and wrong on a
+// projector. A cookie banner over a team's Road Event is not a styling
+// nitpick; it is the wrong company showing up in the middle of somebody's
+// facilitated session.
+//
+// The Facilitator Console is bare for a different reason: it is a working
+// instrument on a laptop, and site navigation on it is an invitation to leave
+// a live session by accident.
+//
+// ── WHY EXACT MATCHES ──────────────────────────────────────────────────────
+//
+// Prefix matching would swallow /liap/journey/my-project, which is a
+// participant's own device and SHOULD keep the shell — they may want the
+// privacy policy from the footer.
+// ---------------------------------------------------------------------------
+
+export const BARE_SURFACES: readonly string[] = ['/liap/journey', '/liap/journey/facilitator']
+
+export function isBareSurface(pathname: string | null | undefined): boolean {
+  if (!pathname) return false
+  return BARE_SURFACES.includes(pathname.replace(/\/+$/, '') || '/')
+}
+
 export function shellForPath(pathname: string | null | undefined): Shell {
   if (!pathname) return DEFAULT_SHELL
   for (const claim of CLAIMS) {

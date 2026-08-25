@@ -17,6 +17,11 @@ import type { ProjectedJourney } from './types'
 //
 // It also means no new dependency and nothing to pay for.
 //
+// The trade-off, stated plainly: BroadcastChannel is same-origin AND same
+// browser profile. Both windows must live on the facilitator's own laptop, and
+// the display window is then projected or screen-shared. It will not reach a
+// second device, which matches the Version 1 ruling but constrains room setup.
+//
 // ── THE LATE-JOIN PROBLEM ──────────────────────────────────────────────────
 //
 // A projected window opened after the session started would otherwise show an
@@ -31,6 +36,16 @@ export type ChannelMessage =
   | { kind: 'state'; state: ProjectedJourney }
   /** Display → console. "I just opened; send me the current state." */
   | { kind: 'hello' }
+  /**
+   * Console → console. "Is anyone else driving?"
+   *
+   * Two consoles open in the same browser profile would both answer a display's
+   * hello, and the wall would flicker between two journeys. V1 does not try to
+   * merge them — it warns the facilitator, which is the honest fix for a
+   * mistake made in ten seconds at the start of a session.
+   */
+  | { kind: 'console-hello' }
+  | { kind: 'console-here' }
 
 export interface Channel {
   post(message: ChannelMessage): void

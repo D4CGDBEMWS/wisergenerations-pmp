@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { shellForPath } from '@/lib/shell'
+import { isBareSurface, shellForPath } from '@/lib/shell'
 
 // ---------------------------------------------------------------------------
 // NewsletterSignup
@@ -30,7 +30,9 @@ export default function NewsletterSignup() {
   //
   // Hooks run before the early return so the order stays stable across
   // renders, which is what the rules of hooks require.
-  const suppressed = !shellForPath(usePathname()).showNewsletter
+  const pathname = usePathname()
+  // A newsletter form on a projected wall mid-session. No.
+  const suppressed = isBareSurface(pathname) || !shellForPath(pathname).showNewsletter
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
