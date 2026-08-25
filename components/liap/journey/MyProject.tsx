@@ -69,7 +69,7 @@ export function MyProject() {
     setDraft((current) => ({ ...current, extras: { ...current.extras, [id]: value } }))
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <div className="mx-auto max-w-3xl px-6 py-12">
       <header className="print:hidden">
         <h1 className="text-3xl font-semibold text-slate-900">My Project</h1>
         <p className="mt-3 text-slate-600">
@@ -187,6 +187,6 @@ export function MyProject() {
           </div>
         </div>
       ) : null}
-    </main>
+    </div>
   )
 }

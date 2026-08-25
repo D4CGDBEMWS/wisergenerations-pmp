@@ -159,7 +159,7 @@ export function FacilitatorConsole() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-8 text-slate-100">
+    <div className="mx-auto max-w-5xl px-6 py-8 text-slate-100">
       {secondConsole ? (
         <p className="mb-6 rounded border border-amber-500 bg-amber-500/10 p-3 text-sm text-amber-200">
           Another Facilitator Console is open in this browser. Close one — two consoles will fight over
@@ -213,7 +213,7 @@ export function FacilitatorConsole() {
           <DebriefPanel state={state} />
         </div>
       ) : null}
-    </main>
+    </div>
   )
 }
 
@@ -256,7 +256,7 @@ function ResumeChooser({
   onDiscard: () => void
 }) {
   return (
-    <main className="mx-auto max-w-xl px-6 py-16 text-slate-100">
+    <div className="mx-auto max-w-xl px-6 py-16 text-slate-100">
       <h1 className="text-xl font-semibold">There is a journey in progress in this tab.</h1>
       <p className="mt-3 text-slate-400">
         {stored.state.decisions.length} decision{stored.state.decisions.length === 1 ? '' : 's'} and{' '}
@@ -266,7 +266,7 @@ function ResumeChooser({
         <Primary onClick={onResume}>Resume active journey</Primary>
         <Secondary onClick={onDiscard}>Discard and start over</Secondary>
       </div>
-    </main>
+    </div>
   )
 }
 

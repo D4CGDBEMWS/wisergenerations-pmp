@@ -1,5 +1,5 @@
 import { ROADMAP_POINTS, type JourneyState, type ProjectedEvent, type ProjectedJourney } from './types'
-import { roadEvent } from './events'
+import { RECALCULATION_PROMPTS, roadEvent } from './events'
 import { impactLabel } from './impact'
 import { progressPrompt } from './prompts'
 import { projectedMinutesRemaining, WINDOW_MINUTES } from './timing'
@@ -60,6 +60,11 @@ export function projectJourney(state: JourneyState, now: number): ProjectedJourn
     }
   })
 
+  const activeEvent = state.events.find((e) => e.id === state.activeEventId)
+  const activeOpensRecalculation = activeEvent
+    ? roadEvent(activeEvent.eventId).opensRecalculation === true
+    : false
+
   return {
     phase: state.phase,
     pointIndex: state.pointIndex,
@@ -75,6 +80,7 @@ export function projectJourney(state: JourneyState, now: number): ProjectedJourn
     // it cannot render one the facilitator did not put up — and never receives
     // `whenToUse`, which is the facilitator's own reasoning.
     activePrompt: state.activePromptId ? progressPrompt(state.activePromptId)?.text ?? null : null,
+    recalculationQuestions: activeOpensRecalculation ? RECALCULATION_PROMPTS.map((p) => p.label) : null,
     minutesRemaining: projectedMinutesRemaining(state.startedAt, now),
     windowMinutes: WINDOW_MINUTES,
   }

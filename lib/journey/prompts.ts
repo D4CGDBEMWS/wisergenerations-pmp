@@ -1,9 +1,11 @@
 // ---------------------------------------------------------------------------
 // Progress prompts — the short lines a facilitator puts on the wall.
 //
-// ── PROVENANCE: SYSTEM-WRITTEN, PENDING OWNER APPROVAL ─────────────────────
+// ── PROVENANCE ─────────────────────────────────────────────────────────────
 //
-// Every string below is system-written and is NOT approved production copy.
+// Two of the six `text` lines are OWNER-APPROVED: 'Research before you decide.'
+// and 'What kind of help do you need?'. The other four, and every `whenToUse`
+// line, are system-written and NOT approved production copy.
 // Where the physical Facilitator Guide, Journey Map or Road-Event Deck already
 // carries a line for one of these moments, the approved wording replaces the
 // draft here rather than the two coexisting — a parallel digital vocabulary is
@@ -29,16 +31,18 @@ export interface ProgressPrompt {
 export const PROGRESS_PROMPTS: readonly ProgressPrompt[] = [
   {
     id: 'research',
-    // Owner Section I: the interface may prompt this, and must not then supply
-    // the answer. There is no lookup behind this button and no model call —
-    // the team goes and finds out, which is the learning.
+    // OWNER-APPROVED. Section I, ratified on review: the interface may prompt
+    // this and must not then supply the answer. There is no lookup behind this
+    // button and no model call — the team goes and finds out, which is the
+    // learning.
     text: 'Research before you decide.',
     whenToUse:
       'The team is about to guess at something knowable — a cost, a rule, a timeline, an entitlement. Send them to find out rather than telling them.',
   },
   {
     id: 'help-needed',
-    // Owner Section J: asked BEFORE a Lifeline is granted, never after.
+    // OWNER-APPROVED. Section J, ratified on review: asked BEFORE a Lifeline is
+    // granted, never after.
     text: 'What kind of help do you need?',
     whenToUse:
       'A team has reached for the Lifeline. Put this up first and make them name it. Naming the help you need is most of the skill.',

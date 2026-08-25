@@ -548,6 +548,29 @@ describe('GPS: Recalculating…', () => {
     ])
   })
 
+  it('puts the five questions on the wall, not a paraphrase', () => {
+    // The major interaction. The room reads the approved questions themselves.
+    const state = journeyReduce(populatedSession(), {
+      type: 'reveal-event',
+      eventId: 'recalculating',
+      revealText: 'Stop. Before you go further.',
+      facilitatorNote: 'private',
+      at: 8_000,
+    })
+    const projected = projectJourney(state, 10_000)
+    expect(projected.recalculationQuestions).toEqual(RECALCULATION_PROMPTS.map((p) => p.label))
+
+    // And only while one is on the wall — a Risk Ahead does not carry them.
+    const other = journeyReduce(populatedSession(), {
+      type: 'reveal-event',
+      eventId: 'risk-ahead',
+      revealText: 'Something ahead',
+      facilitatorNote: 'private',
+      at: 8_000,
+    })
+    expect(projectJourney(other, 10_000).recalculationQuestions).toBeNull()
+  })
+
   it('revises the roadmap rather than restarting it', () => {
     const before = populatedSession()
     const after = journeyReduce(before, {
@@ -609,9 +632,10 @@ describe('the content inventory', () => {
 
   it('marks the owner-approved language as approved and everything else as pending', () => {
     const approved = CONTENT_INVENTORY.filter((e) => e.provenance === 'owner-approved')
-    // The Road Event names, the five recalculation questions, the Sponsor
-    // question and the MY PROJECT exit warning.
-    expect(approved.length).toBe(ROAD_EVENT_LIBRARY.length + RECALCULATION_PROMPTS.length + 2)
+    // The eight Road Event names, the five recalculation questions, the two
+    // ratified progress prompts, the Sponsor question and the MY PROJECT exit
+    // warning.
+    expect(approved.length).toBe(ROAD_EVENT_LIBRARY.length + RECALCULATION_PROMPTS.length + 4)
     for (const entry of approved) expect(entry.source, entry.id).toBeTruthy()
     expect(pendingOwnerReview().length).toBeGreaterThan(0)
   })
@@ -674,5 +698,76 @@ describe('the projected surface carries no site chrome', () => {
     // "this never leaves your browser" is an invitation to paste it somewhere
     // that does post to a server.
     expect(code('components/chat/ChatWidget.tsx')).toContain("'/liap/journey'")
+  })
+})
+
+describe('display recovery — the console stays the source of truth', () => {
+  it('answers a reconnecting display with a read, never a mutation', () => {
+    // The whole safeguard in one assertion: whatever a display does on
+    // reconnect, the console's state must come back identical. `hello` is
+    // handled by projecting current state, and projection cannot write.
+    const before = populatedSession()
+    const snapshot = JSON.stringify(before)
+
+    // Three reconnects in a row — accidental close, refresh, unplugged HDMI.
+    const first = projectJourney(before, 20_000)
+    const second = projectJourney(before, 21_000)
+    const third = projectJourney(before, 22_000)
+
+    expect(JSON.stringify(before)).toBe(snapshot)
+    expect(first.pointIndex).toBe(before.pointIndex)
+    expect(second.pointIndex).toBe(before.pointIndex)
+    expect(third.pointIndex).toBe(before.pointIndex)
+    // The revealed event is still revealed. Reconnecting does not consume it.
+    expect(third.events).toHaveLength(before.events.length)
+    expect(third.activeEventId).toBe(before.activeEventId)
+    expect(third.decisions).toHaveLength(before.decisions.length)
+  })
+
+  it('does not reset the 90-minute clock on reconnect', () => {
+    // The clock is derived from startedAt, which lives on the console. A
+    // display that reconnects at minute 40 sees 50 minutes left, not 90.
+    const state = { ...populatedSession(), startedAt: 0 }
+    const atFortyMinutes = projectJourney(state, 40 * 60_000)
+    expect(atFortyMinutes.minutesRemaining).toBe(50)
+
+    // NEGATIVE CONTROL — a clock restarted by the reconnect would read 90.
+    const ifReset = projectJourney({ ...state, startedAt: 40 * 60_000 }, 40 * 60_000)
+    expect(ifReset.minutesRemaining).toBe(90)
+  })
+
+  it('still exposes nothing private after a reconnect', () => {
+    const wire = JSON.stringify(projectJourney(populatedSession(), 30_000))
+    expect(wire).not.toContain(PRIVATE_NOTE)
+    expect(wire).not.toContain(PRIVATE_DEPENDENCY)
+    expect(wire).not.toContain(String(BUFFER_MINUTES))
+  })
+
+  it('keeps asking until the console answers, then stops', () => {
+    // A display opened before the console would otherwise sit on "Waiting for
+    // the facilitator" until the next thing the facilitator happened to do.
+    const display = code('components/liap/journey/JourneyMap.tsx')
+    expect(display).toContain("channel.post({ kind: 'hello' })")
+    expect(display).toContain('setInterval')
+    expect(display).toContain('stopAsking()')
+
+    // And the console answers a hello by projecting — a read of stateRef,
+    // never a dispatch.
+    const console_ = code('components/liap/journey/FacilitatorConsole.tsx')
+    expect(console_).toContain("if (message.kind === 'hello') broadcast(stateRef.current, Date.now())")
+    // NEGATIVE CONTROL for the claim above: the console does dispatch
+    // elsewhere, so finding no dispatch in the hello path is meaningful.
+    expect(console_).toContain('dispatch(')
+  })
+
+  it('gives the display no way to drive the session', () => {
+    const display = code('components/liap/journey/JourneyMap.tsx')
+    // No reducer, no actions, no writes. It renders what it was handed.
+    for (const forbidden of ['useReducer', 'journeyReduce', 'dispatch', 'onClick', '<button', '<input']) {
+      expect(display, forbidden).not.toContain(forbidden)
+    }
+    // It posts exactly one kind of message, and that message carries no state.
+    expect(display).not.toContain("kind: 'state'")
+    expect(display).not.toContain("kind: 'console-hello'")
   })
 })

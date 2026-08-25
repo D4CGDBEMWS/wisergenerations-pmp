@@ -302,6 +302,17 @@ export interface ProjectedJourney {
    */
   readonly activePrompt: string | null
   /**
+   * The five GPS: Recalculating… questions, present only while a recalculation
+   * is on the wall.
+   *
+   * Projected as resolved text for the same reason as activePrompt: the
+   * display never receives a library it could render from, only the strings
+   * the facilitator's action put there. This is a major interaction and the
+   * room should be looking at the actual questions, not at a paraphrase of
+   * them.
+   */
+  readonly recalculationQuestions: readonly string[] | null
+  /**
    * The 90-minute task window only.
    *
    * Never the 120-minute facilitator budget and never the 30-minute

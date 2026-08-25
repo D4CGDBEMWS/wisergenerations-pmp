@@ -32,19 +32,57 @@ import type { ProjectedJourney } from '@/lib/journey/types'
 // No buttons, no inputs, no reducer, no actions. A projected screen that could
 // be driven would be a second facilitator, and in a room where the laptop is
 // on a lectern and the projector is behind you, that is a real hazard.
+//
+// ── RECOVERY: THE CONSOLE IS THE SOURCE OF TRUTH ───────────────────────────
+//
+// Projector windows get closed by accident, refreshed by a stray ⌘R, or lost
+// when somebody unplugs HDMI. So this window holds no authority over the
+// session: it asks, and it renders the answer.
+//
+// On mount it says hello and keeps saying hello — every two seconds — until a
+// projection arrives. That covers the case nobody plans for, where the display
+// is opened BEFORE the console, as well as the ordinary reopen. The console
+// replies by projecting its current state, which is a read: reconnecting
+// cannot restart the journey, move pointIndex, consume a Road Event, reset the
+// clock or rebuild anything the facilitator has done.
+//
+// The retry stops on the first message, so a live session is one hello and
+// then silence — not a poll.
 // ---------------------------------------------------------------------------
+
+/** How often an unanswered display re-announces itself. */
+const HELLO_RETRY_MS = 2_000
 
 export function JourneyMap() {
   const [journey, setJourney] = useState<ProjectedJourney | null>(null)
 
   useEffect(() => {
+    let retry: ReturnType<typeof setInterval> | null = null
+    const stopAsking = () => {
+      if (retry === null) return
+      clearInterval(retry)
+      retry = null
+    }
+
     const channel = openChannel((message) => {
-      if (message.kind === 'state') setJourney(message.state)
+      if (message.kind !== 'state') return
+      // The first projection is the answer; stop asking. A live session is one
+      // hello and then silence, not a poll.
+      stopAsking()
+      setJourney(message.state)
     })
-    // Announce ourselves: a display opened after the session started would
-    // otherwise show an empty map until the next thing the facilitator did.
+
+    // Announce ourselves, then keep announcing until the console answers. A
+    // display reopened mid-session and a display opened BEFORE the console
+    // both land here, and both recover without the facilitator touching
+    // anything.
     channel.post({ kind: 'hello' })
-    return () => channel.close()
+    retry = setInterval(() => channel.post({ kind: 'hello' }), HELLO_RETRY_MS)
+
+    return () => {
+      stopAsking()
+      channel.close()
+    }
   }, [])
 
   if (!journey) return <WaitingForFacilitator />
@@ -54,7 +92,7 @@ export function JourneyMap() {
     : null
 
   return (
-    <main className="min-h-screen bg-slate-950 px-8 py-10 text-slate-100">
+    <div className="min-h-screen bg-slate-950 px-8 py-10 text-slate-100">
       <div className="mx-auto flex min-h-[80vh] max-w-6xl flex-col">
         <header className="flex items-baseline justify-between border-b border-slate-800 pb-6">
           <h1 className="text-2xl font-semibold tracking-wide text-slate-300">THE JOURNEY</h1>
@@ -64,7 +102,11 @@ export function JourneyMap() {
         <Roadmap journey={journey} />
 
         <div className="mt-10 flex-1">
-          {activeEvent ? <EventCard event={activeEvent} /> : <RecentDecision journey={journey} />}
+          {activeEvent ? (
+            <EventCard event={activeEvent} questions={journey.recalculationQuestions} />
+          ) : (
+            <RecentDecision journey={journey} />
+          )}
           {journey.activePrompt ? (
             <p className="mt-8 text-center text-3xl font-medium text-amber-200">{journey.activePrompt}</p>
           ) : null}
@@ -76,15 +118,15 @@ export function JourneyMap() {
           </p>
         ) : null}
       </div>
-    </main>
+    </div>
   )
 }
 
 function WaitingForFacilitator() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-8 text-slate-400">
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-8 text-slate-400">
       <p className="text-2xl">Waiting for the facilitator…</p>
-    </main>
+    </div>
   )
 }
 
@@ -157,7 +199,13 @@ function Roadmap({ journey }: { journey: ProjectedJourney }) {
  * about them — so a consequence reads as something they chose rather than
  * something done to them.
  */
-function EventCard({ event }: { event: ProjectedJourney['events'][number] }) {
+function EventCard({
+  event,
+  questions,
+}: {
+  event: ProjectedJourney['events'][number]
+  questions: readonly string[] | null
+}) {
   return (
     <section
       className={[
@@ -172,7 +220,17 @@ function EventCard({ event }: { event: ProjectedJourney['events'][number] }) {
           Because you decided: “{event.becauseOf}”
         </p>
       ) : null}
-      {event.impactLabel ? (
+      {/* GPS: Recalculating… is the major interaction, so the room reads the
+          five questions themselves rather than a paraphrase of them. */}
+      {questions ? (
+        <ol className="mt-8 space-y-3">
+          {questions.map((question) => (
+            <li key={question} className="text-2xl text-slate-300">
+              {question}
+            </li>
+          ))}
+        </ol>
+      ) : event.impactLabel ? (
         <p className="mt-6 text-lg font-medium text-slate-300">{event.impactLabel}</p>
       ) : (
         <p className="mt-8 text-lg text-slate-400">

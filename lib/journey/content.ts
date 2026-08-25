@@ -56,6 +56,9 @@ export interface ContentEntry {
   readonly source?: string
 }
 
+/** Ratified on owner review: they support the moment without giving an answer. */
+const APPROVED_PROMPT_IDS = new Set(['research', 'help-needed'])
+
 const eventNames: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
   group: 'A. Road Event participant text',
   id: `event.${event.id}.name`,
@@ -100,11 +103,12 @@ const progressPromptText: ContentEntry[] = PROGRESS_PROMPTS.map((prompt) => ({
   text: prompt.text,
   where: 'Participant Display, when the facilitator puts it up',
   audience: 'participant',
-  // 'Research before you decide.' and 'What kind of help do you need?' are
-  // quoted in the owner instruction, but as descriptions of the moment rather
-  // than as ratified display copy. Classified as system-written so they reach
-  // the wording review rather than slipping through on a technicality.
-  provenance: 'system-written',
+  // Two were ratified on review as approved progress prompts; the rest are
+  // still mine and still pending.
+  provenance: APPROVED_PROMPT_IDS.has(prompt.id) ? 'owner-approved' : 'system-written',
+  ...(APPROVED_PROMPT_IDS.has(prompt.id)
+    ? { source: 'Owner review — approved progress prompts, Sections I and J' }
+    : {}),
 }))
 
 const progressPromptGuidance: ContentEntry[] = PROGRESS_PROMPTS.map((prompt) => ({
