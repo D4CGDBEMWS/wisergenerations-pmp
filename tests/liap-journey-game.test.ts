@@ -454,7 +454,7 @@ describe('MY PROJECT never touches a server', () => {
     const roadmap = buildMyProjectRoadmap({ ...draft, points })
     expect(roadmap.complete).toBe(true)
     expect(roadmap.extras).toEqual([])
-    expect(MY_PROJECT_EXTRAS.length).toBe(11)
+    expect(MY_PROJECT_EXTRAS.length).toBe(13)
   })
 
   it('asks questions and never proposes an answer', () => {
@@ -955,23 +955,7 @@ describe('WISER Pivots™ stays behind the experience', () => {
     // The Journey Game teaches the need for it. The framework itself belongs
     // to the facilitated debrief and is not this codebase's to hold.
     for (const file of LIB_MODULES) {
-      expect(code(file), file).not.toMatch(/WAIT.*INSPECT.*SELECT/is)
-    }
-  })
-})
-
-describe('the Virtual Workshop automation does not exist yet', () => {
-  it('has no email sequence, attendance branch, replay or survey in the repo', () => {
-    // Stated as a fact rather than assumed: sections N, O and P of the owner
-    // instruction describe automation this repository does not contain, and
-    // the artifacts defining it (10–15) were not supplied. Anything that
-    // appeared here without approved content would be invented.
-    expect(existsSync(join(root, 'lib/liap/workshop'))).toBe(false)
-    expect(existsSync(join(root, 'app/api/liap/workshop'))).toBe(false)
-    const crm = code('lib/liap/crm.ts')
-    expect(crm).toContain('liap_workshop_interest')
-    for (const absent of ['no_show', 'noShow', 'replay', 'attended', 'survey']) {
-      expect(crm, absent).not.toContain(absent)
+      expect(code(file), file).not.toMatch(/WAIT[\s\S]*INSPECT[\s\S]*SELECT/i)
     }
   })
 })

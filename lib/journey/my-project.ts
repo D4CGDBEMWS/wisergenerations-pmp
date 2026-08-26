@@ -36,6 +36,18 @@ import { ROADMAP_POINTS, type RoadmapPointId } from './types'
 // question for a participant who stalls, so there was nothing to reconcile
 // them against — they are held pending owner review, not shipped as approved.
 //
+// ── REVIEW POINTS, FROM THE COMPLETED LIFE PROJECT PLAN™ ───────────────────
+//
+// The owner asked for "review points" and Artifact 5 has none. The Completed
+// Life Project Plan™ §20 does — MY REVIEW RHYTHM and WHEN I WILL ASK FOR HELP
+// — and its wording is used rather than an invented equivalent.
+//
+// WISER Pivots™ is §16 of that same Plan and is deliberately NOT brought over.
+// The Plan is the Retreat's outcome document; the Journey Game teaches the
+// road so a participant can later fill that Plan in. Owner §L: the Journey
+// Game "does NOT need to digitally implement the entire Completed Life Project
+// Plan™", and §M holds the framework back until the debrief.
+//
 // ── WHAT AI MAY AND MAY NOT DO ─────────────────────────────────────────────
 //
 // May: prompt, and organise what the participant already wrote.
@@ -163,6 +175,20 @@ export const MY_PROJECT_EXTRAS = [
     label: 'GPS: RECALCULATING...',
     prompt:
       'When something changes: What is still true? What changed? What part of my road needs to move?',
+  },
+  {
+    id: 'review-rhythm',
+    label: 'MY REVIEW RHYTHM',
+    // Completed Life Project Plan™ §20, verbatim. The owner instruction asked
+    // for "review points" and Artifact 5 has none; the Plan does, and this is
+    // its wording rather than a paraphrase of the idea.
+    prompt: 'How often will I review this plan, and what will I inspect when I do?',
+  },
+  {
+    id: 'ask-for-help',
+    label: 'WHEN I WILL ASK FOR HELP',
+    // Completed Life Project Plan™ §20, verbatim.
+    prompt: 'What will tell me it is time to use a Lifeline or seek additional support?',
   },
   {
     id: 'revised-next-move',
