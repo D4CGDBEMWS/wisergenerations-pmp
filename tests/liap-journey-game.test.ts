@@ -20,7 +20,12 @@ import { CONTENT_INVENTORY, pendingOwnerReview, wordingConflicts } from '@/lib/j
 import { DISPLAY_STRINGS } from '@/lib/journey/display-copy'
 import { IMPACT_CHOICES } from '@/lib/journey/impact'
 import { PROGRESS_PROMPTS } from '@/lib/journey/prompts'
-import { DEBRIEF_DO_NOT, DEBRIEF_FINAL_REMINDER, DEBRIEF_SEQUENCE } from '@/lib/journey/debrief'
+import {
+  DEBRIEF_DO_NOT,
+  DEBRIEF_FINAL_REMINDER,
+  DEBRIEF_SEQUENCE,
+  PROTECTED_SEQUENCE,
+} from '@/lib/journey/debrief'
 import {
   MAKE_IT_REAL_COLUMNS,
   MY_PROJECT_CLOSING,
@@ -988,47 +993,100 @@ describe('God at the Center', () => {
 
   it('never frames God as a project role', () => {
     // Owner: not a sponsor, stakeholder, resource, Lifeline or contingency.
-    const nearGod = /God[^.]{0,120}/gi
+    // Includes the words BEFORE "God" as well, so the sentence that forbids
+    // the framing is recognisable as the prohibition it is.
+    const nearGod = /.{0,50}God[^.]{0,120}/gi
     for (const file of [...LIB_MODULES, ...COMPONENTS]) {
       for (const passage of code(file).match(nearGod) ?? []) {
+        // The permitted mention is the prohibition itself, in the owner's own
+        // words — "Do not frame God as merely a Sponsor, stakeholder,
+        // resource, Lifeline, or contingency." A rule has to be able to name
+        // what it forbids.
+        const lower = passage.toLowerCase()
+        if (lower.includes('not frame god as merely') || lower.includes('not a project sponsor')) {
+          continue
+        }
         for (const role of ['sponsor', 'stakeholder', 'resource', 'lifeline', 'contingency']) {
-          // The one permitted mention is the prohibition itself.
-          if (passage.toLowerCase().includes('not a project sponsor')) continue
-          expect(passage.toLowerCase(), `${file} / ${role}`).not.toContain(role)
+          expect(lower, `${file} / ${role}`).not.toContain(role)
         }
       }
     }
   })
 
-  it('marks the autobiographical reveal pending without rewriting it', () => {
+  it('carries the approved autobiographical reveal verbatim', () => {
+    // OWNER-APPROVED FINAL in the RECONCILED master: twenty paragraphs, in
+    // order, unedited.
     const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'personal-reveal')!
-    expect(moment.ownerWordingPending).toBe('pending-revision')
-    expect(moment.note).toContain('AUTOBIOGRAPHICAL REVEAL — OWNER WORDING PENDING')
-    // The owner's own words are still there, untouched.
-    expect(moment.asks).toHaveLength(8)
-    expect(moment.asks[1]).toBe(
+    expect(moment.ownerWordingPending).toBeUndefined()
+    expect(moment.asks).toHaveLength(20)
+    expect(moment.asks[0]).toBe(
+      'There is something else I did not tell you when we began this Journey.',
+    )
+    expect(moment.asks[3]).toBe('They came from real life.')
+    // It ends by handing the room to their own project, which is why the
+    // protected sequence runs through the reveal rather than stopping at it.
+    expect(moment.asks.at(-3)).toBe('Start with what is true TODAY.')
+    expect(moment.asks.at(-2)).toBe('Then determine your FIRST MOVE.')
+    expect(moment.asks.at(-1)).toBe('From there, we will begin building your road.')
+    expect(moment.note).toContain('OWNER-APPROVED FINAL')
+    // The superseded eight-line Artifact 6 script is gone, not kept beside it.
+    expect(moment.asks).not.toContain(
       'Every one of these high-impact scenarios was rooted in something that happened in my life.',
     )
+  })
+
+  it('keeps the protected sequence in the ruled order', () => {
+    expect(PROTECTED_SEQUENCE).toEqual([
+      'EXPERIENCE',
+      'DEBRIEF',
+      'GOD AT THE CENTER',
+      'AUTOBIOGRAPHICAL REVEAL',
+      'TRANSFER TO THEIR PROJECT',
+      'TODAY',
+      'FIRST MOVE',
+    ])
+    // The debrief moments run in that order too — God at the Center before the
+    // reveal, and both after the room has named what it did.
+    const stages = DEBRIEF_SEQUENCE.map((m) => m.stage)
+    expect(stages.indexOf('god-at-the-center')).toBeLessThan(stages.indexOf('personal-reveal'))
+    expect(stages.indexOf('name-it')).toBeLessThan(stages.indexOf('god-at-the-center'))
+  })
+
+  it('keeps the whole reveal off every participant surface', () => {
+    // Twenty paragraphs of somebody's life, in a module the display cannot
+    // reach. Checked line by line rather than by module name.
+    const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'personal-reveal')!
+    const participantFacing = [
+      'components/liap/journey/JourneyMap.tsx',
+      'components/liap/journey/MyProject.tsx',
+      'lib/journey/display-copy.ts',
+      'lib/journey/projection.ts',
+      'app/liap/journey/page.tsx',
+      'app/liap/journey/my-project/page.tsx',
+    ]
+    for (const line of moment.asks) {
+      for (const file of participantFacing) {
+        expect(code(file), `${file} / ${line.slice(0, 40)}`).not.toContain(line)
+      }
+    }
+    // And none of it crosses the wire.
+    const wire = JSON.stringify(projectJourney(populatedSession(), 10_000))
+    for (const line of moment.asks) expect(wire).not.toContain(line)
   })
 })
 
 describe('canonical wording rulings', () => {
-  it('uses the ellipsis character throughout, except inside verbatim owner copy', () => {
+  it('uses the ellipsis character throughout, with no exemption left', () => {
     expect(roadEvent('recalculating').name).toBe('GPS: Recalculating…')
 
-    // One exemption, and it is deliberate: the autobiographical reveal script
-    // contains 'the GPS of my life said, "Recalculating..."' with three
-    // periods. That line is the owner's own, transcribed verbatim, and §14
-    // forbids rewriting it. Changing the punctuation inside somebody's
-    // testimony to satisfy a style rule is exactly the silent edit this
-    // project keeps refusing to make. Reported instead.
-    const revealLine = DEBRIEF_SEQUENCE.find((m) => m.stage === 'personal-reveal')!.asks[4]
-    expect(revealLine).toContain('Recalculating...')
-
+    // The one exemption this rule used to need is gone. The old Artifact 6
+    // script contained 'the GPS of my life said, "Recalculating..."' with
+    // three periods, and rewriting somebody's testimony to satisfy a style
+    // rule was not on the table. The RECONCILED master's approved reveal does
+    // not contain the phrase at all, so the rule is now absolute.
     for (const file of [...LIB_MODULES, ...COMPONENTS]) {
-      const withoutRevealScript = code(file).split(revealLine).join('')
-      expect(withoutRevealScript, file).not.toContain('Recalculating...')
-      expect(withoutRevealScript, file).not.toContain('RECALCULATING...')
+      expect(code(file), file).not.toContain('Recalculating...')
+      expect(code(file), file).not.toContain('RECALCULATING...')
     }
   })
 

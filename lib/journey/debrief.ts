@@ -25,10 +25,12 @@
 //      retired framing to a room is worse than a facilitator reading their own
 //      notes. Nothing here generates a replacement.
 //
-//   2. The personal reveal — "The autobiographical connection is the
-//      crescendo, not the opening. Do not leak it through scenario
-//      introductions, side comments, digital screens, facilitator hints, or
-//      participant materials." (Artifact 9 §9)
+//   2. The autobiographical reveal, now OWNER-APPROVED FINAL and carried here
+//      verbatim. "The autobiographical connection is the crescendo, not the
+//      opening. Do not leak it through scenario introductions, side comments,
+//      digital screens, facilitator hints, or participant materials."
+//      (Artifact 9 §9) — which is precisely why it lives in a module the
+//      participant display cannot reach.
 //
 // That is not a render-time decision. The display route does not import this
 // file, so none of these strings are in the bundle the projected window loads.
@@ -157,18 +159,42 @@ export const DEBRIEF_SEQUENCE: readonly DebriefMoment[] = [
     time: '25–29 min',
     heading: 'The Personal Reveal',
     purpose: 'Reveal the lived-experience connection behind the scenarios.',
+    // OWNER-APPROVED FINAL, verbatim from the RECONCILED master's protected-
+    // reveals ruling. Twenty paragraphs, in order, unedited.
+    //
+    // The instruction attached to it is unusually specific and worth keeping
+    // in view: use verbatim; do not rewrite, summarize, embellish, or map
+    // scenarios to specific autobiographical events. The last of those is the
+    // one a well-meaning facilitator breaks — pointing at a scenario and
+    // saying "that one was the diagnosis" turns a testimony into a key, and
+    // the room stops hearing the point.
+    //
+    // Note where it ends: TODAY and FIRST MOVE. The reveal IS the handover to
+    // the participant's own project, which is why the protected sequence runs
+    // through it rather than stopping at it.
     asks: [
-      "There is one more thing I haven't told you.",
-      'Every one of these high-impact scenarios was rooted in something that happened in my life.',
-      'You found your way through them. I had to find mine.',
-      'Some choices I made well. Some cost me. Sometimes I saw the risk coming. Sometimes I didn’t.',
-      'More than once, the GPS of my life said, “Recalculating...”',
-      'Living Is a Project...Are You Ready?™ was incubated and born through adversity.',
-      'You were never supposed to leave here with my roadmap. You were supposed to leave with yours.',
-      'We all have different fingerprints for a reason.',
+      'There is something else I did not tell you when we began this Journey.',
+      'You approached these situations as scenarios. You discussed what was happening, considered what you had available, made decisions, encountered changes, and determined what you would do next.',
+      'But these were not simply exercises created for a workshop.',
+      'They came from real life.',
+      'They were shaped by roads I have actually traveled—times when plans changed, information was incomplete, resources were not always obvious, and decisions still had to be made even though I could not see what was waiting around the next bend.',
+      'While I was living those experiences, I did not always recognize the lessons that were being formed through them. There were times when all I knew to do was pray, pay attention to what was in front of me, use what God had placed in my hands, and make the next wise move I could make.',
+      'Looking back, I can see what I could not always see while I was living it: God was there. He was present in the uncertainty, revealing resources I had not yet recognized and placing people along my path at just the right time. Some doors opened while others remained firmly closed, and there were moments when the road in front of me looked nothing like the one I had planned. Yet even then, God had not left the journey. I was learning to trust Him while continuing to steward what He had placed in my hands.',
+      'Over time, experiences that once seemed unrelated began revealing lessons about preparation, stewardship, discernment, resilience, and change. I began to understand that making a plan did not mean I could control everything that would happen. A plan gave me something to work from, but wisdom required me to keep paying attention.',
+      'That distinction matters.',
+      'Living Is a Project...Are You Ready?™ is not about perfectly planning your life. We cannot predict every turn, prevent every disruption, or know everything we will need before the journey begins. It is about learning to steward the life God has given us with intention while remaining attentive enough to recognize when something has changed.',
+      'Sometimes that means continuing forward. At other times, it means stopping long enough to inspect what is true now, reconsidering what matters, and being willing to change direction rather than holding tightly to a route that no longer fits where God is leading.',
+      'You have spent part of today traveling through pieces of a road I once traveled.',
+      'I did not tell you that beforehand because I wanted you to encounter the situations without my conclusions attached to them. You needed the freedom to examine what was happening, make your own decisions, and experience what happens when circumstances change.',
+      'Now the focus shifts.',
+      'You did not come here to recreate my road. You came here with a project of your own.',
+      'The same process you just practiced can help you look more carefully at what is in front of you—not so that I can tell you where your road should lead, but so that you can prayerfully and intentionally steward what God has placed in your hands.',
+      'So bring your project forward.',
+      'Start with what is true TODAY.',
+      'Then determine your FIRST MOVE.',
+      'From there, we will begin building your road.',
     ],
-    note: 'AUTOBIOGRAPHICAL REVEAL — OWNER WORDING PENDING. The lines above are Artifact 6 verbatim and are the owner\'s own; they are subject to revision alongside the God at the Center ruling and are not to be rewritten here. Deliver conversationally, not theatrically. Do not explain every scenario or turn the reveal into a biography. The recognition is enough.',
-    ownerWordingPending: 'pending-revision',
+    note: 'OWNER-APPROVED FINAL. Use verbatim; do not rewrite, summarize, embellish, or map scenarios to specific autobiographical events. Deliver conversationally, not theatrically. The recognition is enough.',
   },
   {
     id: 'close',
@@ -203,6 +229,32 @@ export const DEBRIEF_FINAL_REMINDER = [
 /** Artifact 7 §11 — the handover line to MY PROJECT, verbatim. */
 export const MY_PROJECT_TRANSITION =
   'You just traveled the road with a project that was handed to you. Now take out the project you brought with you.'
+
+/**
+ * The protected sequence, from the RECONCILED master's owner ruling.
+ *
+ * Order is the method. God at the Center lands only after the room has walked
+ * the road and named what they did; the autobiographical reveal lands only
+ * after that; and the transfer to the participant's own project comes out of
+ * the reveal rather than being announced separately.
+ */
+export const PROTECTED_SEQUENCE = [
+  'EXPERIENCE',
+  'DEBRIEF',
+  'GOD AT THE CENTER',
+  'AUTOBIOGRAPHICAL REVEAL',
+  'TRANSFER TO THEIR PROJECT',
+  'TODAY',
+  'FIRST MOVE',
+] as const
+
+/**
+ * The foundation, in the owner's words. Facilitator-only, like everything else
+ * in this module, and NOT a script — the God at the Center script itself
+ * remains owner-controlled and is not generated here.
+ */
+export const GOD_AT_THE_CENTER_FOUNDATION =
+  'God is the Creator and foundation of life in LIAP. The book carries this foundation; the Journey reveals it through the participant\'s experience. Do not frame God as merely a Sponsor, stakeholder, resource, Lifeline, or contingency.'
 
 export function debriefStage(stage: DebriefStage): readonly DebriefMoment[] {
   return DEBRIEF_SEQUENCE.filter((c) => c.stage === stage)
