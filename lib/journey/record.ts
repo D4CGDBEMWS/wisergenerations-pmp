@@ -1,5 +1,5 @@
 import { ROADMAP_POINTS, type JourneyState, type RoadmapPointId } from './types'
-import { roadEvent } from './events'
+import { RECALCULATION_PROMPTS, roadEvent } from './events'
 import { impactLabel } from './impact'
 
 // ---------------------------------------------------------------------------
@@ -87,19 +87,11 @@ export function buildJourneyRecord(state: JourneyState): JourneyRecord {
       entries.push({
         kind: 'recalculation',
         heading: 'You recalculated',
-        body: [
-          `Still true: ${recalculation.stillTrue}`,
-          `Changed: ${recalculation.changed}`,
-          `Destination: ${
-            recalculation.destinationValid === 'holds'
-              ? 'holds'
-              : recalculation.destinationValid === 'changes'
-                ? 'has to change'
-                : 'undecided'
-          }`,
-          `Milestone to change: ${recalculation.milestoneToChange}`,
-          `Next move: ${recalculation.nextMove}`,
-        ].join('\n'),
+        // The five owner-ruled questions, read back in the team's own answers
+        // and in the order they were asked.
+        body: RECALCULATION_PROMPTS.map(
+          (prompt) => `${prompt.label} ${recalculation[prompt.key]}`,
+        ).join('\n'),
       })
     }
 
@@ -140,6 +132,6 @@ export function buildJourneyRecord(state: JourneyState): JourneyRecord {
     },
     destinationRevised: state.destinationRevised,
     reachedDestination: state.pointIndex >= ROADMAP_POINTS.length - 1,
-    finalNextMove: state.recalculations.at(-1)?.nextMove ?? null,
+    finalNextMove: state.recalculations.at(-1)?.revisedNextMove ?? null,
   }
 }

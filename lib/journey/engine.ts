@@ -45,6 +45,7 @@ export function initialJourney(): JourneyState {
     activeEventId: null,
     activePromptId: null,
     startedAt: null,
+    pointEnteredAt: null,
   }
 }
 
@@ -70,16 +71,16 @@ export type JourneyAction =
       type: 'record-recalculation'
       stillTrue: string
       changed: string
-      destinationValid: 'holds' | 'changes' | 'undecided'
-      milestoneToChange: string
-      nextMove: string
+      mattersNow: string
+      optionsAvailable: string
+      revisedNextMove: string
       at: number
     }
   | { type: 'register-dependency'; decisionId: string; label: string; at: number }
   | { type: 'set-dependency-available'; dependencyId: string; available: boolean }
   | { type: 'show-prompt'; promptId: string }
   | { type: 'clear-prompt' }
-  | { type: 'advance-point' }
+  | { type: 'advance-point'; at: number }
   | { type: 'complete' }
   /** Facilitator ends the session. Identical to reset; named for what it is. */
   | { type: 'reset' }
@@ -114,7 +115,7 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
 
     case 'begin':
       return state.phase === 'briefing'
-        ? { ...state, phase: 'at-point', startedAt: action.at }
+        ? { ...state, phase: 'at-point', startedAt: action.at, pointEnteredAt: action.at }
         : state
 
     case 'record-decision': {
@@ -185,6 +186,10 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
         events: state.events.map((e) =>
           e.id === action.eventRecordId ? { ...e, impact: action.impact } : e,
         ),
+        // The team's own call, recorded rather than derived. A Destination
+        // that changes is a legitimate outcome, not a failure, and the map
+        // says so afterwards.
+        destinationRevised: state.destinationRevised || action.impact === 'destination',
       }
 
     case 'grant-lifeline': {
@@ -259,17 +264,18 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
         afterPointId: currentPointId(state),
         stillTrue: action.stillTrue.trim(),
         changed: action.changed.trim(),
-        destinationValid: action.destinationValid,
-        milestoneToChange: action.milestoneToChange.trim(),
-        nextMove: action.nextMove.trim(),
+        mattersNow: action.mattersNow.trim(),
+        optionsAvailable: action.optionsAvailable.trim(),
+        revisedNextMove: action.revisedNextMove.trim(),
         at: action.at,
       }
       return {
         ...state,
         recalculations: [...state.recalculations, record],
-        // A team may conclude the Destination itself has to change. That is a
-        // legitimate outcome, not a failure, and the map says so afterwards.
-        destinationRevised: state.destinationRevised || action.destinationValid === 'changes',
+        // Note what this does NOT do: decide anything. The five owner-ruled
+        // questions ask what is true, what matters and what is possible — not
+        // whether the Destination holds. Whether the road changes is the
+        // team's answer to the Road Event, recorded by 'record-event-impact'.
         phase: 'at-point',
         activeEventId: null,
       }
@@ -283,6 +289,9 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
         phase: 'at-point',
         activeEventId: null,
         activePromptId: null,
+        // Restarts the pacing clock. `at` is passed in rather than read here,
+        // so the reducer stays pure and a session stays replayable.
+        pointEnteredAt: action.at,
       }
     }
 
@@ -292,6 +301,28 @@ export function journeyReduce(state: JourneyState, action: JourneyAction): Journ
     default:
       return state
   }
+}
+
+/**
+ * How long the team has been at this roadmap point, in minutes.
+ *
+ * FACILITATOR-ONLY. Owner §E: at roughly five minutes without movement the
+ * facilitator MAY prompt the team along. May — this is a nudge on a private
+ * console, never an automatic advance, and never a countdown projected at a
+ * team that is struggling in front of the room.
+ */
+export const PACING_NUDGE_MINUTES = 5
+
+export function minutesAtPoint(state: JourneyState, now: number): number | null {
+  if (state.pointEnteredAt === null) return null
+  return Math.max(0, (now - state.pointEnteredAt) / 60_000)
+}
+
+/** True once the facilitator might reasonably move a stalled team along. */
+export function shouldOfferPacingNudge(state: JourneyState, now: number): boolean {
+  const minutes = minutesAtPoint(state, now)
+  if (minutes === null || state.phase === 'complete') return false
+  return minutes >= PACING_NUDGE_MINUTES
 }
 
 /** Decisions made so far, newest last — what a facilitator links an event to. */

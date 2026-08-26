@@ -220,9 +220,9 @@ export interface RecalculationRecord {
   readonly afterPointId: RoadmapPointId
   readonly stillTrue: string
   readonly changed: string
-  readonly destinationValid: 'holds' | 'changes' | 'undecided'
-  readonly milestoneToChange: string
-  readonly nextMove: string
+  readonly mattersNow: string
+  readonly optionsAvailable: string
+  readonly revisedNextMove: string
   readonly at: number
 }
 
@@ -241,7 +241,13 @@ export interface JourneyState {
   readonly lifelines: readonly LifelineRecord[]
   readonly resources: readonly ResourceRecord[]
   readonly recalculations: readonly RecalculationRecord[]
-  /** Set once a recalculation concludes the Destination itself must change. */
+  /**
+   * Set when the team decides a Road Event changed the Destination itself.
+   *
+   * Driven by the team's own impact answer rather than by the recalculation
+   * form: the owner's five questions no longer ask about the Destination, and
+   * the software must record what the team decided rather than derive it.
+   */
   readonly destinationRevised: boolean
   /** FACILITATOR-PRIVATE. Never projected. */
   readonly dependencies: readonly DependencyRecord[]
@@ -251,6 +257,14 @@ export interface JourneyState {
   readonly activePromptId: string | null
   /** Milliseconds since the facilitator started the task window. */
   readonly startedAt: number | null
+  /**
+   * When the team arrived at the current roadmap point.
+   *
+   * FACILITATOR-PRIVATE, and the basis of the five-minute pacing nudge. A
+   * projected countdown of how long a team has been stuck would be a public
+   * criticism of that team in front of the room.
+   */
+  readonly pointEnteredAt: number | null
 }
 
 // ---------------------------------------------------------------------------

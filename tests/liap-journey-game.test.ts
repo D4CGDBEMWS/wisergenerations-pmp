@@ -1,7 +1,15 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { initialJourney, journeyReduce, brokenDependencies, type JourneyAction } from '@/lib/journey/engine'
+import {
+  initialJourney,
+  journeyReduce,
+  brokenDependencies,
+  minutesAtPoint,
+  shouldOfferPacingNudge,
+  PACING_NUDGE_MINUTES,
+  type JourneyAction,
+} from '@/lib/journey/engine'
 import { projectJourney } from '@/lib/journey/projection'
 import { buildJourneyRecord } from '@/lib/journey/record'
 import { BUFFER_MINUTES, TOTAL_MINUTES, WINDOW_MINUTES, facilitatorClock } from '@/lib/journey/timing'
@@ -22,7 +30,7 @@ import {
   buildMyProjectRoadmap,
   emptyDraft,
 } from '@/lib/journey/my-project'
-import type { JourneyState } from '@/lib/journey/types'
+import { ROADMAP_POINTS, type JourneyState } from '@/lib/journey/types'
 
 // ---------------------------------------------------------------------------
 // The LIAP Journey Game.
@@ -93,14 +101,14 @@ function populatedSession(): JourneyState {
     { type: 'grant-lifeline', asked: 'Someone who knows the rules', note: 'A category, not an answer', at: 4_000 },
     { type: 'grant-resource', note: 'A neighbour with a van', at: 5_000 },
     { type: 'set-dependency-available', dependencyId: 'dependency-1', available: false },
-    { type: 'advance-point' },
+    { type: 'advance-point', at: 5_500 },
     {
       type: 'record-recalculation',
       stillTrue: 'The need is still the need',
       changed: 'No vehicle',
-      destinationValid: 'holds',
-      milestoneToChange: 'The first milestone',
-      nextMove: 'Borrow the van for a week',
+      mattersNow: 'Getting the first deliveries out this week',
+      optionsAvailable: "A neighbour's van, or switching to pickup orders",
+      revisedNextMove: 'Borrow the van for a week',
       at: 6_000,
     },
     // Last, deliberately: advance-point clears the prompt, which is correct
@@ -220,7 +228,9 @@ describe('no dice, no score', () => {
       state = next
     }
     expect([...movers]).toEqual([])
-    expect(journeyReduce(state, { type: 'advance-point' }).pointIndex).toBe(state.pointIndex + 1)
+    expect(journeyReduce(state, { type: 'advance-point', at: 9 }).pointIndex).toBe(
+      state.pointIndex + 1,
+    )
   })
 })
 
@@ -263,9 +273,14 @@ describe('participant display data boundary', () => {
   })
 
   it('names WISER Pivots nowhere a participant can reach', () => {
-    expect(wire).not.toMatch(/WISER/i)
-    for (const file of [...COMPONENTS.filter((f) => !f.includes('Facilitator') && !f.includes('Debrief'))]) {
-      expect(code(file), file).not.toMatch(/WISER/i)
+    // "Wiser Generations" is the company and appears in the approved MY
+    // PROJECT warning; WISER Pivots™ is the framework and must not appear at
+    // all before the debrief. The pattern distinguishes them.
+    expect(wire).not.toMatch(/WISER\s*Pivots/i)
+    for (const file of COMPONENTS.filter(
+      (f) => !f.includes('Facilitator') && !f.includes('Debrief'),
+    )) {
+      expect(code(file), file).not.toMatch(/WISER\s*Pivots/i)
     }
   })
 
@@ -551,16 +566,6 @@ describe('the consequence model', () => {
 })
 
 describe('GPS: Recalculating…', () => {
-  it('asks the five owner-specified questions, in order', () => {
-    expect(RECALCULATION_PROMPTS.map((p) => p.key)).toEqual([
-      'stillTrue',
-      'changed',
-      'destinationValid',
-      'milestoneToChange',
-      'nextMove',
-    ])
-  })
-
   it('puts the five questions on the wall, not a paraphrase', () => {
     // The major interaction. The room reads the approved questions themselves.
     const state = journeyReduce(populatedSession(), {
@@ -590,16 +595,26 @@ describe('GPS: Recalculating…', () => {
       type: 'record-recalculation',
       stillTrue: 'x',
       changed: 'y',
-      destinationValid: 'changes',
-      milestoneToChange: 'z',
-      nextMove: 'w',
+      mattersNow: 'z',
+      optionsAvailable: 'w',
+      revisedNextMove: 'v',
       at: 9_000,
     })
     // Everything the team did is still there. Nothing was reset.
     expect(after.pointIndex).toBe(before.pointIndex)
     expect(after.decisions).toEqual(before.decisions)
     expect(after.events).toEqual(before.events)
-    expect(after.destinationRevised).toBe(true)
+
+    // And the recalculation decided nothing on the team's behalf. Whether the
+    // Destination changed is the team's answer to the Road Event, not
+    // something inferred from this form.
+    expect(after.destinationRevised).toBe(before.destinationRevised)
+    const teamSaidDestination = journeyReduce(before, {
+      type: 'record-event-impact',
+      eventRecordId: 'event-1',
+      impact: 'destination',
+    })
+    expect(teamSaidDestination.destinationRevised).toBe(true)
   })
 })
 
@@ -817,5 +832,146 @@ describe('display recovery — the console stays the source of truth', () => {
     // It posts exactly one kind of message, and that message carries no state.
     expect(display).not.toContain("kind: 'state'")
     expect(display).not.toContain("kind: 'console-hello'")
+  })
+})
+
+describe('the locked road', () => {
+  it('is exactly the six permanent points, in order, in the approved words', () => {
+    expect(ROADMAP_POINTS.map((p) => p.label)).toEqual([
+      'TODAY / START',
+      'FIRST MOVE',
+      'DECISION / MILESTONE CHECK',
+      'NEXT MILESTONE',
+      'NEXT MILESTONE',
+      'DESTINATION',
+    ])
+    // And it is projected whole, so the room learns a shape it can reproduce.
+    expect(projectJourney(populatedSession(), 10_000).points).toEqual(ROADMAP_POINTS)
+  })
+
+  it('never turns a Road Event into a roadmap point', () => {
+    const pointIds = new Set(ROADMAP_POINTS.map((p) => p.id))
+    for (const event of ROAD_EVENT_LIBRARY) {
+      expect(pointIds.has(event.id as never), event.id).toBe(false)
+    }
+    expect(ROADMAP_POINTS).toHaveLength(6)
+  })
+})
+
+describe('GPS: Recalculating… — the five owner-ruled questions', () => {
+  it('asks exactly these five, in this order, in these words', () => {
+    expect(RECALCULATION_PROMPTS.map((p) => p.label)).toEqual([
+      'What is still true?',
+      'What changed?',
+      'What matters now?',
+      'What options are available now?',
+      'What is my revised next move?',
+    ])
+  })
+
+  it('puts those same five on the wall, not a paraphrase of them', () => {
+    const state = journeyReduce(populatedSession(), {
+      type: 'reveal-event',
+      eventId: 'recalculating',
+      revealText: 'Something changed.',
+      facilitatorNote: 'private',
+      at: 8_000,
+    })
+    expect(projectJourney(state, 10_000).recalculationQuestions).toEqual(
+      RECALCULATION_PROMPTS.map((p) => p.label),
+    )
+  })
+
+  it("decides nothing on the team's behalf", () => {
+    // No verdict field, no 'holds' / 'changes' enum, nothing the software
+    // could read as a judgement about the road.
+    const record = populatedSession().recalculations[0]
+    expect(Object.keys(record).sort()).toEqual([
+      'afterPointId',
+      'at',
+      'changed',
+      'id',
+      'mattersNow',
+      'optionsAvailable',
+      'revisedNextMove',
+      'stillTrue',
+    ])
+  })
+})
+
+describe('facilitator pacing', () => {
+  it('offers a nudge at five minutes and never advances on its own', () => {
+    const started = journeyReduce(initialJourney(), { type: 'begin', at: 0 })
+    expect(shouldOfferPacingNudge(started, 4 * 60_000)).toBe(false)
+    expect(shouldOfferPacingNudge(started, PACING_NUDGE_MINUTES * 60_000)).toBe(true)
+
+    // NEGATIVE CONTROL — the nudge is advisory. Nothing about crossing five
+    // minutes moves the team; only the facilitator does.
+    expect(journeyReduce(started, { type: 'begin', at: 99 }).pointIndex).toBe(started.pointIndex)
+    expect(minutesAtPoint(started, 6 * 60_000)).toBeCloseTo(6)
+  })
+
+  it('restarts the pacing clock when the team actually moves', () => {
+    const started = journeyReduce(initialJourney(), { type: 'begin', at: 0 })
+    const moved = journeyReduce(started, { type: 'advance-point', at: 10 * 60_000 })
+    expect(minutesAtPoint(moved, 12 * 60_000)).toBeCloseTo(2)
+    expect(shouldOfferPacingNudge(moved, 12 * 60_000)).toBe(false)
+  })
+
+  it('keeps the pacing clock off the wall', () => {
+    // A projected countdown of how long a team has been stuck would be a
+    // public criticism of that team in front of the room.
+    const state = { ...populatedSession(), pointEnteredAt: 0 }
+    const wire = JSON.stringify(projectJourney(state, 10 * 60_000))
+    expect(wire).not.toContain('pointEnteredAt')
+    expect(wire).not.toContain('minutesAtPoint')
+    for (const file of ['components/liap/journey/JourneyMap.tsx', 'app/liap/journey/page.tsx']) {
+      expect(code(file), file).not.toContain('PACING_NUDGE_MINUTES')
+      expect(code(file), file).not.toContain('minutesAtPoint')
+    }
+  })
+})
+
+describe('WISER Pivots™ stays behind the experience', () => {
+  it('appears in no module a participant loads', () => {
+    for (const file of [
+      'components/liap/journey/JourneyMap.tsx',
+      'components/liap/journey/MyProject.tsx',
+      'app/liap/journey/page.tsx',
+      'app/liap/journey/my-project/page.tsx',
+      'lib/journey/display-copy.ts',
+      'lib/journey/my-project.ts',
+    ]) {
+      expect(code(file), file).not.toMatch(/WISER\s*Pivots/i)
+      expect(code(file), file).not.toMatch(/\bPIVOTS?\b/)
+    }
+    // Nor in anything the projection carries.
+    expect(JSON.stringify(projectJourney(populatedSession(), 10_000))).not.toMatch(
+      /WISER\s*Pivots/i,
+    )
+  })
+
+  it('is not modelled anywhere in this product', () => {
+    // The Journey Game teaches the need for it. The framework itself belongs
+    // to the facilitated debrief and is not this codebase's to hold.
+    for (const file of LIB_MODULES) {
+      expect(code(file), file).not.toMatch(/WAIT.*INSPECT.*SELECT/is)
+    }
+  })
+})
+
+describe('the Virtual Workshop automation does not exist yet', () => {
+  it('has no email sequence, attendance branch, replay or survey in the repo', () => {
+    // Stated as a fact rather than assumed: sections N, O and P of the owner
+    // instruction describe automation this repository does not contain, and
+    // the artifacts defining it (10–15) were not supplied. Anything that
+    // appeared here without approved content would be invented.
+    expect(existsSync(join(root, 'lib/liap/workshop'))).toBe(false)
+    expect(existsSync(join(root, 'app/api/liap/workshop'))).toBe(false)
+    const crm = code('lib/liap/crm.ts')
+    expect(crm).toContain('liap_workshop_interest')
+    for (const absent of ['no_show', 'noShow', 'replay', 'attended', 'survey']) {
+      expect(crm, absent).not.toContain(absent)
+    }
   })
 })

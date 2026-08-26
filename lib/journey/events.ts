@@ -173,40 +173,43 @@ export function roadEvent(id: RoadEvent['id']): RoadEvent {
 }
 
 /**
- * The GPS: Recalculating… review.
+ * The GPS: Recalculating… review — the five owner-ruled questions.
  *
- * ── TWO OF THESE ARE STILL OPEN ────────────────────────────────────────────
+ * ── THESE SUPERSEDE THE ARTIFACT WORDING, BY OWNER RULING ──────────────────
  *
- * Reconciliation found that four of the five questions here had been
- * paraphrased rather than transcribed. Two are now verbatim; two cannot be,
- * because the approved artifacts disagree with each other:
+ * Reconciliation had flagged two of these as conflicts between the approved
+ * artifacts. The owner has now ruled the exact five, and they are neither of
+ * the artifact readings:
  *
- *   Destination  Artifact 3 card: "Is the Destination the same?"
- *                Owner instruction §K: "Does the Destination still make sense?"
+ *   3. "What matters now?"              (not "Is the Destination the same?",
+ *                                        not "Does the Destination still make
+ *                                        sense?")
+ *   4. "What options are available now?" (not "Which milestone needs to move?",
+ *                                        not "Which part of the roadmap
+ *                                        changes?")
  *
- *   Milestone    Artifact 3 card: "Which milestone needs to move?"
- *                Owner instruction §K: "Which milestone needs to change?"
- *                Artifact 4:          "Which part of the roadmap changes?"
- *                Artifact 5:          "What part of my road needs to move?"
+ * That resolves the digital side and creates a real one on the physical side:
+ * the printed Road-Event Card, the Journey Documentation Tool and the MY
+ * PROJECT sheet still ask the older questions. Reported to the owner rather
+ * than reconciled in either direction — changing printed material is not a
+ * decision this file gets to make.
  *
- * Both are flagged for owner decision and left at the owner-instruction
- * wording in the meantime, because choosing between two approved artifacts is
- * not mine to do.
+ * Note the shift in person, which is the owner's and is preserved: question 5
+ * is "my revised next move", matching the MY PROJECT sheet's own line rather
+ * than the facilitator's "your next wise move".
+ *
+ * Nothing scores these. The review exists so a team says out loud what changed
+ * and then revises the roadmap on purpose rather than drifting into a plan
+ * that stopped being true two milestones ago.
  *
  * NOTE ON WISER PIVOTS™: Artifact 6 — "Connect adaptation to WISER Pivots™
  * only after participants have described the behavior themselves." The acronym
- * appears nowhere a participant can reach, and a test asserts it.
+ * and the model appear nowhere a participant can reach, and a test asserts it.
  */
 export const RECALCULATION_PROMPTS = [
-  // Verbatim, and identical in every approved artifact.
   { key: 'stillTrue', label: 'What is still true?' },
-  // Was "What has changed?". Every artifact says "What changed?".
   { key: 'changed', label: 'What changed?' },
-  // CONFLICT — see above.
-  { key: 'destinationValid', label: 'Does the Destination still make sense?' },
-  // CONFLICT — see above.
-  { key: 'milestoneToChange', label: 'Which milestone needs to change?' },
-  // Was "What is your next move?". The approved wording is "next wise move",
-  // and the word doing the work is the one that was missing.
-  { key: 'nextMove', label: 'What is your next wise move?' },
+  { key: 'mattersNow', label: 'What matters now?' },
+  { key: 'optionsAvailable', label: 'What options are available now?' },
+  { key: 'revisedNextMove', label: 'What is my revised next move?' },
 ] as const

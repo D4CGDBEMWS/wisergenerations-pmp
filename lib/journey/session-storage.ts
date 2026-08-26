@@ -43,7 +43,7 @@ export const FACILITATOR_SESSION_KEY = 'liap-journey-facilitator'
  * shape is discarded rather than half-read — a console that boots into a
  * corrupted journey in front of a room is worse than one that starts clean.
  */
-export const FACILITATOR_SESSION_VERSION = 1
+export const FACILITATOR_SESSION_VERSION = 2
 
 export interface StoredSession {
   readonly version: number

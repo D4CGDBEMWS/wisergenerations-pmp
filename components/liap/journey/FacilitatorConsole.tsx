@@ -7,7 +7,10 @@ import {
   brokenDependencies,
   initialJourney,
   journeyReduce,
+  minutesAtPoint,
   pointAt,
+  shouldOfferPacingNudge,
+  PACING_NUDGE_MINUTES,
   type JourneyAction,
 } from '@/lib/journey/engine'
 import { RECALCULATION_PROMPTS, ROAD_EVENT_LIBRARY } from '@/lib/journey/events'
@@ -134,8 +137,11 @@ export function FacilitatorConsole() {
 
   const act = (action: JourneyAction) => dispatch(action)
 
-  const clock = facilitatorClock(state.startedAt, now || Date.now())
+  const at = now || Date.now()
+  const clock = facilitatorClock(state.startedAt, at)
   const point = pointAt(state.pointIndex)
+  const atPoint = minutesAtPoint(state, at)
+  const nudge = shouldOfferPacingNudge(state, at)
   const broken = useMemo(() => brokenDependencies(state), [state])
 
   if (stored && !resolvedResume) {
@@ -185,7 +191,9 @@ export function FacilitatorConsole() {
         <Secondary onClick={() => window.open('/liap/journey', 'liap-journey-display')}>
           Open participant display
         </Secondary>
-        <Secondary onClick={() => act({ type: 'advance-point' })}>Advance to next point →</Secondary>
+        <Secondary onClick={() => act({ type: 'advance-point', at: Date.now() })}>
+          Advance to next point →
+        </Secondary>
         <Secondary onClick={() => act({ type: 'complete' })}>Complete journey</Secondary>
         <EndSession
           onEnd={() => {
@@ -197,7 +205,21 @@ export function FacilitatorConsole() {
 
       <p className="mt-5 text-sm text-slate-400">
         Current point: <span className="font-semibold text-slate-100">{point.label}</span>
+        {atPoint === null ? null : (
+          <span className="ml-3 tabular-nums text-slate-500">{Math.floor(atPoint)} min here</span>
+        )}
       </p>
+
+      {/* Owner §E. A prompt for the facilitator, not a forced advance — teams
+          may genuinely need longer, and that is what the private contingency
+          is for. Never projected: a countdown of how long a team has been
+          stuck would be a public criticism of that team in front of the room. */}
+      {nudge ? (
+        <p className="mt-3 rounded border border-slate-600 bg-slate-900 p-3 text-sm text-slate-300">
+          About {PACING_NUDGE_MINUTES} minutes at this point. Consider prompting them along — or
+          give them the time from contingency if they need it.
+        </p>
+      ) : null}
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         <DecisionCapture state={state} onAct={act} />
@@ -572,50 +594,33 @@ function DependencyPanel({ state, onAct }: { state: JourneyState; onAct: (a: Jou
 
 function RecalculationForm({ onAct }: { onAct: (a: JourneyAction) => void }) {
   const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [destinationValid, setDestinationValid] = useState<'holds' | 'changes' | 'undecided'>('undecided')
   return (
     <Panel title="GPS: Recalculating…">
-      {RECALCULATION_PROMPTS.map((prompt) =>
-        prompt.key === 'destinationValid' ? (
-          <div key={prompt.key} className="mt-3">
-            <p className="text-xs text-slate-400">{prompt.label}</p>
-            <div className="mt-1 flex gap-1.5">
-              {(['holds', 'changes', 'undecided'] as const).map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setDestinationValid(value)}
-                  className={[
-                    'rounded border px-2 py-1 text-xs',
-                    destinationValid === value ? 'border-amber-400 text-amber-200' : 'border-slate-700 text-slate-300',
-                  ].join(' ')}
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <label key={prompt.key} className="mt-3 block text-xs text-slate-400">
-            {prompt.label}
-            <textarea
-              value={answers[prompt.key] ?? ''}
-              onChange={(event) => setAnswers((current) => ({ ...current, [prompt.key]: event.target.value }))}
-              rows={2}
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-2 py-1.5 text-sm"
-            />
-          </label>
-        ),
-      )}
+      {/* The five owner-ruled questions, in order, all free text. None of them
+          asks the software to decide anything — whether the road changes is
+          the team's answer to the Road Event, captured separately. */}
+      {RECALCULATION_PROMPTS.map((prompt) => (
+        <label key={prompt.key} className="mt-3 block text-xs text-slate-400">
+          {prompt.label}
+          <textarea
+            value={answers[prompt.key] ?? ''}
+            onChange={(event) =>
+              setAnswers((current) => ({ ...current, [prompt.key]: event.target.value }))
+            }
+            rows={2}
+            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-2 py-1.5 text-sm"
+          />
+        </label>
+      ))}
       <Primary
         onClick={() =>
           onAct({
             type: 'record-recalculation',
             stillTrue: answers.stillTrue ?? '',
             changed: answers.changed ?? '',
-            destinationValid,
-            milestoneToChange: answers.milestoneToChange ?? '',
-            nextMove: answers.nextMove ?? '',
+            mattersNow: answers.mattersNow ?? '',
+            optionsAvailable: answers.optionsAvailable ?? '',
+            revisedNextMove: answers.revisedNextMove ?? '',
             at: Date.now(),
           })
         }
