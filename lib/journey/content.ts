@@ -138,7 +138,11 @@ const impactLabels: ContentEntry[] = IMPACT_CHOICES.map((choice) => ({
   text: impactLabel(choice.id),
   where: 'Participant Display, under an event once the team has answered; Journey Record',
   audience: 'participant',
-  provenance: 'system-written',
+  // Reviewed as written and kept. The approved artifacts phrase this moment as
+  // a question and let the team answer in their own words; these six read that
+  // answer back, and the owner approved them unchanged.
+  provenance: 'owner-approved',
+  source: 'Owner ruling — approved as written',
 }))
 
 // ── B. Road Event facilitator fields ───────────────────────────────────────
@@ -264,7 +268,8 @@ const myProjectNudges: ContentEntry[] = MY_PROJECT_STEPS.map((step) => ({
   text: step.nudge,
   where: 'MY PROJECT, shown on request when a participant stalls',
   audience: 'participant',
-  provenance: 'system-written',
+  provenance: 'owner-approved',
+  source: 'Owner ruling — canonical MY PROJECT second questions',
 }))
 
 const exitWarning: ContentEntry = {
@@ -336,8 +341,11 @@ const displayCopy: ContentEntry[] = DISPLAY_STRINGS.map((entry) => ({
   text: entry.text,
   where: entry.where,
   audience: 'participant',
-  provenance: entry.source ? 'owner-approved' : 'system-written',
-  ...(entry.source ? { source: entry.source } : {}),
+  // The four with no artifact source — the page heading, the waiting state,
+  // the clock label and the line that introduces a team's own words — were
+  // reviewed as written and approved.
+  provenance: 'owner-approved',
+  source: entry.source ?? 'Owner ruling — approved as written',
 }))
 
 export const CONTENT_INVENTORY: readonly ContentEntry[] = [

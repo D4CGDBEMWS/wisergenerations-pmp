@@ -15,9 +15,11 @@
 //
 // ── PROVENANCE ─────────────────────────────────────────────────────────────
 //
-// Four are now approved wording. Four have no approved equivalent — the
-// physical Journey Map is a visual and carries no projected-screen chrome —
-// and are held pending owner review.
+// Four came from approved artifacts. The other four — the page heading, the
+// waiting state, the clock label and the line introducing a team's own words —
+// have no artifact equivalent, because the physical Journey Map is a visual
+// and carries no projected-screen chrome. The owner reviewed and approved
+// those four as written.
 // ---------------------------------------------------------------------------
 
 export interface DisplayString {
@@ -41,7 +43,7 @@ export const DISPLAY_COPY = {
   /** Artifact 4, footer — verbatim. Shown once a Destination has been revised. */
   roadCanChange: 'The road can change without the journey ending.',
 
-  // ── PENDING OWNER REVIEW — no approved equivalent ────────────────────────
+  // ── OWNER-APPROVED AS WRITTEN — no artifact equivalent exists ────────────
   /** The projected map's heading. */
   heading: 'THE JOURNEY',
   /** Before the console has answered. */

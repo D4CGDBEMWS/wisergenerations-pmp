@@ -24,6 +24,7 @@ import {
   DEBRIEF_DO_NOT,
   DEBRIEF_FINAL_REMINDER,
   DEBRIEF_SEQUENCE,
+  GOD_AT_THE_CENTER_FOUNDATION,
   PROTECTED_SEQUENCE,
 } from '@/lib/journey/debrief'
 import {
@@ -1006,7 +1007,15 @@ describe('God at the Center', () => {
         if (lower.includes('not frame god as merely') || lower.includes('not a project sponsor')) {
           continue
         }
-        for (const role of ['sponsor', 'stakeholder', 'resource', 'lifeline', 'contingency']) {
+        for (const role of [
+          'sponsor',
+          'stakeholder',
+          'resource',
+          'lifeline',
+          'contingency',
+          'dependency',
+          'tool for',
+        ]) {
           expect(lower, `${file} / ${role}`).not.toContain(role)
         }
       }
@@ -1127,6 +1136,130 @@ describe('canonical wording rulings', () => {
     expect(byId.get('ask-for-help')!.label).toBe('WHEN I WILL ASK FOR HELP')
     expect(byId.get('ask-for-help')!.prompt).toBe(
       'What will tell me it is time to use a Lifeline or seek additional support?',
+    )
+  })
+})
+
+describe('the obsolete Sponsor framing is gone', () => {
+  it('appears nowhere in the LIAP codebase', () => {
+    // Every one of the passages the owner named. The PMP exam-prep content is
+    // out of scope by ruling — sponsor terminology may stay where it teaches
+    // the actual project-management role — so this checks LIAP only.
+    const LIAP_FILES = [
+      ...LIB_MODULES,
+      ...COMPONENTS,
+      ...ROUTES,
+      ...readdirSync(join(root, 'lib/liap/workshop')).map((f) => `lib/liap/workshop/${f}`),
+    ]
+    const obsolete = [
+      'The Missing Role',
+      'Who is the Sponsor of your life project?',
+      'Sponsor moment',
+      'The Sponsor Reveal',
+      'Higher Power',
+      'the Sponsor question',
+    ]
+    for (const file of LIAP_FILES) {
+      for (const phrase of obsolete) {
+        expect(code(file), `${file} / ${phrase}`).not.toContain(phrase)
+      }
+    }
+  })
+
+  it('left the PMP exam content alone, as ruled', () => {
+    // NEGATIVE CONTROL for the scope above: sponsor terminology teaching the
+    // real PM role still exists, so the sweep was targeted rather than a
+    // blanket find-and-replace across the repository.
+    expect(source('lib/exam-questions.ts')).toContain('project sponsor')
+  })
+})
+
+describe('the six MY PROJECT second questions are canonical', () => {
+  it('are exactly the owner-approved wording, in road order', () => {
+    expect(MY_PROJECT_STEPS.map((s) => s.nudge)).toEqual([
+      'What do you know to be true right now?',
+      'What can you begin with what you have now?',
+      'What do you need to know before you decide?',
+      'How will you know you reached this milestone?',
+      'What needs to happen before you can move forward?',
+      'What will tell you that you have reached your intended outcome?',
+    ])
+  })
+
+  it('carry no example, suggestion or coaching', () => {
+    // Every one ends in a question mark and contains no sentence that could
+    // propose an answer. The moment one becomes a suggestion the roadmap stops
+    // being the participant's.
+    for (const step of MY_PROJECT_STEPS) {
+      expect(step.nudge.trim().endsWith('?'), step.pointId).toBe(true)
+      expect(step.nudge.split('?').filter(Boolean), step.pointId).toHaveLength(1)
+      for (const tell of ['for example', 'e.g.', 'try ', 'consider ', 'you should', 'we recommend']) {
+        expect(step.nudge.toLowerCase(), `${step.pointId} / ${tell}`).not.toContain(tell)
+      }
+    }
+  })
+
+  it('replaced mine rather than joining them', () => {
+    const retired = [
+      'What is true right now that you would rather not write down?',
+      'If this went well, what is different a year from now?',
+    ]
+    for (const file of LIB_MODULES) {
+      for (const old of retired) expect(code(file), file).not.toContain(old)
+    }
+  })
+})
+
+describe('the ten functional strings are approved inventory', () => {
+  it('carries each one as owner-approved with a source', () => {
+    const approvedText = new Set(
+      CONTENT_INVENTORY.filter((e) => e.provenance === 'owner-approved').map((e) => e.text),
+    )
+    for (const text of [
+      'You changed your First Move',
+      'You changed your Decision / Milestone Check',
+      'You changed your Next Milestone',
+      'You changed a later milestone',
+      'You changed your Destination',
+      'You decided it changed nothing',
+      'THE JOURNEY',
+      'Waiting for the facilitator…',
+      'task window',
+      'Because you decided:',
+    ]) {
+      expect(approvedText.has(text), text).toBe(true)
+    }
+  })
+
+  it('leaves exactly one entry pending, and it is the missing script marker', () => {
+    const pending = pendingOwnerReview()
+    expect(pending).toHaveLength(1)
+    expect(pending[0].id).toBe('debrief.god-at-the-center.note')
+    expect(pending[0].text).toContain('OWNER WORDING PENDING')
+  })
+})
+
+describe('the God at the Center script stays unwritten', () => {
+  it('holds the foundation and the placement, and no script', () => {
+    const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'god-at-the-center')!
+    expect(moment.asks).toEqual([])
+    expect(moment.ownerWordingPending).toBe('superseded')
+    expect(GOD_AT_THE_CENTER_FOUNDATION).toContain('God is the Creator and foundation of life')
+  })
+
+  it('does not let the foundation statement become the script', () => {
+    // The distinction the owner drew explicitly. The foundation is a statement
+    // ABOUT the reveal for the facilitator; the reveal is what is said to the
+    // room. Nothing renders the foundation as an ask.
+    const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'god-at-the-center')!
+    expect(moment.asks).not.toContain(GOD_AT_THE_CENTER_FOUNDATION)
+    for (const m of DEBRIEF_SEQUENCE) {
+      expect(m.asks, m.id).not.toContain(GOD_AT_THE_CENTER_FOUNDATION)
+    }
+    // And the console renders `asks`, so an empty list is an empty panel.
+    expect(code('components/liap/journey/DebriefPanel.tsx')).toContain('cue.asks.map')
+    expect(code('components/liap/journey/DebriefPanel.tsx')).not.toContain(
+      'GOD_AT_THE_CENTER_FOUNDATION',
     )
   })
 })

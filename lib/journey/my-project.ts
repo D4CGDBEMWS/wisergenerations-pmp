@@ -32,9 +32,10 @@ import { ROADMAP_POINTS, type RoadmapPointId } from './types'
 // are added here: WHY THIS MATTERS, MAKE IT REAL, MY NEXT WISE MOVE (with its
 // 24–48 hour window) and LEGACY MATTERS.
 //
-// The six per-point "nudges" remain system-written. Artifact 5 has no second
-// question for a participant who stalls, so there was nothing to reconcile
-// them against — they are held pending owner review, not shipped as approved.
+// The six per-point "nudges" are now owner-approved canonical wording. The
+// six I had written are deleted, not kept alongside — Artifact 5 has no second
+// question for a stalled participant, and rather than leave the gap filled
+// with mine, the owner supplied the set.
 //
 // ── REVIEW POINTS, FROM THE COMPLETED LIFE PROJECT PLAN™ ───────────────────
 //
@@ -68,8 +69,9 @@ export interface MyProjectStep {
   /**
    * A second, narrower question for someone who stalls.
    *
-   * SYSTEM-WRITTEN, PENDING OWNER REVIEW. Artifact 5 has no equivalent; these
-   * are held behind a "Stuck?" control and are not approved copy.
+   * OWNER-APPROVED CANONICAL. These replaced the six I had written, which are
+   * gone rather than kept beside them. Every one is a question and nothing
+   * else — no example, no suggestion, no coaching, no recommended answer.
    */
   readonly nudge: string
 }
@@ -88,37 +90,37 @@ export const MY_PROJECT_STEPS: readonly MyProjectStep[] = [
     pointId: 'start',
     label: ROADMAP_POINTS[0].label,
     prompt: 'Where am I right now? What is true today?',
-    nudge: 'What is true right now that you would rather not write down?',
+    nudge: 'What do you know to be true right now?',
   },
   {
     pointId: 'first-move',
     label: ROADMAP_POINTS[1].label,
     prompt: 'What will I do first?',
-    nudge: 'What is the smallest thing that would count as having started?',
+    nudge: 'What can you begin with what you have now?',
   },
   {
     pointId: 'decision-check',
     label: ROADMAP_POINTS[2].label,
     prompt: 'What decision or result will tell me I am moving?',
-    nudge: 'What are you waiting to find out, and who has that answer?',
+    nudge: 'What do you need to know before you decide?',
   },
   {
     pointId: 'milestone-2',
     label: ROADMAP_POINTS[3].label,
     prompt: 'What must I accomplish next?',
-    nudge: 'What would somebody else be able to see that tells them it happened?',
+    nudge: 'How will you know you reached this milestone?',
   },
   {
     pointId: 'milestone-3',
     label: ROADMAP_POINTS[4].label,
     prompt: 'What must happen after the first milestone?',
-    nudge: 'What has to be true before this one is even possible?',
+    nudge: 'What needs to happen before you can move forward?',
   },
   {
     pointId: 'destination',
     label: ROADMAP_POINTS[5].label,
     prompt: 'What does finished/successful look like?',
-    nudge: 'If this went well, what is different a year from now?',
+    nudge: 'What will tell you that you have reached your intended outcome?',
   },
 ]
 
