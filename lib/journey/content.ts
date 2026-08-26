@@ -129,7 +129,7 @@ const recalculationQuestions: ContentEntry[] = RECALCULATION_PROMPTS.map((prompt
   provenance: 'owner-approved',
   // Canonical, and deliberately not the printed wording. The cards are on the
   // revision list; the software does not revert to them.
-  source: 'Owner ruling — the five canonical GPS: Recalculating… questions',
+  source: 'Completed Life Project Plan™ §15, verbatim; confirmed by owner ruling',
 }))
 
 const impactLabels: ContentEntry[] = IMPACT_CHOICES.map((choice) => ({

@@ -172,13 +172,25 @@ export function roadEvent(id: RoadEvent['id']): RoadEvent {
 }
 
 /**
- * The GPS: Recalculating… review — the five owner-ruled questions.
+ * The GPS: Recalculating… review — the five canonical questions.
  *
- * ── THESE SUPERSEDE THE ARTIFACT WORDING, BY OWNER RULING ──────────────────
+ * ── THEY ARE THE COMPLETED LIFE PROJECT PLAN™'S OWN WORDING ────────────────
  *
- * Reconciliation had flagged two of these as conflicts between the approved
- * artifacts. The owner has now ruled the exact five, and they are neither of
- * the artifact readings:
+ * Worth correcting an earlier report of mine: these did not arrive only as a
+ * chat ruling. The Completed Life Project Plan™ §15 carries all five verbatim,
+ * under "When the road changes, use these questions before reacting". So the
+ * software agrees with the Retreat's outcome document — which is the artifact
+ * a participant ends up holding — and it is the Road-Event Card, the Journey
+ * Documentation Tool and the MY PROJECT sheet that are out of step.
+ *
+ * That makes the reprint list three artifacts, not four, and it means the
+ * canonical set was already owner-written rather than newly decided.
+ *
+ * ── WHAT THEY SUPERSEDE ────────────────────────────────────────────────────
+ *
+ * Reconciliation had flagged two of these as conflicts between artifacts.
+ * Questions 3 and 4 in the Plan are neither of the readings the Road-Event
+ * Card and the earlier instruction gave:
  *
  *   3. "What matters now?"              (not "Is the Destination the same?",
  *                                        not "Does the Destination still make
