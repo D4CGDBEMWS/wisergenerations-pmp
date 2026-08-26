@@ -13,7 +13,7 @@ import {
 import { projectJourney } from '@/lib/journey/projection'
 import { buildJourneyRecord } from '@/lib/journey/record'
 import { BUFFER_MINUTES, TOTAL_MINUTES, WINDOW_MINUTES, facilitatorClock } from '@/lib/journey/timing'
-import { ROAD_EVENT_LIBRARY, RECALCULATION_PROMPTS } from '@/lib/journey/events'
+import { ROAD_EVENT_LIBRARY, RECALCULATION_PROMPTS, roadEvent } from '@/lib/journey/events'
 import { SCENARIOS } from '@/lib/journey/scenarios'
 import { BARE_SURFACES, isBareSurface } from '@/lib/shell'
 import { CONTENT_INVENTORY, pendingOwnerReview, wordingConflicts } from '@/lib/journey/content'
@@ -327,8 +327,15 @@ describe('participant display data boundary', () => {
     expect([...seen]).toContain('components/liap/journey/JourneyMap.tsx')
     expect([...seen]).toContain('lib/journey/channel.ts')
 
-    const sponsorAsk = DEBRIEF_SEQUENCE.find((c) => c.id === 'sponsor')!.asks.at(-1)!
-    for (const file of seen) expect(code(file), file).not.toContain(sponsorAsk)
+    // The God at the Center Reveal carries no script — it is owner-pending —
+    // so the autobiographical lines are what there is to leak, plus the
+    // superseded framing itself.
+    const revealLine = DEBRIEF_SEQUENCE.find((c) => c.id === 'personal-reveal')!.asks[1]
+    for (const file of seen) {
+      expect(code(file), file).not.toContain(revealLine)
+      expect(code(file), file).not.toMatch(/God at the Center/i)
+      expect(code(file), file).not.toMatch(/Higher Power/i)
+    }
   })
 })
 
@@ -692,15 +699,13 @@ describe('the content inventory', () => {
     expect(pendingOwnerReview().length).toBeGreaterThan(0)
   })
 
-  it('describes every conflict rather than resolving one', () => {
-    // Where two approved artifacts word the same moment differently, the
-    // entry carries both readings and no decision.
+  it('carries no unresolved conflict, and would describe one if it did', () => {
+    // All six artifact-vs-artifact conflicts were ruled on by the owner on
+    // 25 August 2026. The mechanism stays: a conflict entry must carry both
+    // readings, never a quiet choice between them.
     const conflicts = wordingConflicts()
-    expect(conflicts.length).toBeGreaterThan(0)
-    for (const entry of conflicts) {
-      expect(entry.conflict, entry.id).toBeTruthy()
-      expect(entry.conflict!.length, entry.id).toBeGreaterThan(40)
-    }
+    expect(conflicts).toEqual([])
+    for (const entry of conflicts) expect(entry.conflict, entry.id).toBeTruthy()
   })
 
   it('says who sees each string', () => {
@@ -957,5 +962,113 @@ describe('WISER Pivots™ stays behind the experience', () => {
     for (const file of LIB_MODULES) {
       expect(code(file), file).not.toMatch(/WAIT[\s\S]*INSPECT[\s\S]*SELECT/i)
     }
+  })
+})
+
+describe('God at the Center', () => {
+  it('replaces the Sponsor framing entirely', () => {
+    const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'god-at-the-center')
+    expect(moment).toBeDefined()
+    expect(moment!.heading).toBe('God at the Center Reveal')
+    // Superseded framing is gone from the whole codebase, not just hidden.
+    for (const file of [...LIB_MODULES, ...COMPONENTS, ...ROUTES]) {
+      expect(code(file), file).not.toContain('Who is the Sponsor of your life project?')
+      expect(code(file), file).not.toMatch(/Higher Power/)
+    }
+  })
+
+  it('ships no script, and generates none', () => {
+    // Owner: keep the final reveal script OWNER PENDING; do not generate,
+    // rewrite or publish a replacement.
+    const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'god-at-the-center')!
+    expect(moment.asks).toEqual([])
+    expect(moment.ownerWordingPending).toBe('superseded')
+    expect(moment.note).toContain('OWNER WORDING PENDING')
+  })
+
+  it('never frames God as a project role', () => {
+    // Owner: not a sponsor, stakeholder, resource, Lifeline or contingency.
+    const nearGod = /God[^.]{0,120}/gi
+    for (const file of [...LIB_MODULES, ...COMPONENTS]) {
+      for (const passage of code(file).match(nearGod) ?? []) {
+        for (const role of ['sponsor', 'stakeholder', 'resource', 'lifeline', 'contingency']) {
+          // The one permitted mention is the prohibition itself.
+          if (passage.toLowerCase().includes('not a project sponsor')) continue
+          expect(passage.toLowerCase(), `${file} / ${role}`).not.toContain(role)
+        }
+      }
+    }
+  })
+
+  it('marks the autobiographical reveal pending without rewriting it', () => {
+    const moment = DEBRIEF_SEQUENCE.find((m) => m.stage === 'personal-reveal')!
+    expect(moment.ownerWordingPending).toBe('pending-revision')
+    expect(moment.note).toContain('AUTOBIOGRAPHICAL REVEAL — OWNER WORDING PENDING')
+    // The owner's own words are still there, untouched.
+    expect(moment.asks).toHaveLength(8)
+    expect(moment.asks[1]).toBe(
+      'Every one of these high-impact scenarios was rooted in something that happened in my life.',
+    )
+  })
+})
+
+describe('canonical wording rulings', () => {
+  it('uses the ellipsis character throughout, except inside verbatim owner copy', () => {
+    expect(roadEvent('recalculating').name).toBe('GPS: Recalculating…')
+
+    // One exemption, and it is deliberate: the autobiographical reveal script
+    // contains 'the GPS of my life said, "Recalculating..."' with three
+    // periods. That line is the owner's own, transcribed verbatim, and §14
+    // forbids rewriting it. Changing the punctuation inside somebody's
+    // testimony to satisfy a style rule is exactly the silent edit this
+    // project keeps refusing to make. Reported instead.
+    const revealLine = DEBRIEF_SEQUENCE.find((m) => m.stage === 'personal-reveal')!.asks[4]
+    expect(revealLine).toContain('Recalculating...')
+
+    for (const file of [...LIB_MODULES, ...COMPONENTS]) {
+      const withoutRevealScript = code(file).split(revealLine).join('')
+      expect(withoutRevealScript, file).not.toContain('Recalculating...')
+      expect(withoutRevealScript, file).not.toContain('RECALCULATING...')
+    }
+  })
+
+  it('uses the ruled form of each prompt that was in conflict', () => {
+    const text = (id: string) => PROGRESS_PROMPTS.find((p) => p.id === id)!.text
+    expect(text('do-nothing')).toBe('What happens if you do nothing?')
+    expect(text('road-or-destination')).toBe('Does the road change, or does the Destination change?')
+    expect(text('next-wise-move')).toBe('What is your next wise move?')
+    // NEGATIVE CONTROL — the superseded variants appear nowhere.
+    for (const file of LIB_MODULES) {
+      expect(code(file), file).not.toContain('What happens if nothing changes?')
+      expect(code(file), file).not.toContain('Does the route change, or does the destination change?')
+      expect(code(file), file).not.toContain('What is the next wise move?')
+    }
+  })
+
+  it('uses the transfer vocabulary on MY PROJECT and the metaphor in the game', () => {
+    const labels = MY_PROJECT_EXTRAS.map((e) => e.label)
+    expect(labels).toContain('PEOPLE AND SUPPORT')
+    expect(labels).toContain('DEPENDENCIES AND BACKUP')
+    expect(labels).toContain('LIFELINES')
+    expect(MY_PROJECT_OPENING.find((f) => f.id === 'why')!.label).toBe('WHY IT MATTERS')
+    expect(labels).not.toContain('TEAM / SUPPORT')
+    expect(labels).not.toContain('NO SIGNAL / BACKUP')
+
+    // And the Journey keeps its own words — No Signal is still No Signal on
+    // the road, and nothing was mechanically replaced to match.
+    expect(roadEvent('no-signal').name).toBe('No Signal')
+    expect(roadEvent('lifeline').name).toBe('Lifeline')
+  })
+
+  it('keeps the two review prompts verbatim from the Plan', () => {
+    const byId = new Map(MY_PROJECT_EXTRAS.map((e) => [e.id, e]))
+    expect(byId.get('review-rhythm')!.label).toBe('MY REVIEW RHYTHM')
+    expect(byId.get('review-rhythm')!.prompt).toBe(
+      'How often will I review this plan, and what will I inspect when I do?',
+    )
+    expect(byId.get('ask-for-help')!.label).toBe('WHEN I WILL ASK FOR HELP')
+    expect(byId.get('ask-for-help')!.prompt).toBe(
+      'What will tell me it is time to use a Lifeline or seek additional support?',
+    )
   })
 })

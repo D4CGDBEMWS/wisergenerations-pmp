@@ -13,8 +13,17 @@
 //
 // Two things here must not reach a projected screen under any circumstance:
 //
-//   1. The Sponsor / Higher Power question — "Pause after the question. Do not
-//      answer for the room." (Artifact 6)
+//   1. The God at the Center Reveal. Owner ruling, 25 August 2026: God is the
+//      Creator and foundation of life in the LIAP philosophy, and that framing
+//      REPLACES the project-role language Artifact 6 carried. God is
+//      not a project sponsor, a stakeholder, a resource, a Lifeline or a
+//      contingency, and the reveal must not be pre-taught on any
+//      participant-facing surface.
+//
+//      The final script is OWNER PENDING. Artifact 6's Sponsor script is
+//      superseded and is NOT shown in its place — a facilitator reading
+//      retired framing to a room is worse than a facilitator reading their own
+//      notes. Nothing here generates a replacement.
 //
 //   2. The personal reveal — "The autobiographical connection is the
 //      crescendo, not the opening. Do not leak it through scenario
@@ -33,7 +42,7 @@ export type DebriefStage =
   | 'name-it'
   | 'recalculating'
   | 'what-changed'
-  | 'sponsor'
+  | 'god-at-the-center'
   | 'personal-reveal'
   | 'close'
 
@@ -49,6 +58,15 @@ export interface DebriefMoment {
   readonly asks: readonly string[]
   /** Artifact 6's FACILITATOR NOTE, verbatim. */
   readonly note: string
+  /**
+   * Set where the owner has not yet settled the wording.
+   *
+   * Two different situations both land here and the console says which:
+   * SUPERSEDED, where a ruling retired the old script and no replacement
+   * exists yet, and PENDING REVISION, where the owner's own words are still
+   * in the file but subject to change. Neither is a licence to write one.
+   */
+  readonly ownerWordingPending?: 'superseded' | 'pending-revision'
 }
 
 export const DEBRIEF_SEQUENCE: readonly DebriefMoment[] = [
@@ -92,7 +110,7 @@ export const DEBRIEF_SEQUENCE: readonly DebriefMoment[] = [
     id: 'recalculating',
     stage: 'recalculating',
     time: '12–17 min',
-    heading: 'GPS: Recalculating...',
+    heading: 'GPS: Recalculating…',
     purpose: 'Surface adaptation, consequences, resources, teamwork, and focus.',
     asks: [
       'What stayed true even when the road changed?',
@@ -119,23 +137,19 @@ export const DEBRIEF_SEQUENCE: readonly DebriefMoment[] = [
     note: 'Do not define Legacy Matters for them. Let participants say what changed and who was affected.',
   },
   {
-    id: 'sponsor',
-    stage: 'sponsor',
+    id: 'god-at-the-center',
+    stage: 'god-at-the-center',
     time: '21–25 min',
-    heading: 'The Missing Role: Sponsor',
-    purpose: 'Introduce the Sponsor question without supplying the answer.',
-    asks: [
-      // CONFLICT, flagged for owner decision: Artifact 9 §8 gives a shorter
-      // lead-in — "You managed the project. You built a team. You found
-      // resources. You made decisions. There is another project role we have
-      // not talked about yet—the Sponsor." Artifact 6's longer version is used
-      // here provisionally because Artifact 6 is the debrief's own guide.
-      'You had a project. You had a team. You found resources. You made decisions. You managed risks and issues. You recalculated when the road changed.',
-      'But there is one project role we have not talked about yet: the Sponsor.',
-      // Identical in both artifacts. Not in conflict.
-      'Who is the Sponsor of your life project?',
-    ],
-    note: 'Pause after the question. Do not answer for the room. For some participants the answer may be God or a Higher Power; others may process the question differently. Protect the reflection.',
+    heading: 'God at the Center Reveal',
+    purpose: 'The spiritual foundation of the book, revealed after the road has been travelled.',
+    // DELIBERATELY EMPTY. The owner ruling of 25 August 2026 supersedes both
+    // Sponsor lead-ins and the Sponsor question itself; the replacement script
+    // is the owner's to write and has not been written. Showing the retired
+    // script here would be worse than showing nothing, and generating a
+    // stand-in would be worse still.
+    asks: [],
+    note: 'OWNER WORDING PENDING. The previous project-role framing is superseded by the God at the Center ruling and is not reproduced here. Deliver this moment from your own approved notes until the script is issued. God is the Creator and foundation of life in the LIAP philosophy — not a project sponsor, a stakeholder, a resource, a Lifeline, or a contingency.',
+    ownerWordingPending: 'superseded',
   },
   {
     id: 'personal-reveal',
@@ -153,7 +167,8 @@ export const DEBRIEF_SEQUENCE: readonly DebriefMoment[] = [
       'You were never supposed to leave here with my roadmap. You were supposed to leave with yours.',
       'We all have different fingerprints for a reason.',
     ],
-    note: 'Deliver this conversationally, not theatrically. Do not explain every scenario or turn the reveal into a biography. The recognition is enough.',
+    note: 'AUTOBIOGRAPHICAL REVEAL — OWNER WORDING PENDING. The lines above are Artifact 6 verbatim and are the owner\'s own; they are subject to revision alongside the God at the Center ruling and are not to be rewritten here. Deliver conversationally, not theatrically. Do not explain every scenario or turn the reveal into a biography. The recognition is enough.',
+    ownerWordingPending: 'pending-revision',
   },
   {
     id: 'close',
@@ -170,7 +185,9 @@ export const DEBRIEF_SEQUENCE: readonly DebriefMoment[] = [
 export const DEBRIEF_DO_NOT: readonly string[] = [
   "Do not rank teams or declare one team's route the winning answer.",
   'Do not turn consequences into shame or moral judgment.',
-  'Do not reveal Sponsor/Higher Power before the Sponsor moment.',
+  // Artifact 6's line named the superseded framing; the rule it states is
+  // unchanged and now attaches to the God at the Center Reveal.
+  'Do not reveal God at the Center before the God at the Center moment.',
   'Do not reveal the autobiographical connection before the final reveal.',
   'Do not over-explain WISER Pivots™ before participants recognize recalculation themselves.',
   'Do not allow the debrief to consume the next agenda item.',

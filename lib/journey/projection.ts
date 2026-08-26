@@ -22,11 +22,11 @@ import { projectedMinutesRemaining, WINDOW_MINUTES } from './timing'
 //                          quietly become unavailable — a team that can read
 //                          it can see the consequence coming
 //   whenToUse              the facilitator's guidance on each progress prompt
-//   the debrief            Sponsor / Higher Power and the autobiographical
+//   the debrief            God at the Center and the autobiographical
 //                          reveal are not merely excluded here: the display
 //                          route never imports lib/journey/debrief.ts, so they
 //                          are not in its bundle at all
-//   Sponsor / Higher Power and the closing reveal — not modelled here at all
+//   God at the Center and the autobiographical reveal — not modelled at all
 //
 // The projection is built by listing what goes on, never by deleting what
 // should not. A field added to JourneyState is invisible to the room until

@@ -83,14 +83,11 @@ const eventNames: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
   text: event.name,
   where: 'Participant Display, event card heading; Facilitator Console; Journey Record',
   audience: 'participant',
-  provenance: event.id === 'recalculating' ? 'conflict' : 'owner-approved',
-  source: CARDS,
-  ...(event.id === 'recalculating'
-    ? {
-        conflict:
-          'Artifacts 2, 3, 4, 5 and 6 spell it "GPS: Recalculating..." with three periods; Artifact 7 §1 uses the ellipsis character "GPS: Recalculating…".',
-      }
-    : {}),
+  provenance: 'owner-approved',
+  source:
+    event.id === 'recalculating'
+      ? 'Owner ruling, 25 August 2026 — ellipsis character, consistently'
+      : CARDS,
 }))
 
 const eventTaglines: ContentEntry[] = ROAD_EVENT_LIBRARY.map((event) => ({
@@ -123,25 +120,17 @@ const roadmapCheck: ContentEntry = {
   source: `${CARDS} — ROADMAP CHECK, identical on all eight cards`,
 }
 
-const recalculationQuestions: ContentEntry[] = RECALCULATION_PROMPTS.map((prompt) => {
-  const conflicts: Partial<Record<string, string>> = {
-    destinationValid:
-      'Artifact 3 GPS card: "Is the Destination the same?" · Owner instruction §K: "Does the Destination still make sense?"',
-    milestoneToChange:
-      'Artifact 3 GPS card: "Which milestone needs to move?" · Owner instruction §K: "Which milestone needs to change?" · Artifact 4: "Which part of the roadmap changes?" · Artifact 5: "What part of my road needs to move?"',
-  }
-  const conflict = conflicts[prompt.key]
-  return {
-    group: 'A. Road Event participant text',
-    id: `recalculation.${prompt.key}`,
-    text: prompt.label,
-    where: 'Participant Display during GPS: Recalculating…; Facilitator Console capture form',
-    audience: 'participant',
-    provenance: conflict ? 'conflict' : 'owner-approved',
-    source: `${CARDS} — GPS card, PUSH WITHOUT SOLVING`,
-    ...(conflict ? { conflict } : {}),
-  }
-})
+const recalculationQuestions: ContentEntry[] = RECALCULATION_PROMPTS.map((prompt) => ({
+  group: 'A. Road Event participant text',
+  id: `recalculation.${prompt.key}`,
+  text: prompt.label,
+  where: 'Participant Display during GPS: Recalculating…; Facilitator Console capture form',
+  audience: 'participant',
+  provenance: 'owner-approved',
+  // Canonical, and deliberately not the printed wording. The cards are on the
+  // revision list; the software does not revert to them.
+  source: 'Owner ruling — the five canonical GPS: Recalculating… questions',
+}))
 
 const impactLabels: ContentEntry[] = IMPACT_CHOICES.map((choice) => ({
   group: 'A. Road Event participant text',
@@ -180,9 +169,8 @@ const progressPromptText: ContentEntry[] = PROGRESS_PROMPTS.map((prompt) => ({
   text: prompt.text,
   where: 'Participant Display, when the facilitator puts it up',
   audience: 'participant',
-  provenance: prompt.conflict ? 'conflict' : 'owner-approved',
+  provenance: 'owner-approved',
   source: prompt.source,
-  ...(prompt.conflict ? { conflict: prompt.conflict } : {}),
 }))
 
 const progressPromptGuidance: ContentEntry[] = PROGRESS_PROMPTS.filter((p) => p.whenToUse).map(
@@ -298,15 +286,10 @@ const debriefAsks: ContentEntry[] = DEBRIEF_SEQUENCE.flatMap((moment) =>
     text: ask,
     where: `Facilitator Console, debrief panel, ${moment.time}. Spoken aloud; never rendered to the room`,
     audience: 'facilitator' as const,
-    provenance:
-      moment.id === 'sponsor' && index < 2 ? ('conflict' as const) : ('owner-approved' as const),
+    provenance: moment.ownerWordingPending
+      ? ('system-written' as const)
+      : ('owner-approved' as const),
     source: DEBRIEF,
-    ...(moment.id === 'sponsor' && index < 2
-      ? {
-          conflict:
-            'Artifact 9 §8 gives a shorter lead-in: "You managed the project. You built a team. You found resources. You made decisions. There is another project role we have not talked about yet—the Sponsor." The final question is identical in both.',
-        }
-      : {}),
   })),
 )
 
@@ -316,8 +299,12 @@ const debriefNotes: ContentEntry[] = DEBRIEF_SEQUENCE.map((moment) => ({
   text: moment.note,
   where: 'Facilitator Console, debrief panel',
   audience: 'facilitator',
-  provenance: 'owner-approved',
-  source: `${DEBRIEF} — FACILITATOR NOTE`,
+  // The two reveal moments carry an OWNER WORDING PENDING marker rather than
+  // approved copy, so they are not counted as approved.
+  provenance: moment.ownerWordingPending ? 'system-written' : 'owner-approved',
+  source: moment.ownerWordingPending
+    ? 'OWNER WORDING PENDING — owner ruling, 25 August 2026'
+    : `${DEBRIEF} — FACILITATOR NOTE`,
 }))
 
 const debriefRules: ContentEntry[] = [

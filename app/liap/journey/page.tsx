@@ -26,8 +26,8 @@ export const dynamic = 'force-dynamic'
 //
 // JourneyMap imports the channel and a type. It does not import the event
 // library, the prompt library, the timing constants, the dependency register,
-// the facilitator's stored session, or lib/journey/debrief.ts — so the Sponsor
-// / Higher Power question and the autobiographical reveal are not in the
+// the facilitator's stored session, or lib/journey/debrief.ts — so the God
+// at the Center Reveal and the autobiographical reveal are not in the
 // bundle this window loads. tests/liap-journey.test.ts walks this route's
 // import graph and asserts it.
 //

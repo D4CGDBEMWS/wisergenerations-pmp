@@ -19,8 +19,8 @@ import { impactLabel } from './impact'
 // ── PRIVATE NOTES STAY OUT ─────────────────────────────────────────────────
 //
 // The record is handed to the team, so it carries reveal text and the team's
-// own words — never the facilitator's private note, and never the Sponsor /
-// Higher Power or closing reveal, which belong to the facilitated debrief.
+// own words — never the facilitator's private note, and never the God at the
+// Center or autobiographical reveal, which belong to the facilitated debrief.
 // ---------------------------------------------------------------------------
 
 export interface RecordEntry {

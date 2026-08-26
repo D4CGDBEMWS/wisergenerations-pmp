@@ -300,6 +300,77 @@ export function assertSendable(id: WorkshopEmailId): void {
   }
 }
 
+/**
+ * Email 3's "[tomorrow/today]", decided by the calendar and nothing else.
+ *
+ * ── WHY THIS IS ARITHMETIC AND NOT A JUDGEMENT ─────────────────────────────
+ *
+ * Owner ruling: the following calendar day is "tomorrow", the current calendar
+ * day is "today", and anything else means Email 3 does not go out on this
+ * template at all. No model chooses the word — a wrong one tells a customer
+ * the workshop is today when it is next week.
+ *
+ * Returning null rather than guessing is the important half. "Send it anyway
+ * and pick the closer word" is exactly the helpfulness that produces a
+ * confidently wrong email at 6am.
+ *
+ * Both dates are compared as CALENDAR days in the workshop's own time zone —
+ * an instant nine hours before a 9am start can be a different date to the
+ * sender and the recipient, and the participant's calendar is the one that
+ * matters.
+ */
+export type SameOrNextDay = 'today' | 'tomorrow'
+
+export function todayOrTomorrow(sendDay: string, workshopDay: string): SameOrNextDay | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(sendDay) || !/^\d{4}-\d{2}-\d{2}$/.test(workshopDay)) {
+    return null
+  }
+  if (sendDay === workshopDay) return 'today'
+
+  // UTC arithmetic on two date-only strings: no local offset can shift a
+  // midnight here, because there is no clock time to shift.
+  const send = utcDay(sendDay)
+  const workshop = utcDay(workshopDay)
+  if (send === null || workshop === null) return null
+
+  const days = Math.round((workshop - send) / 86_400_000)
+  return days === 1 ? 'tomorrow' : null
+}
+
+/**
+ * A calendar day as a UTC timestamp, or null if that day does not exist.
+ *
+ * The round-trip matters: Date.parse happily accepts "2026-02-29" and hands
+ * back 1 March, which would make the day before a non-existent date read as
+ * "tomorrow". A date that does not survive being formatted back is not a date.
+ */
+function utcDay(day: string): number | null {
+  const parsed = Date.parse(`${day}T00:00:00Z`)
+  if (Number.isNaN(parsed)) return null
+  return new Date(parsed).toISOString().slice(0, 10) === day ? parsed : null
+}
+
+/**
+ * Renders Email 3, or refuses.
+ *
+ * Null means do not send this template today — not "send it with a blank", and
+ * not "send it with a best guess".
+ */
+export function renderFinalReminder(
+  sendDay: string,
+  workshopDay: string,
+  values: Partial<Record<MergeField, string>>,
+): { subject: string; body: string } | null {
+  const when = todayOrTomorrow(sendDay, workshopDay)
+  if (when === null) return null
+  const email = workshopEmail('final-reminder')
+  assertSendable(email.id)
+  return {
+    subject: renderBody(email.subject, values),
+    body: renderBody(email.body, values).replace('[tomorrow/today]', when),
+  }
+}
+
 /** Placeholders actually present in a body, in order of appearance. */
 export function mergeFieldsIn(body: string): string[] {
   return [...body.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1])

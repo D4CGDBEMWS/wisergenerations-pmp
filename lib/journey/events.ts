@@ -137,12 +137,11 @@ export const ROAD_EVENT_LIBRARY: readonly RoadEvent[] = [
   },
   {
     id: 'recalculating',
-    // NOTE FOR OWNER REVIEW: the approved artifacts spell this two ways —
-    // "GPS: Recalculating..." (three periods) in Artifacts 2, 3, 4, 5 and 6,
-    // and "GPS: Recalculating…" (ellipsis character) in Artifact 7 §1. The
-    // three-period form is used here because it is the majority and appears on
-    // the participant-facing Scenario Card. Flagged as a conflict; not decided.
-    name: 'GPS: Recalculating...',
+    // Owner ruling, 25 August 2026: the ellipsis character, consistently.
+    // Artifacts 2, 3, 4, 5 and 6 print three periods and now diverge from the
+    // software; that is on the physical-artifact revision list, not something
+    // to reconcile by reverting the code.
+    name: 'GPS: Recalculating…',
     tagline: 'New information. New route. Keep going.',
     readToTeam:
       'Something changed. Pause long enough to see what is still true, what is no longer true, and what must change in the road ahead.',

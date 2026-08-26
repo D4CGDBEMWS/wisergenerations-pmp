@@ -275,7 +275,7 @@ export interface JourneyState {
 // The participant display is projected onto a wall or shared to a call. The
 // facilitator's console is private on their laptop. Everything that must never
 // reach the wall — private notes, the events not yet revealed, the real time
-// budget and its buffer, the Sponsor / Higher Power reveal, the closing reveal
+// budget and its buffer, the God at the Center reveal, the closing reveal
 // — is not "hidden with CSS" and not "filtered on render".
 //
 // It is NEVER PUT ON THE WIRE. The facilitator window broadcasts a

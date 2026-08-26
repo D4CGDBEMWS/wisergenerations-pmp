@@ -10,7 +10,7 @@ import type { JourneyState } from '@/lib/journey/types'
 //
 // This is the only component that imports lib/journey/debrief.ts, and it is
 // imported only by the facilitator console. That import chain is the whole
-// guarantee: the Sponsor / Higher Power question and the autobiographical
+// guarantee: the God at the Center Reveal and the autobiographical
 // reveal are not in the bundle the projected window loads, so they cannot leak
 // through a tooltip, an alt attribute, view-source, a stray render or a future
 // component that forgot. A test walks the display route's import graph and

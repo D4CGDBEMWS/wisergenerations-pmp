@@ -12,11 +12,12 @@
 // Two survive because the owner ratified them directly: "Research before you
 // decide." and "What kind of help do you need?".
 //
-// ── THREE OF THE APPROVED PROMPTS CONFLICT WITH EACH OTHER ─────────────────
+// ── THREE CONFLICTS, NOW RULED ─────────────────────────────────────────────
 //
-// Artifacts 3 and 9 give the same prompt in different words. Those three are
-// marked below and carry the Artifact 3 wording provisionally, because
-// choosing between two approved artifacts is the owner's decision, not mine.
+// Artifacts 3 and 9 gave three of these prompts in different words. The owner
+// ruled on 25 August 2026 and each now names the ruling as its source. Two
+// follow Artifact 3, one follows Artifact 9; the losing variants are on the
+// physical-artifact revision list rather than kept here as alternatives.
 //
 // ── THEY ARE ALL QUESTIONS, AND THAT IS THE POINT ──────────────────────────
 //
@@ -122,9 +123,10 @@ export const PROGRESS_PROMPTS: readonly ProgressPrompt[] = [
   },
   {
     id: 'do-nothing',
+    // Owner ruling: this wording. Artifact 9 §6's "What happens if nothing
+    // changes?" is superseded and on the revision list.
     text: 'What happens if you do nothing?',
-    source: A3,
-    conflict: `${A9} gives "What happens if nothing changes?" for the same moment.`,
+    source: `Owner ruling, 25 August 2026; wording as ${A3}`,
   },
   {
     id: 'still-true',
@@ -138,16 +140,18 @@ export const PROGRESS_PROMPTS: readonly ProgressPrompt[] = [
   },
   {
     id: 'road-or-destination',
+    // Owner ruling: this wording, with the capitalised Destination. Artifact
+    // 9 §6's "route / destination" variant is superseded.
     text: 'Does the road change, or does the Destination change?',
-    source: A3,
-    conflict: `${A9} gives "Does the route change, or does the destination change?" — different nouns and different capitalisation.`,
+    source: `Owner ruling, 25 August 2026; wording as ${A3}`,
   },
   {
     id: 'next-wise-move',
-    text: 'What is the next wise move?',
-    source: A3,
-    conflict:
-      'Artifact 9 and the Artifact 3 GPS card both give "What is your next wise move?" — the possessive differs.',
+    // Owner ruling: the possessive form. Artifact 3's Quick Prompts list drops
+    // it; Artifact 9 and the Artifact 3 GPS card both carry it, and the ruling
+    // follows them. The Quick Prompts line is on the revision list.
+    text: 'What is your next wise move?',
+    source: `Owner ruling, 25 August 2026; wording as ${A9} and the Artifact 3 GPS card`,
   },
 ]
 

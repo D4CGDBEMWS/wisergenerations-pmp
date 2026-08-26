@@ -133,7 +133,7 @@ export const MY_PROJECT_OPENING = [
   { id: 'project', label: 'MY PROJECT', prompt: 'What project did I bring with me?' },
   {
     id: 'why',
-    label: 'WHY THIS MATTERS',
+    label: 'WHY IT MATTERS',
     prompt: 'Why is completing this important to me—and who else may benefit?',
   },
 ] as const
@@ -141,7 +141,21 @@ export const MY_PROJECT_OPENING = [
 export type MyProjectOpeningId = (typeof MY_PROJECT_OPENING)[number]['id']
 
 /**
- * CHECK THE ROAD BEFORE YOU GO — Artifact 5, verbatim, in the printed order.
+ * CHECK THE ROAD BEFORE YOU GO — Artifact 5, in the printed order.
+ *
+ * ── FOUR LABELS FOLLOW THE COMPLETED LIFE PROJECT PLAN™, BY OWNER RULING ───
+ *
+ * MY PROJECT is the transfer surface — the participant's real life, not the
+ * game — so its labels take the Plan's practical vocabulary rather than the
+ * Journey's metaphor: PEOPLE AND SUPPORT, DEPENDENCIES AND BACKUP, WHY IT
+ * MATTERS, LIFELINES. Owner ruling, 25 August 2026.
+ *
+ * The Journey Game keeps its own metaphor language. Nothing was replaced there
+ * merely because MY PROJECT reads more plainly: a team meets No Signal on the
+ * road and a person plans around a dependency at their kitchen table, and
+ * those are allowed to be different words for the same idea.
+ *
+ * The prompts themselves remain Artifact 5's, verbatim.
  *
  * "Your roadmap is more than milestones. Look at what can help, what can
  * interfere, and what you will do when the road changes."
@@ -154,7 +168,7 @@ export type MyProjectOpeningId = (typeof MY_PROJECT_OPENING)[number]['id']
  * meets the same words on their own sheet, not synonyms for them.
  */
 export const MY_PROJECT_EXTRAS = [
-  { id: 'team', label: 'TEAM / SUPPORT', prompt: 'Who needs to be part of this journey?' },
+  { id: 'team', label: 'PEOPLE AND SUPPORT', prompt: 'Who needs to be part of this journey?' },
   { id: 'resources', label: 'RESOURCES', prompt: 'What do I already have? What do I still need?' },
   { id: 'risk-ahead', label: 'RISK AHEAD', prompt: 'What might get in the way?' },
   { id: 'issue-now', label: 'ISSUE NOW', prompt: 'What is already a problem?' },
@@ -166,13 +180,13 @@ export const MY_PROJECT_EXTRAS = [
   },
   {
     id: 'backup',
-    label: 'NO SIGNAL / BACKUP',
+    label: 'DEPENDENCIES AND BACKUP',
     prompt: 'What am I depending on? What is my backup?',
   },
-  { id: 'lifeline', label: 'LIFELINE', prompt: 'Who can I call when I need help?' },
+  { id: 'lifeline', label: 'LIFELINES', prompt: 'Who can I call when I need help?' },
   {
     id: 'recalculating',
-    label: 'GPS: RECALCULATING...',
+    label: 'GPS: RECALCULATING…',
     prompt:
       'When something changes: What is still true? What changed? What part of my road needs to move?',
   },

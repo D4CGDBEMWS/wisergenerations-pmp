@@ -7,6 +7,8 @@ import {
   assertSendable,
   mergeFieldsIn,
   renderBody,
+  renderFinalReminder,
+  todayOrTomorrow,
   workshopEmail,
 } from '@/lib/liap/workshop/copy'
 import {
@@ -312,6 +314,59 @@ describe('the workshop adds no route, payment or send path yet', () => {
       for (const forbidden of ['fetch(', "'use server'", 'sql`', 'upsertSubscriber', 'sendEmail']) {
         expect(text, `${file} / ${forbidden}`).not.toContain(forbidden)
       }
+    }
+  })
+})
+
+describe('Email 3 decides today or tomorrow by the calendar', () => {
+  it('says tomorrow the day before and today on the day', () => {
+    expect(todayOrTomorrow('2026-09-13', '2026-09-14')).toBe('tomorrow')
+    expect(todayOrTomorrow('2026-09-14', '2026-09-14')).toBe('today')
+  })
+
+  it('refuses rather than guessing on any other gap', () => {
+    // "Otherwise → do not send Email 3 using that template." Sending it with
+    // the closer-sounding word is how a customer is told the workshop is today
+    // when it is next week.
+    expect(todayOrTomorrow('2026-09-12', '2026-09-14')).toBeNull()
+    expect(todayOrTomorrow('2026-09-15', '2026-09-14')).toBeNull()
+    expect(todayOrTomorrow('2026-08-14', '2026-09-14')).toBeNull()
+    expect(todayOrTomorrow('not-a-date', '2026-09-14')).toBeNull()
+  })
+
+  it('crosses month and year boundaries', () => {
+    expect(todayOrTomorrow('2026-08-31', '2026-09-01')).toBe('tomorrow')
+    expect(todayOrTomorrow('2026-12-31', '2027-01-01')).toBe('tomorrow')
+    // And a leap day, because 2028 has one.
+    expect(todayOrTomorrow('2028-02-28', '2028-02-29')).toBe('tomorrow')
+    expect(todayOrTomorrow('2028-02-29', '2028-03-01')).toBe('tomorrow')
+    // NEGATIVE CONTROL — 2026 does not, so the 28th is the day before March.
+    expect(todayOrTomorrow('2026-02-28', '2026-03-01')).toBe('tomorrow')
+    expect(todayOrTomorrow('2026-02-28', '2026-02-29')).toBeNull()
+  })
+
+  it('fills the placeholder and never leaves it in the body', () => {
+    const rendered = renderFinalReminder('2026-09-13', '2026-09-14', {
+      'First Name': 'Crystal',
+      Date: '14 September 2026',
+      'Time + Time Zone': '10:00 AM ET',
+      'Workshop Link': 'https://example.test/join',
+    })
+    expect(rendered).not.toBeNull()
+    expect(rendered!.body).toContain('Virtual Workshop is tomorrow.')
+    expect(rendered!.body).not.toContain('[tomorrow/today]')
+    expect(rendered!.subject).toBe('Your LIAP Virtual Workshop — 14 September 2026')
+  })
+
+  it('returns nothing at all when the template does not apply', () => {
+    expect(renderFinalReminder('2026-09-01', '2026-09-14', {})).toBeNull()
+  })
+
+  it('is arithmetic, not a judgement', () => {
+    // No model call, no heuristic, no "closest match" anywhere in the path.
+    const text = code('lib/liap/workshop/copy.ts')
+    for (const forbidden of ['anthropic', 'openai', 'prompt(', 'Math.round(Math.random']) {
+      expect(text.toLowerCase(), forbidden).not.toContain(forbidden.toLowerCase())
     }
   })
 })
