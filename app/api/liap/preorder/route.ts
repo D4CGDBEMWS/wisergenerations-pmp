@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { isEnabled } from '@/lib/flags'
 import { LIAP_BOOK } from '@/lib/liap/product'
+import { isWellFormedCode } from '@/lib/liap/partners'
 
 // ---------------------------------------------------------------------------
 // Book preorder checkout. §4.
@@ -44,6 +45,26 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     )
   }
 
+  // The partner code the visitor arrived with, if any. It reached the book
+  // page in the URL after a /liap/go/{code} scan and is posted back here.
+  //
+  // VALIDATED, NOT TRUSTED. Shape-checked before it goes anywhere near Stripe
+  // metadata, and resolved against the partners table only at fulfilment. A
+  // code is a public string off a postcard: it selects who gets credit for a
+  // sale and can do nothing else. It cannot change the price, the product, or
+  // what the buyer receives — this route reads it and passes it on, and there
+  // is no branch below that behaves differently because of it.
+  let referral: string | null = null
+  try {
+    const body = await req.json().catch(() => null)
+    const candidate = body && typeof body === 'object' ? (body as { p?: unknown }).p : null
+    if (typeof candidate === 'string' && isWellFormedCode(candidate.trim())) {
+      referral = candidate.trim()
+    }
+  } catch {
+    // A malformed body is not a reason to refuse somebody's purchase.
+  }
+
   try {
     const stripe = new Stripe(secret, { apiVersion: '2025-08-27.basil' })
     const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wisergenerations.com'
@@ -67,7 +88,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       // The webhook matches on this. It is the ONLY thing that distinguishes a
       // LIAP preorder from a PMP purchase, so it is not optional and not
       // shared with any other product's marker.
-      metadata: { product: LIAP_BOOK.metadataKey },
+      metadata: {
+        product: LIAP_BOOK.metadataKey,
+        ...(referral ? { referral } : {}),
+      },
       payment_intent_data: { metadata: { product: LIAP_BOOK.metadataKey } },
       // Collected here so the customer never types it twice — §24 asks that
       // the results email reuse the checkout address rather than re-prompting.

@@ -36,6 +36,23 @@ export type FeatureFlag =
   //
   // Default off. Version 1 of both is built and tested, neither is authorised.
   | 'LIAP_GAME_PREVIEW'
+  // Community partner referral codes and /liap/go/{code}.
+  //
+  // Standalone, and never coupled to LIAP: partner QR codes have to work the
+  // day the signs go up, which is not the same day the hub opens. Switching
+  // this on does not open the book, the assessment or the game, and switching
+  // any of those on does not expose the referral route.
+  //
+  // ── THE FACT THAT MATTERS MOST ABOUT THIS FLAG ────────────────────────────
+  //
+  // Like the book QR, a printed referral code cannot be recalled. Once a
+  // postcard is in a shop window this flag protects nothing that happens
+  // after it — it protects the period before the first print, which is
+  // exactly where this project is now.
+  //
+  // Default off, and off in every environment. No QR has been generated and
+  // no referral code exists, so nothing is stranded by it being off.
+  | 'LIAP_PARTNERS'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */

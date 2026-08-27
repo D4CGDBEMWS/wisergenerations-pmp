@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { KeepReferral } from '@/components/liap/KeepReferral'
 
 export const metadata = {
   title: 'Living Is a Project | Wiser Generations',
@@ -71,6 +72,7 @@ export default function LiapHubPage() {
   return (
     <main className="bg-white">
       <LiapPageView event="liap_hub_view" />
+      <KeepReferral />
 
       {/* Hero */}
       <section className="bg-navy text-white">
