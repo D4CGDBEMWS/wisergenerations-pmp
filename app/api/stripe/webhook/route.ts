@@ -11,6 +11,7 @@ import {
 } from '@/lib/entitlements'
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
+import { creditBookPurchase } from '@/lib/liap/attribution'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
 import Stripe from 'stripe'
@@ -407,7 +408,7 @@ export async function POST(request: NextRequest) {
           liapSession.customer_email || liapSession.customer_details?.email || ''
 
         if (isLiapPreorder(liapSession.metadata) && liapEmail && liapSession.payment_status === 'paid') {
-          await fulfilPreorder({
+          const result = await fulfilPreorder({
             email: liapEmail,
             name: liapSession.customer_details?.name ?? null,
             stripeCustomerId:
@@ -417,6 +418,20 @@ export async function POST(request: NextRequest) {
               typeof liapSession.payment_intent === 'string' ? liapSession.payment_intent : null,
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
+          })
+
+          // Credit the community partner whose code brought this buyer, if
+          // there was one. AFTER fulfilment and deliberately not before: the
+          // customer's access is the thing that must not fail, and
+          // creditBookPurchase swallows its own errors so a measurement
+          // problem cannot cost somebody the product they paid for.
+          //
+          // Keyed on the checkout session id, so Stripe's webhook retries
+          // credit one sale once.
+          await creditBookPurchase({
+            referralCode: liapSession.metadata?.referral ?? null,
+            customerId: result.customerId,
+            outcomeRef: liapSession.id,
           })
         }
       }

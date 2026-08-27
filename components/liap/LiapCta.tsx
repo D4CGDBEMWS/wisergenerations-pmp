@@ -14,7 +14,32 @@ import { trackLiap } from '@/lib/liap/analytics'
 // system error reaches a customer, and a payment button that silently does
 // nothing is the version people abandon — so a failure says what happened and
 // leaves the button usable.
+//
+// ── CARRYING THE PARTNER CODE ──────────────────────────────────────────────
+//
+// A visitor who scanned a partner's QR arrived here via /liap/go/{code},
+// which put `?p={code}` on the URL. That code is posted with the checkout
+// request so the sale can be credited to the shop, church or barbershop whose
+// sign they scanned.
+//
+// Read from the URL at click time rather than held in state, because that is
+// where it actually is and there is nothing to keep in sync. No cookie is
+// involved: pressing a preorder button is an intentional act, and an
+// intentional act needs no tracking to attribute.
+//
+// The code is a public string off a postcard. It selects who gets credit and
+// nothing else — the price and the product come from the server.
 // ---------------------------------------------------------------------------
+
+/** The partner code on the current URL, if the visitor arrived with one. */
+function referralFromUrl(): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    return new URLSearchParams(window.location.search).get('p')
+  } catch {
+    return null
+  }
+}
 
 export function LiapCta({
   label = 'Preorder + unlock my assessment',
@@ -32,10 +57,11 @@ export function LiapCta({
     trackLiap('liap_preorder_clicked')
 
     try {
+      const referral = referralFromUrl()
       const res = await fetch('/api/liap/preorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: '{}',
+        body: JSON.stringify(referral ? { p: referral } : {}),
       })
       const data = (await res.json()) as { url?: string; error?: string }
 
