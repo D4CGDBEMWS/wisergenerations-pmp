@@ -2,11 +2,12 @@ import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { LiapCta } from '@/components/liap/LiapCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
+import { publicationDate } from '@/lib/liap/launch'
 
 export const metadata = {
   title: 'Living Is a Project…Are You Ready? | Wiser Generations',
   description:
-    'Preorder Living Is a Project…Are You Ready? and receive the Life Project-Ready™ Assessment at no additional charge. Publishing October 2026 from Goshen Publishing.',
+    `Preorder Living Is a Project…Are You Ready? and receive the Life Project-Ready™ Assessment at no additional charge. Publishing ${publicationDate()} from Goshen Publishing.`,
 }
 
 // ---------------------------------------------------------------------------
@@ -21,7 +22,7 @@ export const metadata = {
 const FAQ = [
   {
     q: 'When does the book ship?',
-    a: 'Publication is October 2026. Preorder customers are charged now and receive their copy on release.',
+    a: `Publication is ${publicationDate()}. Preorder customers are charged now and receive their copy on release.`,
   },
   {
     q: 'When do I get the assessment?',
@@ -54,7 +55,7 @@ export default function LiapBookPage() {
         <div className="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-              Goshen Publishing · October 2026
+              Goshen Publishing · {publicationDate()}
             </p>
             <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-5xl">
               Living Is a Project&hellip;Are You Ready?
@@ -113,7 +114,7 @@ export default function LiapBookPage() {
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-gray-400">Publishes</dt>
-                <dd className="font-semibold text-white">October 2026</dd>
+                <dd className="font-semibold text-white">{publicationDate()}</dd>
               </div>
             </dl>
           </div>

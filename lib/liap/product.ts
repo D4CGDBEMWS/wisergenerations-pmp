@@ -13,6 +13,8 @@
 // $24.99, set by the business owner on 20 August 2026.
 // ---------------------------------------------------------------------------
 
+import { publicationDate } from './launch'
+
 const AMOUNT_CENTS = 2499
 
 export const LIAP_BOOK = {
@@ -32,7 +34,12 @@ export const LIAP_BOOK = {
   currency: 'usd',
   format: 'Hardcover',
   publisher: 'Goshen Publishing',
-  publishesOn: 'October 2026',
+  /**
+   * Derived, never typed. The canonical value lives in lib/liap/launch.ts;
+   * this field had no readers at all and still said October, which is exactly
+   * how a second source of truth goes stale without anybody noticing.
+   */
+  publishesOn: publicationDate(),
   /** Stripe metadata marker the webhook matches on. */
   metadataKey: 'liap-book-preorder',
 } as const

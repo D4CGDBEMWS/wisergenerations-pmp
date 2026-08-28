@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { publicationDate } from '@/lib/liap/launch'
 
 export const metadata = {
   title: 'Your assessment is unlocked | Wiser Generations',
@@ -29,7 +30,7 @@ export default function PreorderCompletePage() {
       </h1>
 
       <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-        <p>Your preorder is confirmed. Your copy ships when the book publishes in October 2026.</p>
+        <p>Your preorder is confirmed. Your copy ships when the book publishes in {publicationDate()}.</p>
         <p>
           Now let&rsquo;s determine where you are and what deserves your attention next. It takes
           about fifteen minutes, and it saves as you go.

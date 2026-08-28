@@ -4,6 +4,7 @@ import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { isEnabled } from '@/lib/flags'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { isWellFormedCode } from '@/lib/liap/partners'
+import { publicationDate } from '@/lib/liap/launch'
 
 // ---------------------------------------------------------------------------
 // Book preorder checkout. §4.
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             product_data: {
               name: `${LIAP_BOOK.name} — Preorder`,
               description:
-                'Preorder the hardcover, publishing October 2026, and unlock the Life Project-Ready™ Assessment immediately.',
+                `Preorder the hardcover, publishing ${publicationDate()}, and unlock the Life Project-Ready™ Assessment immediately.`,
             },
           },
         },
