@@ -30,11 +30,6 @@ const milestones = [
     title: 'Opening the Door Wider',
     body: 'Crystal launched Wiser Generations Int\'l to extend her reach beyond corporate clients and serve career transitioners, veterans, and early-career professionals — the people who need a strong mentor most and benefit most from the PMP credential.'
   },
-  {
-    year: 'Today',
-    title: '87% First-Attempt Pass Rate',
-    body: 'With 500+ professionals trained and a growing community of certified PMs, Crystal continues to teach, mentor, and advocate for the next generation of project leaders.'
-  }
 ]
 
 const credentials = [

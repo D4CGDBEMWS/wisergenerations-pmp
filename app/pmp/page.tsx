@@ -24,10 +24,6 @@ export const metadata: Metadata = {
                               q: 'How long does it take to prepare for the PMP® exam?',
                                   a: 'Most of our students go from enrollment to exam-ready in about 12 weeks, studying 8–12 hours per week. We build a personalized study plan with you during onboarding.',
                                     },
-                                      {
-                                          q: 'What is the PMP® exam pass rate for Wiser Generations Int\'l students?',
-                                              a: '87% of our students pass on the first attempt — well above the PMI global average. And if you need a second attempt, Professional and Executive tier students are covered by our pass guarantee: we coach you until you pass.',
-                                                },
                                                   {
                                                       q: 'What happens if I don\'t pass on the first try?',
                                                           a: 'PMP® Professional and Executive tier students are covered by our pass guarantee — restudy free if needed. We schedule a debrief with Crystal to identify weak areas and build a focused re-test plan.',

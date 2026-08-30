@@ -50,10 +50,6 @@ const faqCategories = [
       {
         q: 'How much time should I expect to study each week?',
         a: 'Most students spend 8–12 hours per week between live sessions, reading, and practice exams. The amount varies by your background — PMs with more experience typically need less review time, while career transitioners may need more. Crystal builds a personalized study plan for each student based on their starting point.'
-      },
-      {
-        q: 'What is your pass rate?',
-        a: 'Students who complete the Wiser Generations program pass the PMP on their first attempt at an 87% rate — well above the industry average. This is the result of mentor-led learning, real-world application, and accountability built into every cohort.'
       }
     ]
   },

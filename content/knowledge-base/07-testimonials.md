@@ -37,12 +37,10 @@ available and point to the site.
 
 Only these numbers may be cited:
 
-- **87%** first-attempt PMP pass rate among students who complete the program
 - **694** professionals trained
 - **35** PMI contact hours included in the PMP program at no extra cost
 - **12 weeks** average time from enrollment to exam-ready
 - **20+ years** of enterprise PM experience (Crystal)
 - **100%** PMI Exam Content Outline (ECO) aligned curriculum
 
-Do not compute, extrapolate, or restate these as different figures (for example, do not
-convert 87% into a number of students, or describe the pass rate as "nearly 90%").
+Do not compute, extrapolate, or restate these as different figures.

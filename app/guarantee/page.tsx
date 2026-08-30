@@ -122,10 +122,7 @@ export default function GuaranteePage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Why We Can Offer This</p>
-              <h2 className="text-3xl font-bold text-navy mb-6">
-                A Guarantee Backed by 87% First-Attempt Success
-              </h2>
+              <h2 className="text-gold text-sm font-semibold tracking-widest uppercase mb-6">Why We Can Offer This</h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
                   The pass guarantee is not a marketing gimmick — it is a reflection of what actually

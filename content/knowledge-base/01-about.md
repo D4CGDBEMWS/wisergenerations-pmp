@@ -26,7 +26,6 @@ management experience. She personally leads the cohorts and mentors students.
 
 - PMI®-aligned curriculum and contact hours
 - Veteran-owned — U.S. Army veteran founder
-- 87% first-attempt PMP® pass rate among students who complete the program
 - 20+ years enterprise PM experience
 - Mentor-led: live cohorts plus 1:1 support
 - 694 professionals trained
