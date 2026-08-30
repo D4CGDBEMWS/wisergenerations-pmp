@@ -37,7 +37,7 @@ available and point to the site.
 
 Only these numbers may be cited:
 
-- **694** professionals trained
+- **500+** professionals trained
 - **35** PMI contact hours included in the PMP program at no extra cost
 - **12 weeks** average time from enrollment to exam-ready
 - **20+ years** of enterprise PM experience (Crystal)

@@ -94,12 +94,12 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 space-y-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-xs">&copy; {new Date().getFullYear()} Wiser Generations Int&apos;l. An Enterprise Academy Program. All rights reserved.</p>
+            <p className="text-gray-400 text-xs">&copy; {new Date().getFullYear()} Wiser Generations Int&apos;l. An Enterprise Academy Program. All rights reserved.</p>
             {/* The PMI trademark notice is required where PMI marks appear.
                 It appears here because this footer names PMP, CAPM and PMI —
                 on a shell that names none of them it is not applicable. */}
             {shell.showProgramDisclaimers && (
-              <p className="text-gray-600 text-xs text-center md:text-right max-w-md">
+              <p className="text-gray-400 text-xs text-center md:text-right max-w-md">
                 PMP&reg;, CAPM&reg;, and PMI&reg; are registered marks of the Project Management Institute, Inc. Wiser Generations Int&apos;l is not affiliated with PMI.
               </p>
             )}
@@ -110,7 +110,7 @@ export function Footer() {
               disclaimer under a page about navigating a bereavement reads as a
               mistake. Suppressed rather than rewritten: LEGAL REVIEW REQUIRED. */}
           {shell.showProgramDisclaimers && (
-            <p className="text-gray-600 text-[11px] leading-relaxed text-center md:text-left max-w-4xl">
+            <p className="text-gray-400 text-[11px] leading-relaxed text-center md:text-left max-w-4xl">
               Individual results vary. &quot;500+ professionals trained&quot; and similar
               figures reflect historical results from prior students and are not a guarantee of your outcome. Salary
               and earnings figures are general industry data, not a promise of income or employment. Testimonials

@@ -50,7 +50,7 @@ export default function HomeClient({ testimonials, calendly }: Props) {
               Book a Free Call →
             </a>
             <a href="/programs"
-              className="flex-1 sm:flex-none border border-white/40 text-white/60 font-normal px-5 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm text-center">
+              className="flex-1 sm:flex-none border border-white/60 text-white/90 font-normal px-5 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm text-center">
               View Programs
             </a>
           </div>
@@ -64,7 +64,7 @@ export default function HomeClient({ testimonials, calendly }: Props) {
         onMouseLeave={() => setIsPaused(false)}
       >
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">What Students Say</p>
+          <p className="text-gold-text text-sm font-bold uppercase tracking-widest mb-2">What Students Say</p>
           <h2 className="text-3xl font-bold text-navy mb-10">Graduates Speak for Themselves</h2>
 
           {/* Carousel container — fixed height prevents layout shift */}
@@ -83,7 +83,7 @@ export default function HomeClient({ testimonials, calendly }: Props) {
                 <blockquote className="text-lg md:text-xl font-medium text-navy leading-relaxed mb-5 max-w-2xl mx-auto">
                   {t.quote}
                 </blockquote>
-                <p className="text-gold font-bold text-lg">{t.name}</p>
+                <p className="text-gold-text font-bold text-lg">{t.name}</p>
                 <p className="text-gray-500 text-sm mt-1">{t.role}</p>
               </div>
             ))}

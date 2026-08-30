@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, useRef, useId } from 'react'
+import { useState, useRef, useId } from 'react'
 import { AUDIENCES, AUDIENCE_MAP, PROGRAM_HREF, OUTCOME_HEADLINE } from './audiences'
+import { useIsNarrow } from './use-is-narrow'
 
 // ---------------------------------------------------------------------------
 // PROTOTYPE — Phase 1A. Not authorized for merge or deployment.
@@ -43,19 +44,6 @@ interface Program {
   price: number
   description: string
   features: string[]
-}
-
-/** True once mounted on a viewport narrower than Tailwind's `md`. */
-function useIsNarrow(): boolean {
-  const [narrow, setNarrow] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)')
-    const sync = () => setNarrow(mq.matches)
-    sync()
-    mq.addEventListener('change', sync)
-    return () => mq.removeEventListener('change', sync)
-  }, [])
-  return narrow
 }
 
 export default function ProgramRouter({ programs }: { programs: Program[] }) {
@@ -101,7 +89,7 @@ export default function ProgramRouter({ programs }: { programs: Program[] }) {
     <section className="py-14 md:py-20 bg-white" aria-labelledby={`${uid}-heading`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
-          <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Find Your Program</p>
+          <p className="text-gold-text text-sm font-bold uppercase tracking-widest mb-2">Find Your Program</p>
           <h2 id={`${uid}-heading`} className="text-3xl md:text-4xl font-bold text-navy mb-4">Who Are You?</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">Select your situation and we&apos;ll show you the right program.</p>
         </div>
@@ -174,7 +162,7 @@ export default function ProgramRouter({ programs }: { programs: Program[] }) {
                       ▾
                     </span>
                   </span>
-                  <span className="block text-gold text-sm font-medium mb-2 md:mb-3">{p.audience}</span>
+                  <span className="block text-gold-text text-sm font-medium mb-2 md:mb-3">{p.audience}</span>
                   {OUTCOME_HEADLINE[p.id] && (
                     <span className="block text-navy font-bold text-base mb-2">{OUTCOME_HEADLINE[p.id]}</span>
                   )}

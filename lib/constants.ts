@@ -138,13 +138,6 @@ export const PROGRAMS = [
   },
 ]
 
-export const STATS = [
-  { value: '20+', label: 'Years Enterprise PM Experience' },
-  { value: 'Pass', label: 'Guarantee — We coach you until you pass' },
-  { value: '694', label: 'Professionals Trained' },
-  { value: '100%', label: 'PMI-Aligned Curriculum' },
-]
-
 // ---------------------------------------------------------------------------
 // CHECKOUT PROGRAMS — the single list of things a customer can actually buy.
 //
