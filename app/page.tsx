@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { PROGRAMS, STATS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
+import ProgramRouter from './components/ProgramRouter'
 import TrustSignals from '@/components/marketing/TrustSignals'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -130,6 +131,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* PROTOTYPE Phase 1A — the router moves here, directly under the hero,
+          so the question "who are you?" is asked before the page starts
+          answering it. Same component, same content, new position. */}
+      <ProgramRouter programs={PROGRAMS} />
+
       {/* Trust signals strip */}
       <TrustSignals />
 
@@ -142,12 +148,39 @@ export default function HomePage() {
             <p className="text-gray-500 mt-3 max-w-xl mx-auto">Your path from day one to PMP® certified and job-ready.</p>
           </div>
 
-          {/* Process graphic — Learn → Practice → Certified → Get Job-Ready */}
+          {/* PROTOTYPE Phase 1A — the same four-step journey, served as the
+              6KB vector rather than the 167KB raster, and stated once as an
+              ordered list underneath. The list is what a screen reader, a
+              search engine, a text zoom to 400% and a visitor on a failed
+              image request all get; the graphic is decoration over the top of
+              it, so it is marked as such rather than carrying the meaning in
+              an alt attribute nobody can select, translate or search. Labels
+              and captions are read straight off the artwork. */}
           <img
-            src="/HowWeDoIt_process_light.png"
-            alt="How we do it: Learn, Practice, Certified, Get Job-Ready"
+            src="/HowWeDoIt_process_light.svg"
+            alt=""
+            aria-hidden="true"
             className="block w-full max-w-[1100px] h-auto mx-auto rounded-2xl shadow-sm ring-1 ring-gray-100"
           />
+
+          <ol className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { step: 'Learn', sub: 'Mentor-led cohorts' },
+              { step: 'Practice', sub: '694-question bank' },
+              { step: 'Certified', sub: 'PMP® earned' },
+              { step: 'Get Job-Ready', sub: null },
+            ].map((s, i) => (
+              <li key={s.step} className="flex items-start gap-3 rounded-xl border border-gray-200 p-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy text-white text-sm font-bold">
+                  {i + 1}
+                </span>
+                <span>
+                  <span className="block font-bold text-navy">{s.step}</span>
+                  {s.sub && <span className="block text-sm text-gray-600">{s.sub}</span>}
+                </span>
+              </li>
+            ))}
+          </ol>
 
           {/* Social proof nudge below steps */}
           <div className="mt-10 bg-navy/5 border border-brand-blue/10 rounded-2xl p-6 text-center">
@@ -328,8 +361,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Interactive programs + testimonials */}
-      <HomeClient programs={PROGRAMS} testimonials={TESTIMONIALS} calendly={CALENDLY} />
+      {/* Testimonials + sticky booking bar */}
+      <HomeClient testimonials={TESTIMONIALS} calendly={CALENDLY} />
 
       {/* Crystal instructor section */}
       <section className="py-16 bg-white">
