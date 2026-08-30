@@ -205,7 +205,13 @@ describe('the chrome reads the shell rather than knowing links', () => {
     // legal language is invented anywhere.
     const footer = source('components/layout/Footer.tsx')
     expect(footer).toContain('registered marks of the Project Management Institute')
-    expect(footer).toContain('87% first-attempt pass rate')
+    // Anchored on a clause that survives. The pass-rate figure this used to
+    // point at was removed from every public surface by owner ruling, and the
+    // disclaimer was narrowed rather than deleted — which is exactly the
+    // property this test exists to protect.
+    expect(footer).toContain('Individual results vary')
+    expect(footer).toContain('500+ professionals trained')
+    expect(footer).not.toContain('87%')
     expect(code('components/layout/Footer.tsx').match(/shell\.showProgramDisclaimers/g)).toHaveLength(3)
   })
 

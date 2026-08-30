@@ -104,11 +104,7 @@ export default function GuaranteePage() {
       {/* Badge bar */}
       <section className="bg-gold py-6 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-navy">87%</div>
-              <div className="text-navy text-sm font-medium">First-attempt pass rate</div>
-            </div>
+          <div className="grid grid-cols-2 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-navy">500+</div>
               <div className="text-navy text-sm font-medium">Professionals trained</div>
@@ -133,8 +129,7 @@ export default function GuaranteePage() {
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
                   The pass guarantee is not a marketing gimmick — it is a reflection of what actually
-                  happens when students commit to the program. At an 87% first-attempt pass rate,
-                  the restudy guarantee almost never gets used.
+                  happens when students commit to the program.
                 </p>
                 <p>
                   Crystal&apos;s method is built on real-world application and mentor-led learning —

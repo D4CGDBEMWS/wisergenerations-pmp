@@ -33,7 +33,7 @@ const milestones = [
   {
     year: 'Today',
     title: '87% First-Attempt Pass Rate',
-    body: 'With 500+ professionals trained, an 87% first-attempt pass rate, and a growing community of certified PMs, Crystal continues to teach, mentor, and advocate for the next generation of project leaders.'
+    body: 'With 500+ professionals trained and a growing community of certified PMs, Crystal continues to teach, mentor, and advocate for the next generation of project leaders.'
   }
 ]
 
@@ -119,10 +119,6 @@ export default function AboutPage() {
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
                 </div>
-                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
-                  <p className="font-bold text-gold">87%</p>
-                  <p className="text-xs">First-attempt<br/>pass rate</p>
-                </div>
               </div>
             </div>
           </div>
@@ -173,10 +169,6 @@ export default function AboutPage() {
             </div>
             <div className="bg-navy rounded-2xl p-8 text-white">
               <div className="space-y-6">
-                <div className="text-center border-b border-gold/30 pb-6">
-                  <div className="text-4xl font-bold text-gold">87%</div>
-                  <div className="text-sm text-gray-300 mt-1">First-attempt PMP pass rate</div>
-                </div>
                 <div className="text-center border-b border-gold/30 pb-6">
                   <div className="text-4xl font-bold text-gold">500+</div>
                   <div className="text-sm text-gray-300 mt-1">Professionals trained</div>

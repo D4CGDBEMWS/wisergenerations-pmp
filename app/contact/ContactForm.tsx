@@ -65,7 +65,7 @@ export default function ContactForm() {
         </div>
         <h2 className="text-2xl font-bold text-navy">Message sent!</h2>
         <p className="mt-3 text-sm leading-6 text-gray-600">
-          Thanks for reaching out. Crystal or someone on the team will respond within 2 business days.
+          Thanks for reaching out. Crystal or someone on the team will respond within 24 hours.
         </p>
         <button
           type="button"
@@ -160,7 +160,7 @@ export default function ContactForm() {
         </button>
 
         <p className="text-center text-xs text-gray-500">
-          Crystal or a team member responds within 2 business days.
+          Crystal or a team member responds within 24 hours.
         </p>
       </form>
     </div>

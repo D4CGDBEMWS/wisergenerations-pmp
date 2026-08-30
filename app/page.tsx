@@ -47,7 +47,7 @@ export default function HomePage() {
     <>
       {/* Top announcement banner */}
       <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
-        🎯 Mentor-led PMP® &amp; CAPM® prep with an 87% first-attempt pass rate.{' '}
+        🎯 Mentor-led PMP® &amp; CAPM® prep.{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
           Book a free strategy call →
         </a>
@@ -72,11 +72,6 @@ export default function HomePage() {
               </p>
               {/* Stat strip — social proof immediately under headline */}
               <div className="flex flex-wrap gap-6 mb-6">
-                <div className="flex flex-col">
-                  <span className="text-4xl font-bold text-gold leading-none">87%</span>
-                  <span className="text-gray-400 text-xs mt-1">First-attempt pass rate</span>
-                </div>
-                <div className="w-px bg-white/20 hidden sm:block" />
                 <div className="flex flex-col">
                   <span className="text-4xl font-bold text-gold leading-none">500+</span>
                   <span className="text-gray-400 text-xs mt-1">Professionals trained</span>
@@ -129,10 +124,6 @@ export default function HomePage() {
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
                 </div>
-                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
-                  <p className="font-bold text-gold">87%</p>
-                  <p className="text-xs">First-attempt<br/>pass rate</p>
-                </div>
               </div>
             </div>
           </div>
@@ -161,7 +152,6 @@ export default function HomePage() {
           {/* Social proof nudge below steps */}
           <div className="mt-10 bg-navy/5 border border-brand-blue/10 rounded-2xl p-6 text-center">
             <p className="text-navy font-semibold text-lg">
-              <span className="text-gold font-bold">87%</span> of students pass on their first attempt.{' '}
               <span className="text-gold font-bold">Pass Guarantee</span> included — we coach you until you pass.
             </p>
             <div className="flex flex-wrap gap-4 justify-center mt-4">
@@ -182,14 +172,9 @@ export default function HomePage() {
       <section className="py-16 bg-navy text-center overflow-hidden">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-            <div>
-              <p className="text-8xl md:text-9xl font-bold text-gold leading-none tabular-nums">87%</p>
-              <p className="text-white text-lg font-semibold mt-2">first-attempt pass rate</p>
-            </div>
-            <div className="hidden md:block w-px h-24 bg-white/20" />
             <div className="text-left max-w-sm">
               <p className="text-2xl font-bold text-white mb-2">Pass Guarantee included.</p>
-              <p className="text-gray-300 leading-relaxed">We coach you until you pass — no extra charge, no fine print. Our 87% first-attempt rate means most students never need it.</p>
+              <p className="text-gray-300 leading-relaxed">We coach you until you pass — no extra charge, no fine print.</p>
               <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
                 className="inline-block mt-4 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors">
                 Book a Free Strategy Call →
@@ -321,7 +306,7 @@ export default function HomePage() {
             {[
               { icon: '📚', title: 'Mentor-Led', desc: "Live cohorts and 1:1 support from Crystal and team — you're never studying alone." },
               { icon: '🎯', title: 'Realistic Practice', desc: 'A 694-question bank, full-length mock exam, and every current question format, so exam day feels familiar.' },
-              { icon: '🏆', title: 'Pass Guarantee', desc: "Crystal and team coach you until you pass — no extra charge, no fine print. Our 87% first-attempt rate means most never need it." },
+              { icon: '🏆', title: 'Pass Guarantee', desc: "Crystal and team coach you until you pass — no extra charge, no fine print." },
             ].map(item => (
               <div key={item.title} className="bg-white/10 hover:bg-white/15 transition-colors rounded-2xl p-8 border border-white/10">
                 <p className="text-4xl mb-4">{item.icon}</p>

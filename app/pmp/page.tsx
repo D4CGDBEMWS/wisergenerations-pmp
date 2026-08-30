@@ -10,8 +10,7 @@ export const metadata: Metadata = {
     }
 
     const OUTCOMES = [
-      { stat: '87%', label: 'First-attempt pass rate' },
-        { stat: '35', label: 'PMI contact hours included — no extra cost' },
+            { stat: '35', label: 'PMI contact hours included — no extra cost' },
           { stat: '12 wks', label: 'Average time from enrollment to exam-ready' },
             { stat: '100%', label: 'PMI Exam Content Outline (ECO) aligned' },
             ]

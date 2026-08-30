@@ -111,7 +111,7 @@ export function Footer() {
               mistake. Suppressed rather than rewritten: LEGAL REVIEW REQUIRED. */}
           {shell.showProgramDisclaimers && (
             <p className="text-gray-600 text-[11px] leading-relaxed text-center md:text-left max-w-4xl">
-              Individual results vary. The 87% first-attempt pass rate, &quot;500+ professionals trained,&quot; and similar
+              Individual results vary. &quot;500+ professionals trained&quot; and similar
               figures reflect historical results from prior students and are not a guarantee of your outcome. Salary
               and earnings figures are general industry data, not a promise of income or employment. Testimonials
               reflect individual experiences and may not be typical. See our{' '}
