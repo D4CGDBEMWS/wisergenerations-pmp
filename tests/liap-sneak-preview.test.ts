@@ -9,6 +9,9 @@ import {
   SNEAK_PREVIEW_PATH,
   PREVIEW_CONTENT_APPROVED,
   PREVIEW_SECTIONS,
+  REFLECTIONS,
+  PREVIEW_CLOSING_LINE,
+  PREVIEW_AUTHOR,
 } from '@/lib/liap/preview'
 
 // ---------------------------------------------------------------------------
@@ -109,7 +112,7 @@ describe('the preview is closed until its flag opens it', () => {
     expect(cta, 'a hidden link is still a link').not.toMatch(/hidden|display:\s*none|sr-only/)
   })
 
-  it('the preview is not indexed while the content is a placeholder', () => {
+  it('the preview is not indexed ahead of the campaign', () => {
     expect(code(PREVIEW_PAGE)).toMatch(/robots:\s*\{\s*index:\s*false/)
   })
 
@@ -161,8 +164,14 @@ describe('the destination', () => {
 // ── F: free ──────────────────────────────────────────────────────────────
 describe('a look inside costs nothing', () => {
   it('the preview page touches no payment, session, entitlement or database', () => {
+    // The page links to the preorder page and says the word "Preorder" -- that
+    // is marketing, and the source asks for it. What it must never do is
+    // process anything: no checkout call, no Stripe, no session read, no query.
     const page = code(PREVIEW_PAGE)
-    for (const banned of ['stripe', 'Stripe', 'checkout', 'preorder', 'entitle', 'readLiapAccess', 'query(', 'queryOne']) {
+    for (const banned of [
+      '/api/liap/preorder', 'stripe', 'Stripe', 'checkout',
+      'entitle', 'readLiapAccess', 'query(', 'queryOne', 'LiapCta',
+    ]) {
       expect(page, `preview page references ${banned}`).not.toContain(banned)
     }
   })
@@ -199,18 +208,73 @@ describe('preorder still works exactly as it did', () => {
   })
 })
 
-// ── K: only approved content is exposed ──────────────────────────────────
-describe('no unapproved book content is exposed', () => {
-  it('there is no approved excerpt yet, and the module says so', () => {
-    expect(PREVIEW_CONTENT_APPROVED).toBe(false)
-    expect(PREVIEW_SECTIONS).toEqual([])
+// ── K: the approved content, and only the approved content ──────────────
+describe('the preview carries the owner-approved source, verbatim', () => {
+  it('the content is approved and present', () => {
+    expect(PREVIEW_CONTENT_APPROVED).toBe(true)
+    expect(PREVIEW_SECTIONS.length).toBe(7)
   })
 
-  it('the page shows a development notice instead of inventing prose', () => {
+  it('the reflection questions match the source character for character', () => {
+    // The owner ruled these controlled copy: "Do not rewrite, paraphrase,
+    // shorten, expand, or substitute them during production." Compared exactly,
+    // including the em dashes, which are the first thing an editor normalises.
+    expect([...REFLECTIONS]).toEqual([
+      'What projects have you delayed that could help you improve your life today?',
+      'Have you experienced a bend that makes you question if you are ready to make the turn?',
+      'What has changed since you first imagined how this would go?',
+      'What do you know to be true now?',
+      'Given what you know now, what matters most\u2014and whose life could be changed for the better by what you do next?',
+      'What people, places, experiences, or resources have been right under your nose all along that you may not have recognized could help you move forward?',
+      'With what you know and what you have discovered, how do you plan to move forward?',
+      'Are you ready to make your next move?',
+    ])
+  })
+
+  it('every reflection is rendered, and every one exactly once', () => {
+    const used = PREVIEW_SECTIONS.flatMap((s) => s.reflections).sort((a, b) => a - b)
+    expect(used).toEqual(REFLECTIONS.map((_, i) => i))
+  })
+
+  it('the section headings are the source headings, in the source order', () => {
+    expect(PREVIEW_SECTIONS.map((s) => s.heading)).toEqual([
+      'The Project May Already Be in Front of You',
+      'When the Road Bends',
+      'See What Is True Now',
+      'The Project Is Bigger Than Completion',
+      'Look Again at What Is Already Around You',
+      'Your Next Move',
+      'This Is a Glimpse, Not the Whole Journey',
+    ])
+  })
+
+  it('keeps the approved closing line and the book byline', () => {
+    expect(PREVIEW_CLOSING_LINE).toBe('The bend is not the end. Be ready to make the turn.')
+    // The book byline, not the website's shorter instructor form.
+    expect(PREVIEW_AUTHOR).toBe('Crystal Glover Stewart, PMP\u00ae')
+  })
+
+  it('the page pulls questions from the array rather than retyping them', () => {
     const page = code(PREVIEW_PAGE)
-    expect(page).toContain('PREVIEW_CONTENT_APPROVED')
-    expect(page).toContain('PREVIEW_PENDING_NOTICE')
-    expect(page).toContain('Not for publication')
+    expect(page).toContain('REFLECTIONS[i]')
+    for (const q of REFLECTIONS) {
+      expect(page, 'a reflection was hard-coded into the page').not.toContain(q)
+    }
+  })
+
+  it('no QR code is fabricated anywhere', () => {
+    // The source: "The public QR is intentionally not fabricated or inserted
+    // here." Not a placeholder, not an image, not a generator.
+    for (const f of [PREVIEW_PAGE, 'lib/liap/preview.ts', CTA]) {
+      expect(code(f), `${f} references a QR`).not.toMatch(/qrcode|qr[-_ ]code|<QR|qrserver|chart\.googleapis/i)
+    }
+    expect(code('lib/liap/preview.ts')).not.toContain('TO BE INSERTED AFTER TECHNICAL APPROVAL')
+  })
+
+  it('the preorder price is read from the product record, never retyped', () => {
+    const page = code(PREVIEW_PAGE)
+    expect(page).toContain('LIAP_BOOK.amount')
+    expect(page, 'the price must not be written into the page').not.toMatch(/24\.99|\$24/)
   })
 
   it('no manuscript file was placed in public/, where nothing is gated', () => {
@@ -227,15 +291,6 @@ describe('no unapproved book content is exposed', () => {
       /manuscript|excerpt|chapter|sneak|look[-_]inside|living[-_]is[-_]a[-_]project/i.test(f),
     )
     expect(suspect).toEqual([])
-  })
-
-  it('the preview module holds no long prose that could read as the book', () => {
-    // A guard against the exact failure this design exists to prevent: an
-    // excerpt-shaped string arriving without the owner's approval flag.
-    // Comment-stripped and single-line, so an apostrophe in prose above cannot
-    // open a pseudo-string that swallows half the file.
-    const literals = [...code('lib/liap/preview.ts').matchAll(/'([^'\n]{160,})'/g)]
-    expect(literals.map((m) => m[1]!.slice(0, 60))).toEqual([])
   })
 })
 
