@@ -1,6 +1,4 @@
 import { notFound } from 'next/navigation'
-import { isEnabled } from '@/lib/flags'
-import { FacilitatorConsole } from '@/components/liap/journey/FacilitatorConsole'
 
 export const metadata = {
   title: 'Facilitator Console',
@@ -12,26 +10,19 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 
 // ---------------------------------------------------------------------------
-// /liap/journey/facilitator — the private console.
+// The console used to live here, gated only by the feature flag.
 //
-// ── NO AUTHENTICATION, AND WHY THAT IS SAFE HERE ───────────────────────────
+// It moved to ./[retreatId] because clearance is per Retreat and this path
+// carries no Retreat to authorize against — a console reachable without
+// naming one could not enforce the assignment check, which is the difference
+// between "is a facilitator" and "is THIS Retreat's facilitator".
 //
-// Owner ruling for Version 1, on these grounds: FEATURE_LIAP_JOURNEY is the
-// release gate; session state is browser-local; BroadcastChannel is
-// same-origin AND same browser profile, so no other device can reach a live
-// session; there is no participant personal-project data here; and no
-// protected reveal is exposed on the participant display.
-//
-// The worst case for a stranger who guesses this URL while the flag is on is
-// an empty console they can play with alone. To be revisited before any
-// multi-device or remotely hosted session architecture.
+// Left as a 404 rather than deleted, and deliberately not a redirect: a
+// redirect to a Retreat would have to guess which one, and guessing is how
+// somebody ends up in a session they were not assigned to. There is nothing
+// to send an unauthorized visitor to, so they are sent nowhere.
 // ---------------------------------------------------------------------------
 
-export default function FacilitatorPage() {
-  if (!isEnabled('LIAP_JOURNEY')) notFound()
-  return (
-    <div className="min-h-screen bg-slate-950">
-      <FacilitatorConsole />
-    </div>
-  )
+export default function FacilitatorIndexPage() {
+  notFound()
 }

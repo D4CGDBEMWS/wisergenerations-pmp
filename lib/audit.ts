@@ -28,6 +28,8 @@ const ALLOWED_METADATA_KEYS = new Set([
   'granted',
   'version',
   'count',
+  // Which Retreat an authority event concerned. An id, never its content.
+  'retreat_id',
 ])
 
 export type AuditEventType =
@@ -56,6 +58,17 @@ export type AuditEventType =
   | 'liap.preorder_verification_submitted'
   | 'liap.preorder_verification_reviewed'
   | 'liap.narratives_purged'
+  // Facilitation governance. Transferred with lib/liap/facilitation.ts so the
+  // guard records the same events here as on the branch it came from.
+  | 'liap.retreat_completion_confirmed'
+  | 'liap.facilitator_certification_granted'
+  | 'liap.facilitator_certification_suspended'
+  | 'liap.facilitator_certification_revoked'
+  | 'liap.trainer_authority_granted'
+  | 'liap.trainer_authority_revoked'
+  | 'liap.retreat_facilitator_assigned'
+  | 'liap.retreat_facilitator_unassigned'
+  | 'liap.retreat_preparation_confirmed'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}

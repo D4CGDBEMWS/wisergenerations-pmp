@@ -82,7 +82,11 @@ const COMPONENTS = readdirSync(join(root, 'components/liap/journey')).map(
 )
 const ROUTES = [
   'app/liap/journey/page.tsx',
-  'app/liap/journey/facilitator/page.tsx',
+  // The console moved to a Retreat-specific path when JG-1 was closed: it now
+  // authorizes against a named Retreat, which the bare path cannot do. The
+  // bare path is asserted separately below, because it no longer gates on the
+  // flag -- it 404s unconditionally, which is stricter, not weaker.
+  'app/liap/journey/facilitator/[retreatId]/page.tsx',
   'app/liap/journey/my-project/page.tsx',
 ]
 
@@ -131,6 +135,12 @@ describe('routes and flag', () => {
       expect(text, route).toContain("isEnabled('LIAP_JOURNEY')")
       expect(text, route).toContain('notFound()')
     }
+  })
+
+  it('serves no console from the bare facilitator path', () => {
+    const text = code('app/liap/journey/facilitator/page.tsx')
+    expect(text).toContain('notFound()')
+    expect(text).not.toContain('FacilitatorConsole')
   })
 
   it('never couples the Journey Game to another LIAP flag', () => {
