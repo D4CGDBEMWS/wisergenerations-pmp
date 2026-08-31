@@ -8,7 +8,7 @@ import {
   type Answers,
   type ScoreReport,
 } from './scoring'
-import type { DimensionKey, NarrativeKey } from './assessment/v1'
+import type { DimensionKey, NarrativeKey } from './assessment/v2'
 
 // ---------------------------------------------------------------------------
 // Protect • Resolve • Move, and the 30/60/90 plan.
@@ -87,14 +87,22 @@ export interface RenderedAction {
  * Written as protection rather than improvement: at this level the goal is to
  * stop something getting worse, not to optimise it.
  */
-const PROTECT_BY_DIMENSION: Record<DimensionKey, { headline: string; body: string }> = {
+// PARTIAL, deliberately. Spiritual Readiness is a new scored dimension with
+// no owner-approved PROTECT copy, and inventing a headline and body for
+// somebody's faith would be the worst possible place to guess. A dimension
+// with no entry is skipped by the selection below rather than rendering
+// undefined, and a test names the gap so it cannot be forgotten.
+// Reached only if every dimension lacked copy, which cannot happen while any
+// entry exists. Present so the types are honest rather than asserted away.
+const FALLBACK_COPY = {
+  headline: 'Protect what matters most first',
+  body: 'Start with the area your scores show is closest to breaking, and steady that before anything else.',
+} as const
+
+const PROTECT_BY_DIMENSION: Partial<Record<DimensionKey, { headline: string; body: string }>> = {
   money: {
     headline: 'Protect your financial floor',
     body: 'Work out the minimum it costs to run your life for one month, and confirm you can cover it. Not a budget — a floor. Knowing the number stops the worry being infinite, and it tells you exactly how much time you have to work with.',
-  },
-  risk: {
-    headline: 'Protect the essentials before anything else',
-    body: 'Check that housing, income, insurance and health cover are actually in place, not assumed. One afternoon of confirming these removes the risk that a second problem arrives on top of the first.',
   },
   wellness: {
     headline: 'Protect your capacity to think',
@@ -122,14 +130,11 @@ const PROTECT_BY_DIMENSION: Record<DimensionKey, { headline: string; body: strin
   },
 }
 
-const RESOLVE_BY_DIMENSION: Record<DimensionKey, { headline: string; body: string }> = {
+/** Partial for the same reason as PROTECT_BY_DIMENSION above. */
+const RESOLVE_BY_DIMENSION: Partial<Record<DimensionKey, { headline: string; body: string }>> = {
   money: {
     headline: 'Resolve the money question you are avoiding',
     body: 'There is usually one specific number you have not looked at. Look at it this week. Uncertainty about money costs more attention than the answer usually does.',
-  },
-  risk: {
-    headline: 'Resolve the risk you keep meaning to handle',
-    body: 'Name the one you already know about — the lapsed policy, the document you cannot find, the conversation you have not had — and close it. Carrying a known risk is more expensive than fixing it.',
   },
   wellness: {
     headline: 'Resolve the health thing you have postponed',
@@ -166,7 +171,7 @@ const MOVE_BY_POSITION = {
     headline: 'Turn your intent into a sequence',
     body: 'You know roughly where you are going. Break it into the first three steps with dates, so progress stops depending on how you feel in a given week.',
   },
-  rebuild: {
+  build: {
     headline: 'Rebuild one foundation, properly',
     body: 'Pick the single lowest area and give it a month of real attention. Rebuilding one thing well beats improving four things slightly, and it makes the next move hold.',
   },
@@ -228,10 +233,20 @@ export function renderAction(action: Action, narratives: NarrativeMap): Rendered
  */
 export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
   const ranked = report.ranked
-  const protectSource = ranked[0]!
-  const resolveSource = ranked[1] ?? ranked[0]!
 
-  const protectCopy = PROTECT_BY_DIMENSION[protectSource.key]
+  // Skip a dimension that has no approved copy rather than rendering an empty
+  // action. Spiritual Readiness is the only one today; if it is somebody's
+  // weakest dimension they get their next-weakest protected instead, which is
+  // a real recommendation rather than a blank one. The dimension still appears
+  // in their scores and still triggers the hidden-urgency flag at <= 10 --
+  // nothing about surfacing it is suppressed, only the copy is absent.
+  const withProtect = ranked.filter((d) => PROTECT_BY_DIMENSION[d.key])
+  const withResolve = ranked.filter((d) => RESOLVE_BY_DIMENSION[d.key])
+  const protectSource = withProtect[0] ?? ranked[0]!
+  const resolveSource = withResolve[1] ?? withResolve[0] ?? protectSource
+
+  const protectCopy = PROTECT_BY_DIMENSION[protectSource.key] ?? FALLBACK_COPY
+
   const protect: Action = {
     kind: 'protect',
     headline: protectCopy.headline,
@@ -239,7 +254,7 @@ export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
     basis: protectSource.key,
   }
 
-  const resolveCopy = RESOLVE_BY_DIMENSION[resolveSource.key]
+  const resolveCopy = RESOLVE_BY_DIMENSION[resolveSource.key] ?? FALLBACK_COPY
   // The BOOLEAN is stored, never the sentence. Whether they wrote something
   // decides which headline they get; what they wrote is resolved at render.
   const resolve: Action = stated(intake.importantDecision)
@@ -457,3 +472,29 @@ export function buildFullReport(answers: Answers, intake: Intake, today?: Date):
     classificationLabels: CLASSIFICATION_LABELS,
   }
 }
+
+// ---------------------------------------------------------------------------
+// RETAINED — risk-management copy, owner-approved, currently unwired.
+//
+// Risk & Readiness was retired as a scored dimension on 31 August 2026. These
+// two blocks were keyed to it. They are kept here verbatim rather than deleted,
+// because the owner's ruling was explicit that risk remains part of LIAP
+// methodology and that risk logic must not be removed simply because the
+// dimension was retired.
+//
+// They are not exported and nothing reads them: a recommendation is selected by
+// scored dimension, and there is no longer a risk dimension to select. Re-homing
+// them -- to the planning logic, to a safeguard, or to a dimension the owner
+// nominates -- is a content decision, not a refactor.
+// ---------------------------------------------------------------------------
+const RETIRED_RISK_COPY = {
+  protect: {
+    headline: 'Protect the essentials before anything else',
+    body: 'Check that housing, income, insurance and health cover are actually in place, not assumed. One afternoon of confirming these removes the risk that a second problem arrives on top of the first.',
+  },
+  resolve: {
+    headline: 'Resolve the risk you keep meaning to handle',
+    body: 'Name the one you already know about — the lapsed policy, the document you cannot find, the conversation you have not had — and close it. Carrying a known risk is more expensive than fixing it.',
+  },
+} as const
+void RETIRED_RISK_COPY

@@ -7,7 +7,7 @@ import {
   NARRATIVE_QUESTIONS,
   definitionFingerprint,
   type NarrativeKey,
-} from './assessment/v1'
+} from './assessment/v2'
 import {
   buildFullReport,
   renderReport,
@@ -404,7 +404,7 @@ export async function rebuildReport(
     [assessmentId]
   )
 
-  const { DIMENSIONS } = await import('./assessment/v1')
+  const { DIMENSIONS } = await import('./assessment/v2')
   const {
     CLASSIFICATION_LABELS,
     POSITION_LABELS,

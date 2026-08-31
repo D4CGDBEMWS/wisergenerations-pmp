@@ -48,7 +48,7 @@ export type LiapEvent = (typeof LIAP_EVENTS)[number]
  */
 export interface LiapEventProps {
   step?: number
-  position?: 'move' | 'plan' | 'rebuild' | 'stabilize'
+  position?: 'move' | 'plan' | 'build' | 'stabilize'
 }
 
 const ALLOWED_PROPS = new Set(['step', 'position'])

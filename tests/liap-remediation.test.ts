@@ -9,7 +9,7 @@ import {
   startOrResume, saveProgress, submitAssessment, rebuildReport,
 } from '@/lib/liap/assessment-service'
 import { purgeExpiredNarratives } from '@/lib/liap/retention'
-import { QUESTIONS, NARRATIVE_QUESTIONS } from '@/lib/liap/assessment/v1'
+import { QUESTIONS, NARRATIVE_QUESTIONS } from '@/lib/liap/assessment/v2'
 import { renderReport, type FullReport } from '@/lib/liap/recommendations'
 import { buildSnapshotPdf, snapshotFilename } from '@/lib/liap/snapshot-pdf'
 import { deliverResults } from '@/lib/liap/results-delivery'
@@ -337,12 +337,15 @@ describe('Life Project Snapshot PDF', () => {
     // All eight dimensions, by their canonical names — and their classification
     // labels, which sit in the right-hand column. Both appearing in full is the
     // clipping check: a truncated draw would lose the tail of the longest
-    // strings ("Relationships & Stakeholders", "Immediate attention") first.
+    // strings ("Spiritual Readiness", "Immediate attention") first.
     for (const s of report.scores) {
       expect(text, s.name).toContain(s.name)
       expect(text, s.classification).toContain(report.classificationLabels[s.classification])
     }
-    expect(text).toContain('Relationships & Stakeholders')
+    // Named explicitly rather than hardcoded, so renaming a dimension cannot
+    // quietly retire the clipping check the way it just did.
+    const longest = [...report.scores].sort((a, b) => b.name.length - a.name.length)[0]!.name
+    expect(text, `longest name: ${longest}`).toContain(longest)
     expect(text).toContain(report.positionLabel)
     expect(text).toContain(String(report.total))
     // Hidden urgency surfaced when present.

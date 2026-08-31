@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { setDbForTesting, type Db } from '@/lib/db/client'
 import { createTestDb } from './helpers/db'
-import { QUESTIONS, DIMENSION_KEYS, NARRATIVE_QUESTIONS } from '@/lib/liap/assessment/v1'
+import { QUESTIONS, DIMENSION_KEYS, NARRATIVE_QUESTIONS } from '@/lib/liap/assessment/v2'
 import {
   startOrResume, saveProgress, submitAssessment, rebuildReport,
 } from '@/lib/liap/assessment-service'

@@ -5,7 +5,7 @@ import {
   questionsForDimension,
   type DimensionKey,
   type ChangeType,
-} from './assessment/v1'
+} from './assessment/v2'
 
 // ---------------------------------------------------------------------------
 // Deterministic scoring.
@@ -25,7 +25,7 @@ import {
 // ---------------------------------------------------------------------------
 
 export type Classification = 'strength' | 'build' | 'priority' | 'immediate'
-export type PositionKey = 'move' | 'plan' | 'rebuild' | 'stabilize'
+export type PositionKey = 'move' | 'plan' | 'build' | 'stabilize'
 
 /** §15. A dimension is 5 questions × 1–5, so 5–25. */
 export function classify(score: number): Classification {
@@ -46,22 +46,22 @@ export const CLASSIFICATION_LABELS: Record<Classification, string> = {
 export function position(total: number): PositionKey {
   if (total >= 160) return 'move'
   if (total >= 120) return 'plan'
-  if (total >= 80) return 'rebuild'
+  if (total >= 80) return 'build'
   return 'stabilize'
 }
 
 export const POSITION_LABELS: Record<PositionKey, string> = {
   move: 'Ready to Move',
   plan: 'Ready to Plan',
-  rebuild: 'Ready to Rebuild',
+  build: 'Ready to Build',
   stabilize: 'Ready to Stabilize',
 }
 
 export const POSITION_MEANINGS: Record<PositionKey, string> = {
-  move: 'You have the footing to act. The work now is choosing well and moving deliberately rather than waiting for more certainty.',
-  plan: 'The ground is steady enough to plan on. The work now is turning intent into a sequence you can actually follow.',
-  rebuild: 'Some foundations need attention before bigger moves will hold. That is ordinary during a real change, and it is addressable.',
-  stabilize: 'Several essentials need steadying first. Start there — not because the larger goals do not matter, but because they will hold better once they do.',
+  move: 'You have a strong foundation. Move forward intentionally while continuing to watch any dimension requiring attention.',
+  plan: 'You have direction. Strengthen the areas that need structure before making your next major move.',
+  build: 'Important areas need development. Build the foundation and resources needed for sustainable progress.',
+  stabilize: 'Your priority is not to fix everything at once. Protect what matters, address what requires immediate attention, and move deliberately.',
 }
 
 /**
@@ -70,10 +70,14 @@ export const POSITION_MEANINGS: Record<PositionKey, string> = {
  * Not because the other five matter less, but because a shortfall in any of
  * them constrains every other move: you cannot execute a career plan while
  * you are running out of money, carrying an unhandled risk, or too depleted
- * to think. Order is deliberate — money before risk before wellness — so two
+ * to think. Order is deliberate — money before wellness — so two
  * dimensions tied at the same score resolve the same way every time.
  */
-export const PRIORITY_DIMENSIONS: readonly DimensionKey[] = ['money', 'risk', 'wellness'] as const
+// 'risk' was removed here because it is no longer a scored dimension, not
+// because risk stopped mattering. A list of dimensions to rank first can only
+// contain dimensions that are scored. Risk-management guidance survives in
+// recommendations.ts -- see the retained copy at the foot of that file.
+export const PRIORITY_DIMENSIONS: readonly DimensionKey[] = ['money', 'wellness'] as const
 
 export interface DimensionScore {
   key: DimensionKey
@@ -155,7 +159,7 @@ export function rankForAttention(scores: readonly DimensionScore[]): DimensionSc
     const isPriority = priorityIndex >= 0
     return [
       s.score <= 10 ? 0 : 1,            // immediate attention first
-      isPriority ? 0 : 1,                // then money / risk / wellness
+      isPriority ? 0 : 1,                // then money / wellness
       s.score,                           // then simply the lowest
       isPriority ? priorityIndex : 99,   // stable tie-break within priorities
       DIMENSION_KEYS.indexOf(s.key),     // and a total order, so ties never flap

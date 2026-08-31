@@ -15,7 +15,7 @@ import {
   questionsForDimension,
   questionsForStep,
   type DimensionKey,
-} from '@/lib/liap/assessment/v1'
+} from '@/lib/liap/assessment/v2'
 import { trackLiap } from '@/lib/liap/analytics'
 
 // ---------------------------------------------------------------------------

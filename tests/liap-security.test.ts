@@ -14,7 +14,7 @@ import {
 } from '@/lib/liap/assessment-service'
 import { purgeExpiredNarratives, findDueNarratives } from '@/lib/liap/retention'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
-import { QUESTIONS, VERSION_KEY } from '@/lib/liap/assessment/v1'
+import { QUESTIONS, VERSION_KEY } from '@/lib/liap/assessment/v2'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { LIAP_EVENTS } from '@/lib/liap/analytics'
 import { LIAP_TAGS } from '@/lib/liap/crm'

@@ -5,7 +5,7 @@ import { grantEntitlement, hasEntitlement, revokeEntitlement } from '@/lib/entit
 import { LIAP_ASSESSMENT_ACCESS } from '@/lib/liap/entitlements'
 import { fulfilPreorder } from '@/lib/liap/fulfilment'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
-import { QUESTIONS } from '@/lib/liap/assessment/v1'
+import { QUESTIONS } from '@/lib/liap/assessment/v2'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { resultsEmailHtml, resultsEmailText, RESULTS_SUBJECT } from '@/lib/liap/results-email'
 

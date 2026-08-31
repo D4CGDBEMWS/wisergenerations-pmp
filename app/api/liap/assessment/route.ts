@@ -11,7 +11,7 @@ import {
 } from '@/lib/liap/assessment-service'
 import { queryOne } from '@/lib/db/client'
 import { deliverResults } from '@/lib/liap/results-delivery'
-import { FINAL_STEP } from '@/lib/liap/assessment/v1'
+import { FINAL_STEP } from '@/lib/liap/assessment/v2'
 
 // ---------------------------------------------------------------------------
 // Saving and submitting the assessment. §34.

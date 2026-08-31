@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { DIMENSION_KEYS, QUESTIONS, questionsForDimension, type DimensionKey } from '@/lib/liap/assessment/v1'
+import { DIMENSION_KEYS, QUESTIONS, questionsForDimension, type DimensionKey } from '@/lib/liap/assessment/v2'
 import {
   buildScoreReport,
   classify,
@@ -73,8 +73,8 @@ describe('the scale itself', () => {
     expect(position(160)).toBe('move')
     expect(position(159)).toBe('plan')
     expect(position(120)).toBe('plan')
-    expect(position(119)).toBe('rebuild')
-    expect(position(80)).toBe('rebuild')
+    expect(position(119)).toBe('build')
+    expect(position(80)).toBe('build')
     expect(position(79)).toBe('stabilize')
     expect(position(40)).toBe('stabilize')
   })
@@ -99,8 +99,8 @@ describe('persona 1 — expected retirement, strong money, weak purpose', () => 
   })
 })
 
-describe('persona 2 — unexpected job loss, weak money and risk, urgency 5', () => {
-  const answers = withDimensions(3, { money: 2, risk: 2 })
+describe('persona 2 — unexpected job loss, weak money and spiritual readiness, urgency 5', () => {
+  const answers = withDimensions(3, { money: 2, spiritual: 2 })
   const intake: Intake = { changeType: 'unexpected', area: 'career', urgency: 5 }
   const report = buildScoreReport(answers, intake)
   const full = buildFullReport(answers, intake)
@@ -111,7 +111,7 @@ describe('persona 2 — unexpected job loss, weak money and risk, urgency 5', ()
 
   it('leads with Money — the priority order, not merely the lowest', () => {
     expect(report.ranked[0]!.key).toBe('money')
-    expect(report.ranked[1]!.key).toBe('risk')
+    expect(report.ranked[1]!.key).toBe('spiritual')
   })
 
   it('protects the financial floor first', () => {
@@ -192,13 +192,17 @@ describe('personas 7, 8 and 9 — the rule that matters most', () => {
   // below." Someone can answer well overall and still be a month from running
   // out of money. A report that opened with "Ready to Move" and buried that
   // would be worse than no report at all.
-  const cases: Array<[string, DimensionKey]> = [
-    ['persona 7 — high total, Money at 10 or below', 'money'],
-    ['persona 8 — high total, Risk at 10 or below', 'risk'],
-    ['persona 9 — Wellness at 10 or below', 'wellness'],
+  // The third element records whether that dimension has PROTECT copy today.
+  // Spiritual Readiness does not: writing it would mean inventing customer-
+  // facing content, which is the owner's decision, not this file's. The §15
+  // rule itself is dimension-agnostic and is asserted for all three.
+  const cases: Array<[string, DimensionKey, boolean]> = [
+    ['persona 7 — high total, Money at 10 or below', 'money', true],
+    ['persona 8 — high total, Spiritual Readiness at 10 or below', 'spiritual', false],
+    ['persona 9 — Wellness at 10 or below', 'wellness', true],
   ]
 
-  for (const [label, dimension] of cases) {
+  for (const [label, dimension, hasProtectCopy] of cases) {
     describe(label, () => {
       const answers = withDimensions(5, { [dimension]: 2 })
       const intake: Intake = { changeType: 'expected', area: 'career', urgency: 2 }
@@ -222,7 +226,16 @@ describe('personas 7, 8 and 9 — the rule that matters most', () => {
 
       it('makes it the first thing the customer is told to protect', () => {
         expect(full.actions[0]!.kind).toBe('protect')
-        expect(full.actions[0]!.basis).toBe(dimension)
+        if (hasProtectCopy) {
+          expect(full.actions[0]!.basis).toBe(dimension)
+        } else {
+          // No copy exists for this dimension yet, so the engine must degrade
+          // to the next ranked dimension that does have copy rather than emit
+          // an empty action. The urgent dimension is still surfaced above —
+          // it is the protect *wording* that is missing, not the finding.
+          expect(full.actions[0]!.basis).not.toBe(dimension)
+          expect(report.urgent.map((s) => s.key)).toContain(dimension)
+        }
       })
     })
   }

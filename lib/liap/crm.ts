@@ -22,7 +22,7 @@ export const LIAP_TAGS = [
   'liap_assessment_completed',
   'liap_ready_to_move',
   'liap_ready_to_plan',
-  'liap_ready_to_rebuild',
+  'liap_ready_to_build',
   'liap_ready_to_stabilize',
   'liap_workshop_interest',
   'liap_starter_kit_interest',
@@ -36,7 +36,7 @@ export function positionTag(position: string): LiapTag | null {
   const map: Record<string, LiapTag> = {
     move: 'liap_ready_to_move',
     plan: 'liap_ready_to_plan',
-    rebuild: 'liap_ready_to_rebuild',
+    build: 'liap_ready_to_build',
     stabilize: 'liap_ready_to_stabilize',
   }
   return map[position] ?? null
