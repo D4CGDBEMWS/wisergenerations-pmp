@@ -46,3 +46,38 @@ export const LIAP_BOOK = {
 
 /** Granted by a completed preorder, however it was placed. */
 export const LIAP_ENTITLEMENT = 'LIAP_ASSESSMENT_ACCESS'
+
+// ---------------------------------------------------------------------------
+// The Life Project-Ready™ Assessment, sold on its own.
+//
+// $29.00, set by the business owner on 31 August 2026, for the customer who
+// wants the assessment WITHOUT buying the book. It does not replace or alter
+// the book: a $24.99 book purchase still includes assessment access, and this
+// price exists alongside it rather than instead of it.
+//
+// ── WHY THIS NEEDS NO STRIPE PRODUCT ───────────────────────────────────────
+//
+// The preorder checkout builds its line item from `price_data` inline, so the
+// amount charged comes from this file at request time and no Stripe Price ID
+// is involved. This follows the same pattern, which means the standalone
+// assessment is fully implementable with no live Stripe object created — and
+// the number below stays the single source of truth for both the displayed
+// price and the charge.
+//
+// The client cannot influence it. The checkout route reads AMOUNT_CENTS and
+// ignores any amount in the request body; there is no branch that charges
+// something a caller supplied.
+// ---------------------------------------------------------------------------
+
+const ASSESSMENT_AMOUNT_CENTS = 2900
+
+export const LIAP_ASSESSMENT = {
+  productKey: 'LIAP_ASSESSMENT_STANDALONE',
+  name: 'Life Project-Ready™ Assessment',
+  /** Cents. The only place this number exists. */
+  amount: ASSESSMENT_AMOUNT_CENTS,
+  priceLabel: `$${(ASSESSMENT_AMOUNT_CENTS / 100).toFixed(2)}`,
+  currency: 'usd',
+  /** Stripe metadata marker the webhook matches on. Distinct from the book's. */
+  metadataKey: 'liap-assessment-standalone',
+} as const

@@ -28,6 +28,11 @@ const ALLOWED_METADATA_KEYS = new Set([
   'granted',
   'version',
   'count',
+  // CRM synchronisation outcomes. Deliberately structural: which tags were
+  // meant to apply and why the attempt failed, never who or what they answered.
+  'tags',
+  'operation',
+  'status',
 ])
 
 export type AuditEventType =
@@ -56,6 +61,10 @@ export type AuditEventType =
   | 'liap.preorder_verification_submitted'
   | 'liap.preorder_verification_reviewed'
   | 'liap.narratives_purged'
+  // CRM synchronisation. A marketing sync must never fail a purchase, but a
+  // silently dropped sync is a customer who never hears from us again -- so
+  // the failure is recorded here, where it can be found and replayed.
+  | 'crm.sync_failed'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}

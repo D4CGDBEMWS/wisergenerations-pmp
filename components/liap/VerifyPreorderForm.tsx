@@ -24,7 +24,7 @@ export function VerifyPreorderForm() {
   const turnstileRef = useRef<HTMLDivElement>(null)
   const { token, reset, required } = useTurnstile(turnstileRef)
 
-  const [form, setForm] = useState({ name: '', email: '', retailer: '', orderRef: '' })
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', retailer: '', orderRef: '' })
   const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle')
   const [error, setError] = useState<string | null>(null)
 
@@ -89,18 +89,39 @@ export function VerifyPreorderForm() {
         </div>
       )}
 
-      <div>
-        <label htmlFor="vp-name" className="block font-semibold text-navy">
-          Your name
-        </label>
-        <input
-          id="vp-name"
-          type="text"
-          autoComplete="name"
-          value={form.name}
-          onChange={(e) => set('name', e.target.value)}
-          className="mt-2 min-h-[48px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
-        />
+      {/* First and last collected separately rather than as one "Your name"
+          box. A single field has to be split on a space to reach a CRM merge
+          field, and that guess is wrong for anyone whose name does not have
+          exactly one. Asking is cheaper than guessing. */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="vp-first-name" className="block font-semibold text-navy">
+            First name <span className="font-normal text-gray-500">(required)</span>
+          </label>
+          <input
+            id="vp-first-name"
+            type="text"
+            required
+            autoComplete="given-name"
+            value={form.firstName}
+            onChange={(e) => set('firstName', e.target.value)}
+            className="mt-2 min-h-[48px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          />
+        </div>
+        <div>
+          <label htmlFor="vp-last-name" className="block font-semibold text-navy">
+            Last name <span className="font-normal text-gray-500">(required)</span>
+          </label>
+          <input
+            id="vp-last-name"
+            type="text"
+            required
+            autoComplete="family-name"
+            value={form.lastName}
+            onChange={(e) => set('lastName', e.target.value)}
+            className="mt-2 min-h-[48px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          />
+        </div>
       </div>
 
       <div>

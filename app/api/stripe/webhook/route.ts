@@ -1,4 +1,3 @@
-import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { claimEvent, markEventProcessed, markEventFailed } from '@/lib/payments/events'
 import { queryOne } from '@/lib/db/client'
@@ -10,7 +9,18 @@ import {
   STUDY_ACCESS,
 } from '@/lib/entitlements'
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
-import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
+import {
+  fulfilPreorder,
+  fulfilStandaloneAssessment,
+  isLiapPreorder,
+  isLiapStandaloneAssessment,
+} from '@/lib/liap/fulfilment'
+import {
+  upsertSubscriber,
+  deactivateTags,
+  normalizeTag as sharedNormalizeTag,
+  type MailchimpAddress,
+} from '@/lib/mailchimp'
 import { creditBookPurchase } from '@/lib/liap/attribution'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
@@ -32,30 +42,9 @@ function normalizeEmail(value: string) {
     return value.trim().toLowerCase()
 }
 
-function normalizeTag(value: string) {
-    return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
-}
-
-function getMailchimpHeaders(apiKey: string) {
-    return {
-          Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
-          'Content-Type': 'application/json',
-    }
-}
-
-// Mailchimp's ADDRESS merge field expects this exact shape. When the
-// audience has an ADDRESS field (even if it's not marked required), Mailchimp
-// validates any update to mean the address must be "complete" — i.e. addr1,
-// city, state, zip, and country must all be non-empty strings. Partial
-// addresses are rejected with HTTP 400 "Your merge fields were invalid".
-type MailchimpAddress = {
-    addr1: string
-    addr2: string
-    city: string
-    state: string
-    zip: string
-    country: string
-}
+// Delegates, so "what is a valid tag" has one definition rather than two that
+// drift. Kept as a local name because several call sites below use it.
+const normalizeTag = sharedNormalizeTag
 
 // Convert a Stripe Checkout Session address into Mailchimp's ADDRESS merge
 // field shape. Returns null if the address is incomplete so callers can
@@ -63,6 +52,10 @@ type MailchimpAddress = {
 // reject. (We set billing_address_collection: 'required' on the Checkout
 // Session so new subscribers always provide a complete address, but we still
 // guard against edge cases like partial legacy data.)
+//
+// USED BY THE PMP PATHS ONLY. The LIAP flow never sends an address: a postal
+// address is not needed to segment a book launch, and lib/liap/crm.ts has no
+// parameter that could carry one.
 function stripeAddressToMailchimp(
     address: Stripe.Address | null | undefined
 ): MailchimpAddress | null {
@@ -91,6 +84,23 @@ function stripeAddressToMailchimp(
   }
 }
 
+/**
+ * Mailchimp upsert for the PMP paths.
+ *
+ * A thin wrapper over the shared client in lib/mailchimp.ts, which replaced a
+ * second full implementation that used to live here. Two behaviours from that
+ * implementation are preserved as explicit arguments rather than as a separate
+ * copy of the code:
+ *
+ *   - `statusIfNew: 'subscribed'`, because these buyers have always been
+ *     enrolled without a confirmation step, and switching them to `pending`
+ *     would stop their mail until they re-confirmed.
+ *   - the ADDRESS merge field, which the PMP audience uses.
+ *
+ * Neither applies to LIAP. What HAS changed is that a failure no longer
+ * throws: it is logged and the webhook carries on, so a Mailchimp outage can
+ * no longer turn a successful payment into a 500 and a Stripe retry storm.
+ */
 async function upsertMailchimpCustomer(input: {
     email: string
     firstName?: string
@@ -98,103 +108,22 @@ async function upsertMailchimpCustomer(input: {
     tags: string[]
     address?: MailchimpAddress | null
 }) {
-    const apiKey = getEnv('MAILCHIMP_API_KEY')
-    const audienceId = getEnv('MAILCHIMP_AUDIENCE_ID')
-    const dataCenter = apiKey.split('-')[1]
-
-  if (!dataCenter) {
-        throw new Error('Invalid Mailchimp API key.')
-  }
-
-  const email = normalizeEmail(input.email)
-    const subscriberHash = createHash('md5').update(email).digest('hex')
-    const memberUrl = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`
-    const headers = getMailchimpHeaders(apiKey)
-    const tags = Array.from(new Set(input.tags.map(normalizeTag).filter(Boolean)))
-
-  // Only include the ADDRESS merge field when we have a complete address.
-  // Mailchimp rejects updates that touch the ADDRESS field with incomplete
-  // data, even when the field is not marked "required" in audience settings.
-  const mergeFields: Record<string, string | MailchimpAddress> = {
-        FNAME: input.firstName?.trim() || '',
-        LNAME: input.lastName?.trim() || '',
-  }
-  if (input.address) {
-        mergeFields.ADDRESS = input.address
-  }
-
-  const memberResponse = await fetch(memberUrl, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-                email_address: email,
-                status_if_new: 'subscribed',
-                // Do NOT force `status: 'subscribed'` on existing members —
-                // Mailchimp returns HTTP 400 "Member In Compliance State"
-                // when you try to force-set status on a member that's
-                // already subscribed (or was previously unsubscribed).
-                // `status_if_new` is the correct field for an upsert: it
-                // only sets status when creating a new member.
-                merge_fields: mergeFields,
-        }),
-  })
-
-  if (!memberResponse.ok) {
-        const responseText = await memberResponse.text()
-        throw new Error(
-              `Mailchimp member upsert failed (${memberResponse.status}): ${responseText}`
-        )
-  }
-
-  if (tags.length > 0) {
-        const tagsResponse = await fetch(`${memberUrl}/tags`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({
-                          tags: tags.map((name) => ({ name, status: 'active' })),
-                }),
-        })
-
-      if (!tagsResponse.ok) {
-              throw new Error(`Mailchimp tag sync failed: ${await tagsResponse.text()}`)
-      }
-  }
+    const result = await upsertSubscriber({
+          email: normalizeEmail(input.email),
+          firstName: input.firstName,
+          lastName: input.lastName,
+          tags: input.tags,
+          statusIfNew: 'subscribed',
+          address: input.address ?? null,
+    })
+    if (!result.ok) {
+          console.error('[stripe/webhook] Mailchimp sync failed (non-fatal):', result.status)
+    }
 }
 
-// Removes (deactivates) tags from a Mailchimp subscriber. Used when a Study
-// Access subscription is canceled — the customer stays on the list, but the
-// "study-access" / "subscription-active" tags are deactivated so they stop
-// receiving the monthly templates drip.
+/** Deactivates tags when a subscription ends. Non-fatal, as before. */
 async function deactivateMailchimpTags(input: { email: string; tags: string[] }) {
-    const apiKey = getEnv('MAILCHIMP_API_KEY')
-    const audienceId = getEnv('MAILCHIMP_AUDIENCE_ID')
-    const dataCenter = apiKey.split('-')[1]
-
-  if (!dataCenter) {
-        throw new Error('Invalid Mailchimp API key.')
-  }
-
-  const email = normalizeEmail(input.email)
-    const subscriberHash = createHash('md5').update(email).digest('hex')
-    const tagsUrl = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}/tags`
-    const headers = getMailchimpHeaders(apiKey)
-    const tags = Array.from(new Set(input.tags.map(normalizeTag).filter(Boolean)))
-
-  if (tags.length === 0) return
-
-  const response = await fetch(tagsUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-                tags: tags.map((name) => ({ name, status: 'inactive' })),
-        }),
-  })
-
-  if (!response.ok) {
-        // Don't throw — Mailchimp returns 404 if the subscriber was deleted,
-        // and we don't want that to retry the webhook indefinitely.
-        console.warn(`Mailchimp tag deactivation soft-failed: ${await response.text()}`)
-  }
+    await deactivateTags({ email: normalizeEmail(input.email), tags: input.tags })
 }
 
 function splitFullName(full: string | null | undefined) {
@@ -432,6 +361,38 @@ export async function POST(request: NextRequest) {
             referralCode: liapSession.metadata?.referral ?? null,
             customerId: result.customerId,
             outcomeRef: liapSession.id,
+          })
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // Standalone Life Project-Ready™ Assessment. $29, no book.
+        //
+        // Its own marker and its own branch, so a standalone buyer is
+        // never fulfilled as a book purchaser and never tagged as one.
+        // Both doors grant the same assessment entitlement, because it
+        // is the same assessment; what differs is the order record and
+        // the journey tag.
+        //
+        // No referral credit: partner codes are printed on book
+        // collateral and credit a book sale.
+        // ─────────────────────────────────────────────────────────────
+        if (
+          isLiapStandaloneAssessment(liapSession.metadata) &&
+          liapEmail &&
+          liapSession.payment_status === 'paid'
+        ) {
+          await fulfilStandaloneAssessment({
+            email: liapEmail,
+            name: liapSession.customer_details?.name ?? null,
+            stripeCustomerId:
+              typeof liapSession.customer === 'string' ? liapSession.customer : null,
+            sourceId: liapSession.id,
+            paymentIntentId:
+              typeof liapSession.payment_intent === 'string'
+                ? liapSession.payment_intent
+                : null,
+            idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}:standalone`,
+            amount: liapSession.amount_total ?? null,
           })
         }
       }

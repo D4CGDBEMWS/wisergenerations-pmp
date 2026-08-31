@@ -50,12 +50,26 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const email = String(body.email ?? '').trim().toLowerCase()
-  const name = String(body.name ?? '').trim().slice(0, 120)
+  // Collected separately, and both required. Splitting a single "name" string
+  // on a space to fill a CRM merge field guesses wrongly for anyone whose name
+  // does not contain exactly one, and the guess is invisible once stored.
+  const firstName = String(body.firstName ?? '').trim().slice(0, 60)
+  const lastName = String(body.lastName ?? '').trim().slice(0, 60)
+  // Stored as before, because preorder_verifications.name is one column and
+  // the owner asked for no migration where the data model already suffices.
+  // The structured pair is what reaches the CRM.
+  const name = [firstName, lastName].filter(Boolean).join(' ').slice(0, 120)
   const retailer = String(body.retailer ?? '').trim()
   const orderRef = String(body.orderRef ?? '').trim().slice(0, 120)
 
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 })
+  }
+  if (!firstName || !lastName) {
+    return NextResponse.json(
+      { error: 'Please enter your first and last name.' },
+      { status: 400 }
+    )
   }
   if (!RETAILERS.has(retailer)) {
     return NextResponse.json({ error: 'Please choose where you preordered.' }, { status: 400 })
@@ -81,7 +95,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         eventType: 'liap.preorder_verification_submitted',
         metadata: { source_type: 'retailer', reason: retailer },
       })
-      await tagLiapContact(email, ['liap_interest'])
+      // Book INTEREST, never Book Purchaser. A preorder verification is a
+      // self-reported claim about a purchase made somewhere this application
+      // cannot see, and it stays 'pending' in preorder_verifications until a
+      // human reviews it. Tagging it as a purchase would let an unverified
+      // form submission produce the same marketing state as a paid Stripe
+      // session, which is the one thing this table must never do.
+      await tagLiapContact(email, ['liap_interest'], { firstName, lastName })
     }
   } catch (err) {
     console.error('[liap/verify-preorder] save failed:', err)
