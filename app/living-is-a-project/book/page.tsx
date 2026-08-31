@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { LiapCta } from '@/components/liap/LiapCta'
+import { SneakPreviewCta } from '@/components/liap/SneakPreviewCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
 
@@ -132,6 +133,10 @@ export default function LiapBookPage() {
             October.
           </p>
           <LiapCta className="mt-7 flex justify-center" />
+
+          {/* The second action. Renders nothing while its flag is off, so the
+              preorder layout is unchanged until the preview is released. */}
+          <SneakPreviewCta className="mt-4 w-full sm:w-auto" />
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}
             <Link

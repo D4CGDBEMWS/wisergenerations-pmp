@@ -36,6 +36,21 @@ export type FeatureFlag =
   //
   // Default off. Version 1 of both is built and tested, neither is authorised.
   | 'LIAP_GAME_PREVIEW'
+  // "SNEAK PREVIEW — Get a Look Inside". The book's own look-inside.
+  //
+  // Its own flag, and this is the flag that matters most for the campaign.
+  // Riding on LIAP would mean the owner cannot review the Sneak Preview
+  // without opening the assessment, the results pages and the checkout at the
+  // same time -- which is the opposite of what a pre-launch review is for.
+  // Riding on LIAP_BOOK_ACTIVATION would tie a piece of marketing to the
+  // entitlement flow, two things with different readiness dates.
+  //
+  // It needs no database, no Stripe, no migration. One flag opens it and
+  // nothing else, which makes "review the preview without releasing LIAP" a
+  // property of the deployment rather than a promise.
+  //
+  // Default off. The campaign date is October 1, 2026.
+  | 'LIAP_BOOK_PREVIEW'
   // Community partner referral codes and /liap/go/{code}.
   //
   // Standalone, and never coupled to LIAP: partner QR codes have to work the

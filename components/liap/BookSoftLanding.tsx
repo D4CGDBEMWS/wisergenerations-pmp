@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SneakPreviewCta } from '@/components/liap/SneakPreviewCta'
 
 // ---------------------------------------------------------------------------
 // What /liap/book shows before the flow opens.
@@ -37,6 +38,12 @@ export function BookSoftLanding() {
         Thanks for scanning. The Life Project-Ready&trade; Assessment isn&rsquo;t open yet —
         it opens alongside the book.
       </p>
+
+      {/* The one thing that IS available before the flow opens, offered on the
+          route that is printed on the book. Absent entirely while its flag is
+          off, so the landing reads exactly as it does today until then. The
+          approved copy above is untouched. */}
+      <SneakPreviewCta className="mt-7 self-start" />
 
       <p className="mt-6 text-sm leading-relaxed text-gray-500">
         Already have access, or think this is a mistake?{' '}
