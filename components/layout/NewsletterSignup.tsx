@@ -50,10 +50,22 @@ export default function NewsletterSignup() {
         theme: 'dark',
         callback: (token: string) => setTurnstileToken(token),
         'expired-callback': () => setTurnstileToken(null),
+        // Widget failure is not a submission failure. This fires when
+        // Turnstile itself cannot start -- an outage, a blocked script, a
+        // hostname the widget is not configured for -- which happens on page
+        // load, to a visitor who has not touched this form and in most cases
+        // is not reading it. Setting the form to an error state here painted
+        // a red security warning across every page of the site, because this
+        // component renders in the root layout.
+        //
+        // Clearing the token is the whole job: without one, the Subscribe
+        // button stays disabled and /api/subscribe rejects the submission
+        // anyway. Nothing about the security requirement is relaxed; the
+        // visitor is simply not told off for something that has not happened
+        // yet. The wording still appears on a real submit, returned by
+        // /api/subscribe when verifyTurnstile() rejects the token.
         'error-callback': () => {
           setTurnstileToken(null)
-          setStatus('error')
-          setMessage('Security check failed. Please refresh and try again.')
         },
       })
     }
