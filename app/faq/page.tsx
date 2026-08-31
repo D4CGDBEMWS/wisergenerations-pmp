@@ -123,7 +123,7 @@ const faqCategories = [
 
 export default function FaqPage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
 
       {/* Hero */}
       <section className="bg-navy text-white py-16 px-4">
@@ -187,7 +187,7 @@ export default function FaqPage() {
       <section className="bg-brand-blue text-white py-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Still Have Questions?</h2>
-          <p className="text-gray-300 mb-8">
+          <p className="text-gray-200 mb-8">
             Book a free 15-minute strategy call with Crystal. She answers every question personally —
             no sales scripts, no pressure. Just an honest conversation about whether this program
             is the right fit for your situation.
@@ -211,6 +211,6 @@ export default function FaqPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

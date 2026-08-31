@@ -101,9 +101,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu — all links available */}
-      {isOpen && (
-        <div id="mobile-menu" className="lg:hidden bg-white border-t border-gray-200">
+      {/* Mobile menu — all links available.
+          Rendered at all times rather than mounted on open, because the
+          hamburger's aria-controls names this id: while the menu was
+          conditionally mounted, that attribute pointed at nothing for as long
+          as the menu was shut, which is every moment before someone needs it.
+          `hidden` keeps it out of the layout and out of the accessibility
+          tree, so the visible and interactive behaviour is unchanged. */}
+      <div id="mobile-menu" hidden={!isOpen} className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
@@ -140,8 +145,7 @@ export default function Navbar() {
               </div>
             )}
           </div>
-        </div>
-      )}
+      </div>
     </nav>
   )
 }

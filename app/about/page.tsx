@@ -66,7 +66,7 @@ const values = [
 
 export default function AboutPage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
 
       {/* Hero */}
       <section className="bg-navy text-white py-20 px-4">
@@ -139,7 +139,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Her Story</p>
+              <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Her Story</p>
               <h2 className="text-3xl font-bold text-navy mb-6">
                 A PM Career Built on Service, Grit, and Real Work
               </h2>
@@ -186,7 +186,7 @@ export default function AboutPage() {
       <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Teaching Philosophy</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Teaching Philosophy</p>
             <h2 className="text-3xl font-bold text-navy">What Makes Wiser Generations Different</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
@@ -205,7 +205,7 @@ export default function AboutPage() {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">The Journey</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">The Journey</p>
             <h2 className="text-3xl font-bold text-navy">From Service to Classroom</h2>
           </div>
           <div className="space-y-0">
@@ -220,7 +220,7 @@ export default function AboutPage() {
                   )}
                 </div>
                 <div className="pb-10">
-                  <div className="text-gold text-sm font-semibold mb-1">{m.year}</div>
+                  <div className="text-gold-text text-sm font-semibold mb-1">{m.year}</div>
                   <h3 className="text-xl font-bold text-navy mb-2">{m.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{m.body}</p>
                 </div>
@@ -294,6 +294,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

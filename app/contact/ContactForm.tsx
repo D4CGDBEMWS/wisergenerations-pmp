@@ -123,7 +123,7 @@ export default function ContactForm() {
         </div>
 
         <label className="block space-y-1.5 text-sm font-medium text-navy">
-          <span>Subject <span className="text-gray-400 font-normal">(optional)</span></span>
+          <span>Subject <span className="text-gray-600 font-normal">(optional)</span></span>
           <input
             type="text"
             maxLength={200}
@@ -159,7 +159,7 @@ export default function ContactForm() {
           {formState === 'submitting' ? 'Sending…' : 'Send Message'}
         </button>
 
-        <p className="text-center text-xs text-gray-500">
+        <p className="text-center text-xs text-gray-600">
           Crystal or a team member responds within 24 hours.
         </p>
       </form>
