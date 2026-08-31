@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation'
+
 // ---------------------------------------------------------------------------
 // Feature flags.
 //
@@ -57,14 +59,27 @@ export function isEnabled(flag: FeatureFlag): boolean {
 }
 
 /**
- * Route guard for gated sections. Returns a 404 rather than a 403 so a
+ * Route guard for gated sections. Produces a 404 rather than a 403, so a
  * disabled route is indistinguishable from one that does not exist — an
  * unreleased product should not be discoverable by probing.
+ *
+ * ── WHY THIS DELEGATES RATHER THAN CONSTRUCTING ITS OWN ERROR ──────────────
+ *
+ * This used to build a plain Error and hand-set `digest = 'NEXT_NOT_FOUND'`,
+ * which was how Next signalled a 404 at the time it was written. Next 16 no
+ * longer recognises a hand-set digest, so the throw fell through to the error
+ * boundary and the route answered 500 — with a stack trace — instead of 404.
+ *
+ * That is worse than a cosmetic bug on a gated route. A 500 is a DIFFERENT
+ * answer from a 404, and a different answer is information: probing a disabled
+ * feature returned something a non-existent path never would, which is exactly
+ * the enumeration signal the 404 was chosen to avoid.
+ *
+ * So the shape of the error is no longer this module's business. `notFound()`
+ * throws whatever the installed Next considers a 404, and it will keep doing
+ * so across upgrades — the failure above was caused by encoding that detail
+ * here in the first place.
  */
 export function assertEnabledOrNotFound(flag: FeatureFlag): void {
-  if (!isEnabled(flag)) {
-    const err = new Error(`Feature ${flag} is disabled`) as Error & { digest?: string }
-    err.digest = 'NEXT_NOT_FOUND'
-    throw err
-  }
+  if (!isEnabled(flag)) notFound()
 }
