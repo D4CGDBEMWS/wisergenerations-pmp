@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import {
+  CAMPAIGN_AWARENESS,
   PREORDER_OPENS,
   PREORDER_PERIOD,
   PUBLICATION_DAY,
@@ -74,6 +75,28 @@ describe('November is publication, October is preorder', () => {
     expect(source('app/pods/page.tsx')).toContain(
       'Delivery Pods are a new Enterprise Academy service launching November 2026',
     )
+  })
+})
+
+describe('the three milestones stay three', () => {
+  it('keeps Campaign Start, Preorder Opening and Publication distinct', () => {
+    // Owner ruling: the distinction is intentional and must not collapse into
+    // a generic "launch date". That ambiguity is what let October survive as a
+    // publication month in six places — "launch" meant the campaign in one
+    // document and the release in another, so neither reading looked wrong.
+    expect(CAMPAIGN_AWARENESS).toBe('September 2026')
+    expect(PREORDER_OPENS).toBe('October 1, 2026')
+    expect(PUBLICATION_MONTH).toBe('November 2026')
+
+    const milestones = [CAMPAIGN_AWARENESS, PREORDER_OPENS, PREORDER_PERIOD, PUBLICATION_MONTH]
+    expect(new Set(milestones).size).toBe(milestones.length)
+  })
+
+  it('exports no generic launch-date constant', () => {
+    // A single LAUNCH_DATE would be the collapse itself, whatever it held.
+    const launch = source('lib/liap/launch.ts')
+    expect(launch).not.toMatch(/export const LAUNCH_DATE\b/)
+    expect(launch).not.toMatch(/export const LAUNCH\b/)
   })
 })
 
