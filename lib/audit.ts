@@ -33,6 +33,8 @@ const ALLOWED_METADATA_KEYS = new Set([
   'tags',
   'operation',
   'status',
+  // Which Retreat an authority event concerned. An id, never its content.
+  'retreat_id',
 ])
 
 export type AuditEventType =
@@ -65,6 +67,19 @@ export type AuditEventType =
   // silently dropped sync is a customer who never hears from us again -- so
   // the failure is recorded here, where it can be found and replayed.
   | 'crm.sync_failed'
+  // Facilitation governance. Who was certified, suspended, granted trainer
+  // authority, assigned to a Retreat -- the record that makes an unauthorized
+  // access investigable. Deliberately narrow: the preparation event records
+  // THAT the required confirmation happened and nothing about its content.
+  | 'liap.retreat_completion_confirmed'
+  | 'liap.facilitator_certification_granted'
+  | 'liap.facilitator_certification_suspended'
+  | 'liap.facilitator_certification_revoked'
+  | 'liap.trainer_authority_granted'
+  | 'liap.trainer_authority_revoked'
+  | 'liap.retreat_facilitator_assigned'
+  | 'liap.retreat_facilitator_unassigned'
+  | 'liap.retreat_preparation_confirmed'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}
