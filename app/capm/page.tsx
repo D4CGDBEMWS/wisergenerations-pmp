@@ -76,7 +76,7 @@ export default function CAPMPage() {
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto grid gap-12 md:grid-cols-2 md:items-center">
           <div>
-            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">What You Get</p>
+            <p className="text-gold-text text-sm font-bold uppercase tracking-widest mb-2">What You Get</p>
             <h2 className="text-3xl font-bold text-navy mb-6">CAPM® Career Launcher — What&apos;s Included</h2>
             <ul className="space-y-4">
               {[
@@ -165,7 +165,7 @@ export default function CAPMPage() {
           </div>
           <p className="mt-6 text-center text-gray-500 text-sm">
             Not sure which is right for you?{' '}
-            <Link href="https://calendly.com/space4grace/30min-pod" className="text-gold hover:underline font-medium">
+            <Link href="https://calendly.com/space4grace/30min-pod" className="text-gold-text hover:underline font-medium">
               Book a free call
             </Link>{' '}
             and Crystal will help you decide.
@@ -177,7 +177,7 @@ export default function CAPMPage() {
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-brand-blue text-white text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your PM Career?</h2>
-          <p className="text-gray-300 mb-8 leading-relaxed">
+          <p className="text-gray-200 mb-8 leading-relaxed">
             Book a free 15-minute strategy call with Crystal to confirm the CAPM is the right move for you,
             or enroll directly and get started today.
           </p>

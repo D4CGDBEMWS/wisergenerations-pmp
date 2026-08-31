@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { PROGRAMS, STATS } from '@/lib/constants'
+import { PROGRAMS } from '@/lib/constants'
 import HomeClient from './components/HomeClient'
+import ProgramRouter from './components/ProgramRouter'
+import InstructorSection from './components/InstructorSection'
 import TrustSignals from '@/components/marketing/TrustSignals'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
@@ -47,7 +49,7 @@ export default function HomePage() {
     <>
       {/* Top announcement banner */}
       <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
-        🎯 Mentor-led PMP® &amp; CAPM® prep with an 87% first-attempt pass rate.{' '}
+        🎯 Mentor-led PMP® &amp; CAPM® prep.{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
           Book a free strategy call →
         </a>
@@ -72,11 +74,6 @@ export default function HomePage() {
               </p>
               {/* Stat strip — social proof immediately under headline */}
               <div className="flex flex-wrap gap-6 mb-6">
-                <div className="flex flex-col">
-                  <span className="text-4xl font-bold text-gold leading-none">87%</span>
-                  <span className="text-gray-400 text-xs mt-1">First-attempt pass rate</span>
-                </div>
-                <div className="w-px bg-white/20 hidden sm:block" />
                 <div className="flex flex-col">
                   <span className="text-4xl font-bold text-gold leading-none">500+</span>
                   <span className="text-gray-400 text-xs mt-1">Professionals trained</span>
@@ -129,15 +126,16 @@ export default function HomePage() {
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
                 </div>
-                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
-                  <p className="font-bold text-gold">87%</p>
-                  <p className="text-xs">First-attempt<br/>pass rate</p>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* PROTOTYPE Phase 1A — the router moves here, directly under the hero,
+          so the question "who are you?" is asked before the page starts
+          answering it. Same component, same content, new position. */}
+      <ProgramRouter programs={PROGRAMS} />
 
       {/* Trust signals strip */}
       <TrustSignals />
@@ -146,23 +144,54 @@ export default function HomePage() {
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
-            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-3">Simple Process</p>
+            <p className="text-gold-text text-sm font-bold uppercase tracking-widest mb-3">Simple Process</p>
             <h2 className="text-3xl md:text-4xl font-bold text-navy">How It Works</h2>
             <p className="text-gray-500 mt-3 max-w-xl mx-auto">Your path from day one to PMP® certified and job-ready.</p>
           </div>
 
-          {/* Process graphic — Learn → Practice → Certified → Get Job-Ready */}
+          {/* PROTOTYPE Phase 1A — the same four-step journey, served as the
+              6KB vector rather than the 167KB raster, and stated once as an
+              ordered list underneath. The list is what a screen reader, a
+              search engine, a text zoom to 400% and a visitor on a failed
+              image request all get; the graphic is decoration over the top of
+              it, so it is marked as such rather than carrying the meaning in
+              an alt attribute nobody can select, translate or search. Labels
+              and captions are read straight off the artwork. */}
           <img
-            src="/HowWeDoIt_process_light.png"
-            alt="How we do it: Learn, Practice, Certified, Get Job-Ready"
+            src="/HowWeDoIt_process_light.svg"
+            alt=""
+            aria-hidden="true"
             className="block w-full max-w-[1100px] h-auto mx-auto rounded-2xl shadow-sm ring-1 ring-gray-100"
           />
+
+          <ol className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { step: 'Learn', sub: 'Mentor-led cohorts' },
+              { step: 'Practice', sub: '694-question bank' },
+              { step: 'Certified', sub: 'PMP® earned' },
+              { step: 'Get Job-Ready', sub: null },
+            ].map((s, i) => (
+              <li key={s.step} className="flex items-start gap-3 rounded-xl border border-gray-200 p-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy text-white text-sm font-bold">
+                  {i + 1}
+                </span>
+                <span>
+                  <span className="block font-bold text-navy">{s.step}</span>
+                  {s.sub && <span className="block text-sm text-gray-600">{s.sub}</span>}
+                </span>
+              </li>
+            ))}
+          </ol>
 
           {/* Social proof nudge below steps */}
           <div className="mt-10 bg-navy/5 border border-brand-blue/10 rounded-2xl p-6 text-center">
             <p className="text-navy font-semibold text-lg">
-              <span className="text-gold font-bold">87%</span> of students pass on their first attempt.{' '}
-              <span className="text-gold font-bold">Pass Guarantee</span> included — we coach you until you pass.
+              <span className="text-gold-text font-bold">Pass Guarantee</span> included — we coach you until you pass.
+            </p>
+            {/* Sentence relocated here from the standalone band that used to
+                sit below this section, so the guarantee is made once. */}
+            <p className="text-gray-600 leading-relaxed mt-2 max-w-xl mx-auto">
+              We coach you until you pass — no extra charge, no fine print.
             </p>
             <div className="flex flex-wrap gap-4 justify-center mt-4">
               <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
@@ -178,33 +207,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* DISPLAY STAT — typographic anchor between How It Works and Free Guide */}
-      <section className="py-16 bg-navy text-center overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-            <div>
-              <p className="text-8xl md:text-9xl font-bold text-gold leading-none tabular-nums">87%</p>
-              <p className="text-white text-lg font-semibold mt-2">first-attempt pass rate</p>
-            </div>
-            <div className="hidden md:block w-px h-24 bg-white/20" />
-            <div className="text-left max-w-sm">
-              <p className="text-2xl font-bold text-white mb-2">Pass Guarantee included.</p>
-              <p className="text-gray-300 leading-relaxed">We coach you until you pass — no extra charge, no fine print. Our 87% first-attempt rate means most students never need it.</p>
-              <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-                className="inline-block mt-4 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors">
-                Book a Free Strategy Call →
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FREE GUIDE */}
       <section className="py-12 bg-white border-b-4 border-gold">
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 bg-gold/20 text-gold text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">
+              <div className="inline-flex items-center gap-2 bg-gold/20 text-gold-text text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">
                 📥 Free Download — No Credit Card Needed
               </div>
               <h2 className="text-3xl font-bold text-navy mb-3">
@@ -231,7 +239,7 @@ export default function HomePage() {
                 className="inline-block bg-gold text-navy font-bold px-8 py-4 rounded-xl hover:bg-amber-400 transition-colors text-lg shadow-md">
                 Get the Free Guide →
               </Link>
-              <p className="text-xs text-gray-400 mt-2">Enter your name & email — instant download. No spam ever.</p>
+              <p className="text-xs text-gray-500 mt-2">Enter your name & email — instant download. No spam ever.</p>
             </div>
                       <div className="flex justify-center items-center">
             <div className="relative">
@@ -254,7 +262,7 @@ export default function HomePage() {
       <section className="py-12 bg-paper border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8">
-            <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Act Now</p>
+            <p className="text-gold-text text-sm font-bold uppercase tracking-widest mb-2">Act Now</p>
             <h2 className="text-2xl font-bold text-navy">Cohort Schedule — Current &amp; Upcoming</h2>
             <p className="text-gray-600 mt-2">Reserve your seat in an upcoming cohort — spots are limited to keep classes small and mentor-led.</p>
           </div>
@@ -286,27 +294,9 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="text-center text-xs text-gray-400 mt-4">
+          <p className="text-center text-xs text-gray-500 mt-4">
             * Spots are limited to maintain cohort quality.
           </p>
-        </div>
-      </section>
-
-      {/* Stats bar with background */}
-      <section
-        className="bg-gold py-10 relative overflow-hidden"
-        style={{ backgroundImage: 'url(/veterans-classroom.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        <div className="absolute inset-0 bg-gold/90" />
-        <div className="max-w-5xl mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {STATS.map(s => (
-              <div key={s.label}>
-                <p className="text-3xl font-bold text-navy">{s.value}</p>
-                <p className="text-navy/70 text-sm mt-1">{s.label}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -317,11 +307,10 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold mb-2">Why Students Choose Enterprise Academy</h2>
             <p className="text-gray-400 text-sm">Mentor-led prep built around one goal: passing on your first attempt.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 max-w-3xl mx-auto">
             {[
               { icon: '📚', title: 'Mentor-Led', desc: "Live cohorts and 1:1 support from Crystal and team — you're never studying alone." },
               { icon: '🎯', title: 'Realistic Practice', desc: 'A 694-question bank, full-length mock exam, and every current question format, so exam day feels familiar.' },
-              { icon: '🏆', title: 'Pass Guarantee', desc: "Crystal and team coach you until you pass — no extra charge, no fine print. Our 87% first-attempt rate means most never need it." },
             ].map(item => (
               <div key={item.title} className="bg-white/10 hover:bg-white/15 transition-colors rounded-2xl p-8 border border-white/10">
                 <p className="text-4xl mb-4">{item.icon}</p>
@@ -330,56 +319,14 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <div className="mt-8 bg-white/10 border border-gold/40 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-              <p className="text-gold font-bold mb-1">📥 Not ready to book a call yet?</p>
-              <p className="text-gray-300 text-sm">Download the free guide first. Get all the facts, then decide your path.</p>
-            </div>
-            <Link href="/free-guide"
-              className="shrink-0 bg-gold text-navy font-bold px-6 py-3 rounded-xl hover:bg-amber-400 transition-colors whitespace-nowrap">
-              Get the Free Guide →
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* Interactive programs + testimonials */}
-      <HomeClient programs={PROGRAMS} testimonials={TESTIMONIALS} calendly={CALENDLY} />
+      {/* Testimonials + sticky booking bar */}
+      <HomeClient testimonials={TESTIMONIALS} calendly={CALENDLY} />
 
-      {/* Crystal instructor section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <img src="/team-success.jpg" alt="PMP certification team celebrating success"
-                className="rounded-2xl shadow-xl w-full object-cover max-h-[500px]" />
-            </div>
-            <div>
-              <p className="text-gold text-sm font-bold uppercase tracking-widest mb-2">Your Instructor</p>
-              <h2 className="text-4xl font-bold text-navy mb-4">Crystal Stewart, PMP®</h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                The Project Management Evangelist™. 20+ years of enterprise transformation. Founder of Enterprise Academy.
-                U.S. Army veteran. Crystal does not just teach PM — she has lived it, built with it, and now equips
-                the next generation of project managers to do the same.
-              </p>
-              <div className="flex flex-wrap gap-3 mb-6">
-                {['PMP® Certified', 'U.S. Army Veteran', 'Enterprise Academy Founder', '20+ Years Experience', 'Smyrna, GA'].map(t => (
-                  <span key={t} className="bg-light-navy border border-brand-blue/20 text-navy text-xs font-medium px-3 py-1.5 rounded-full">{t}</span>
-                ))}
-              </div>
-              <div className="flex gap-4">
-                <Link href="/about" className="bg-navy text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
-                  Crystal&apos;s Story
-                </Link>
-                <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
-                  className="border-2 border-gold text-gold font-bold px-6 py-3 rounded-lg hover:bg-gold hover:text-navy transition-colors">
-                  Book a Call
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Crystal instructor section — progressively disclosed on mobile */}
+      <InstructorSection calendly={CALENDLY} />
 
       {/* Veterans — with photo */}
       <section className="py-16 bg-brand-blue text-white relative overflow-hidden">
@@ -388,7 +335,7 @@ export default function HomePage() {
             <div>
               <div className="text-4xl mb-4">🎖️</div>
               <h2 className="text-3xl font-bold mb-4">Built for Veterans</h2>
-              <p className="text-gray-300 text-lg leading-relaxed mb-6">
+              <p className="text-gray-200 text-lg leading-relaxed mb-6">
                 You have managed missions under pressure. Now translate that into a PMP® credential.
                 Veteran-discounted tuition. Veteran peer cohort.
               </p>
@@ -422,7 +369,7 @@ export default function HomePage() {
       <section className="py-16 bg-gold">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">Ready to Pass on Your First Try?</h2>
-          <p className="text-navy/70 mb-4 text-lg">
+          <p className="text-navy mb-4 text-lg">
             Book a free call with Crystal today. She&apos;ll map your fastest path to PMP® or CAPM®
             certification — and the prep that gets you there with confidence.
           </p>
@@ -439,7 +386,7 @@ export default function HomePage() {
               View All Programs
             </Link>
           </div>
-          <p className="text-navy/60 text-sm">
+          <p className="text-navy text-sm">
             Not ready to call?{' '}
             <Link href="/free-guide" className="font-bold underline hover:no-underline">Download the free guide first →</Link>
           </p>

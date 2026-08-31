@@ -74,7 +74,7 @@ const faqs = [
 
 export default function GuaranteePage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
 
       {/* Hero */}
       <section className="bg-navy text-white py-20 px-4">
@@ -104,11 +104,7 @@ export default function GuaranteePage() {
       {/* Badge bar */}
       <section className="bg-gold py-6 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-navy">87%</div>
-              <div className="text-navy text-sm font-medium">First-attempt pass rate</div>
-            </div>
+          <div className="grid grid-cols-2 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-navy">500+</div>
               <div className="text-navy text-sm font-medium">Professionals trained</div>
@@ -126,15 +122,11 @@ export default function GuaranteePage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Why We Can Offer This</p>
-              <h2 className="text-3xl font-bold text-navy mb-6">
-                A Guarantee Backed by 87% First-Attempt Success
-              </h2>
+              <h2 className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-6">Why We Can Offer This</h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
                   The pass guarantee is not a marketing gimmick — it is a reflection of what actually
-                  happens when students commit to the program. At an 87% first-attempt pass rate,
-                  the restudy guarantee almost never gets used.
+                  happens when students commit to the program.
                 </p>
                 <p>
                   Crystal&apos;s method is built on real-world application and mentor-led learning —
@@ -177,7 +169,7 @@ export default function GuaranteePage() {
       <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">What You Get</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">What You Get</p>
             <h2 className="text-3xl font-bold text-navy">If You Need the Guarantee, Here is What is Included</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,7 +188,7 @@ export default function GuaranteePage() {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Eligibility</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Eligibility</p>
             <h2 className="text-3xl font-bold text-navy">To Qualify for the Restudy Guarantee</h2>
             <p className="text-gray-600 mt-4">The guarantee is for students who commit to the process. Here is what that means:</p>
           </div>
@@ -217,7 +209,7 @@ export default function GuaranteePage() {
       <section className="bg-paper py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Questions</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Questions</p>
             <h2 className="text-3xl font-bold text-navy">Guarantee FAQs</h2>
           </div>
           <div className="space-y-6">
@@ -235,7 +227,7 @@ export default function GuaranteePage() {
       <section className="bg-brand-blue text-white py-20 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Ready to Certify with Confidence?</h2>
-          <p className="text-gray-300 mb-8 text-lg">
+          <p className="text-gray-200 mb-8 text-lg">
             Book a free strategy call with Crystal. She will walk you through the program,
             the schedule, and the guarantee — so you can move forward knowing you are covered.
           </p>
@@ -258,6 +250,6 @@ export default function GuaranteePage() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

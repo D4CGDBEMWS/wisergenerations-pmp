@@ -74,7 +74,7 @@ export default function VeteransPage() {
             certification that civilian employers recognize &mdash; and respect.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link href="/checkout" className="bg-gold text-white font-bold px-8 py-4 rounded-lg hover:bg-amber-600 transition-colors text-lg">Start Your Pathway</Link>
+            <Link href="/checkout" className="bg-gold text-navy font-bold px-8 py-4 rounded-lg hover:bg-amber-600 transition-colors text-lg">Start Your Pathway</Link>
             <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="border-2 border-white text-white font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors text-lg">Talk to Crystal and Team</a>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function VeteransPage() {
             {MIL_MAP.map(([mil, pm]) => (
               <div key={mil} className="bg-white rounded-lg p-4 flex items-center gap-4 border border-gray-100">
                 <div className="text-center min-w-[120px]">
-                  <p className="text-xs font-bold text-gold uppercase tracking-wider mb-1">Military</p>
+                  <p className="text-xs font-bold text-gold-text uppercase tracking-wider mb-1">Military</p>
                   <p className="text-navy font-semibold text-sm">{mil}</p>
                 </div>
                 <div className="text-2xl text-gray-400">&rarr;</div>
@@ -105,7 +105,7 @@ export default function VeteransPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-2xl font-bold text-navy mb-2">Veterans PM Pathway &mdash; What&apos;s Included</h2>
-              <p className="text-gold font-medium mb-8">From $799 (Professional tier with veteran discount) &middot; Veteran discount applied at enrollment</p>
+              <p className="text-gold-text font-medium mb-8">From $799 (Professional tier with veteran discount) &middot; Veteran discount applied at enrollment</p>
               <div className="space-y-5">
                 {ITEMS.map(item => (
                   <div key={item.title} className="flex gap-4">
@@ -150,7 +150,7 @@ export default function VeteransPage() {
         <div className="max-w-xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold text-navy mb-4">Start Your Veterans Pathway</h2>
           <p className="text-gray-600 mb-6">Tell us your branch, your timeline, and your goal. We&apos;ll take it from there.</p>
-          <Link href="/checkout" className="bg-gold text-white font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Apply Now &rarr;</Link>
+          <Link href="/checkout" className="bg-gold text-navy font-bold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors inline-block">Apply Now &rarr;</Link>
         </div>
       </section>
     </div>
