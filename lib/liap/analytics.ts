@@ -29,6 +29,12 @@ export const LIAP_EVENTS = [
   'liap_preorder_clicked',
   'liap_preorder_completed',
   'liap_assessment_unlocked',
+  // The standalone assessment funnel: its landing page, its checkout click,
+  // and its post-payment page. Separate from the preorder events so the two
+  // doors to the same product can be told apart in the funnel.
+  'liap_assessment_landing_view',
+  'liap_assessment_purchase_clicked',
+  'liap_assessment_purchase_completed',
   'liap_assessment_started',
   'liap_assessment_step_completed',
   'liap_assessment_completed',

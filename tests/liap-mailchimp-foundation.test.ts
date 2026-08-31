@@ -540,53 +540,45 @@ describe('the journey tag allow-list', () => {
 // will meet them, rather than only in a report, and so that closing one is a
 // visible change to this file rather than something nobody notices.
 
-describe('the standalone assessment is built but not yet reachable', () => {
-  it('has a checkout route, and no page that can reach it', () => {
+describe('the standalone assessment now has its full path', () => {
+  it('has a checkout route and a landing page that reaches it', () => {
     expect(() => source('app/api/liap/assessment-checkout/route.ts')).not.toThrow()
-    // No purchase surface exists, because building one means writing
-    // customer-facing copy, which this task was told not to do.
-    const anyUi = ['app/living-is-a-project/page.tsx', 'app/living-is-a-project/book/page.tsx'].some(
-      (f) => code(f).includes('assessment-checkout')
-    )
-    expect(anyUi).toBe(false)
+    // This previously asserted the ABSENCE of any purchase surface. The owner
+    // supplied the landing-page copy, so the surface now exists.
+    expect(code('components/liap/AssessmentCta.tsx')).toContain('/api/liap/assessment-checkout')
+    expect(
+      code('app/living-is-a-project/life-project-ready-assessment/page.tsx')
+    ).toContain('AssessmentCta')
   })
 
-  it('names a success page that does not exist yet', () => {
-    // The route's success_url points at /living-is-a-project/assessment-complete.
-    // That page has not been built, so a completed payment would land on a 404.
-    // This is safe ONLY because FEATURE_LIAP gates the route -- it 404s before
-    // Stripe is ever called. This test fails the moment the page is added,
-    // which is the prompt to delete it.
+  it('has the success page its checkout redirects to', () => {
     const route = code('app/api/liap/assessment-checkout/route.ts')
     expect(route).toContain('assessment-complete')
-    expect(route).toContain("isEnabled('LIAP')")
-    let pageExists = true
-    try {
-      source('app/living-is-a-project/assessment-complete/page.tsx')
-    } catch {
-      pageExists = false
-    }
-    expect(
-      pageExists,
-      'assessment-complete page now exists — remove this gap test and the note in the report'
-    ).toBe(false)
+    // Previously asserted NOT to exist. It does now, so a completed payment
+    // no longer lands on a 404.
+    expect(() => source('app/living-is-a-project/assessment-complete/page.tsx')).not.toThrow()
   })
 
-  it('has no seeded product row, so an order record cannot be written yet', async () => {
-    // The entitlement is still granted -- refusing access to someone who paid
-    // because a seed row is absent would be the wrong failure -- but the order
-    // is skipped and logged. Seeding needs a migration, which is frozen.
+  it('has a seeded product row, so a purchase leaves an order trail', async () => {
     const rows = await db.query<{ id: string }>(
       `SELECT id FROM products WHERE product_key = 'LIAP_ASSESSMENT_STANDALONE'`
     )
-    expect(rows).toHaveLength(0)
+    expect(rows).toHaveLength(1)
     const result = await fulfilStandaloneAssessment({
-      email: 'noseed@example.com',
-      sourceId: 'cs_noseed',
-      idempotencyKey: 'evt_noseed',
+      email: 'seeded@example.com',
+      sourceId: 'cs_seeded',
+      idempotencyKey: 'evt_seeded',
     })
-    expect(result.orderId).toBeNull()
+    // Previously null, because the row was absent and the order was skipped.
+    expect(result.orderId).not.toBeNull()
     expect(await hasEntitlement(result.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
+
+    const items = await db.query<{ unit_amount: number }>(
+      `SELECT unit_amount FROM order_items WHERE order_id = $1`,
+      [result.orderId]
+    )
+    expect(items).toHaveLength(1)
+    expect(items[0]!.unit_amount).toBe(2900)
   })
 })
 
