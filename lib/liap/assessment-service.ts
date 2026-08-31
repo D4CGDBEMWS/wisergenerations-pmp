@@ -404,17 +404,31 @@ export async function rebuildReport(
     [assessmentId]
   )
 
-  const { DIMENSIONS } = await import('./assessment/v2')
-  const {
-    CLASSIFICATION_LABELS,
-    POSITION_LABELS,
-    POSITION_MEANINGS,
-    hiddenUrgencies,
-    rankForAttention,
-    strengths,
-  } = await import('./scoring')
+  // THE VERSION THAT PRODUCED THIS RESULT -- not the current one.
+  //
+  // Read from the assessment's own row, so a report is always reconstructed
+  // through the definition the participant actually answered against. Nothing
+  // here re-scores, converts or writes: the stored scores are rendered as they
+  // were stored, under the names and labels they were stored with.
+  const versionRow = await queryOne<{ version_key: string }>(
+    `SELECT v.version_key FROM assessments a
+       JOIN assessment_versions v ON v.id = a.version_id
+      WHERE a.id = $1`,
+    [assessmentId]
+  )
+  if (!versionRow) {
+    throw new Error(
+      `Assessment ${assessmentId} has no resolvable version. Refusing to render a ` +
+        `stored result without knowing which definition produced it.`
+    )
+  }
+  const { semanticsFor } = await import('./assessment/registry')
+  const semantics = semanticsFor(versionRow.version_key)
 
-  const scores = DIMENSIONS.map((d) => {
+  const { CLASSIFICATION_LABELS, hiddenUrgencies, rankForAttention, strengths } =
+    await import('./scoring')
+
+  const scores = semantics.dimensions.map((d) => {
     const row = scoreRows.find((r) => r.dimension_key === d.key)
     return {
       key: d.key,
@@ -422,18 +436,18 @@ export async function rebuildReport(
       score: row?.score ?? 5,
       classification: (row?.classification ?? 'immediate') as never,
     }
-  })
+  }) as never as import('./scoring').DimensionScore[]
 
-  const positionKey = (stored?.position_key ?? 'stabilize') as keyof typeof POSITION_LABELS
+  const positionKey = stored?.position_key ?? 'stabilize'
 
   const storedReport: FullReport = {
     scores,
     total: stored?.total_score ?? 40,
-    position: positionKey,
-    positionLabel: POSITION_LABELS[positionKey],
-    positionMeaning: POSITION_MEANINGS[positionKey],
+    position: positionKey as never,
+    positionLabel: semantics.positionLabels[positionKey] ?? '',
+    positionMeaning: semantics.positionMeanings[positionKey] ?? '',
     urgent: hiddenUrgencies(scores),
-    ranked: rankForAttention(scores),
+    ranked: rankForAttention(scores, semantics),
     strengths: strengths(scores),
     steady: stored?.steady_routed ?? false,
     actions: (stored?.next_best_three ?? []) as never,

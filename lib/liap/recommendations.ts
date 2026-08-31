@@ -87,19 +87,14 @@ export interface RenderedAction {
  * Written as protection rather than improvement: at this level the goal is to
  * stop something getting worse, not to optimise it.
  */
-// PARTIAL, deliberately. Spiritual Readiness is a new scored dimension with
-// no owner-approved PROTECT copy, and inventing a headline and body for
-// somebody's faith would be the worst possible place to guess. A dimension
-// with no entry is skipped by the selection below rather than rendering
-// undefined, and a test names the gap so it cannot be forgotten.
-// Reached only if every dimension lacked copy, which cannot happen while any
-// entry exists. Present so the types are honest rather than asserted away.
-const FALLBACK_COPY = {
-  headline: 'Protect what matters most first',
-  body: 'Start with the area your scores show is closest to breaking, and steady that before anything else.',
-} as const
-
-const PROTECT_BY_DIMENSION: Partial<Record<DimensionKey, { headline: string; body: string }>> = {
+// COMPLETE, and typed as a total Record on purpose. Every scored dimension
+// must have copy before it can be scored: a dimension the engine can rank but
+// cannot speak to is a dimension that reaches a customer as a blank. Typing it
+// as a total Record makes adding a ninth dimension without its copy a compile
+// error rather than something discovered in production.
+//
+// Spiritual Readiness carries owner-approved copy, 31 August 2026, verbatim.
+const PROTECT_BY_DIMENSION: Record<DimensionKey, { headline: string; body: string }> = {
   money: {
     headline: 'Protect your financial floor',
     body: 'Work out the minimum it costs to run your life for one month, and confirm you can cover it. Not a budget — a floor. Knowing the number stops the worry being infinite, and it tells you exactly how much time you have to work with.',
@@ -124,14 +119,19 @@ const PROTECT_BY_DIMENSION: Partial<Record<DimensionKey, { headline: string; bod
     headline: 'Protect your professional standing',
     body: 'Keep your record current and your relationships warm while you have the choice. It is far easier to do this before you need it than during the week you do.',
   },
+  spiritual: {
+    headline: 'Protect Your First Love',
+    body:
+      'Life\'s demands, disappointments, and distractions can quietly pull our attention away from God. If that has happened, this is not an invitation to condemnation—it is an invitation to come closer.\n\nRemember your first love. Make room for God\'s presence and receive the assurance that you are accepted in the Beloved.\n\nBefore seeking direction, return your heart to the One who directs your steps.',
+  },
   legacy: {
     headline: 'Protect what this is for',
     body: 'Name what you want this period to have counted for. It becomes the test for the decisions ahead — and it is the first thing to go missing when a change gets busy.',
   },
 }
 
-/** Partial for the same reason as PROTECT_BY_DIMENSION above. */
-const RESOLVE_BY_DIMENSION: Partial<Record<DimensionKey, { headline: string; body: string }>> = {
+/** Total for the same reason as PROTECT_BY_DIMENSION above. */
+const RESOLVE_BY_DIMENSION: Record<DimensionKey, { headline: string; body: string }> = {
   money: {
     headline: 'Resolve the money question you are avoiding',
     body: 'There is usually one specific number you have not looked at. Look at it this week. Uncertainty about money costs more attention than the answer usually does.',
@@ -155,6 +155,11 @@ const RESOLVE_BY_DIMENSION: Partial<Record<DimensionKey, { headline: string; bod
   career: {
     headline: 'Resolve where your work is heading',
     body: 'Decide whether the current arrangement is somewhere you are staying, leaving, or changing. Not knowing which is more tiring than any of the three.',
+  },
+  spiritual: {
+    headline: 'Remember. Return. Receive.',
+    body:
+      'If fear, pressure, disappointment, or your own plans have drawn your attention away from God, His mercy gives you room to return.\n\nRemember your first love. Receive His grace, and look again at your direction. Consider what is yours to do, what you need to release, and where God may be asking you to trust Him.\n\nDo what is within your hands, trust God with what is beyond your control, and be willing to change direction when He leads.',
   },
   legacy: {
     headline: 'Resolve the gap between what you value and how you spend your time',
@@ -234,18 +239,15 @@ export function renderAction(action: Action, narratives: NarrativeMap): Rendered
 export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
   const ranked = report.ranked
 
-  // Skip a dimension that has no approved copy rather than rendering an empty
-  // action. Spiritual Readiness is the only one today; if it is somebody's
-  // weakest dimension they get their next-weakest protected instead, which is
-  // a real recommendation rather than a blank one. The dimension still appears
-  // in their scores and still triggers the hidden-urgency flag at <= 10 --
-  // nothing about surfacing it is suppressed, only the copy is absent.
-  const withProtect = ranked.filter((d) => PROTECT_BY_DIMENSION[d.key])
-  const withResolve = ranked.filter((d) => RESOLVE_BY_DIMENSION[d.key])
-  const protectSource = withProtect[0] ?? ranked[0]!
-  const resolveSource = withResolve[1] ?? withResolve[0] ?? protectSource
+  // Every scored dimension has approved copy, so protect always speaks to the
+  // dimension that most needs protecting, and resolve to the next one down.
+  // No filtering and no fallback: a dimension that could be ranked but not
+  // spoken to would reach a customer as a blank, and the total Record above
+  // makes that a compile error instead.
+  const protectSource = ranked[0]!
+  const resolveSource = ranked[1] ?? protectSource
 
-  const protectCopy = PROTECT_BY_DIMENSION[protectSource.key] ?? FALLBACK_COPY
+  const protectCopy = PROTECT_BY_DIMENSION[protectSource.key]
 
   const protect: Action = {
     kind: 'protect',
@@ -254,7 +256,7 @@ export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
     basis: protectSource.key,
   }
 
-  const resolveCopy = RESOLVE_BY_DIMENSION[resolveSource.key] ?? FALLBACK_COPY
+  const resolveCopy = RESOLVE_BY_DIMENSION[resolveSource.key]
   // The BOOLEAN is stored, never the sentence. Whether they wrote something
   // decides which headline they get; what they wrote is resolved at render.
   const resolve: Action = stated(intake.importantDecision)

@@ -152,17 +152,35 @@ export function hiddenUrgencies(scores: readonly DimensionScore[]): DimensionSco
   return scores.filter((s) => s.score <= 10)
 }
 
-/** Priority order for what the plan addresses first. §19. */
-export function rankForAttention(scores: readonly DimensionScore[]): DimensionScore[] {
+/**
+ * Priority order for what the plan addresses first. §19.
+ *
+ * `order` exists so a HISTORICAL report can be ranked by the version that
+ * produced it. V1 ranked money, risk and wellness first, and 'risk' is not a
+ * V2 dimension -- ranking a V1 result with V2's priorities would quietly
+ * reorder what that participant was told to address first. Omitted, it ranks
+ * by the current version, which is what live scoring wants.
+ */
+export interface RankOrder {
+  priorityDimensions: readonly string[]
+  dimensionOrder: readonly string[]
+}
+
+export function rankForAttention(
+  scores: readonly DimensionScore[],
+  order?: RankOrder
+): DimensionScore[] {
+  const priorities: readonly string[] = order?.priorityDimensions ?? PRIORITY_DIMENSIONS
+  const total: readonly string[] = order?.dimensionOrder ?? DIMENSION_KEYS
   const weight = (s: DimensionScore) => {
-    const priorityIndex = PRIORITY_DIMENSIONS.indexOf(s.key)
+    const priorityIndex = priorities.indexOf(s.key)
     const isPriority = priorityIndex >= 0
     return [
       s.score <= 10 ? 0 : 1,            // immediate attention first
       isPriority ? 0 : 1,                // then money / wellness
       s.score,                           // then simply the lowest
       isPriority ? priorityIndex : 99,   // stable tie-break within priorities
-      DIMENSION_KEYS.indexOf(s.key),     // and a total order, so ties never flap
+      total.indexOf(s.key),              // and a total order, so ties never flap
     ]
   }
   return [...scores].sort((a, b) => {

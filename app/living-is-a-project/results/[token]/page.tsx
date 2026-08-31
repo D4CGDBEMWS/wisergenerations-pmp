@@ -226,7 +226,16 @@ export default async function ResultsPage({
                   {ACTION_HEADING[action.kind]}
                 </p>
                 <h3 className="mt-1.5 text-lg font-bold text-navy">{action.headline}</h3>
-                <p className="mt-2 leading-relaxed text-gray-700">{action.body}</p>
+                {/* Approved copy can run to several paragraphs -- the Spiritual
+                    Readiness blocks do. Rendering the whole body in one <p>
+                    would collapse those breaks into a single wall of text,
+                    which alters owner-approved copy in the act of displaying
+                    it. Split on the blank line the copy itself uses. */}
+                {action.body.split('\n\n').map((paragraph, i) => (
+                  <p key={i} className="mt-2 leading-relaxed text-gray-700">
+                    {paragraph}
+                  </p>
+                ))}
               </article>
             ))}
           </div>

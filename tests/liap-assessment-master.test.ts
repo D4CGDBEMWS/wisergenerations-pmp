@@ -261,12 +261,17 @@ describe('Spiritual Readiness replaces Risk & Readiness as a scored dimension', 
     expect(c).toContain('Resolve the risk you keep meaning to handle')
   })
 
-  it('names the one dimension still awaiting approved recommendation copy', () => {
-    // Deliberately asserts the gap rather than hiding it. When the owner
-    // supplies Spiritual Readiness protect/resolve copy, this test changes.
+  it('has owner-approved recommendation copy, supplied 31 August 2026', () => {
+    // This test previously asserted the ABSENCE of Spiritual Readiness copy,
+    // and said it would change when the owner supplied it. The owner did, so
+    // it now asserts the opposite: the maps are total, so a scored dimension
+    // without copy is a compile error rather than a blank in someone's report.
     const c = code('lib/liap/recommendations.ts')
-    expect(c).toContain('Partial<Record<DimensionKey')
-    expect(c, 'spiritual copy has arrived — update this test').not.toMatch(/\n  spiritual: \{/)
+    expect(c).not.toContain('Partial<Record<DimensionKey')
+    expect(c).toContain('Record<DimensionKey, { headline: string; body: string }>')
+    expect(c).toMatch(/\n  spiritual: \{/)
+    expect(c).toContain('Protect Your First Love')
+    expect(c).toContain('Remember. Return. Receive.')
   })
 
   it('v1 was left alone, as its own header requires', () => {
