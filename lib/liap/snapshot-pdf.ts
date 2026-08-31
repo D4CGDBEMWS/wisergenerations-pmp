@@ -1,5 +1,6 @@
 import PDFDocument from 'pdfkit'
 import type { RenderedReport } from './recommendations'
+import { actionLabel } from './display-labels'
 
 // ---------------------------------------------------------------------------
 // The Life Project Snapshot — a durable copy of a report the customer owns.
@@ -102,7 +103,7 @@ export async function buildSnapshotPdf(input: SnapshotInput): Promise<Buffer> {
     const top = doc.y
     doc.rect(PAGE.margin, top, WIDTH, 18 + report.urgent.length * 13).fill('#FEF2F2')
     doc.fillColor(RED).font('Helvetica-Bold').fontSize(10)
-      .text('Needs attention first', PAGE.margin + 10, top + 6, { width: WIDTH - 20 })
+      .text('Start Here', PAGE.margin + 10, top + 6, { width: WIDTH - 20 })
     doc.font('Helvetica').fontSize(9)
     for (const u of report.urgent) {
       doc.fillColor(RED).text(`${u.name} — ${u.score} of 25`, PAGE.margin + 10, doc.y + 1, {
@@ -151,7 +152,7 @@ export async function buildSnapshotPdf(input: SnapshotInput): Promise<Buffer> {
   for (const a of report.actions) {
     if (doc.y > 660) doc.addPage()
     doc.fillColor(GOLD).font('Helvetica-Bold').fontSize(8)
-      .text(a.kind.toUpperCase(), { width: WIDTH, characterSpacing: 1.2 })
+      .text(actionLabel(a.kind), { width: WIDTH, characterSpacing: 1.2 })
     doc.fillColor(NAVY).font('Helvetica-Bold').fontSize(11)
       .text(a.headline, { width: WIDTH })
     doc.moveDown(0.5)

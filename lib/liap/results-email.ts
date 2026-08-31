@@ -1,4 +1,5 @@
 import type { RenderedReport } from './recommendations'
+import { actionLabel } from './display-labels'
 
 // ---------------------------------------------------------------------------
 // The results email. §23.
@@ -21,7 +22,7 @@ export function resultsEmailHtml(report: RenderedReport, resultsUrl: string): st
       (a) => `
         <tr><td style="padding:0 0 18px">
           <p style="margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#C9A84C;font-weight:bold">${
-            a.kind === 'protect' ? 'Protect' : a.kind === 'resolve' ? 'Resolve' : 'Move'
+            escapeHtml(actionLabel(a.kind))
           }</p>
           <p style="margin:4px 0 0;font-size:16px;font-weight:bold;color:#0A1628">${escapeHtml(a.headline)}</p>
         </td></tr>`
@@ -76,7 +77,7 @@ export function resultsEmailHtml(report: RenderedReport, resultsUrl: string): st
 
 export function resultsEmailText(report: RenderedReport, resultsUrl: string): string {
   const actions = report.actions
-    .map((a) => `  ${a.kind.toUpperCase()}: ${a.headline}`)
+    .map((a) => `  ${actionLabel(a.kind)}: ${a.headline}`)
     .join('\n')
 
   return `Something changed — or something is about to.

@@ -119,8 +119,15 @@ describe('persona 2 — unexpected job loss, weak money and spiritual readiness,
     expect(full.actions[0]!.basis).toBe('money')
   })
 
-  it('opens the plan with stabilisation, not expansion', () => {
-    expect(full.plan.phases[0]!.items[0]!.text).toContain('S.T.E.A.D.Y.')
+  it('opens the plan by protecting the weakest priority, not by expanding', () => {
+    // This previously asserted the plan opened with the S.T.E.A.D.Y. line.
+    // S.T.E.A.D.Y. was retired from customer-facing copy on 31 August 2026 and
+    // that line was removed, so the first item is now the protect step — which
+    // is what "stabilise before expanding" actually looks like in the plan.
+    expect(full.plan.phases[0]!.items[0]!.text).toContain('Protect the essentials in Money')
+    expect(full.plan.phases[0]!.items.map((i) => i.text).join(' ')).not.toContain('S.T.E.A.D.Y.')
+    // The routing flag itself is unchanged.
+    expect(full.steady).toBe(true)
   })
 })
 

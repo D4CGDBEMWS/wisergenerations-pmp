@@ -369,12 +369,14 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
   const namedDecision = stated(intake.importantDecision)
 
   const first: PlanItem[] = [
-    { text: `Protect the essentials in ${name(lowest)} — this is where your answers show the least room right now.` },
+    { text: `Protect the essentials in ${name(lowest)} — this is where your answers show the greatest opportunity for growth right now.` },
     { text: 'Gather the information you are currently missing, rather than deciding without it.' },
   ]
-  if (report.steady) {
-    first.unshift({ text: 'Work the S.T.E.A.D.Y. sequence before committing to anything larger. Stabilise first; the plan will hold better for it.' })
-  }
+  // The S.T.E.A.D.Y. plan item that opened this phase for a steady-routed
+  // participant was retired from customer-facing copy on 31 August 2026. Its
+  // approved replacement is Wiser Pivots™, and no approved Wiser Pivots™ copy
+  // exists for this line, so the line is removed rather than rewritten. The
+  // `steady` flag itself is unchanged and still tempers the MOVE step below.
   if (namedDecision) {
     // Complete as a sentence on its own; the quotation adds their words while
     // they exist, and its absence at day 91 costs the line nothing.
@@ -387,7 +389,7 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
 
   const secondPhase: PlanItem[] = [
     { text: `Act on your Move step rather than revisiting it.` },
-    { text: `Give ${name(second)} deliberate attention — it is the next area that will limit progress.` },
+    { text: `Give ${name(second)} deliberate attention — it is the next area where focused attention may create meaningful progress.` },
   ]
   if (strongest) {
     secondPhase.push({ text: `Use ${strongest.name}, your strongest area at ${strongest.score}/25, to carry the parts that feel heaviest.` })

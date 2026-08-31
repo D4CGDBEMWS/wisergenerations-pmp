@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
-import { STEADY_STEPS } from '@/lib/liap/scoring'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { actionLabel } from '@/lib/liap/display-labels'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
 import { InterestButton } from '@/components/liap/InterestButton'
 import { queryOne } from '@/lib/db/client'
@@ -42,11 +42,6 @@ const CLASSIFICATION_STYLE: Record<string, { bar: string; text: string }> = {
   immediate: { bar: 'bg-red-700', text: 'text-red-800' },
 }
 
-const ACTION_HEADING = {
-  protect: 'Protect',
-  resolve: 'Resolve',
-  move: 'Move',
-} as const
 
 export default async function ResultsPage({
   params,
@@ -112,7 +107,7 @@ export default async function ResultsPage({
             className="rounded-xl border-l-4 border-red-700 bg-red-50 p-5 sm:p-6"
           >
             <h2 id="urgent-heading" className="text-lg font-bold text-red-900">
-              Needs attention first
+              Start Here
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-red-900">
               However the rest of your answers look, {report.urgent.length === 1 ? 'this area is' : 'these areas are'}{' '}
@@ -128,34 +123,23 @@ export default async function ResultsPage({
           </section>
         )}
 
-        {/* S.T.E.A.D.Y., before any expansion advice. §17. */}
-        {report.steady && (
-          <section aria-labelledby="steady-heading">
-            <h2 id="steady-heading" className="text-xl font-bold text-navy">
-              Start with S.T.E.A.D.Y.
-            </h2>
-            <p className="mt-2 leading-relaxed text-gray-600">
-              What you described is the kind of change that rewards steadying before planning. Work
-              these in order — it is how you move from reacting to choosing.
-            </p>
-            <ol className="mt-5 space-y-3">
-              {STEADY_STEPS.map((s) => (
-                <li key={s.letter} className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4">
-                  <span
-                    aria-hidden="true"
-                    className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-navy font-bold text-gold"
-                  >
-                    {s.letter}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-navy">{s.title}</p>
-                    <p className="mt-0.5 text-sm leading-relaxed text-gray-600">{s.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
+        {/*
+          RETIRED: the S.T.E.A.D.Y. section stood here.
+
+          S.T.E.A.D.Y. was retired from customer-facing LIAP on 31 August 2026.
+          Its owner-approved replacement is Wiser Pivots™, and there is no
+          approved Wiser Pivots™ copy for this surface — the six step words
+          exist, but the section heading, its explanatory paragraph and the six
+          bodies do not. So the section is removed rather than rewritten:
+          inventing replacement prose for the moment a participant is told how
+          to handle an unexpected change is not a gap to fill in silently.
+
+          The routing itself is untouched. `report.steady` is still computed,
+          still stored as `steady_routed`, and still tempers the STRENGTHEN
+          step in lib/liap/recommendations.ts. Only the display is gone.
+
+          WISER PIVOTS COPY REQUIRED for this surface.
+        */}
 
         {/* Dashboard. §22: score, classification and a written label — never
             colour alone, and the bar is decorative with the number beside it. */}
@@ -223,7 +207,7 @@ export default async function ResultsPage({
             {report.actions.map((action) => (
               <article key={action.kind} className="rounded-xl border border-gray-200 bg-white p-5">
                 <p className="text-xs font-bold uppercase tracking-widest text-gold">
-                  {ACTION_HEADING[action.kind]}
+                  {actionLabel(action.kind)}
                 </p>
                 <h3 className="mt-1.5 text-lg font-bold text-navy">{action.headline}</h3>
                 {/* Approved copy can run to several paragraphs -- the Spiritual

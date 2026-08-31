@@ -1,40 +1,49 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { fulfilledForCheckoutSession, readLiapAccess } from '@/lib/liap/entitlements'
 
 export const metadata = {
   title: "You're Ready to Begin | Wiser Generations",
   robots: { index: false, follow: false },
 }
 
+// Read on every request. A waiting participant re-checks by reloading, and a
+// cached render would show them a stale answer at the one moment it matters.
+export const dynamic = 'force-dynamic'
+
 // ---------------------------------------------------------------------------
 // After a standalone Life Project-Ready™ Assessment purchase.
 //
-// ── WHY THIS DOES NOT CHECK THE ENTITLEMENT ────────────────────────────────
+// ── WHAT DECIDES, AND WHAT DOES NOT ────────────────────────────────────────
 //
-// Same reasoning as the preorder-complete page, and the same deliberate
-// choice: the webhook that grants access can arrive a second or two after
-// Stripe redirects the customer here. A page that said "we can't find your
-// purchase" to somebody who has just paid would be the worst possible first
-// impression, and it would be wrong most of the time it fired.
+// The webhook is the payment authority. It verifies the Stripe event, writes
+// the order, and grants the entitlement. This page reads the result of that
+// and renders one of two states. It grants nothing, creates nothing, charges
+// nothing and starts no checkout — there is no code path here that could.
 //
-// So this page congratulates, and grants nothing. The real gate is
-// /living-is-a-project/assessment, which reads the entitlement server-side and
-// explains the delay if the grant has not landed yet. Reaching this page by
-// typing its URL gets a visitor a page of text and no access whatsoever.
+// `session_id` is an arrival hint and a LOOKUP KEY. It is never proof of
+// payment: `fulfilledForCheckoutSession` uses it to find the order the webhook
+// wrote, and it is that order — plus the entitlement — that answers the
+// question. An id somebody typed matches no paid order and gets the waiting
+// state, which grants them nothing at all.
 //
-// ── THE FLOW GUARD ─────────────────────────────────────────────────────────
+// Two sources are consulted, because a standalone buyer may have no session
+// cookie: they bought without signing in. So either a signed-in entitlement or
+// a fulfilled checkout session counts, and neither can be forged from the URL.
 //
-// A `session_id` is required, because that is what Stripe appends when it
-// redirects. It is NOT verified against Stripe and must never be treated as
-// proof of anything — it is a hint that somebody arrived from checkout rather
-// than a claim that they paid. Its only job is to stop this page being a
-// stray, linkable destination for people who never started a purchase.
+// ── WHY THE WAITING STATE IS NOT A FAILURE STATE ───────────────────────────
+//
+// The granting webhook can land a second or two after Stripe redirects. So
+// "not yet" is the common, expected case for a few seconds, and it must not
+// read as "we cannot find your purchase" or send anybody back through
+// payment. It says the purchase is being processed, and offers one action
+// that re-checks. The secure assessment re-checks independently regardless.
 //
 // ── AND IT IS NOT A SALES PAGE ─────────────────────────────────────────────
 //
 // Owner direction: no Workshop, no Retreat, no coaching, no other product.
-// The next action is the Assessment. There is exactly one button.
+// The next action is the Assessment.
 // ---------------------------------------------------------------------------
 
 export default async function AssessmentCompletePage({
@@ -43,8 +52,53 @@ export default async function AssessmentCompletePage({
   searchParams: Promise<{ session_id?: string }>
 }) {
   const params = await searchParams
-  if (!params.session_id) {
+  const sessionId = params.session_id
+  if (!sessionId) {
     redirect('/living-is-a-project/life-project-ready-assessment')
+  }
+
+  // Either door. Both are server-side facts; neither comes from the URL.
+  const access = await readLiapAccess()
+  const entitled =
+    access?.entitled === true || (await fulfilledForCheckoutSession(sessionId))
+
+  if (!entitled) {
+    return (
+      <main className="bg-[#FDFBF6]">
+        <section className="relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[300px] bg-gradient-to-b from-[#FBF0D6] via-[#FDF8EC] to-transparent"
+          />
+
+          <div className="relative mx-auto max-w-2xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
+            <h1 className="text-3xl font-bold leading-tight text-navy sm:text-4xl">
+              We&rsquo;re Confirming Your Access
+            </h1>
+
+            <div className="mt-6 space-y-4 text-base leading-relaxed text-gray-700 sm:text-lg">
+              <p>
+                Your purchase is being processed. Your Assessment access should be ready shortly.
+              </p>
+              <p>Please give us a moment to complete your access.</p>
+            </div>
+
+            {/*
+              A plain anchor to this same URL, so the request goes to the server
+              and the check above runs again. Not a form, not a handler, not a
+              fetch: re-checking is the only thing it can do, because there is
+              no other code behind it.
+            */}
+            <a
+              href={`/living-is-a-project/assessment-complete?session_id=${encodeURIComponent(sessionId)}`}
+              className="mt-8 inline-flex min-h-[56px] w-full items-center justify-center rounded-xl bg-navy px-8 text-base font-bold tracking-wide text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold sm:w-auto"
+            >
+              CHECK MY ACCESS
+            </a>
+          </div>
+        </section>
+      </main>
+    )
   }
 
   return (
@@ -125,11 +179,6 @@ export default async function AssessmentCompletePage({
               Crystal
             </p>
           </div>
-
-          <p className="mt-10 text-sm leading-relaxed text-gray-500">
-            If the assessment says it isn&rsquo;t unlocked yet, wait a moment and refresh &mdash;
-            payment confirmation can take a few seconds to reach us.
-          </p>
         </div>
       </section>
     </main>

@@ -350,7 +350,12 @@ describe('Life Project Snapshot PDF', () => {
     expect(text).toContain(String(report.total))
     // Hidden urgency surfaced when present.
     expect(report.urgent.length).toBeGreaterThan(0)
-    expect(text).toContain('Needs attention first')
+    // 'Needs attention first' until 31 August 2026, when the owner replaced it
+    // with 'Start Here' under the participant language standard. The safeguard
+    // it guards is unchanged: an urgent dimension is still surfaced, and this
+    // still fails if the section stops rendering.
+    expect(text).toContain('Start Here')
+    expect(text).not.toContain('Needs attention first')
     // 30/60/90 present. Compared on an ASCII-normalised basis: the window
     // labels contain an en dash, which does not survive the single-byte hex
     // encoding pdfkit uses for these glyphs.

@@ -39,7 +39,7 @@ export const CLASSIFICATION_LABELS: Record<Classification, string> = {
   strength: 'Strength',
   build: 'Build',
   priority: 'Priority',
-  immediate: 'Immediate attention',
+  immediate: 'Priority to Strengthen',
 }
 
 /** §14. Forty questions × 1–5, so 40–200. */
@@ -129,6 +129,19 @@ export function needsSteady(intake: Intake): boolean {
   return intake.changeType === 'unexpected' || (intake.urgency ?? 0) >= 4
 }
 
+/**
+ * RETIRED FROM CUSTOMER-FACING USE, 31 August 2026.
+ *
+ * S.T.E.A.D.Y. is no longer shown to participants. This export is retained
+ * because `steady_routed` is a stored column and `needsSteady` still routes on
+ * it, so the flag and its vocabulary remain part of the internal model — but
+ * nothing renders these strings, and a test asserts no surface does.
+ *
+ * The owner-approved customer-facing replacement is Wiser Pivots™. There is no
+ * approved Wiser Pivots™ copy for the results-page adaptive-change section, so
+ * that section was removed rather than rewritten; inventing replacement prose
+ * is not this file's decision to make.
+ */
 export const STEADY_STEPS = [
   { letter: 'S', title: 'Stabilize what is urgent', body: 'Deal first with anything that gets worse if left. Not everything — the things with a clock on them.' },
   { letter: 'T', title: 'Take inventory', body: 'Write down what you actually have: money, people, time, options, obligations. Most situations look different once they are on paper.' },
