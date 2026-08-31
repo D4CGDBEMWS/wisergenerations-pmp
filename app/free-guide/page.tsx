@@ -124,7 +124,7 @@ export default function FreeGuidePage() {
 
             <div className="mt-10 flex items-center gap-4">
               <img
-                src="/crystal-stewart.jpg"
+                src="/crystal-glover-stewart-master-headshot.jpg"
                 alt="Crystal Stewart, PMP®"
                 className="h-14 w-14 rounded-full object-cover"
               />
