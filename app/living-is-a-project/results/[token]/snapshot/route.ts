@@ -53,11 +53,14 @@ export async function GET(
   // promises to delete, and asking for the purged view is how that is
   // guaranteed rather than remembered.
   const report = await rebuildReport(found.id, { includeNarratives: false })
-  const row = await queryOne<{ completed_at: string | null }>(
+  const row = await queryOne<{ completed_at: unknown }>(
     `SELECT completed_at FROM assessments WHERE id = $1`,
     [found.id]
   )
-  const completedOn = (row?.completed_at ?? '').toString().slice(0, 10) || 'undated'
+  // A timestamptz does NOT arrive as a string. pg-types — which the Neon
+  // driver uses — parses oid 1184 into a JS Date, and `.toString().slice(0,10)`
+  // on a Date yields "Tue Sep 0", which is what the PDF would have printed.
+  const completedOn = toIsoDay(row?.completed_at)
 
   const pdf = await buildSnapshotPdf({ report, completedOn })
 
@@ -71,4 +74,12 @@ export async function GET(
       'X-Content-Type-Options': 'nosniff',
     },
   })
+}
+
+/** 'YYYY-MM-DD', or 'undated' when the value cannot be read as a date. */
+function toIsoDay(value: unknown): string {
+  const d =
+    value instanceof Date ? value : typeof value === 'string' ? new Date(value) : null
+  if (!d || Number.isNaN(d.getTime())) return 'undated'
+  return d.toISOString().slice(0, 10)
 }

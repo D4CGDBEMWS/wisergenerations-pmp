@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
+import type { RenderedReport } from '@/lib/liap/recommendations'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { actionLabel } from '@/lib/liap/display-labels'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
@@ -34,6 +35,51 @@ export const metadata = {
 // the token — nothing can — but it does stop the plausible real-world case of
 // a link pasted into a shared machine where somebody else is signed in.
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// The four zones of LIFE PROJECT READINESS AT A GLANCE, in the owner's order:
+// WHERE I AM -> WHAT STANDS OUT -> WHAT MAY DESERVE ATTENTION -> WHAT I MAY
+// WANT TO DO NEXT.
+//
+// A table rather than four hand-written blocks, so the order is a single
+// readable list and a zone cannot drift out of it during a later edit. Each
+// `items` function READS the report; none of them scores, ranks or classifies
+// anything, because the panel must agree with the sections below it by
+// construction rather than by coincidence.
+// ---------------------------------------------------------------------------
+
+interface GlanceZone {
+  label: string
+  items: (report: RenderedReport) => string[]
+}
+
+const GLANCE_ZONES: readonly GlanceZone[] = [
+  {
+    label: 'Where I am',
+    items: (r) => [r.positionLabel, `${r.total} of 200 across eight dimensions`],
+  },
+  {
+    // The dimensions that scored as strengths. When none did, the highest
+    // scoring one still stands out relative to the rest, and saying so is
+    // reading the result rather than softening it.
+    label: 'What stands out',
+    items: (r) => {
+      const top = r.strengths.length > 0 ? r.strengths : r.scores.slice().sort((a, b) => b.score - a.score).slice(0, 1)
+      return top.map((s) => `${s.name} — ${s.score}/25`)
+    },
+  },
+  {
+    // Urgent first when there is anything urgent — the same rule Start Here
+    // follows — and otherwise the top of the attention ranking the engine
+    // already produced.
+    label: 'What may deserve attention',
+    items: (r) => (r.urgent.length > 0 ? r.urgent : r.ranked.slice(0, 3)).map((s) => `${s.name} — ${s.score}/25`),
+  },
+  {
+    label: 'What I may want to do next',
+    items: (r) => r.actions.map((a) => `${actionLabel(a.kind)} — ${a.headline}`),
+  },
+]
 
 const CLASSIFICATION_STYLE: Record<string, { bar: string; text: string }> = {
   strength: { bar: 'bg-emerald-600', text: 'text-emerald-800' },
@@ -67,10 +113,16 @@ export default async function ResultsPage({
   if (session && session.customerId !== found.customerId) notFound()
 
   const report = await rebuildReport(found.id)
-  const reviewRow = await queryOne<{ next_review_on: string | null }>(
+  // `unknown`, deliberately. A `date` column does NOT arrive here as a string:
+  // the Neon driver runs pg-types, whose parser for oid 1082 returns a JS Date,
+  // and PGlite does the same. Typing it `string` compiled fine and printed
+  // "Invalid Date" on every rendered plan. formatDate normalises instead.
+  const reviewRow = await queryOne<{ next_review_on: unknown }>(
     `SELECT next_review_on FROM assessment_results WHERE assessment_id = $1`,
     [found.id]
   )
+
+  const reviewOn = formatDate(reviewRow?.next_review_on)
 
   const maskedEmail = maskEmail(
     (
@@ -122,6 +174,71 @@ export default async function ResultsPage({
             </ul>
           </section>
         )}
+
+        {/*
+          LIFE PROJECT READINESS AT A GLANCE.
+
+          ── WHAT THE WORDS ARE, AND WHERE THEY CAME FROM ─────────────────────
+
+          Every word of fixed text in this section is owner-supplied: the
+          heading, the four zone labels, and the closing sentence. Nothing here
+          was written to fill a gap. There is no explanatory paragraph, no
+          connective prose and no summary sentence, because none was approved —
+          and a glance panel is exactly the surface where invented framing would
+          read as the system's own verdict on somebody's life.
+
+          Everything else on the panel is the participant's own result, read
+          from the same `report` the detailed sections below render. It is a
+          second view of one set of facts, never a second computation of them.
+
+          ── PLACEMENT ───────────────────────────────────────────────────────
+
+          After Start Here, not before it. §15's rule is that anything at 10 or
+          below is stated before anything else, and a summary panel is not an
+          exception to it. For a participant with nothing urgent this is the
+          first thing in the body, which is where the hierarchy wants it.
+        */}
+        <section
+          aria-labelledby="glance-heading"
+          className="rounded-xl border border-gold/40 bg-white p-5 sm:p-6"
+        >
+          <h2
+            id="glance-heading"
+            className="text-xs font-bold uppercase tracking-[0.18em] text-gold-text"
+          >
+            Life Project Readiness at a Glance
+          </h2>
+
+          <dl className="mt-5 space-y-5">
+            {GLANCE_ZONES.map((zone) => {
+              const items = zone.items(report)
+              if (items.length === 0) return null
+              return (
+                <div key={zone.label}>
+                  <dt className="text-[11px] font-bold uppercase tracking-widest text-gray-500">
+                    {zone.label}
+                  </dt>
+                  <dd className="mt-1.5">
+                    <ul className="space-y-1">
+                      {items.map((item, i) => (
+                        <li key={i} className="leading-relaxed text-navy">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              )
+            })}
+          </dl>
+
+          {/* Owner-approved, verbatim, and deliberately the last thing on the
+              panel. Not to be strengthened, spiritualized, rewritten or
+              substituted. */}
+          <p className="mt-6 border-t border-gold/40 pt-5 leading-relaxed text-gray-700">
+            May you discern what project matters most to you.
+          </p>
+        </section>
 
         {/*
           RETIRED: the S.T.E.A.D.Y. section stood here.
@@ -206,7 +323,9 @@ export default async function ResultsPage({
           <div className="mt-5 space-y-4">
             {report.actions.map((action) => (
               <article key={action.kind} className="rounded-xl border border-gray-200 bg-white p-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-gold">
+                {/* gold-text, not gold: brand gold reads 2.28:1 on white and
+                    fails AA. Same hue, taken down to 32% lightness. */}
+                <p className="text-xs font-bold uppercase tracking-widest text-gold-text">
                   {actionLabel(action.kind)}
                 </p>
                 <h3 className="mt-1.5 text-lg font-bold text-navy">{action.headline}</h3>
@@ -246,10 +365,10 @@ export default async function ResultsPage({
             ))}
           </div>
 
-          {reviewRow?.next_review_on && (
+          {reviewOn && (
             <p className="mt-5 rounded-lg bg-navy/5 p-4 text-sm text-navy">
               <span className="font-semibold">Next review date:</span>{' '}
-              {formatDate(reviewRow.next_review_on)} — put it in your calendar now, while you are
+              {reviewOn} — put it in your calendar now, while you are
               thinking about it.
             </p>
           )}
@@ -275,9 +394,14 @@ export default async function ResultsPage({
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
             A one-page snapshot of your position, your eight dimensions and your 30/60/90 plan.
           </p>
+          {/* The gold focus ring is not decoration here. Without it this
+              control fell back to the browser's default near-black ring, which
+              on a navy button measures about 1.1:1 — a keyboard user tabbing to
+              the one thing on the page they get to keep could not see where
+              they were. */}
           <a
             href={`/living-is-a-project/results/${token}/snapshot`}
-            className="mt-4 inline-block rounded-lg bg-navy px-6 py-3 font-bold text-white transition-colors hover:bg-brand-blue-dark"
+            className="mt-4 inline-block rounded-lg bg-navy px-6 py-3 font-bold text-white transition-colors hover:bg-brand-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             Download My Life Project Snapshot
           </a>
@@ -332,8 +456,21 @@ function maskEmail(email: string): string {
   return `${head}${'•'.repeat(Math.max(local.length - 1, 3))}@${domain}`
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(`${iso}T00:00:00Z`)
+/**
+ * Formats a review date that may arrive as a Date OR as a 'YYYY-MM-DD' string.
+ *
+ * Both happen: the driver's type parser decides, and it is not the same in
+ * every deployment. Returns null rather than the string "Invalid Date" — a
+ * date we cannot read is a date not worth showing the customer.
+ */
+function formatDate(value: unknown): string | null {
+  const d =
+    value instanceof Date
+      ? value
+      : typeof value === 'string'
+        ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00Z` : value)
+        : null
+  if (!d || Number.isNaN(d.getTime())) return null
   return d.toLocaleDateString('en-US', {
     timeZone: 'UTC',
     year: 'numeric',
