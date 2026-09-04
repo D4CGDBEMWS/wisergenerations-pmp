@@ -102,12 +102,24 @@ export default function AboutPage() {
             </div>
             {/* Photo */}
             <div className="flex justify-center md:justify-end">
-              <div className="relative">
+              {/* The master headshot is a 5:4 landscape frame, and this slot is
+                  the portrait one the page was designed around, so the crop is
+                  done here in CSS rather than in the file: the wrapper holds the
+                  420x520 footprint and object-cover takes the centred portion of
+                  the untouched source.
+
+                  That crop keeps only the middle ~65% of the source width, so
+                  sizes cannot be the slot width — asking for 420px of source
+                  leaves 271px of it after cropping, and the browser serves a
+                  file too small for the box. The values below are the slot
+                  widths divided by that crop factor: what the source actually
+                  has to supply. */}
+              <div className="relative w-full max-w-[420px] aspect-[420/520]">
                 <Image
                   src="/crystal-glover-stewart.jpg"
                   alt="Crystal Glover Stewart, PMP® — The Project Management Evangelist"
-                  width={420}
-                  height={336}
+                  fill
+                  sizes="(min-width: 768px) 660px, 155vw"
                   className="rounded-2xl shadow-2xl object-cover"
                   priority
                 />
