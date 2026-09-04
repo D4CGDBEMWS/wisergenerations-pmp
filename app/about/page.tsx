@@ -104,10 +104,10 @@ export default function AboutPage() {
             <div className="flex justify-center md:justify-end">
               <div className="relative">
                 <Image
-                  src="/crystal-about.jpg"
-                  alt="Crystal Stewart, PMP — The Project Management Evangelist"
+                  src="/crystal-glover-stewart.jpg"
+                  alt="Crystal Glover Stewart, PMP® — The Project Management Evangelist"
                   width={420}
-                  height={520}
+                  height={336}
                   className="rounded-2xl shadow-2xl object-cover"
                   priority
                 />
