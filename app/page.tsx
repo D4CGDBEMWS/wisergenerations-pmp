@@ -119,8 +119,8 @@ export default function HomePage() {
             <div className="flex justify-center order-first lg:order-last">
               <div className="relative">
                 <img
-                  src="/crystal-stewart.jpg"
-                  alt="Crystal Stewart, PMP® — The Project Management Evangelist"
+                  src="/crystal-glover-stewart.jpg"
+                  alt="Crystal Glover Stewart, PMP® — The Project Management Evangelist"
                   className="rounded-2xl shadow-2xl w-full max-w-xs lg:max-w-sm object-cover h-[280px] lg:h-[480px]"
                 />
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
