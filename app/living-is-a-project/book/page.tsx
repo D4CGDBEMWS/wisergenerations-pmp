@@ -77,8 +77,8 @@ export default function LiapBookPage() {
               <p className="font-semibold text-gold">Your book begins the journey.</p>
               <p className="text-gold">Your assessment tells you where to begin.</p>
               <p className="mt-3 text-sm leading-relaxed text-gray-300">
-                Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive the Life Project-Ready&trade;
-                Assessment at no additional charge.
+                Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive access to the
+                Living Is a Project Assessment with every new copy.
               </p>
             </div>
           </div>

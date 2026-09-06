@@ -177,8 +177,8 @@ export default function LiapHubPage() {
         <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-6 sm:p-8">
           <h2 className="text-xl font-bold text-navy">Start with the book</h2>
           <p className="mt-2 max-w-2xl text-gray-600">
-            Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive the Life Project-Ready&trade;
-            Assessment at no additional charge.
+            Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive access to the
+            Living Is a Project Assessment with every new copy.
           </p>
           <Link
             href="/living-is-a-project/book"
