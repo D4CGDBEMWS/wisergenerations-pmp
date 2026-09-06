@@ -195,6 +195,12 @@ describe('the day the owner chose', () => {
         'book arrives on',
         'delivered on',
         'in your hands',
+        // "Preorder customers are charged now and receive their copy on
+        // release" — a receipt promise pinned to publication day, removed on
+        // owner instruction. These three catch it however it is phrased.
+        'copy on release',
+        'on release day',
+        'receive their copy',
       ]) {
         expect(text, `${file} :: ${phrase}`).not.toContain(phrase)
       }

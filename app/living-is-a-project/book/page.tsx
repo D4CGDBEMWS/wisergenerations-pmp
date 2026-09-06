@@ -7,7 +7,7 @@ import { publicationDate } from '@/lib/liap/launch'
 export const metadata = {
   title: 'Living Is a Project…Are You Ready? | Wiser Generations',
   description:
-    `Preorder Living Is a Project…Are You Ready? and receive the Life Project-Ready™ Assessment at no additional charge. Publishing ${publicationDate()} from Goshen Publishing.`,
+    `Preorder Living Is a Project…Are You Ready? and receive access to the Living Is a Project Assessment with every new copy. Publishing ${publicationDate()} from Goshen Publishing.`,
 }
 
 // ---------------------------------------------------------------------------
@@ -21,8 +21,8 @@ export const metadata = {
 
 const FAQ = [
   {
-    q: 'When does the book ship?',
-    a: `Publication is ${publicationDate()}. Preorder customers are charged now and receive their copy on release.`,
+    q: 'When will the book be published?',
+    a: `Publication is ${publicationDate()}.`,
   },
   {
     q: 'When do I get the assessment?',
