@@ -2,6 +2,7 @@ import type Stripe from 'stripe'
 import { getDb, queryOne } from '@/lib/db/client'
 import { upsertCustomer } from '@/lib/customers'
 import { grantEntitlement } from '@/lib/entitlements'
+import { recordAuditEvent } from '@/lib/audit'
 import { LIAP_BOOK, LIAP_ENTITLEMENT } from './product'
 
 // ---------------------------------------------------------------------------
@@ -35,12 +36,26 @@ export interface PreorderInput {
   /** Stripe event id, so a replayed webhook cannot grant twice. */
   idempotencyKey: string
   amount?: number | null
+  /**
+   * The buyer marked this copy as a gift.
+   *
+   * Owner ruling, 4 September 2026: the access code belongs to the recipient
+   * who ultimately registers it, not to whoever paid. So a gift purchase
+   * records everything fulfilment and customer service need — the customer,
+   * the order, the line item — and grants nothing. The recipient claims the
+   * code printed inside the book they are given, under their own email, and
+   * the purchaser never holds their entitlement and so can never reach their
+   * results.
+   */
+  isGift?: boolean
 }
 
 export interface PreorderResult {
   customerId: string
   orderId: string | null
   entitlementCreated: boolean
+  /** True when the purchase was a gift and no entitlement was granted. */
+  giftHeldForRecipient: boolean
 }
 
 async function liapProductId(): Promise<string | null> {
@@ -120,6 +135,23 @@ export async function fulfilPreorder(input: PreorderInput): Promise<PreorderResu
     )
   }
 
+  // A gift stops here. The order exists, the buyer is a customer, the receipt
+  // and any support question are answerable — and the assessment stays
+  // unclaimed inside the book, waiting for whoever is given it.
+  if (input.isGift) {
+    await recordAuditEvent({
+      eventType: 'liap.gift_purchase_recorded',
+      customerId: customer.id,
+      metadata: { source_type: 'order', product_key: LIAP_BOOK.productKey },
+    })
+    return {
+      customerId: customer.id,
+      orderId,
+      entitlementCreated: false,
+      giftHeldForRecipient: true,
+    }
+  }
+
   const grant = await grantEntitlement({
     customerId: customer.id,
     entitlementKey: LIAP_ENTITLEMENT,
@@ -128,7 +160,12 @@ export async function fulfilPreorder(input: PreorderInput): Promise<PreorderResu
     idempotencyKey: input.idempotencyKey,
   })
 
-  return { customerId: customer.id, orderId, entitlementCreated: grant.created }
+  return {
+    customerId: customer.id,
+    orderId,
+    entitlementCreated: grant.created,
+    giftHeldForRecipient: false,
+  }
 }
 
 /** True when a Stripe object carries this product's marker. */

@@ -56,12 +56,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // what the buyer receives — this route reads it and passes it on, and there
   // is no branch below that behaves differently because of it.
   let referral: string | null = null
+  // Whether the buyer is giving this copy away. A boolean the buyer ticks, and
+  // the only thing it changes is that fulfilment grants them nothing: the
+  // access code stays unclaimed inside the book for whoever is given it. It
+  // cannot alter the price, the product or the destination, and no recipient
+  // details are collected — the code travels in the book, so Wiser Generations
+  // never needs to know who the gift is for.
+  let gift = false
   try {
     const body = await req.json().catch(() => null)
     const candidate = body && typeof body === 'object' ? (body as { p?: unknown }).p : null
     if (typeof candidate === 'string' && isWellFormedCode(candidate.trim())) {
       referral = candidate.trim()
     }
+    gift = body && typeof body === 'object' ? (body as { gift?: unknown }).gift === true : false
   } catch {
     // A malformed body is not a reason to refuse somebody's purchase.
   }
@@ -92,6 +100,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       metadata: {
         product: LIAP_BOOK.metadataKey,
         ...(referral ? { referral } : {}),
+        ...(gift ? { gift: 'true' } : {}),
       },
       payment_intent_data: { metadata: { product: LIAP_BOOK.metadataKey } },
       // Collected here so the customer never types it twice — §24 asks that

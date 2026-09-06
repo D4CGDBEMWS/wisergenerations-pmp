@@ -7,6 +7,8 @@ import {
   saveProgress,
   submitAssessment,
   loadAssessment,
+  AttemptLimitReachedError,
+  MAX_ATTEMPTS,
   type SavePayload,
 } from '@/lib/liap/assessment-service'
 import { queryOne } from '@/lib/db/client'
@@ -75,10 +77,29 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       assessmentId: record.id,
       status: record.status,
       currentStep: record.current_step,
+      // 1 is the first assessment, 2 the reassessment. The form uses it for
+      // its heading; the authorisation is server-side and does not depend on
+      // the client having read this.
+      attemptNumber: record.attempt_number,
       answers: loaded?.answers ?? {},
       intake: loaded?.intake ?? {},
     })
   } catch (err) {
+    // The owner's rule, refused server-side. A third attempt is not an outage
+    // and must not be reported as one: the reader has had both of theirs and
+    // deserves to be told so plainly rather than invited to retry.
+    if (err instanceof AttemptLimitReachedError) {
+      return NextResponse.json(
+        {
+          error:
+            `Your book registration includes ${MAX_ATTEMPTS} assessments — your first ` +
+            `assessment and your reassessment — and both have been used. Your results ` +
+            `remain available from the links we emailed you.`,
+          attemptLimitReached: true,
+        },
+        { status: 409 }
+      )
+    }
     console.error('[liap/assessment] start failed:', err)
     return NextResponse.json(
       { error: 'We could not open your assessment. Please try again in a moment.' },

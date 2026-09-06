@@ -418,6 +418,11 @@ export async function POST(request: NextRequest) {
               typeof liapSession.payment_intent === 'string' ? liapSession.payment_intent : null,
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
+            // Set at checkout by the buyer ticking "this is a gift". Read as
+            // a marker and nothing else: it cannot change the price or the
+            // product, only whether the payer keeps the assessment or leaves
+            // it in the book for the person they are giving it to.
+            isGift: liapSession.metadata?.gift === 'true',
           })
 
           // Credit the community partner whose code brought this buyer, if

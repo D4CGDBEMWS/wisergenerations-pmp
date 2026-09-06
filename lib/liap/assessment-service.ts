@@ -80,19 +80,56 @@ export interface AssessmentRecord {
   status: string
   current_step: number
   completed_at: string | null
+  attempt_number: number
+}
+
+/** The first assessment, then the reassessment. There is no third. */
+export const MAX_ATTEMPTS = 2
+
+/**
+ * Raised when a reader asks for an attempt beyond the authorised two.
+ *
+ * Its own class rather than a generic Error because the route has to tell
+ * this apart from a database failure: one is the rule working and deserves a
+ * plain explanation, the other is an outage and deserves "try again".
+ */
+export class AttemptLimitReachedError extends Error {
+  readonly attempts: number
+  constructor(attempts: number) {
+    super(`Assessment attempt limit reached (${attempts} of ${MAX_ATTEMPTS}).`)
+    this.name = 'AttemptLimitReachedError'
+    this.attempts = attempts
+  }
 }
 
 /**
- * Resumes the customer's in-progress attempt, or starts one.
+ * Resumes the customer's in-progress attempt, or starts the next authorised one.
  *
- * One live attempt per customer: someone who abandons at step 3 and comes
- * back a week later should continue, not silently begin again and lose their
- * answers. A completed assessment does not block a new one — retaking after
- * a further change is a legitimate thing to want.
+ * Owner-approved rule, 4 September 2026: one registered reader receives
+ * exactly two completions — the first assessment, and the reassessment taken
+ * after they have finished the book and worked their first Life Project.
+ *
+ * ── WHY RESUMING COMES FIRST ───────────────────────────────────────────────
+ *
+ * Someone who abandons at step 3 and returns a week later must continue, not
+ * silently begin again. That was true before the cap and matters more under
+ * it: without this branch, every reload of the form would burn an attempt,
+ * and a reader could exhaust both of theirs without finishing either.
+ *
+ * ── WHY THE NUMBER COMES FROM max() AND NOT A COUNT ────────────────────────
+ *
+ * attempt_number is unique per customer, so the highest number issued is the
+ * number of attempts that exist, whatever their status. Counting completed
+ * rows instead would let an abandoned attempt be reissued the same number and
+ * collide with the row already holding it.
+ *
+ * The INSERT is still written to lose gracefully: two simultaneous requests
+ * both compute the same next number, the unique index rejects the second, and
+ * the loser reads the winner's row rather than raising.
  */
 export async function startOrResume(customerId: string): Promise<AssessmentRecord> {
   const open = await queryOne<AssessmentRecord>(
-    `SELECT id, customer_id, status, current_step, completed_at
+    `SELECT id, customer_id, status, current_step, completed_at, attempt_number
        FROM assessments
       WHERE customer_id = $1 AND status = 'in_progress'
       ORDER BY started_at DESC LIMIT 1`,
@@ -100,19 +137,49 @@ export async function startOrResume(customerId: string): Promise<AssessmentRecor
   )
   if (open) return open
 
+  const highest = await queryOne<{ used: number | null }>(
+    `SELECT max(attempt_number) AS used FROM assessments WHERE customer_id = $1`,
+    [customerId]
+  )
+  const used = highest?.used ?? 0
+  const next = used + 1
+
+  if (next > MAX_ATTEMPTS) {
+    await recordAuditEvent({
+      eventType: 'liap.assessment_attempt_refused',
+      customerId,
+      metadata: { version: VERSION_KEY, attempts: used },
+    })
+    throw new AttemptLimitReachedError(used)
+  }
+
   const versionId = await currentVersionId()
   const rows = await getDb().query<AssessmentRecord>(
-    `INSERT INTO assessments (customer_id, version_id)
-     VALUES ($1, $2)
-     RETURNING id, customer_id, status, current_step, completed_at`,
-    [customerId, versionId]
+    `INSERT INTO assessments (customer_id, version_id, attempt_number)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (customer_id, attempt_number) DO NOTHING
+     RETURNING id, customer_id, status, current_step, completed_at, attempt_number`,
+    [customerId, versionId, next]
   )
+
+  if (!rows[0]) {
+    // Another request created this attempt between the read and the write.
+    // Its row is the right answer; a second one does not exist to return.
+    const existing = await queryOne<AssessmentRecord>(
+      `SELECT id, customer_id, status, current_step, completed_at, attempt_number
+         FROM assessments WHERE customer_id = $1 AND attempt_number = $2`,
+      [customerId, next]
+    )
+    if (existing) return existing
+    throw new Error('Could not open an assessment attempt.')
+  }
+
   await recordAuditEvent({
     eventType: 'liap.assessment_started',
     customerId,
-    metadata: { version: VERSION_KEY },
+    metadata: { version: VERSION_KEY, attempt_number: next },
   })
-  return rows[0]!
+  return rows[0]
 }
 
 const QUESTION_KEYS = new Set(QUESTIONS.map((q) => q.key))
@@ -214,7 +281,8 @@ export interface LoadedAssessment {
 
 export async function loadAssessment(assessmentId: string): Promise<LoadedAssessment | null> {
   const record = await queryOne<AssessmentRecord>(
-    `SELECT id, customer_id, status, current_step, completed_at FROM assessments WHERE id = $1`,
+    `SELECT id, customer_id, status, current_step, completed_at, attempt_number
+       FROM assessments WHERE id = $1`,
     [assessmentId]
   )
   if (!record) return null

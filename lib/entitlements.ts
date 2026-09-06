@@ -24,6 +24,11 @@ export type EntitlementSource =
   | 'admin_grant'
   | 'promotion'
   | 'migration'
+  // A unique access code printed inside a copy of the LIAP book, claimed by
+  // whoever registers it first. Its own source because the question support
+  // asks about it — which code opened this? — is answerable only if the grant
+  // records that it came from one.
+  | 'book_code'
 
 export interface Entitlement {
   id: string

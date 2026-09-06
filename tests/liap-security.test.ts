@@ -196,12 +196,14 @@ describe('result URLs', () => {
   it('tokens are unguessable and never sequential', async () => {
     // §21: never use sequential database ids. Twenty consecutive assessments
     // must produce twenty tokens with nothing in common.
-    const customerId = await entitledCustomer()
+    //
+    // One reader per assessment, because a reader is now authorised for two
+    // and the twenty-first row for one customer is refused by the database.
+    // Spreading them across readers tests the same property and one more
+    // besides: tokens do not correlate between customers either.
     const tokens = new Set<string>()
     for (let i = 0; i < 20; i++) {
-      await db.query(`UPDATE assessments SET status = 'abandoned' WHERE customer_id = $1`, [
-        customerId,
-      ])
+      const customerId = await entitledCustomer(`token-${i}@example.com`)
       const record = await startOrResume(customerId)
       await answerEverything(record.id)
       const submitted = await submitAssessment(record.id)

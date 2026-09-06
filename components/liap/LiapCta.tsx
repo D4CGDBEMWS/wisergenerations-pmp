@@ -50,6 +50,11 @@ export function LiapCta({
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Owner ruling, 4 September 2026: paying for a copy must not claim the
+  // access code. Ticking this tells fulfilment to leave the assessment
+  // unregistered so the person receiving the book can register it themselves.
+  // No recipient details are asked for — the code travels inside the book.
+  const [gift, setGift] = useState(false)
 
   async function start() {
     setLoading(true)
@@ -61,7 +66,7 @@ export function LiapCta({
       const res = await fetch('/api/liap/preorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(referral ? { p: referral } : {}),
+        body: JSON.stringify({ ...(referral ? { p: referral } : {}), ...(gift ? { gift: true } : {}) }),
       })
       const data = (await res.json()) as { url?: string; error?: string }
 
@@ -82,6 +87,22 @@ export function LiapCta({
 
   return (
     <div className={className}>
+      <label className="mb-4 flex items-start gap-3 text-sm leading-relaxed text-gray-700">
+        <input
+          type="checkbox"
+          checked={gift}
+          onChange={(e) => setGift(e.target.checked)}
+          className="mt-1 h-5 w-5 shrink-0 rounded border-gray-400 text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+        />
+        <span>
+          This is a gift.{' '}
+          <span className="text-gray-500">
+            The assessment code stays unregistered inside the book, so whoever you give it to can
+            register it in their own name.
+          </span>
+        </span>
+      </label>
+
       <button
         type="button"
         onClick={start}

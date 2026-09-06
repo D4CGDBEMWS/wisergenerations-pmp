@@ -79,14 +79,18 @@ export function BookChooser({ signedIn }: Props) {
           </p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 px-5 py-4">
-          <p className="font-semibold text-gray-500">
+        <Link
+          href="/living-is-a-project/register-book"
+          className="rounded-xl border border-gray-200 px-5 py-4 transition-colors hover:border-gold hover:bg-yellow-50"
+        >
+          <p className="font-semibold text-navy">
             I received/purchased my copy at an event
+            <span aria-hidden="true" className="ml-2 font-bold text-gold">&rarr;</span>
           </p>
-          <p className="mt-1 text-sm leading-relaxed text-gray-500">
-            Opening soon. You&rsquo;ll enter the code on the card that came with your book.
+          <p className="mt-1 text-sm leading-relaxed text-gray-600">
+            You&rsquo;ll enter the code on the card that came with your book.
           </p>
-        </div>
+        </Link>
       </div>
 
       <p className="mt-8 text-sm leading-relaxed text-gray-500">

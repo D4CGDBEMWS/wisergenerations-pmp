@@ -28,6 +28,11 @@ const ALLOWED_METADATA_KEYS = new Set([
   'granted',
   'version',
   'count',
+  // Book access codes. code_id is the row's uuid; the code itself is never
+  // an allowed key, so it cannot reach an audit row even by accident.
+  'code_id',
+  'batch_key',
+  'attempt_number',
 ])
 
 export type AuditEventType =
@@ -56,6 +61,16 @@ export type AuditEventType =
   | 'liap.preorder_verification_submitted'
   | 'liap.preorder_verification_reviewed'
   | 'liap.narratives_purged'
+  // Book access codes. A code id is a uuid, not the code — recording it lets
+  // support answer "which code opened this account?" without the audit table
+  // ever holding something that could be redeemed.
+  | 'liap.book_codes_generated'
+  | 'liap.book_code_claimed'
+  | 'liap.book_code_claim_refused'
+  | 'liap.book_code_voided'
+  | 'liap.book_code_claim_released'
+  | 'liap.gift_purchase_recorded'
+  | 'liap.assessment_attempt_refused'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {}
