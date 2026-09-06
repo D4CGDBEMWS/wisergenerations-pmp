@@ -1,9 +1,8 @@
 import type Stripe from 'stripe'
 import { getDb, queryOne } from '@/lib/db/client'
 import { upsertCustomer } from '@/lib/customers'
-import { grantEntitlement } from '@/lib/entitlements'
 import { recordAuditEvent } from '@/lib/audit'
-import { LIAP_BOOK, LIAP_ENTITLEMENT } from './product'
+import { LIAP_BOOK } from './product'
 
 // ---------------------------------------------------------------------------
 // What a completed preorder actually does. §8.
@@ -36,26 +35,20 @@ export interface PreorderInput {
   /** Stripe event id, so a replayed webhook cannot grant twice. */
   idempotencyKey: string
   amount?: number | null
-  /**
-   * The buyer marked this copy as a gift.
-   *
-   * Owner ruling, 4 September 2026: the access code belongs to the recipient
-   * who ultimately registers it, not to whoever paid. So a gift purchase
-   * records everything fulfilment and customer service need — the customer,
-   * the order, the line item — and grants nothing. The recipient claims the
-   * code printed inside the book they are given, under their own email, and
-   * the purchaser never holds their entitlement and so can never reach their
-   * results.
-   */
-  isGift?: boolean
 }
 
 export interface PreorderResult {
   customerId: string
   orderId: string | null
+  /**
+   * Always false since the 4 September 2026 owner decision.
+   *
+   * Kept on the result rather than deleted because the webhook and the tests
+   * both assert on it, and a field that is always false is a louder statement
+   * than a field that disappeared: paying records a purchase and grants no
+   * assessment.
+   */
   entitlementCreated: boolean
-  /** True when the purchase was a gift and no entitlement was granted. */
-  giftHeldForRecipient: boolean
 }
 
 async function liapProductId(): Promise<string | null> {
@@ -135,37 +128,32 @@ export async function fulfilPreorder(input: PreorderInput): Promise<PreorderResu
     )
   }
 
-  // A gift stops here. The order exists, the buyer is a customer, the receipt
-  // and any support question are answerable — and the assessment stays
-  // unclaimed inside the book, waiting for whoever is given it.
-  if (input.isGift) {
-    await recordAuditEvent({
-      eventType: 'liap.gift_purchase_recorded',
-      customerId: customer.id,
-      metadata: { source_type: 'order', product_key: LIAP_BOOK.productKey },
-    })
-    return {
-      customerId: customer.id,
-      orderId,
-      entitlementCreated: false,
-      giftHeldForRecipient: true,
-    }
-  }
-
-  const grant = await grantEntitlement({
+  // ── AND IT STOPS HERE ────────────────────────────────────────────────────
+  //
+  // Owner decision, 4 September 2026 (D1): the automatic entitlement granted
+  // from a purchaser's checkout email is retired for coded books. The unique
+  // code printed inside the copy is now the normal source of activation,
+  // whoever bought it and however it was bought.
+  //
+  // The arithmetic is the whole argument. Every printed copy carries one code.
+  // If paying ALSO granted access, one book would produce two registrations —
+  // the buyer's automatic one, and whoever later found the untouched card. So
+  // payment records a purchase and nothing more, and the card in the book is
+  // the single thing that opens an assessment.
+  //
+  // That also makes the gift rule true by construction rather than by a flag
+  // somebody has to remember to tick: a buyer holds no entitlement to give
+  // away, so the recipient's code is always theirs to register.
+  //
+  // Everything a refund, a dispute or a support question needs still exists —
+  // the customer, the order, the line item. What is not created is access.
+  await recordAuditEvent({
+    eventType: 'liap.purchase_awaiting_code_registration',
     customerId: customer.id,
-    entitlementKey: LIAP_ENTITLEMENT,
-    sourceType: 'order',
-    sourceId: input.sourceId,
-    idempotencyKey: input.idempotencyKey,
+    metadata: { source_type: 'order', product_key: LIAP_BOOK.productKey },
   })
 
-  return {
-    customerId: customer.id,
-    orderId,
-    entitlementCreated: grant.created,
-    giftHeldForRecipient: false,
-  }
+  return { customerId: customer.id, orderId, entitlementCreated: false }
 }
 
 /** True when a Stripe object carries this product's marker. */

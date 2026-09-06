@@ -69,7 +69,7 @@ export type AuditEventType =
   | 'liap.book_code_claim_refused'
   | 'liap.book_code_voided'
   | 'liap.book_code_claim_released'
-  | 'liap.gift_purchase_recorded'
+  | 'liap.purchase_awaiting_code_registration'
   | 'liap.assessment_attempt_refused'
 
 function sanitize(metadata: Record<string, unknown>): Record<string, unknown> {

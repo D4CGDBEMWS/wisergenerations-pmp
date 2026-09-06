@@ -86,7 +86,17 @@ describe('the complete journey', () => {
       amount: LIAP_BOOK.amount,
     })
 
-    expect(fulfilled.entitlementCreated).toBe(true)
+    // D1, 4 September 2026: paying records the purchase and opens nothing.
+    expect(fulfilled.entitlementCreated).toBe(false)
+    expect(await hasEntitlement(fulfilled.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(false)
+
+    // --- registering the code printed in the copy ---------------------------
+    // This is now the step that opens the assessment, and it is the same step
+    // for a buyer, a retailer customer and someone handed the book as a gift.
+    const { mintBookCodes, claimBookCode } = await import('@/lib/liap/book-codes')
+    const [minted] = await mintBookCodes({ batchKey: 'journey', count: 1 })
+    const claim = await claimBookCode({ code: minted!.code, email: 'Reader@Example.com' })
+    expect(claim.status).toBe('claimed')
     expect(await hasEntitlement(fulfilled.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
 
     // The order and its line item exist, so a refund has something to point at.

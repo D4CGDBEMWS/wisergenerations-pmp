@@ -160,10 +160,7 @@ describe('attribution reaches a confirmed purchase', () => {
   it('carries the code from the URL into the checkout request', () => {
     const cta = code('components/liap/LiapCta.tsx')
     expect(cta).toContain("URLSearchParams(window.location.search).get('p')")
-    // The referral still travels in the body under `p`. The literal spread
-    // widened when the gift marker joined it, so this asserts the part that
-    // carries attribution rather than the exact shape of the line around it.
-    expect(cta).toContain('...(referral ? { p: referral } : {})')
+    expect(cta).toContain('JSON.stringify(referral ? { p: referral } : {})')
     // No cookie, no storage. Pressing a preorder button is an intentional act.
     for (const forbidden of ['localStorage', 'sessionStorage', 'document.cookie']) {
       expect(cta, forbidden).not.toContain(forbidden)

@@ -51,6 +51,19 @@ export function BookChooser({ signedIn }: Props) {
         Project-Ready&trade; Assessment.
       </p>
 
+      {/* D2: the code is the normal route, so it is offered first and plainly
+          even on the exception page. A reader who arrived here by mistake —
+          holding a perfectly good card — should not have to classify their
+          purchase to get out again. The approved lane labels below are
+          untouched. */}
+      <p className="mt-4 rounded-lg border border-gold bg-light-gold px-4 py-3 text-sm leading-relaxed text-navy">
+        Have the unique access code from your book?{' '}
+        <Link href="/liap/book" className="font-bold underline hover:no-underline">
+          Register it here
+        </Link>{' '}
+        &mdash; you don&rsquo;t need to tell us where your copy came from.
+      </p>
+
       {signedIn && (
         <p className="mt-4 rounded-lg bg-light-navy px-4 py-3 text-sm leading-relaxed text-navy">
           You&rsquo;re signed in, but we haven&rsquo;t found your copy yet. Let us know where it
@@ -72,15 +85,22 @@ export function BookChooser({ signedIn }: Props) {
         </Link>
 
         {/* Lanes B and C: visible and honest about not being open yet. */}
-        <div className="rounded-xl border border-gray-200 px-5 py-4">
-          <p className="font-semibold text-gray-500">I purchased from another retailer</p>
-          <p className="mt-1 text-sm leading-relaxed text-gray-500">
-            Opening soon. A person reviews each one, so it is not instant.
+        <Link
+          href="/living-is-a-project/verify-preorder"
+          className="rounded-xl border border-gray-200 px-5 py-4 transition-colors hover:border-gold hover:bg-yellow-50"
+        >
+          <p className="font-semibold text-navy">
+            I purchased from another retailer
+            <span aria-hidden="true" className="ml-2 font-bold text-gold">&rarr;</span>
           </p>
-        </div>
+          <p className="mt-1 text-sm leading-relaxed text-gray-600">
+            For copies without a registration code. A person reviews each one, so it is not
+            instant.
+          </p>
+        </Link>
 
         <Link
-          href="/living-is-a-project/register-book"
+          href="/liap/book"
           className="rounded-xl border border-gray-200 px-5 py-4 transition-colors hover:border-gold hover:bg-yellow-50"
         >
           <p className="font-semibold text-navy">

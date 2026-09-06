@@ -34,8 +34,19 @@ import { programLogin } from '@/lib/auth/program-login'
 export type BookEntry =
   /** Entitled and signed in. The question is never asked. */
   | { action: 'assessment'; href: string }
-  /** Signed out, or signed in without access. Ask where the copy came from. */
-  | { action: 'choose'; signedIn: boolean }
+  /**
+   * Signed out, or signed in without access. Ask for the code in their book.
+   *
+   * Owner decision, 4 September 2026 (D2): a reader holding a valid code must
+   * not have to classify themselves by how the copy was obtained first. The
+   * chooser asked "where did you get your copy?" and offered purchaser and
+   * event lanes — which left the gift recipient, the one reader the book's
+   * own promise names, with no lane they would recognise. The code is the
+   * same regardless of how the book arrived, so it is asked for directly and
+   * the chooser survives only as an exception lane for copies that predate
+   * codes.
+   */
+  | { action: 'register'; signedIn: boolean }
   /**
    * The flow is not available yet.
    *
@@ -69,7 +80,7 @@ export function decideBookEntry(input: BookEntryInput): BookEntry {
   if (input.session?.entitled) {
     return { action: 'assessment', href: programLogin('liap').defaultDestination }
   }
-  return { action: 'choose', signedIn: input.session !== null }
+  return { action: 'register', signedIn: input.session !== null }
 }
 
 /** Reads the live state and decides. The route's entire job. */

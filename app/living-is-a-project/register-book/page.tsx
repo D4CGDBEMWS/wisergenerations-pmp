@@ -1,4 +1,4 @@
-import { ClaimCodeForm } from '@/components/liap/ClaimCodeForm'
+import { BookRegister } from '@/components/liap/BookRegister'
 
 export const metadata = {
   title: 'Register your book | Wiser Generations',
@@ -24,22 +24,8 @@ export const dynamic = 'force-dynamic'
 // ---------------------------------------------------------------------------
 
 export default function RegisterBookPage() {
-  return (
-    <main className="mx-auto max-w-2xl px-5 py-14 sm:px-8 sm:py-20">
-      <h1 className="text-3xl font-bold leading-tight text-navy sm:text-4xl">
-        Register your book
-      </h1>
-      <p className="mt-4 leading-relaxed text-gray-700">
-        Every new copy of <em>Living Is a Project&hellip;Are You Ready?&trade;</em> includes a unique
-        access code to the Life Project-Ready&trade; Assessment. Register it here and the
-        assessment is yours.
-      </p>
-      <p className="mt-3 text-sm leading-relaxed text-gray-500">
-        Bought the book yourself or received a new copy as a gift &mdash; either way, the code is
-        in your book and it registers to you.
-      </p>
-
-      <ClaimCodeForm />
-    </main>
-  )
+  // The same surface as the printed QR destination, reached from inside the
+  // LIAP tree. One component, so the two cannot drift into saying different
+  // things about the same code.
+  return <BookRegister signedIn={false} otherLanesHref="/liap/book/other" />
 }

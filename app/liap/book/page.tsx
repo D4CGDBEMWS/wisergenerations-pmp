@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { bookEntry } from '@/lib/liap/book-entry'
-import { BookChooser } from '@/components/liap/BookChooser'
+import { BookRegister } from '@/components/liap/BookRegister'
 import { BookSoftLanding } from '@/components/liap/BookSoftLanding'
 
 export const metadata = {
@@ -38,6 +38,19 @@ export const dynamic = 'force-dynamic'
 // (retailer verification) and Lane C (event activation codes) are scoped and
 // not built — see the delivery notes for exactly what each needs. No schema,
 // no migration, no Stripe change, no commerce.
+//
+// ── 4 SEPTEMBER 2026, D2: WHAT THIS ROUTE NOW SHOWS ────────────────────────
+//
+// The QR printed on the card lands here and gets the registration form
+// directly, rather than a chooser asking which kind of buyer the reader is.
+// A gift recipient is not a buyer at all, and the promise printed beside this
+// QR is made to them by name.
+//
+// It renders the form rather than redirecting to the in-tree page at
+// /living-is-a-project/register-book, and that distinction matters: the LIAP
+// tree is behind FEATURE_LIAP, so a redirect would hand a reader holding the
+// book a 404 on any day that flag is off. This route has its own flag for
+// exactly that reason and must resolve on its own.
 // ---------------------------------------------------------------------------
 
 export default async function BookEntryPage() {
@@ -54,5 +67,5 @@ export default async function BookEntryPage() {
     redirect(entry.href)
   }
 
-  return <BookChooser signedIn={entry.signedIn} />
+  return <BookRegister signedIn={entry.signedIn} otherLanesHref="/liap/book/other" />
 }

@@ -114,9 +114,12 @@ describe('the preorder grants exactly once', () => {
       idempotencyKey: 'evt_1:LIAP_ASSESSMENT_ACCESS',
     })
 
-    expect(result.entitlementCreated).toBe(true)
+    // D1, 4 September 2026: the purchase record is created, the entitlement is
+    // not. Access comes from the code printed in the copy, so that one book
+    // cannot produce both an automatic grant and an unclaimed card.
+    expect(result.entitlementCreated).toBe(false)
     expect(result.orderId).not.toBeNull()
-    expect(await hasEntitlement(result.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
+    expect(await hasEntitlement(result.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(false)
 
     const items = await db.query<{ n: string }>(`SELECT count(*)::text n FROM order_items`)
     expect(items[0]!.n).toBe('1')
@@ -134,16 +137,16 @@ describe('the preorder grants exactly once', () => {
       idempotencyKey: 'evt_2:LIAP_ASSESSMENT_ACCESS',
     }
 
-    const first = await fulfilPreorder(input)
-    const second = await fulfilPreorder(input)
+    await fulfilPreorder(input)
+    await fulfilPreorder(input)
 
-    expect(first.entitlementCreated).toBe(true)
-    expect(second.entitlementCreated).toBe(false)
-
+    // The point of this test is that a Stripe retry cannot duplicate anything.
+    // Since D1 no entitlement is created at all, so the rows that must stay at
+    // one are the order and its line item.
     const ent = await db.query<{ n: string }>(`SELECT count(*)::text n FROM entitlements`)
     const orders = await db.query<{ n: string }>(`SELECT count(*)::text n FROM orders`)
     const items = await db.query<{ n: string }>(`SELECT count(*)::text n FROM order_items`)
-    expect(ent[0]!.n).toBe('1')
+    expect(ent[0]!.n).toBe('0')
     expect(orders[0]!.n).toBe('1')
     expect(items[0]!.n).toBe('1')
   })

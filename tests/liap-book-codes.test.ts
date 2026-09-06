@@ -300,33 +300,53 @@ describe('claiming a code', () => {
 
 // ── gift purchases ─────────────────────────────────────────────────────────
 
-describe('gift purchases', () => {
-  it('6. paying for a gift copy does not consume the recipient’s code', async () => {
+describe('purchases grant nothing; the code does', () => {
+  it('a direct purchase creates one registration opportunity, not an entitlement plus a loose code', async () => {
+    // D1. One new book must not create two Assessment registrations.
     const result = await fulfilPreorder({
-      email: 'buyer@example.com',
+      email: 'direct.buyer@example.com',
       name: 'The Buyer',
-      sourceId: 'cs_gift_1',
-      idempotencyKey: 'evt_gift_1:LIAP_ASSESSMENT_ACCESS',
-      isGift: true,
+      sourceId: 'cs_direct_1',
+      idempotencyKey: 'evt_direct_1:LIAP_ASSESSMENT_ACCESS',
     })
 
-    expect(result.giftHeldForRecipient).toBe(true)
     expect(result.entitlementCreated).toBe(false)
     expect(await hasEntitlement(result.customerId, LIAP_ENTITLEMENT)).toBe(false)
 
-    // The order still exists: fulfilment and customer service need it.
+    // The purchase record survives for fulfilment, refunds and support.
     const orders = await db.query(`SELECT id FROM orders WHERE customer_id = $1`, [
       result.customerId,
     ])
     expect(orders).toHaveLength(1)
+
+    // The buyer activates the same way everyone does: the code in their copy.
+    const { code } = await oneCode()
+    const claim = await claimBookCode({ code, email: 'direct.buyer@example.com' })
+    expect(claim.status).toBe('claimed')
+    expect(await hasEntitlement(result.customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    // And exactly one registration exists for that one book.
+    const grants = await db.query(
+      `SELECT id FROM entitlements WHERE entitlement_key = $1 AND revoked_at IS NULL`,
+      [LIAP_ENTITLEMENT]
+    )
+    expect(grants).toHaveLength(1)
   })
 
-  it('7. the recipient claims the code under their own email', async () => {
+  it('6. a gift purchaser receives no Assessment entitlement', async () => {
     const buyer = await fulfilPreorder({
-      email: 'buyer@example.com',
+      email: 'gift.buyer@example.com',
+      sourceId: 'cs_gift_1',
+      idempotencyKey: 'evt_gift_1:LIAP_ASSESSMENT_ACCESS',
+    })
+    expect(await hasEntitlement(buyer.customerId, LIAP_ENTITLEMENT)).toBe(false)
+  })
+
+  it('7. the recipient registers the code under their own identity', async () => {
+    const buyer = await fulfilPreorder({
+      email: 'gift.buyer@example.com',
       sourceId: 'cs_gift_2',
       idempotencyKey: 'evt_gift_2:LIAP_ASSESSMENT_ACCESS',
-      isGift: true,
     })
     const { code } = await oneCode()
 
@@ -341,10 +361,9 @@ describe('gift purchases', () => {
 
   it('8. the purchaser cannot reach the recipient’s assessment', async () => {
     const buyer = await fulfilPreorder({
-      email: 'buyer@example.com',
+      email: 'gift.buyer@example.com',
       sourceId: 'cs_gift_3',
       idempotencyKey: 'evt_gift_3:LIAP_ASSESSMENT_ACCESS',
-      isGift: true,
     })
     const { code } = await oneCode()
     const recipient = await claimBookCode({ code, email: 'recipient@example.com' })
@@ -354,27 +373,84 @@ describe('gift purchases', () => {
     await answerEverything(record.id)
     const submitted = await submitAssessment(record.id)
 
-    // The result belongs to the recipient's customer id and to no other.
     const found = await findByResultToken(submitted!.resultToken)
     expect(found!.customerId).toBe(recipient.customerId)
     expect(found!.customerId).not.toBe(buyer.customerId)
 
-    // And the buyer has no assessment of their own, nor standing to open one.
     const buyerRows = await db.query(`SELECT id FROM assessments WHERE customer_id = $1`, [
       buyer.customerId,
     ])
     expect(buyerRows).toHaveLength(0)
   })
 
-  it('a non-gift purchase still grants immediately, as it always has', async () => {
-    const result = await fulfilPreorder({
-      email: 'direct.buyer@example.com',
-      sourceId: 'cs_direct_1',
-      idempotencyKey: 'evt_direct_1:LIAP_ASSESSMENT_ACCESS',
-    })
-    expect(result.entitlementCreated).toBe(true)
-    expect(result.giftHeldForRecipient).toBe(false)
-    expect(await hasEntitlement(result.customerId, LIAP_ENTITLEMENT)).toBe(true)
+  it('a retailer reader with a valid code registers without manual verification', async () => {
+    // D3. The code is the proof of eligibility; nothing asks where the book
+    // was bought, and no preorder_verifications row is involved.
+    const { code } = await oneCode('retail-print-run')
+    const outcome = await claimBookCode({ code, email: 'bought.at.a.bookshop@example.com' })
+
+    expect(outcome.status).toBe('claimed')
+    if (outcome.status !== 'claimed') throw new Error('unreachable')
+    expect(await hasEntitlement(outcome.customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    const verifications = await db.query(`SELECT id FROM preorder_verifications`)
+    expect(verifications).toHaveLength(0)
+  })
+
+  it('manual verification survives as the controlled exception it now is', () => {
+    // D3 preserves it for pre-code inventory and owner-approved support cases,
+    // so the route and its human-approval script must both still exist.
+    expect(
+      readFileSync(join(process.cwd(), 'app/api/liap/verify-preorder/route.ts'), 'utf8')
+    ).toContain("'pending'")
+    expect(
+      readFileSync(join(process.cwd(), 'scripts/liap-approve-preorder.mjs'), 'utf8')
+    ).toContain('--approve')
+  })
+})
+
+describe('legacy entitlement holders', () => {
+  /** Someone who was granted access before codes existed. */
+  async function legacyHolder(email: string): Promise<string> {
+    const rows = await db.query<{ id: string }>(
+      `INSERT INTO customers (email) VALUES ($1) RETURNING id`,
+      [email]
+    )
+    const id = rows[0]!.id
+    await db.query(
+      `INSERT INTO entitlements (customer_id, entitlement_key, source_type, idempotency_key)
+       VALUES ($1, $2, 'order', $3)`,
+      [id, LIAP_ENTITLEMENT, `legacy:${id}`]
+    )
+    return id
+  }
+
+  it('keeps working without ever presenting a code', async () => {
+    // D4. A legitimate legacy grant is not retroactively invalidated.
+    const customerId = await legacyHolder('legacy@example.com')
+    expect(await hasEntitlement(customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    const record = await startOrResume(customerId)
+    expect(record.attempt_number).toBe(1)
+    await answerEverything(record.id)
+    expect((await submitAssessment(record.id))!.resultToken).toBeTruthy()
+  })
+
+  it('does not receive two fresh attempts on top of one already taken', async () => {
+    // D4. Existing completions count toward the maximum of two.
+    const customerId = await legacyHolder('legacy.midway@example.com')
+    const first = await startOrResume(customerId)
+    await answerEverything(first.id)
+    await submitAssessment(first.id)
+
+    const second = await startOrResume(customerId)
+    expect(second.attempt_number).toBe(2)
+    await answerEverything(second.id)
+    await submitAssessment(second.id)
+
+    await expect(startOrResume(customerId)).rejects.toBeInstanceOf(AttemptLimitReachedError)
+    const rows = await db.query(`SELECT id FROM assessments WHERE customer_id = $1`, [customerId])
+    expect(rows).toHaveLength(MAX_ATTEMPTS)
   })
 })
 
@@ -664,6 +740,226 @@ describe('the claim endpoint', () => {
   })
 })
 
+// ── the two statements printed in the book ─────────────────────────────────
+
+describe('the book’s promises, clause by clause', () => {
+  // These are acceptance criteria, not descriptions. Each test is one clause
+  // of the owner-approved wording that will be printed and cannot be recalled.
+
+  const STATEMENT_ONE =
+    'Whether you purchased this book or received a new copy as a gift, your book ' +
+    'registration includes a unique access code to the Living Is a Project Assessment.'
+
+  const STATEMENT_TWO =
+    'Your unique access code may be registered to one reader. Once the code has been ' +
+    'registered, the Assessment access remains with that registered user and cannot be ' +
+    'registered to another reader. Your registration provides two Assessment completions ' +
+    'for you: your first Assessment and your Reassessment.'
+
+  it('“whether you purchased this book…” — the buyer registers the code in their copy', async () => {
+    const purchase = await fulfilPreorder({
+      email: 'buyer@example.com',
+      sourceId: 'cs_promise_1',
+      idempotencyKey: 'evt_promise_1:LIAP_ASSESSMENT_ACCESS',
+    })
+    expect(await hasEntitlement(purchase.customerId, LIAP_ENTITLEMENT)).toBe(false)
+
+    const { code } = await oneCode()
+    const outcome = await claimBookCode({ code, email: 'buyer@example.com' })
+    expect(outcome.status).toBe('claimed')
+    expect(await hasEntitlement(purchase.customerId, LIAP_ENTITLEMENT)).toBe(true)
+  })
+
+  it('“…or received a new copy as a gift” — the recipient registers, having bought nothing', async () => {
+    // No order, no payment, no prior relationship. Only a book and a code.
+    const { code } = await oneCode()
+    const outcome = await claimBookCode({ code, email: 'given.the.book@example.com' })
+
+    expect(outcome.status).toBe('claimed')
+    if (outcome.status !== 'claimed') throw new Error('unreachable')
+    expect(await hasEntitlement(outcome.customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    const orders = await db.query(`SELECT id FROM orders WHERE customer_id = $1`, [
+      outcome.customerId,
+    ])
+    expect(orders).toHaveLength(0)
+  })
+
+  it('“may be registered to one reader” — and only one', async () => {
+    const { code } = await oneCode()
+    expect((await claimBookCode({ code, email: 'the.one@example.com' })).status).toBe('claimed')
+    expect((await claimBookCode({ code, email: 'someone.else@example.com' })).status).toBe(
+      'unavailable'
+    )
+  })
+
+  it('“remains with that registered user and cannot be registered to another”', async () => {
+    const { code } = await oneCode()
+    const reader = await claimBookCode({ code, email: 'registered@example.com' })
+    if (reader.status !== 'claimed') throw new Error('unreachable')
+
+    // The book is passed on. The next holder types the same code.
+    const nextHolder = await claimBookCode({ code, email: 'next.holder@example.com' })
+    expect(nextHolder.status).toBe('unavailable')
+
+    // The access is still exactly where it was.
+    const row = await findCodeStatus(code)
+    expect(row!.claimed_by_customer_id).toBe(reader.customerId)
+    expect(await hasEntitlement(reader.customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    const next = await db.query<{ id: string }>(
+      `SELECT id FROM customers WHERE lower(email) = 'next.holder@example.com'`
+    )
+    expect(await hasEntitlement(next[0]!.id, LIAP_ENTITLEMENT)).toBe(false)
+  })
+
+  it('“two Assessment completions: your first Assessment and your Reassessment”', async () => {
+    const { code } = await oneCode()
+    const reader = await claimBookCode({ code, email: 'registered@example.com' })
+    if (reader.status !== 'claimed') throw new Error('unreachable')
+
+    const first = await startOrResume(reader.customerId)
+    expect(first.attempt_number).toBe(1)
+    await answerEverything(first.id)
+    const firstResult = await submitAssessment(first.id)
+
+    const second = await startOrResume(reader.customerId)
+    expect(second.attempt_number).toBe(2)
+    await answerEverything(second.id)
+    await submitAssessment(second.id)
+
+    // Two, and the first is still there.
+    expect(await findByResultToken(firstResult!.resultToken)).not.toBeNull()
+    await expect(startOrResume(reader.customerId)).rejects.toBeInstanceOf(AttemptLimitReachedError)
+  })
+
+  it('the reader journey names both readers the first statement names', () => {
+    // The registration surface must speak to a buyer AND to someone who was
+    // given the book. Before D2 it spoke only to buyers and event attendees,
+    // which is what made the statement untrue for the gift recipient.
+    const register = readFileSync(
+      join(process.cwd(), 'components/liap/BookRegister.tsx'),
+      'utf8'
+    )
+    expect(register).toContain('Register My Book')
+    expect(register).toContain('Have your unique access code ready.')
+    expect(register).toContain('I have a unique book access code')
+    expect(register).toContain('purchased your new copy yourself or received it as a gift')
+
+    // And the printed QR must land on it, not on a chooser.
+    const qrRoute = readFileSync(join(process.cwd(), 'app/liap/book/page.tsx'), 'utf8')
+    expect(qrRoute).toContain('BookRegister')
+    expect(qrRoute).not.toContain('<BookChooser')
+  })
+
+  it('records both statements verbatim, so a rewrite has to be deliberate', () => {
+    // The statements are owner-approved and locked. Keeping them here means a
+    // change to the wording shows up as a change to this file.
+    expect(STATEMENT_ONE).toContain('received a new copy as a gift')
+    expect(STATEMENT_TWO).toContain('two Assessment completions')
+    expect(STATEMENT_TWO).toContain('cannot be registered to another reader')
+  })
+})
+
+// ── the journeys, end to end ───────────────────────────────────────────────
+
+describe('the two journeys the owner asked to be traced', () => {
+  it('new book → registration → code → entitlement → #1 → reassessment → third refused', async () => {
+    const { code } = await oneCode('first-print')
+
+    // The reader registers the code from the card in their book.
+    const registered = await claimBookCode({ code, email: 'reader@example.com', name: 'A Reader' })
+    expect(registered.status).toBe('claimed')
+    if (registered.status !== 'claimed') throw new Error('unreachable')
+    expect(await hasEntitlement(registered.customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    const first = await startOrResume(registered.customerId)
+    await answerEverything(first.id)
+    const firstResult = await submitAssessment(first.id)
+    expect(firstResult!.resultToken).toBeTruthy()
+
+    const reassessment = await startOrResume(registered.customerId)
+    expect(reassessment.attempt_number).toBe(2)
+    await answerEverything(reassessment.id)
+    const secondResult = await submitAssessment(reassessment.id)
+    expect(secondResult!.resultToken).toBeTruthy()
+    expect(secondResult!.resultToken).not.toBe(firstResult!.resultToken)
+
+    await expect(startOrResume(registered.customerId)).rejects.toBeInstanceOf(
+      AttemptLimitReachedError
+    )
+
+    // Both records survive, distinct and both readable.
+    expect(await findByResultToken(firstResult!.resultToken)).not.toBeNull()
+    expect(await findByResultToken(secondResult!.resultToken)).not.toBeNull()
+  })
+
+  it('gift purchase → purchaser gets nothing → recipient registers → #1 → reassessment', async () => {
+    const purchaser = await fulfilPreorder({
+      email: 'the.giver@example.com',
+      name: 'The Giver',
+      sourceId: 'cs_gift_journey',
+      idempotencyKey: 'evt_gift_journey:LIAP_ASSESSMENT_ACCESS',
+    })
+    expect(await hasEntitlement(purchaser.customerId, LIAP_ENTITLEMENT)).toBe(false)
+
+    // The book, with its unclaimed card, is handed over.
+    const { code } = await oneCode('first-print')
+    const recipient = await claimBookCode({ code, email: 'the.recipient@example.com' })
+    if (recipient.status !== 'claimed') throw new Error('unreachable')
+    expect(recipient.customerId).not.toBe(purchaser.customerId)
+
+    const first = await startOrResume(recipient.customerId)
+    await answerEverything(first.id)
+    await submitAssessment(first.id)
+
+    const reassessment = await startOrResume(recipient.customerId)
+    expect(reassessment.attempt_number).toBe(2)
+    await answerEverything(reassessment.id)
+    await submitAssessment(reassessment.id)
+
+    // The giver still holds nothing, and never sees any of it.
+    expect(await hasEntitlement(purchaser.customerId, LIAP_ENTITLEMENT)).toBe(false)
+    const giverRows = await db.query(`SELECT id FROM assessments WHERE customer_id = $1`, [
+      purchaser.customerId,
+    ])
+    expect(giverRows).toHaveLength(0)
+  })
+})
+
+// ── administrative correction ──────────────────────────────────────────────
+
+describe('support correction is audited and not self-service', () => {
+  it('exists only as a command, never as a route', () => {
+    const admin = readFileSync(join(process.cwd(), 'scripts/liap-book-code-admin.mjs'), 'utf8')
+    expect(admin).toContain('--release')
+    expect(admin).toContain('--void')
+    expect(admin).toContain('requireReason')
+    expect(admin).toContain('audit_events')
+
+    // Nothing in the customer-facing API can move a claim.
+    const routes = ['claim-code', 'assessment', 'preorder', 'verify-preorder', 'interest']
+    for (const name of routes) {
+      const file = join(process.cwd(), 'app/api/liap', name, 'route.ts')
+      const src = readFileSync(file, 'utf8')
+      expect(src, name).not.toContain('claimed_by_customer_id = NULL')
+      expect(src, name).not.toContain('voided_at = now()')
+    }
+  })
+
+  it('every override has to say why it happened', () => {
+    const admin = readFileSync(join(process.cwd(), 'scripts/liap-book-code-admin.mjs'), 'utf8')
+    // requireReason() is called before any state changes, for every operation
+    // except the read-only lookup. Asserted by counting: four mutating
+    // branches, four calls.
+    expect(admin.match(/requireReason\(\)/g)).toHaveLength(4)
+    for (const op of ['--void', '--replace', '--release', '--reset-attempt']) {
+      expect(admin, op).toContain(`flag('${op}')`)
+    }
+    expect(admin).toContain("console.error('--reason is required")
+  })
+})
+
 // ── the flag ───────────────────────────────────────────────────────────────
 
 describe('feature flags', () => {
@@ -698,6 +994,19 @@ describe('feature flags', () => {
       join(process.cwd(), 'app', 'living-is-a-project', 'register-book', 'page.tsx'),
       'utf8'
     )
-    expect(page).toContain('ClaimCodeForm')
+    expect(page).toContain('BookRegister')
+  })
+
+  it('16c. the printed QR route gates itself rather than relying on that tree', () => {
+    // /liap/book sits OUTSIDE app/living-is-a-project on purpose: a reader
+    // holding the book must never be told by our own QR code that the page
+    // does not exist. It carries its own flag and soft-lands instead.
+    const page = readFileSync(join(process.cwd(), 'app/liap/book/page.tsx'), 'utf8')
+    expect(page).not.toContain('notFound')
+    expect(page).toContain('BookSoftLanding')
+    expect(page).toContain('BookRegister')
+
+    const entry = readFileSync(join(process.cwd(), 'lib/liap/book-entry.ts'), 'utf8')
+    expect(entry).toContain("isEnabled('LIAP_BOOK_ACTIVATION')")
   })
 })

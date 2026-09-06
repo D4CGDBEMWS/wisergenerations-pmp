@@ -179,14 +179,54 @@ describe('refund revocation', () => {
   const SESSION = 'cs_remediation_1'
   const INTENT = 'pi_remediation_1'
 
+  // ── WHAT THESE TESTS NOW COVER ──────────────────────────────────────────
+  //
+  // Owner decision, 4 September 2026 (D1): a book purchase no longer grants
+  // assessment access — the code printed in the copy does. So the rows this
+  // refund machinery acts on are LEGACY: entitlements granted from an order
+  // before codes existed, and PMP's Study Access, which still grants on
+  // payment and is revoked the same way.
+  //
+  // The helper therefore seeds an order-sourced grant of exactly the shape
+  // fulfilPreorder used to create, rather than calling it. Every assertion
+  // below is unchanged and still proves what it always proved: a refund finds
+  // the entitlement through the payment intent, does it once, and touches
+  // nobody else.
+  //
+  // What a refund does NOT reach any more is recorded at the end of this
+  // block, because it is a consequence the owner has to see rather than a
+  // behaviour to assert quietly.
   async function preorder(email: string, session: string, intent: string | null, evt: string) {
-    return fulfilPreorder({
-      email, name: 'A Reader', sourceId: session, paymentIntentId: intent,
-      idempotencyKey: `${evt}:${LIAP_ASSESSMENT_ACCESS}`, amount: LIAP_BOOK.amount,
-    })
+    const customers = await db.query<{ id: string }>(
+      `INSERT INTO customers (email, name) VALUES ($1, 'A Reader')
+       ON CONFLICT (lower(email)) DO UPDATE SET name = EXCLUDED.name
+       RETURNING id`,
+      [email]
+    )
+    const customerId = customers[0]!.id
+
+    await db.query(
+      `INSERT INTO orders
+         (customer_id, stripe_checkout_session_id, stripe_payment_intent_id, status, amount, currency)
+       VALUES ($1, $2, $3, 'paid', $4, 'usd')
+       ON CONFLICT (stripe_checkout_session_id) WHERE stripe_checkout_session_id IS NOT NULL
+       DO UPDATE SET status = 'paid'`,
+      [customerId, session, intent, LIAP_BOOK.amount]
+    )
+
+    const granted = await db.query<{ id: string }>(
+      `INSERT INTO entitlements
+         (customer_id, entitlement_key, source_type, source_id, idempotency_key)
+       VALUES ($1, $2, 'order', $3, $4)
+       ON CONFLICT (idempotency_key) DO NOTHING
+       RETURNING id`,
+      [customerId, LIAP_ASSESSMENT_ACCESS, session, `${evt}:${LIAP_ASSESSMENT_ACCESS}`]
+    )
+
+    return { customerId, entitlementCreated: granted.length > 0 }
   }
 
-  it('A · a paid preorder grants assessment access', async () => {
+  it('A · a legacy order-sourced grant gives assessment access', async () => {
     const f = await preorder('a@example.com', SESSION, INTENT, 'evt_a')
     expect(f.entitlementCreated).toBe(true)
     expect(await hasEntitlement(f.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
@@ -200,6 +240,22 @@ describe('refund revocation', () => {
     const rows = await db.query<{ n: number }>(
       `SELECT count(*)::int AS n FROM entitlements WHERE customer_id = $1`, [first.customerId])
     expect(rows[0].n).toBe(1)
+  })
+
+  it('B2 · a book purchase itself now grants nothing at all', async () => {
+    // D1, at the source. The webhook still records the customer and the order;
+    // what it no longer does is open an assessment.
+    const result = await fulfilPreorder({
+      email: 'b2@example.com', name: 'A Reader', sourceId: 'cs_b2',
+      paymentIntentId: 'pi_b2', idempotencyKey: `evt_b2:${LIAP_ASSESSMENT_ACCESS}`,
+      amount: LIAP_BOOK.amount,
+    })
+    expect(result.entitlementCreated).toBe(false)
+    expect(await hasEntitlement(result.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(false)
+    const orders = await db.query(`SELECT id FROM orders WHERE customer_id = $1`, [
+      result.customerId,
+    ])
+    expect(orders).toHaveLength(1)
   })
 
   it('C · an unpaid checkout grants nothing', async () => {
@@ -241,6 +297,41 @@ describe('refund revocation', () => {
     expect(revoked).toBe(1)
     expect(await hasEntitlement(theirs.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(false)
     expect(await hasEntitlement(mine.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
+  })
+
+  it('G · a refund does NOT reach access opened by a book code', async () => {
+    // The consequence of D1, stated out loud rather than discovered later.
+    //
+    // Access now comes from the code in the copy, whose entitlement records
+    // source_type 'book_code'. A refund resolves a payment to an order and
+    // revokes 'order' grants, so it cannot see this row — someone who buys the
+    // book, registers the code and then refunds keeps their assessment.
+    //
+    // Whether that is acceptable is an owner decision, not something to be
+    // settled by a silent test. It is asserted here so the behaviour is
+    // visible and cannot change by accident while it is being decided.
+    const { mintBookCodes, claimBookCode } = await import('@/lib/liap/book-codes')
+    const [minted] = await mintBookCodes({ batchKey: 'refund-check', count: 1 })
+
+    await db.query(
+      `INSERT INTO customers (email) VALUES ('g@example.com') ON CONFLICT (lower(email)) DO NOTHING`
+    )
+    await db.query(
+      `INSERT INTO orders
+         (customer_id, stripe_checkout_session_id, stripe_payment_intent_id, status, amount, currency)
+       SELECT id, 'cs_g', 'pi_g', 'paid', $1, 'usd' FROM customers WHERE lower(email) = 'g@example.com'`,
+      [LIAP_BOOK.amount]
+    )
+
+    const claim = await claimBookCode({ code: minted!.code, email: 'g@example.com' })
+    if (claim.status !== 'claimed') throw new Error('claim failed')
+    expect(await hasEntitlement(claim.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
+
+    const revoked = await revokeEntitlementsForRefund({
+      paymentIntentId: 'pi_g', chargeId: 'ch_g', reason: 'charge.refunded',
+    })
+    expect(revoked).toBe(0)
+    expect(await hasEntitlement(claim.customerId, LIAP_ASSESSMENT_ACCESS)).toBe(true)
   })
 
   it('NEGATIVE CONTROL — the old identifier mismatch revokes nothing', async () => {

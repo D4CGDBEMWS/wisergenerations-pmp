@@ -50,12 +50,12 @@ describe('an entitled reader is never asked to prove anything', () => {
 
 describe('everyone else is asked where the copy came from', () => {
   it('asks a signed-out visitor', () => {
-    expect(decideBookEntry(input())).toEqual({ action: 'choose', signedIn: false })
+    expect(decideBookEntry(input())).toEqual({ action: 'register', signedIn: false })
   })
 
   it('asks a signed-in visitor who has no access', () => {
     const entry = decideBookEntry(input({ session: { entitled: false } }))
-    expect(entry).toEqual({ action: 'choose', signedIn: true })
+    expect(entry).toEqual({ action: 'register', signedIn: true })
   })
 
   it('tells those two apart, because they need different words', () => {
@@ -137,11 +137,19 @@ describe('Unit 1 builds Lane A and nothing else', () => {
     expect(chooser).toContain('/living-is-a-project/access')
   })
 
-  it('leaves Lanes B and C visibly unopened rather than linked to nothing', () => {
-    expect(chooser).toContain('Opening soon')
-    // No link to a retailer form or a code form: neither is built.
-    expect(chooser).not.toContain('verify-preorder')
-    expect(chooser).not.toContain('/api/liap/activate')
+  it('opens every lane now that the code is the normal route', () => {
+    // Owner decisions D2 and D3, 4 September 2026. The chooser is no longer
+    // the front door — it is the exception lane — and both of its previously
+    // unopened lanes now lead somewhere real: the retailer lane to the
+    // verification it was always meant to reach, the event lane to code
+    // registration. Nothing here says "Opening soon" any more, because
+    // nothing here is closed.
+    expect(chooser).not.toContain('Opening soon')
+    expect(chooser).toContain('/living-is-a-project/verify-preorder')
+    expect(chooser).toContain('/liap/book')
+    // The claim endpoint is reached through the registration page, never
+    // linked as a bare API path from customer-facing markup.
+    expect(chooser).not.toContain('/api/liap/claim-code')
   })
 
   it('always offers a way to reach a person', () => {
