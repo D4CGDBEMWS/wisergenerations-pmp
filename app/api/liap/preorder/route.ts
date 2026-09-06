@@ -81,7 +81,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             product_data: {
               name: `${LIAP_BOOK.name} — Preorder`,
               description:
-                `Preorder the hardcover, publishing ${publicationDate()}, and unlock the Life Project-Ready™ Assessment immediately.`,
+                `Preorder the hardcover, publishing ${publicationDate()}. Your new book ` +
+                `includes access to the Living Is a Project Assessment, activated with the ` +
+                `unique code included with your copy.`,
             },
           },
         },

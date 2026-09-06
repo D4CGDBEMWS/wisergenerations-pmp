@@ -42,7 +42,7 @@ function referralFromUrl(): string | null {
 }
 
 export function LiapCta({
-  label = 'Preorder + unlock my assessment',
+  label = 'Preorder — Assessment included',
   className = '',
 }: {
   label?: string

@@ -46,9 +46,12 @@ function liapSurfaces(): string[] {
 }
 
 describe('November is publication, October is preorder', () => {
-  it('publishes in November 2026', () => {
+  it('publishes on 30 November 2026', () => {
     expect(PUBLICATION_MONTH).toBe('November 2026')
-    expect(publicationDate()).toContain('November 2026')
+    // The owner chose the day on 4 September 2026, so the date the customer
+    // reads is now the full date rather than the month.
+    expect(publicationDate()).toBe('November 30, 2026')
+    expect(publicationDate()).toContain('November')
   })
 
   it('keeps October as the preorder period and nothing else', () => {
@@ -113,12 +116,20 @@ describe('the date cannot silently diverge', () => {
   it('is read from the source by every surface that shows it', () => {
     for (const file of [
       'app/living-is-a-project/book/page.tsx',
-      'app/living-is-a-project/preorder-complete/page.tsx',
       'app/api/liap/preorder/route.ts',
       'lib/liap/product.ts',
     ]) {
       expect(source(file), file).toContain('publicationDate()')
     }
+
+    // preorder-complete is deliberately absent. It used to say "your copy
+    // ships when the book publishes in {date}", which tied delivery to
+    // publication — a fulfilment promise nobody had authorised. The sentence
+    // was removed under D6, so the page renders no date at all and has
+    // nothing to read from the source.
+    expect(source('app/living-is-a-project/preorder-complete/page.tsx')).not.toContain(
+      'publicationDate',
+    )
   })
 
   it('makes the checkout and the book page agree by construction', () => {
@@ -141,20 +152,52 @@ describe('the date cannot silently diverge', () => {
   })
 })
 
-describe('the exact day stays the owner’s to choose', () => {
-  it('is pending, and is not invented', () => {
-    expect(PUBLICATION_DAY).toBeNull()
-    expect(publicationDayPending()).toBe(true)
-    // No placeholder day anywhere — not the 1st, not a plausible Tuesday.
-    expect(publicationDate()).toBe('November 2026')
-    expect(publicationDate()).not.toMatch(/\d{1,2},\s*2026/)
+describe('the day the owner chose', () => {
+  it('is the approved Publication & Official Book Launch date', () => {
+    expect(PUBLICATION_DAY).toBe('November 30, 2026')
+    expect(publicationDayPending()).toBe(false)
+    expect(publicationDate()).toBe('November 30, 2026')
   })
 
-  it('needs one edit to adopt a day, on every surface at once', () => {
-    // The point of the whole exercise: setting PUBLICATION_DAY updates the
-    // book page, the checkout description, the receipt page and the product
-    // constant together, because they all call the same function.
+  it('took one edit, and every surface moved with it', () => {
+    // The point of the whole exercise, now demonstrated rather than promised:
+    // one constant changed and the book page, the checkout description and
+    // the product constant all read the new value.
     const launch = source('lib/liap/launch.ts')
     expect(launch).toContain('return PUBLICATION_DAY ?? PUBLICATION_MONTH')
+    expect(LIAP_BOOK.publishesOn).toBe('November 30, 2026')
+  })
+
+  it('is not written out by hand on any surface', () => {
+    // The same guard the month had. A file that spells the day out has
+    // stopped being connected to the source and will go stale on its own.
+    for (const file of liapSurfaces()) {
+      if (file === 'lib/liap/launch.ts') continue
+      expect(source(file), `${file} hardcodes the day`).not.toContain('November 30')
+    }
+  })
+
+  it('is a publication date and never a delivery promise', () => {
+    // Owner instruction, 4 September 2026: nothing may infer that a copy
+    // ships, arrives or is in hand on this date. No such promise is
+    // authorised, so no surface may imply one.
+    for (const file of liapSurfaces()) {
+      const text = source(file).toLowerCase()
+      // Phrases that can only mean fulfilment. Deliberately not "arrives" on
+      // its own: the approved copy says "when your book arrives", which is a
+      // condition for the reader, not a promise from us — and the assessment
+      // recommendations legitimately talk about problems arriving on top of
+      // each other.
+      for (const phrase of [
+        'ships when',
+        'ships on',
+        'copy arrives on',
+        'book arrives on',
+        'delivered on',
+        'in your hands',
+      ]) {
+        expect(text, `${file} :: ${phrase}`).not.toContain(phrase)
+      }
+    }
   })
 })

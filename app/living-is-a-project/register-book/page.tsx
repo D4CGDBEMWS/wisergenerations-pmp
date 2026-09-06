@@ -3,7 +3,7 @@ import { BookRegister } from '@/components/liap/BookRegister'
 export const metadata = {
   title: 'Register your book | Wiser Generations',
   description:
-    'Register the unique access code inside Living Is a Project…Are You Ready? to unlock the Life Project-Ready™ Assessment.',
+    'Register the unique access code included with your new copy of Living Is a Project…Are You Ready? to activate your Living Is a Project Assessment access.',
   robots: { index: false, follow: false },
 }
 

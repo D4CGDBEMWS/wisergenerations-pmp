@@ -71,7 +71,7 @@ export function VerifyPreorderForm() {
       >
         <h2 className="font-bold text-emerald-900">Thank you — we have your details.</h2>
         <p className="mt-2 text-sm leading-relaxed text-emerald-900">
-          Someone will check the order and email you when your assessment is unlocked, usually
+          Someone will check the order and email you when your assessment is activated, usually
           within two business days. You don&rsquo;t need to do anything else.
         </p>
       </div>
@@ -108,7 +108,7 @@ export function VerifyPreorderForm() {
           Email address <span className="font-normal text-gray-500">(required)</span>
         </label>
         <p id="vp-email-hint" className="mt-1 text-sm text-gray-500">
-          We&rsquo;ll unlock the assessment on this address, so use the one you&rsquo;ll sign in
+          We&rsquo;ll activate the assessment on this address, so use the one you&rsquo;ll sign in
           with.
         </p>
         <input

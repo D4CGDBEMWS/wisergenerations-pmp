@@ -101,7 +101,7 @@ export default function LiapHubPage() {
               href="/living-is-a-project/book"
               className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-gold px-7 text-center text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
-              Preorder the book + unlock my assessment
+              Preorder the book &mdash; Assessment included
             </Link>
             <a
               href="#how-it-works"
@@ -184,7 +184,7 @@ export default function LiapHubPage() {
             href="/living-is-a-project/book"
             className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-navy px-7 text-base font-bold text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
-            Preorder + unlock my assessment
+            Preorder &mdash; Assessment included
           </Link>
         </div>
       </section>

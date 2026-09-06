@@ -26,7 +26,7 @@ const FAQ = [
   },
   {
     q: 'When do I get the assessment?',
-    a: 'Immediately. Your preorder unlocks the Life Project-Ready™ Assessment as soon as payment is confirmed — you do not wait for the book to arrive.',
+    a: 'Your new book includes access to the Living Is a Project Assessment. When your book arrives, register the unique access code included with your copy to activate your Assessment access.',
   },
   {
     q: 'How long does the assessment take?',
@@ -42,7 +42,7 @@ const FAQ = [
   },
   {
     q: 'I preordered somewhere else. Can I still get the assessment?',
-    a: 'Yes. Submit your retailer order details for verification and we will unlock it once confirmed.',
+    a: 'Yes. Submit your retailer order details for verification and we will activate it once confirmed.',
   },
 ]
 
@@ -128,8 +128,8 @@ export default function LiapBookPage() {
             Preorder the book. Start your project now.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-gray-600">
-            Your assessment unlocks the moment your preorder is confirmed. The book arrives in
-            October.
+            Your preorder includes Assessment access. Register the unique code included with your
+            copy when it arrives to activate it.
           </p>
           <LiapCta className="mt-7 flex justify-center" />
           <p className="mt-4 text-sm text-gray-500">

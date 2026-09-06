@@ -40,16 +40,27 @@ export default async function AssessmentPage() {
     return (
       <main className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-24">
         <h1 className="text-2xl font-bold text-navy sm:text-3xl">
-          Your assessment isn&rsquo;t unlocked yet
+          Your Assessment isn&rsquo;t activated yet.
         </h1>
         <p className="mt-4 leading-relaxed text-gray-600">
-          The Life Project-Ready™ Assessment comes with a preorder of{' '}
-          <em>Living Is a Project&hellip;Are You Ready?</em> We can&rsquo;t find a preorder on this account yet.
+          Every new copy includes a unique access code. Register the code included with your book
+          to activate your Assessment access.
         </p>
+        {/* Registration is the normal route and is therefore the primary action.
+            The old copy diagnosed a missing preorder, which is the wrong
+            question: this reader may have been given the book, or bought it
+            from a retailer, and in both cases they have a code and no
+            preorder for us to find. */}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
+            href="/liap/book"
+            className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-gold px-6 font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          >
+            Register my book
+          </Link>
+          <Link
             href="/living-is-a-project/book"
-            className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-navy px-6 font-bold text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-gray-300 px-6 font-semibold text-navy transition-colors hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
           >
             Preorder the book
           </Link>
@@ -60,10 +71,6 @@ export default async function AssessmentPage() {
             I preordered elsewhere
           </Link>
         </div>
-        <p className="mt-8 text-sm text-gray-500">
-          If you preordered in the last few minutes, give it a moment and refresh — payment
-          confirmation can take a short time to arrive.
-        </p>
       </main>
     )
   }

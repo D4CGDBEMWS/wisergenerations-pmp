@@ -1,29 +1,38 @@
-# LIAP registration card — proposed implementation copy
+# LIAP registration card
 
-**Status: PROPOSED. Not owner-approved. Do not send to print.**
+**Card copy: OWNER APPROVED, 4 September 2026.**
+**Card production: HOLD — do not print.**
 
-Prepared under the owner decision of 4 September 2026, item 8, which asks for
-the technical and customer-flow support for a printed card and supplies the
-wording concept below. The owner's brief marks this card wording as *proposed
-implementation copy, not locked owner copy*, so nothing here is to be
-published, printed or distributed without a separate approval.
+The customer-facing wording below is the owner's approved copy and is
+reproduced verbatim. It is not to be edited without a further owner decision.
 
-The two statements printed **in the book** are locked owner copy and appear in
-`tests/liap-book-codes.test.ts` as acceptance criteria. They are not restated
-here to avoid a second, divergent home for them.
+Production remains on hold. The card must not go to a printer, and no
+production codes may be generated, until the non-production end-to-end reader
+journey has been validated: code/card → registration → entitlement → first
+Assessment → Reassessment → third attempt refused.
+
+The two statements printed **in the book** are locked owner copy held
+separately and are not restated here, to avoid a second, divergent home for
+them.
 
 ---
 
-## Card face — proposed wording
+## Card face — OWNER-APPROVED COPY, verbatim
 
-> ### Living Is a Project Assessment Registration
+> ### LIVING IS A PROJECT ASSESSMENT
 >
-> Your new book includes one unique registration code for one reader. Register
-> your book to activate your first Assessment and Reassessment.
+> Your new book includes access to the Living Is a Project Assessment.
 >
-> **Unique Access Code:** `LIAP-XXXX-XXXX-XXXX-XXXX`
+> This unique access code may be registered to one reader and provides your
+> first Assessment and Reassessment.
 >
-> Register at **wisergenerations.com/liap/book**
+> **Unique Access Code:**
+> `LIAP-XXXX-XXXX-XXXX-XXXX`
+>
+> **Register your book at:**
+> wisergenerations.com/liap/book
+>
+> [QR CODE]
 
 ---
 
@@ -73,6 +82,9 @@ keep that parameter working for the life of the edition.
   set in whatever way reads best.
 
 ## Producing a batch
+
+**Not before the non-production journey passes.** No production codes
+may be generated while the card is on production hold.
 
     DATABASE_URL=... node scripts/liap-generate-book-codes.mjs \
       --batch first-print --count 5000 --out first-print.csv

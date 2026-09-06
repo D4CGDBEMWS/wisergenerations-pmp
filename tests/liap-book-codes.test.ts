@@ -1107,6 +1107,103 @@ describe('revoke and retire, together', () => {
   })
 })
 
+// ── D6: the promise the site makes about payment ───────────────────────────
+
+describe('no surface claims that paying activates the assessment', () => {
+  /** Every LIAP file a customer can read. */
+  function liapSurfaces(): string[] {
+    const { readdirSync, statSync } = require('fs') as typeof import('fs')
+    const out: string[] = []
+    const walk = (dir: string) => {
+      for (const entry of readdirSync(join(process.cwd(), dir))) {
+        const rel = `${dir}/${entry}`
+        if (statSync(join(process.cwd(), rel)).isDirectory()) walk(rel)
+        else if (/\.tsx?$/.test(entry)) out.push(rel)
+      }
+    }
+    walk('app/living-is-a-project')
+    walk('app/liap')
+    walk('app/api/liap')
+    walk('components/liap')
+    return out
+  }
+
+  /** Source with comments stripped: only what a customer could read. */
+  const rendered = (rel: string) =>
+    readFileSync(join(process.cwd(), rel), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/(^|[^:])\/\/.*$/gm, '$1')
+
+  it('A. no LIAP surface says payment unlocks or activates the assessment', () => {
+    // D1 and D6: the code in the book activates access, not the payment. This
+    // is the regression that matters most, because the claim was previously
+    // made on the checkout page itself and on the receipt.
+    const forbidden = [
+      'unlock my assessment',
+      'unlock the Life Project-Ready',
+      'assessment is unlocked',
+      'assessment unlocks',
+      'preorder unlocks',
+      "isn't unlocked",
+      'unlocks the Life Project-Ready',
+    ]
+    for (const file of liapSurfaces()) {
+      const text = rendered(file)
+      for (const phrase of forbidden) {
+        expect(text.toLowerCase(), `${file} :: ${phrase}`).not.toContain(phrase.toLowerCase())
+      }
+    }
+  })
+
+  it('B. the preorder confirmation does not send the purchaser to the assessment', () => {
+    // At that moment they have no book, no code and no entitlement. A link to
+    // the assessment is a dead end behind a sign-in that will never email
+    // them, which is exactly what this page used to do.
+    const page = rendered('app/living-is-a-project/preorder-complete/page.tsx')
+    expect(page).not.toContain('/living-is-a-project/assessment')
+    expect(page).not.toContain('Begin my assessment')
+    expect(page).toContain('/living-is-a-project/book#how-it-works')
+    expect(page).toContain('What happens next')
+  })
+
+  it('makes no promise of an email the system does not send', () => {
+    // Nothing is emailed at purchase: the only login link comes from the
+    // sign-in form. The claim was inaccurate before the code architecture
+    // existed and is not reinstated by it.
+    const page = rendered('app/living-is-a-project/preorder-complete/page.tsx')
+    expect(page).not.toContain('emailed you an access link')
+    expect(page).not.toContain('wait a moment and refresh')
+  })
+
+  it('offers registration first to a signed-in reader without access', () => {
+    const page = rendered('app/living-is-a-project/assessment/page.tsx')
+    expect(page).toContain('Register my book')
+    expect(page).toContain('/liap/book')
+    // And does not diagnose a missing preorder: a gift recipient never had one.
+    expect(page).not.toContain('cannot find a preorder')
+    expect(page).not.toContain('find a preorder on this account')
+  })
+
+  it('points a retailer reader holding a code at registration before verification', () => {
+    const page = rendered('app/living-is-a-project/verify-preorder/page.tsx')
+    expect(page).toContain('/liap/book')
+    expect(page).not.toContain("we&rsquo;ll unlock it")
+    // The exception path itself survives.
+    expect(page).toContain('VerifyPreorderForm')
+  })
+
+  it('makes no shipping, delivery or arrival promise anywhere', () => {
+    // The publication date is a publication date. No surface may turn it into
+    // a date a copy is in someone's hands.
+    for (const file of liapSurfaces()) {
+      const text = rendered(file).toLowerCase()
+      for (const phrase of ['ships when', 'will arrive', 'arrives in october', 'delivered by']) {
+        expect(text, `${file} :: ${phrase}`).not.toContain(phrase)
+      }
+    }
+  })
+})
+
 // ── the flag ───────────────────────────────────────────────────────────────
 
 describe('feature flags', () => {

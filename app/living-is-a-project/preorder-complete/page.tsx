@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
-import { publicationDate } from '@/lib/liap/launch'
 
 export const metadata = {
-  title: 'Your assessment is unlocked | Wiser Generations',
+  title: 'Preorder confirmed | Wiser Generations',
   robots: { index: false, follow: false },
 }
 
@@ -26,29 +25,24 @@ export default function PreorderCompletePage() {
         Preorder confirmed
       </p>
       <h1 className="mt-4 text-3xl font-bold leading-tight text-navy sm:text-4xl">
-        Your Life Project-Ready™ Assessment is unlocked.
+        Your preorder is confirmed.
       </h1>
 
       <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-        <p>Your preorder is confirmed. Your copy ships when the book publishes in {publicationDate()}.</p>
         <p>
-          Now let&rsquo;s determine where you are and what deserves your attention next. It takes
-          about fifteen minutes, and it saves as you go.
+          Your new book includes access to the Living Is a Project Assessment. When your book
+          arrives, use the unique access code included with your copy to register your book and
+          activate your Assessment access.
         </p>
       </div>
 
       <Link
-        href="/living-is-a-project/assessment"
+        href="/living-is-a-project/book#how-it-works"
         className="mt-9 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-gold px-8 text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy sm:w-auto"
       >
-        Begin my assessment
+        What happens next
       </Link>
 
-      <p className="mt-8 text-sm leading-relaxed text-gray-500">
-        We&rsquo;ve emailed you an access link as well, so you can come back to this later. If the
-        assessment says it isn&rsquo;t unlocked yet, wait a moment and refresh — payment
-        confirmation can take a few seconds to reach us.
-      </p>
     </main>
   )
 }
