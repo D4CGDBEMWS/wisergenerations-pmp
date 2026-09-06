@@ -68,6 +68,9 @@ export type AuditEventType =
   | 'liap.book_code_claimed'
   | 'liap.book_code_claim_refused'
   | 'liap.book_code_voided'
+  // The atomic fraud/chargeback remedy: one operation that both revokes the
+  // reader's access and retires the code, so neither can be left half-done.
+  | 'liap.book_code_revoked'
   | 'liap.book_code_claim_released'
   | 'liap.purchase_awaiting_code_registration'
   | 'liap.assessment_attempt_refused'

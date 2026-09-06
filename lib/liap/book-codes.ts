@@ -254,6 +254,123 @@ export async function claimBookCode(input: {
   return { status: 'claimed', codeId, customerId: customer.id }
 }
 
+// ---------------------------------------------------------------------------
+// The atomic administrative remedy. Owner decision D5, 4 September 2026.
+//
+// ── WHY THIS EXISTS SEPARATELY FROM --release AND --void ───────────────────
+//
+// The two operations that came before it each do half of what a fraud or
+// chargeback case needs, and the missing half is dangerous in both
+// directions:
+//
+//   --release  revokes the reader's access AND returns the code to the
+//              unclaimed pool. Correct for an erroneous registration — the
+//              code should be claimable again by whoever legitimately holds
+//              the book. Wrong for fraud: it hands the code back to the
+//              person who abused it.
+//
+//   --void     retires the code but leaves the reader's entitlement alone,
+//              so the fraudulent reader keeps their assessment.
+//
+// Doing both in sequence leaves a window between them in which the code is
+// unclaimed and not yet voided — small, but it is exactly the window an
+// abuser is watching for, and support staff should not have to sequence two
+// commands correctly under pressure.
+//
+// ── WHY ONE STATEMENT ──────────────────────────────────────────────────────
+//
+// A single statement with CTEs is atomic in PostgreSQL: both UPDATEs see one
+// snapshot and commit together or not at all. That is a stronger guarantee
+// than two statements in a transaction over an HTTP driver, and it needs no
+// transaction to be held open across a network round trip.
+//
+// The claim is deliberately NOT cleared. Who held this code is a fact the
+// investigation needs, and voided_at is what stops it being claimed again —
+// so the record survives and the code is dead.
+// ---------------------------------------------------------------------------
+
+/** The one statement. Shared with scripts/liap-book-code-admin.mjs verbatim. */
+export const REVOKE_AND_RETIRE_SQL = `
+WITH voided AS (
+  UPDATE book_access_codes
+     SET voided_at = now(), void_reason = $2
+   WHERE id = $1::uuid AND voided_at IS NULL
+   RETURNING id, claimed_by_customer_id
+), revoked AS (
+  UPDATE entitlements
+     SET revoked_at = now()
+   WHERE source_type = 'book_code' AND source_id = $1::text AND revoked_at IS NULL
+   RETURNING customer_id
+)
+SELECT (SELECT id FROM voided) AS code_id,
+       (SELECT claimed_by_customer_id FROM voided) AS held_by,
+       (SELECT count(*)::int FROM revoked) AS revoked_count
+`
+
+export interface RevokeOutcome {
+  /** False when the code does not exist or was already retired. */
+  retired: boolean
+  /** How many live entitlements this code had granted. Normally 1, or 0. */
+  revokedCount: number
+  /** The reader who held it, kept for the audit trail. */
+  heldBy: string | null
+}
+
+/**
+ * Retires a code and revokes the access it granted, together.
+ *
+ * For verified administrative correction only — fraud, chargeback abuse,
+ * duplicate issuance, erroneous issuance. Never reachable from the website:
+ * there is no route that calls this, and a customer-facing revocation
+ * endpoint is precisely the mechanism this architecture exists to deny.
+ *
+ * An ordinary refund does NOT call this and never will. Payment and access
+ * were separated on purpose, and a refund that quietly closed a legitimate
+ * gift recipient's assessment would undo that separation.
+ */
+export async function revokeAndRetireCode(input: {
+  codeId: string
+  reason: string
+  operator?: string | null
+}): Promise<RevokeOutcome> {
+  const rows = await getDb().query<{
+    code_id: string | null
+    held_by: string | null
+    revoked_count: number
+  }>(REVOKE_AND_RETIRE_SQL, [input.codeId, input.reason])
+
+  const row = rows[0]
+  const retired = Boolean(row?.code_id)
+  const heldBy = row?.held_by ?? null
+  const revokedCount = Number(row?.revoked_count ?? 0)
+
+  if (!retired && revokedCount === 0) {
+    return { retired: false, revokedCount: 0, heldBy: null }
+  }
+
+  if (revokedCount > 0) {
+    await recordAuditEvent({
+      eventType: 'entitlement.revoked',
+      customerId: heldBy,
+      actor: input.operator ?? null,
+      metadata: {
+        entitlement_key: LIAP_ENTITLEMENT,
+        source_type: 'book_code',
+        reason: input.reason,
+      },
+    })
+  }
+
+  await recordAuditEvent({
+    eventType: 'liap.book_code_revoked',
+    customerId: heldBy,
+    actor: input.operator ?? null,
+    metadata: { code_id: input.codeId, reason: input.reason, count: revokedCount },
+  })
+
+  return { retired, revokedCount, heldBy }
+}
+
 export interface CodeStatus {
   id: string
   batch_key: string

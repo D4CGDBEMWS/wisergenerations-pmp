@@ -11,6 +11,7 @@
  *   DATABASE_URL=... node scripts/liap-book-code-admin.mjs --void <code-id> --reason "damaged card"
  *   DATABASE_URL=... node scripts/liap-book-code-admin.mjs --replace <code-id> --reason "damaged card"
  *   DATABASE_URL=... node scripts/liap-book-code-admin.mjs --release <code-id> --reason "claimed to a typo, verified"
+ *   DATABASE_URL=... node scripts/liap-book-code-admin.mjs --revoke  <code-id> --reason "chargeback abuse, verified"
  *   DATABASE_URL=... node scripts/liap-book-code-admin.mjs --reset-attempt <assessment-id> --reason "scoring incident"
  *
  * ── WHY THIS IS A COMMAND AND NOT A BUTTON ─────────────────────────────────
@@ -21,9 +22,22 @@
  * exactly the mechanism this whole design exists to prevent — a way to move
  * an assessment off the reader who registered it.
  *
- * --release is the sharpest tool here. It returns a code to the unclaimed
- * pool AND revokes the entitlement it granted, so it must only follow a
- * verified support conversation, never a request in an email.
+ * ── CHOOSING BETWEEN --release AND --revoke ────────────────────────────────
+ *
+ * Both revoke the reader's entitlement. They differ in what happens to the
+ * code, and the difference is the whole decision:
+ *
+ *   --release  returns the code to the unclaimed pool. For an ERROR — a code
+ *              registered to a typo'd address, a claim made on the wrong
+ *              account. The rightful holder of the book must be able to
+ *              register it afterwards.
+ *
+ *   --revoke   retires the code permanently. For ABUSE — fraud, chargeback
+ *              abuse, duplicate or erroneous issuance. Nobody registers this
+ *              code again, including the person who abused it.
+ *
+ * Both must only follow a verified support conversation, never a request in
+ * an email. Neither is reachable from the website.
  */
 
 import { neon } from '@neondatabase/serverless'
@@ -216,6 +230,61 @@ if (releaseId) {
   process.exit(0)
 }
 
+// ── revoke: retire the code AND revoke its access, together ───────────────
+//
+// One statement, so the two halves cannot come apart. Kept character for
+// character in step with REVOKE_AND_RETIRE_SQL in lib/liap/book-codes.ts —
+// a test compares them, because a divergence here would mean support running
+// something subtly different from what was reviewed and tested.
+const revokeId = flag('--revoke')
+if (revokeId) {
+  requireReason()
+  const rows = await sql(
+    `
+WITH voided AS (
+  UPDATE book_access_codes
+     SET voided_at = now(), void_reason = $2
+   WHERE id = $1::uuid AND voided_at IS NULL
+   RETURNING id, claimed_by_customer_id
+), revoked AS (
+  UPDATE entitlements
+     SET revoked_at = now()
+   WHERE source_type = 'book_code' AND source_id = $1::text AND revoked_at IS NULL
+   RETURNING customer_id
+)
+SELECT (SELECT id FROM voided) AS code_id,
+       (SELECT claimed_by_customer_id FROM voided) AS held_by,
+       (SELECT count(*)::int FROM revoked) AS revoked_count
+`,
+    [revokeId, reason]
+  )
+
+  const row = rows[0]
+  if (!row?.code_id && Number(row?.revoked_count ?? 0) === 0) {
+    console.error('No such code, or it was already retired and its access already revoked.')
+    process.exit(1)
+  }
+
+  if (Number(row.revoked_count) > 0) {
+    await audit('entitlement.revoked', row.held_by, {
+      entitlement_key: 'LIAP_ASSESSMENT_ACCESS',
+      source_type: 'book_code',
+      reason,
+    })
+  }
+  await audit('liap.book_code_revoked', row.held_by, {
+    code_id: revokeId,
+    reason,
+    count: Number(row.revoked_count),
+  })
+
+  console.log(
+    `\nRetired ${revokeId} and revoked ${row.revoked_count} entitlement(s).\n` +
+      'The code can never be registered again, by anyone.\n'
+  )
+  process.exit(0)
+}
+
 // ── reset an assessment attempt ───────────────────────────────────────────
 const resetId = flag('--reset-attempt')
 if (resetId) {
@@ -253,7 +322,8 @@ console.error(
     '  --status <code>            look a code up\n' +
     '  --void <code-id>           make a code permanently unclaimable\n' +
     '  --replace <code-id>        void an unclaimed code and issue a fresh one\n' +
-    '  --release <code-id>        undo a claim and revoke its entitlement\n' +
+    '  --release <code-id>        undo a claim and revoke its entitlement (an ERROR)\n' +
+    '  --revoke <code-id>         revoke access AND retire the code (ABUSE)\n' +
     '  --reset-attempt <id>       void one bad assessment record\n' +
     'All except --status require --reason.'
 )

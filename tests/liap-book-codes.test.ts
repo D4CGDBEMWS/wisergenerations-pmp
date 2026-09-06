@@ -11,6 +11,8 @@ import {
   mintBookCodes,
   claimBookCode,
   findCodeStatus,
+  revokeAndRetireCode,
+  REVOKE_AND_RETIRE_SQL,
 } from '@/lib/liap/book-codes'
 import { hasEntitlement } from '@/lib/entitlements'
 import { fulfilPreorder } from '@/lib/liap/fulfilment'
@@ -950,13 +952,158 @@ describe('support correction is audited and not self-service', () => {
   it('every override has to say why it happened', () => {
     const admin = readFileSync(join(process.cwd(), 'scripts/liap-book-code-admin.mjs'), 'utf8')
     // requireReason() is called before any state changes, for every operation
-    // except the read-only lookup. Asserted by counting: four mutating
-    // branches, four calls.
-    expect(admin.match(/requireReason\(\)/g)).toHaveLength(4)
-    for (const op of ['--void', '--replace', '--release', '--reset-attempt']) {
+    // except the read-only lookup. The count is asserted once, in the D5
+    // block below, so there is one place to update when an operation is added.
+    for (const op of ['--void', '--replace', '--release', '--revoke', '--reset-attempt']) {
       expect(admin, op).toContain(`flag('${op}')`)
     }
     expect(admin).toContain("console.error('--reason is required")
+  })
+})
+
+// ── D5: the atomic administrative remedy ───────────────────────────────────
+
+describe('revoke and retire, together', () => {
+  it('revokes the reader’s access and retires the code in one operation', async () => {
+    const { id, code } = await oneCode()
+    const reader = await claimBookCode({ code, email: 'abuser@example.com' })
+    if (reader.status !== 'claimed') throw new Error('unreachable')
+    expect(await hasEntitlement(reader.customerId, LIAP_ENTITLEMENT)).toBe(true)
+
+    const outcome = await revokeAndRetireCode({
+      codeId: id,
+      reason: 'chargeback abuse, verified',
+      operator: 'support-op',
+    })
+
+    expect(outcome.retired).toBe(true)
+    expect(outcome.revokedCount).toBe(1)
+    expect(outcome.heldBy).toBe(reader.customerId)
+
+    // Both halves, together: access gone, code dead.
+    expect(await hasEntitlement(reader.customerId, LIAP_ENTITLEMENT)).toBe(false)
+    expect((await findCodeStatus(code))!.voided_at).not.toBeNull()
+  })
+
+  it('the code can never be registered again — by anyone, including the holder', async () => {
+    const { id, code } = await oneCode()
+    const reader = await claimBookCode({ code, email: 'abuser@example.com' })
+    if (reader.status !== 'claimed') throw new Error('unreachable')
+    await revokeAndRetireCode({ codeId: id, reason: 'fraud, verified' })
+
+    // The original holder cannot re-register it.
+    expect((await claimBookCode({ code, email: 'abuser@example.com' })).status).toBe('unavailable')
+    // Nor can anybody else.
+    expect((await claimBookCode({ code, email: 'opportunist@example.com' })).status).toBe(
+      'unavailable'
+    )
+    expect(await hasEntitlement(reader.customerId, LIAP_ENTITLEMENT)).toBe(false)
+  })
+
+  it('leaves the claim on the row, because who held it is what an investigation needs', async () => {
+    const { id, code } = await oneCode()
+    const reader = await claimBookCode({ code, email: 'abuser@example.com' })
+    if (reader.status !== 'claimed') throw new Error('unreachable')
+    await revokeAndRetireCode({ codeId: id, reason: 'duplicate issuance' })
+
+    const row = await findCodeStatus(code)
+    expect(row!.claimed_by_customer_id).toBe(reader.customerId)
+    expect(row!.claimed_at).not.toBeNull()
+    expect(row!.voided_at).not.toBeNull()
+  })
+
+  it('records both the revocation and the retirement, with the reason and no code', async () => {
+    const { id, code } = await oneCode()
+    await claimBookCode({ code, email: 'abuser@example.com' })
+    await revokeAndRetireCode({
+      codeId: id,
+      reason: 'chargeback abuse, verified',
+      operator: 'support-op',
+    })
+
+    const rows = await db.query<{ event_type: string; actor: string | null; metadata: unknown }>(
+      `SELECT event_type, actor, metadata FROM audit_events`
+    )
+    const types = rows.map((r) => r.event_type)
+    expect(types).toContain('entitlement.revoked')
+    expect(types).toContain('liap.book_code_revoked')
+
+    const revocation = rows.find((r) => r.event_type === 'liap.book_code_revoked')!
+    expect(revocation.actor).toBe('support-op')
+    expect(JSON.stringify(revocation.metadata)).toContain('chargeback abuse, verified')
+    // The usable code never reaches an audit row.
+    expect(JSON.stringify(rows)).not.toContain(normalizeBookCode(code))
+  })
+
+  it('retires an unclaimed code without pretending it revoked anything', async () => {
+    const { id, code } = await oneCode()
+    const outcome = await revokeAndRetireCode({ codeId: id, reason: 'bad batch' })
+
+    expect(outcome.retired).toBe(true)
+    expect(outcome.revokedCount).toBe(0)
+    expect((await claimBookCode({ code, email: 'anyone@example.com' })).status).toBe('unavailable')
+  })
+
+  it('is idempotent — a second run changes nothing and says so', async () => {
+    const { id, code } = await oneCode()
+    await claimBookCode({ code, email: 'abuser@example.com' })
+    await revokeAndRetireCode({ codeId: id, reason: 'fraud' })
+
+    const again = await revokeAndRetireCode({ codeId: id, reason: 'fraud' })
+    expect(again.retired).toBe(false)
+    expect(again.revokedCount).toBe(0)
+  })
+
+  it('leaves --release available for the error case it is for', async () => {
+    // D5 preserves the erroneous-registration path. A released code goes back
+    // to the pool; a revoked one never does. The distinction is the point.
+    const { id, code } = await oneCode()
+    const wrongAddress = await claimBookCode({ code, email: 'typo@example.com' })
+    if (wrongAddress.status !== 'claimed') throw new Error('unreachable')
+
+    // What --release does, as the script does it.
+    await db.query(
+      `UPDATE book_access_codes SET claimed_by_customer_id = NULL, claimed_at = NULL WHERE id = $1`,
+      [id]
+    )
+    await db.query(
+      `UPDATE entitlements SET revoked_at = now() WHERE source_type = 'book_code' AND source_id = $1`,
+      [id]
+    )
+
+    // The rightful reader can now register the code from their own book.
+    const rightful = await claimBookCode({ code, email: 'rightful@example.com' })
+    expect(rightful.status).toBe('claimed')
+    expect(await hasEntitlement(wrongAddress.customerId, LIAP_ENTITLEMENT)).toBe(false)
+  })
+
+  it('no customer-facing route can revoke or retire anything', async () => {
+    // The remedy is CLI-only, by construction. Nothing under app/api may call
+    // it, and no route may run the statement itself.
+    const { readdirSync, statSync } = await import('fs')
+    const walk = (dir: string): string[] =>
+      readdirSync(dir).flatMap((entry) => {
+        const full = join(dir, entry)
+        return statSync(full).isDirectory() ? walk(full) : full.endsWith('.ts') ? [full] : []
+      })
+
+    for (const file of walk(join(process.cwd(), 'app/api'))) {
+      const src = readFileSync(file, 'utf8')
+      expect(src, file).not.toContain('revokeAndRetireCode')
+      expect(src, file).not.toContain('REVOKE_AND_RETIRE_SQL')
+      expect(src, file).not.toContain('voided_at = now()')
+    }
+  })
+
+  it('the CLI runs exactly the statement that was reviewed and tested', () => {
+    // The script is plain node and cannot import the module, so the statement
+    // is duplicated. If the two ever drift, support would be running something
+    // other than what these tests prove.
+    const admin = readFileSync(join(process.cwd(), 'scripts/liap-book-code-admin.mjs'), 'utf8')
+    expect(admin).toContain(REVOKE_AND_RETIRE_SQL.trim())
+    expect(admin).toContain("flag('--revoke')")
+    // Five mutating branches now, five reason checks.
+    expect(admin.match(/requireReason\(\)/g)).toHaveLength(5)
   })
 })
 
