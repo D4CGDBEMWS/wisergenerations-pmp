@@ -1,5 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { isEnabled } from '@/lib/flags'
+
+// Read per request: the Legacy Kit section below appears only while
+// FEATURE_LEGACY_KIT is on, so an unreleased product is not described on a
+// public page (the same rule that keeps every kit page a 404 until launch).
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -350,6 +356,67 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
         </section>
+
+        {isEnabled('LEGACY_KIT') && (
+          // Owner-approved scope, 4 October 2026: a Legacy Kit section in this
+          // policy rather than a second privacy page. Every factual claim here
+          // matches lib/legacy-kit and db/migrations/0007_legacy_kit.sql, and
+          // tests/legacy-kit-delivery.test.ts checks the key ones. The
+          // retention period and business address are the owner's to supply.
+          <section id="legacy-kit" className="scroll-mt-24">
+            <h2 className="text-xl font-bold text-navy mb-3">
+              13A. Wiser Generations International Legacy Kit&trade; Purchases
+            </h2>
+            <p>
+              This section covers buying and downloading the Legacy Kit, a fillable PDF workbook.
+            </p>
+            <h3 className="mt-5 font-bold text-navy">What we collect</h3>
+            <ul className="list-disc list-inside mt-2 space-y-1 ml-2">
+              <li>Your email address, to send your download link and purchase confirmation.</li>
+              <li>The date of your purchase and the Stripe reference for it.</li>
+              <li>
+                Which wording of the two checkout boxes you agreed to, and when. This is our record of
+                your agreement, including the EU/UK download waiver.
+              </li>
+              <li>How many times your download link has been used, and when it expires.</li>
+            </ul>
+            <p className="mt-2">
+              Stripe, our payment processor, collects your card details and billing address to take
+              payment and work out sales tax or VAT. We never see your card details. We do not receive
+              or store anything you write in the kit: you fill it in on your own device or on paper.
+            </p>
+            <h3 className="mt-5 font-bold text-navy">Who helps us</h3>
+            <ul className="list-disc list-inside mt-2 space-y-1 ml-2">
+              <li>Stripe: payment and tax calculation.</li>
+              <li>
+                Mailchimp Transactional (Intuit Mailchimp): sends your one download email. Buying the kit
+                does not add you to any mailing list.
+              </li>
+              <li>Neon: our database. Vercel: website hosting.</li>
+            </ul>
+            <h3 className="mt-5 font-bold text-navy">Your download link</h3>
+            <p className="mt-2">
+              We store a one-way fingerprint of your link, not the link itself. If a purchase is
+              refunded, its link stops working.
+            </p>
+            <h3 className="mt-5 font-bold text-navy">How long we keep it</h3>
+            <p className="mt-2">
+              We keep purchase records for as long as we need them for tax and legal recordkeeping.
+              [Retention period to be confirmed with our CPA before sales open.]
+            </p>
+            <h3 className="mt-5 font-bold text-navy">EU and UK buyers</h3>
+            <p className="mt-2">
+              We use your information to perform our contract with you (delivering the kit) and to meet
+              legal obligations (tax records and proof of your cancellation waiver). You have the rights
+              described in Sections 6 and 8, including to see or delete your data where the law allows.
+              Email{' '}
+              <a href="mailto:info@wisergenerations.com" className="text-gold hover:underline font-medium">
+                info@wisergenerations.com
+              </a>{' '}
+              to make a request.
+            </p>
+          </section>
+        )}
 
         <section>
           <h2 className="text-xl font-bold text-navy mb-3">14. Contact Us</h2>
