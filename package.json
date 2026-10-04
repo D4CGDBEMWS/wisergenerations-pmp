@@ -17,7 +17,8 @@
     "test:ai": "node scripts/test-ai-guide.mjs",
     "giveaway:export": "node scripts/export-giveaway-entries.mjs",
     "giveaway:pick": "node scripts/export-giveaway-entries.mjs --pick",
-    "kit:pdf": "node scripts/build-legacy-kit-pdf.mjs"
+    "kit:pdf": "node scripts/build-legacy-kit-pdf.mjs",
+    "kit:resend": "node scripts/legacy-kit-resend.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",

@@ -20,6 +20,9 @@ const nextConfig = {
     // The Legacy Kit page reads its section titles and notices from the kit's
     // own source text, so the page and the PDF can never disagree.
     '/legacy-kit': ['./content/wgi-legacy-kit.md'],
+    // The kit PDF lives in private/, which is never served. Only the download
+    // route reads it, so it must be traced into that one function.
+    '/api/legacy-kit/download': ['./private/wgi-legacy-kit.pdf'],
   },
   images: {
     remotePatterns: [

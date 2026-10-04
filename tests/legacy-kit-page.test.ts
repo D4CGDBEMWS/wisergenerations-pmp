@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { describe, expect, it } from 'vitest'
 import { foreignShellLinks, shell, shellForPath, shellLinks } from '@/lib/shell'
@@ -73,8 +73,16 @@ describe('the Legacy Kit page copy', () => {
     expect(page).toContain('Educational only — not legal, tax or financial advice.')
   })
 
-  it('keeps checkout closed until delivery and Terms of Sale exist', () => {
-    expect(LEGACY_KIT_CHECKOUT_OPEN).toBe(false)
+  it('opens checkout only once delivery and the Terms of Sale exist', () => {
+    for (const f of [
+      'app/legacy-kit/terms-of-sale/page.tsx',
+      'app/api/legacy-kit/checkout/route.ts',
+      'app/api/legacy-kit/download/route.ts',
+      'app/legacy-kit/thank-you/page.tsx',
+    ]) {
+      expect(existsSync(join(process.cwd(), f))).toBe(true)
+    }
+    expect(LEGACY_KIT_CHECKOUT_OPEN).toBe(true)
   })
 
   it('states the owner’s no-refund policy', () => {

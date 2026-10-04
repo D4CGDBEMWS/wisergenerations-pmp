@@ -14,6 +14,13 @@ import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { creditBookPurchase } from '@/lib/liap/attribution'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
+import {
+  emailLinkOnce,
+  isKitMetadata,
+  isPaidKitSession,
+  recordPurchase,
+  revokeForRefund,
+} from '@/lib/legacy-kit/purchases'
 import Stripe from 'stripe'
 
 export const runtime = 'nodejs'
@@ -253,7 +260,13 @@ export async function POST(request: NextRequest) {
       // ─────────────────────────────────────────────────────────────────
       // 1. One-time program purchases (PMP, CAPM, Veterans) — existing
       // ─────────────────────────────────────────────────────────────────
-      if (event.type === 'payment_intent.succeeded') {
+      // A Legacy Kit payment is not a PMP program purchase and its buyer has
+      // not asked for marketing email, so it is kept out of this branch's
+      // Mailchimp audience tagging. The kit is handled further down.
+      if (
+        event.type === 'payment_intent.succeeded' &&
+        !isKitMetadata((event.data.object as Stripe.PaymentIntent).metadata)
+      ) {
               const paymentIntent = event.data.object as Stripe.PaymentIntent
               const programId = paymentIntent.metadata.program_id || 'program'
               const programName = paymentIntent.metadata.program_name || programId
@@ -436,6 +449,29 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // ───────────────────────────────────────────────────────────────
+      // Wiser Generations International Legacy Kit.
+      //
+      // Matched on the marker app/api/legacy-kit/checkout writes, and on
+      // nothing else. Records the purchase (idempotent on the session, shared
+      // with the thank-you page) and emails the download link once through
+      // Mailchimp Transactional. A failed email throws, so Stripe retries;
+      // the purchase record is unaffected by the retry.
+      //
+      // async_payment_succeeded covers payment methods that settle later; for
+      // cards the session is already paid at checkout.session.completed.
+      // ───────────────────────────────────────────────────────────────
+      if (
+        event.type === 'checkout.session.completed' ||
+        event.type === 'checkout.session.async_payment_succeeded'
+      ) {
+        const kitSession = event.data.object as Stripe.Checkout.Session
+        if (isPaidKitSession(kitSession)) {
+          const { link } = await recordPurchase(kitSession)
+          await emailLinkOnce(kitSession.id, link)
+        }
+      }
+
       // Refunds revoke access. Without this a refunded customer keeps the
       // product, because an entitlement outlives the payment that created it.
       if (event.type === 'charge.refunded') {
@@ -449,6 +485,10 @@ export async function POST(request: NextRequest) {
           chargeId: charge.id,
           reason: 'charge.refunded',
         })
+        // A refunded Legacy Kit link stops working.
+        await revokeForRefund(
+          typeof charge.payment_intent === 'string' ? charge.payment_intent : null
+        )
       }
 
       if (event.type === 'customer.subscription.deleted') {
