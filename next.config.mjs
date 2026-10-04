@@ -17,6 +17,9 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/api/chat': ['./content/knowledge-base/**/*'],
     '/api/studio': ['./content/studio/**'],
+    // The Legacy Kit page reads its section titles and notices from the kit's
+    // own source text, so the page and the PDF can never disagree.
+    '/legacy-kit': ['./content/wgi-legacy-kit.md'],
   },
   images: {
     remotePatterns: [
