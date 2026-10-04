@@ -42,7 +42,9 @@ export function Footer() {
               height={158}
               className="h-auto w-[225px] max-w-full mb-3"
             />
-            <p className="text-gray-400 text-sm mb-4">An Enterprise Academy Program</p>
+            {shell.showEnterpriseAcademy && (
+              <p className="text-gray-400 text-sm mb-4">An Enterprise Academy Program</p>
+            )}
             {shell.showProgramDisclaimers && (
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs mb-6">
                 PMP® and CAPM® certification prep for career transitioners, corporate teams, and veterans.
@@ -94,7 +96,9 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 space-y-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-xs">&copy; {new Date().getFullYear()} Wiser Generations Int&apos;l. An Enterprise Academy Program. All rights reserved.</p>
+            <p className="text-gray-400 text-xs">
+              &copy; {new Date().getFullYear()} Wiser Generations Int&apos;l.{shell.showEnterpriseAcademy && ' An Enterprise Academy Program.'} All rights reserved.
+            </p>
             {/* The PMI trademark notice is required where PMI marks appear.
                 It appears here because this footer names PMP, CAPM and PMI —
                 on a shell that names none of them it is not applicable. */}

@@ -90,6 +90,15 @@ export interface Shell {
    * replacement text is invented here.
    */
   readonly showProgramDisclaimers: boolean
+  /**
+   * The "An Enterprise Academy Program" line under the footer logo and in the
+   * copyright notice.
+   *
+   * Enterprise Academy is the PMP and CAPM training brand. Owner ruling,
+   * 4 October 2026: the family programs (LIAP and the Legacy Kit) are Wiser
+   * Generations, not Enterprise Academy, and must not carry its name.
+   */
+  readonly showEnterpriseAcademy: boolean
 }
 
 const DEFAULT_SHELL: Shell = {
@@ -149,6 +158,7 @@ const DEFAULT_SHELL: Shell = {
   showHeaderCtas: true,
   showNewsletter: true,
   showProgramDisclaimers: true,
+  showEnterpriseAcademy: true,
 }
 
 /**
@@ -187,6 +197,7 @@ const LIAP_SHELL: Shell = {
   showHeaderCtas: false,
   showNewsletter: false,
   showProgramDisclaimers: false,
+  showEnterpriseAcademy: false,
 }
 
 /**
@@ -219,6 +230,7 @@ const LEGACY_SHELL: Shell = {
   showHeaderCtas: false,
   showNewsletter: false,
   showProgramDisclaimers: false,
+  showEnterpriseAcademy: false,
 }
 
 const SHELLS: Record<ShellKey, Shell> = {

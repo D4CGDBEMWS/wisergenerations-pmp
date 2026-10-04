@@ -288,3 +288,26 @@ describe('the 404 belongs to the shell it happened in', () => {
     expect(fallback).toContain('href="/programs"')
   })
 })
+
+// Owner ruling, 4 October 2026: Enterprise Academy is the PMP/CAPM brand. The
+// family programs are Wiser Generations and must not carry its name.
+describe('the family programs carry no Enterprise Academy branding', () => {
+  it('shows the Enterprise Academy line only on the general site', () => {
+    expect(shell('default').showEnterpriseAcademy).toBe(true)
+    expect(shell('liap').showEnterpriseAcademy).toBe(false)
+    expect(shell('legacy').showEnterpriseAcademy).toBe(false)
+  })
+
+  it('puts the Legacy Kit in its own shell, separate from PMP and LIAP', () => {
+    expect(shellForPath('/legacy-kit').key).toBe('legacy')
+    expect(foreignShellLinks(shell('legacy'))).toEqual([])
+    for (const surface of STUDY_SURFACES) expect(shellLinks(shell('legacy'))).not.toContain(surface)
+  })
+
+  it('gates every Enterprise Academy mention in the footer on the shell', () => {
+    const footer = code('components/layout/Footer.tsx')
+    const mentions = footer.match(/Enterprise Academy/g) ?? []
+    expect(mentions).toHaveLength(2)
+    expect(footer.match(/shell\.showEnterpriseAcademy &&/g)).toHaveLength(2)
+  })
+})
