@@ -16,7 +16,8 @@
     "build:free-studio": "node scripts/build-free-studio.mjs",
     "test:ai": "node scripts/test-ai-guide.mjs",
     "giveaway:export": "node scripts/export-giveaway-entries.mjs",
-    "giveaway:pick": "node scripts/export-giveaway-entries.mjs --pick"
+    "giveaway:pick": "node scripts/export-giveaway-entries.mjs --pick",
+    "kit:pdf": "node scripts/build-legacy-kit-pdf.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",
