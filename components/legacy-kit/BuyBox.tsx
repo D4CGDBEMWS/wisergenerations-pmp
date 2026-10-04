@@ -29,9 +29,9 @@ export function BuyBox() {
   const canBuy = LEGACY_KIT_CHECKOUT_OPEN && ready
 
   return (
-    <div className="min-w-0 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+    <div className="min-w-0 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-sand sm:p-8">
       <p className="text-sm font-semibold uppercase tracking-widest text-gray-600">One household</p>
-      <p className="mt-1 text-4xl font-bold text-navy">
+      <p className="mt-1 text-4xl font-bold text-evergreen">
         {LEGACY_KIT_PRICE_DISPLAY}
         <span className="ml-2 text-base font-medium text-gray-600">USD, one-time</span>
       </p>
@@ -48,12 +48,21 @@ export function BuyBox() {
             type="checkbox"
             checked={notices}
             onChange={(e) => setNotices(e.target.checked)}
-            className="mt-1 h-5 w-5 flex-none accent-navy"
+            className="mt-1 h-5 w-5 flex-none accent-evergreen"
           />
           <label htmlFor={noticesId} className="text-base leading-relaxed text-gray-800">
             {LEGACY_KIT_CONSENTS.notices}{' '}
             <span>
-              (<a href="#important-notices" className="font-semibold text-brand-blue underline">
+              (<a
+                href="#important-notices"
+                // The notices sit in a tap-to-open panel; open it on the way
+                // there so the buyer lands on the text, not a closed heading.
+                onClick={() => {
+                  const panel = document.getElementById('important-notices')
+                  if (panel instanceof HTMLDetailsElement) panel.open = true
+                }}
+                className="font-semibold text-evergreen underline"
+              >
                 Important Notices
               </a>
               {' · '}
@@ -67,7 +76,7 @@ export function BuyBox() {
             type="checkbox"
             checked={waiver}
             onChange={(e) => setWaiver(e.target.checked)}
-            className="mt-1 h-5 w-5 flex-none accent-navy"
+            className="mt-1 h-5 w-5 flex-none accent-evergreen"
           />
           <label htmlFor={waiverId} className="text-base leading-relaxed text-gray-800">
             {LEGACY_KIT_CONSENTS.waiver}
@@ -79,7 +88,7 @@ export function BuyBox() {
         type="button"
         disabled={!canBuy}
         aria-describedby={statusId}
-        className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-gold px-7 text-lg font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-600"
+        className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-gold px-7 text-lg font-bold text-evergreen transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-evergreen disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-600"
       >
         {LEGACY_KIT_CHECKOUT_OPEN ? `Buy the Legacy Kit — ${LEGACY_KIT_PRICE_DISPLAY}` : 'Checkout opens soon'}
       </button>

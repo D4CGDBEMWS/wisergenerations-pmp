@@ -27,6 +27,14 @@ const config: Config = {
         'leaf-soft': '#DCEFE1',       // soft green tint for chips/success
         paper: '#F4F8FA',             // light blue-tinted section background
         line: '#DBE6EC',              // soft blue-gray border
+        // The family Legacy section's own look (owner ruling, 4 Oct 2026:
+        // separate from the PMP offering). Deep evergreen from the logo leaf,
+        // on warm paper, with brand gold kept for the shared Wiser Generations
+        // thread. Gold on evergreen is 5.6:1; evergreen on cream is 11:1.
+        evergreen: '#1F3B2C',
+        'evergreen-soft': '#E4EDE6',
+        cream: '#FAF6EE',
+        sand: '#EFE7D6',
       },
       fontFamily: { sans: ['Inter', 'sans-serif'] },
     },

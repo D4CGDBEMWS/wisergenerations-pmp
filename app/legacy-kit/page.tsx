@@ -4,13 +4,28 @@ import { readKitOutline } from '@/lib/legacy-kit/content'
 import { LEGACY_KIT_NAME_TM, LEGACY_KIT_PRICE_DISPLAY } from '@/lib/legacy-kit/product'
 
 export const metadata: Metadata = {
-  title: { absolute: 'Legacy Kit for Families | Wiser Generations International' },
+  title: { absolute: 'Family Legacy | Wiser Generations International' },
   description:
-    'The Wiser Generations International Legacy Kit™ is a $30 fillable PDF workbook families complete at home to plan their first 90 days: save, invest and protect.',
+    'Plan your family’s legacy across generations. Start with the Wiser Generations International Legacy Kit™, a $30 fillable PDF workbook your family completes at home.',
 }
 
 // ---------------------------------------------------------------------------
-// The Legacy Kit sales page.
+// The family Legacy page.
+//
+// Owner ruling, 4 October 2026: this is the Wiser Generations family Legacy
+// page, separate from the PMP offering and hidden the same way as LIAP (the
+// layout's flag gate, noindex, no sitemap entry, its own shell). The page
+// presents the family legacy approach first and the kit as the way to start.
+//
+// Written for a phone first. The owner found the earlier version too long on
+// mobile, so the price and Buy button come early, and the long reference
+// material (what's inside, the Important notices, local rules, the FAQ) sits
+// in tap-to-open sections. Native <details>, so it all works without
+// JavaScript and stays readable by search-in-page and screen readers.
+//
+// What stays off this page: anything from the family's own Master Plan
+// (names, places, housing, trust or entity details). That plan is private;
+// only the general approach it teaches is described here.
 //
 // Copy rules from the owner's brief, enforced here rather than remembered:
 //   - no income, savings or results promises
@@ -31,6 +46,22 @@ const SECTION_BLURBS: Record<string, string> = {
   'Structure planner': 'The building blocks many families set up over years, and a list of your professionals.',
   'Resources': 'Georgia statewide contacts, and space to record what your own city and county tell you.',
 }
+
+/** The approach, in three steps. General only — nothing from the private plan. */
+const STEPS = [
+  {
+    title: 'Gather and agree',
+    body: 'Hold a family meeting. Write down who is in your plan, your mission and the values you want to pass on.',
+  },
+  {
+    title: 'Your first 90 days',
+    body: 'Start a budget and a savings habit, learn one investing basic together, and protect your family’s faith, health and peace.',
+  },
+  {
+    title: 'Review every October',
+    body: 'Come back together once a year to look at what worked, update the plan and set the next year’s goals.',
+  },
+]
 
 const FAQ = [
   {
@@ -65,181 +96,187 @@ const FAQ = [
   },
 ]
 
+const FOCUS = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
+
+/** A tap-to-open panel. Large tap target, plus sign that turns into a cross. */
+function Fold({
+  id,
+  title,
+  hint,
+  children,
+}: {
+  id?: string
+  title: string
+  hint?: string
+  children: React.ReactNode
+}) {
+  return (
+    <details id={id} className="group scroll-mt-24 border-b border-sand last:border-b-0">
+      <summary
+        className={`flex min-h-[56px] cursor-pointer list-none items-center justify-between gap-4 py-4 text-left ${FOCUS} focus-visible:outline-evergreen [&::-webkit-details-marker]:hidden`}
+      >
+        <span>
+          <span className="block text-lg font-bold text-evergreen">{title}</span>
+          {hint && <span className="mt-0.5 block text-sm text-gray-600">{hint}</span>}
+        </span>
+        <span
+          aria-hidden="true"
+          className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-evergreen-soft text-xl leading-none text-evergreen transition-transform group-open:rotate-45"
+        >
+          +
+        </span>
+      </summary>
+      <div className="pb-6">{children}</div>
+    </details>
+  )
+}
+
 export default function LegacyKitPage() {
   const { sections, notices } = readKitOutline()
 
   return (
-    <main className="bg-white">
-      {/* Hero */}
-      <section className="bg-navy text-white">
-        <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 sm:py-24">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-gold">For families</p>
-          <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-5xl">{LEGACY_KIT_NAME_TM}</h1>
-          <p className="mt-4 text-xl text-gold sm:text-2xl">Plan your family’s first 90 days, together.</p>
-          <div className="mt-8 max-w-2xl space-y-4 text-lg leading-relaxed text-gray-200">
-            <p>
-              A fillable workbook your family completes at home: your mission and values, a budget,
-              savings goals for each child, a readiness check, a family constitution starter and a
-              plan for what to build next.
-            </p>
-          </div>
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="bg-cream">
+      {/* Hero — short on a phone: one promise, one line of context, one button. */}
+      <section className="bg-evergreen text-white">
+        <div className="mx-auto max-w-5xl px-5 pb-10 pt-10 sm:px-8 sm:pb-20 sm:pt-20">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold sm:text-sm">
+            Wiser Generations · Family Legacy
+          </p>
+          <h1 className="mt-4 text-[2rem] font-bold leading-[1.15] sm:text-5xl">
+            Build a legacy your whole family can see.
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+            A simple way for parents and grandparents to plan across generations: faith, family,
+            money and protection, written down and reviewed together every year.
+          </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
               href="#buy"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-gold px-7 text-center text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className={`inline-flex min-h-[52px] items-center justify-center rounded-xl bg-gold px-7 text-center text-base font-bold text-evergreen transition-colors hover:bg-yellow-400 ${FOCUS} focus-visible:outline-white`}
             >
-              Get the kit — {LEGACY_KIT_PRICE_DISPLAY}
+              Start with the Legacy Kit — {LEGACY_KIT_PRICE_DISPLAY}
             </a>
             <a
-              href="#inside"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/40 px-7 text-center text-base font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              href="#how"
+              className={`inline-flex min-h-[48px] items-center justify-center rounded-xl px-4 text-center text-base font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white ${FOCUS} focus-visible:outline-white`}
             >
-              See what’s inside
+              How it works
             </a>
           </div>
-          <p className="mt-8 text-base font-semibold text-white">
+          <p className="mt-6 text-sm font-semibold text-white/90">
             Educational only — not legal, tax or financial advice.
           </p>
         </div>
       </section>
 
-      {/* First 90 days */}
-      <section className="border-b border-gray-200 bg-gray-50">
-        <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
-          <p className="text-lg font-semibold leading-snug text-navy sm:text-2xl">
-            The first 90 days: <span className="text-brand-blue">save, invest, protect.</span>
-          </p>
-          <p className="mt-3 max-w-3xl text-lg leading-relaxed text-gray-700">
-            The kit keeps the start simple. Days 1–30 you start: a family meeting, a profile and a
-            budget. Days 31–60 you save and invest: a savings habit and one investing basic learned
-            together. Days 61–90 you protect your family spiritually, physically and emotionally,
-            and review what worked.
-          </p>
-        </div>
-      </section>
-
-      {/* What it is / who it's for */}
-      <section className="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:px-8 sm:py-20 md:grid-cols-2">
-        <div>
-          <h2 className="text-2xl font-bold text-navy sm:text-3xl">What it is</h2>
-          <p className="mt-4 text-lg leading-relaxed text-gray-700">
-            A planning workbook, not a course and not a service. Every blank is a form field you can
-            type into, and every checklist has boxes to tick. Fill it in one section at a time, meet
-            once a month to update it, and review the whole kit together each October.
-          </p>
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-navy sm:text-3xl">Who it’s for</h2>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-lg leading-relaxed text-gray-700">
-            <li>Parents and grandparents who want a written plan the whole family can see.</li>
-            <li>Families starting to save, organize paperwork or talk about the future together.</li>
-            <li>Families who want faith-grounded planning they can adapt to their own beliefs.</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* What's inside */}
-      <section id="inside" className="bg-gray-50">
-        <div className="mx-auto max-w-5xl px-5 py-14 sm:px-8 sm:py-20">
-          <h2 className="text-2xl font-bold text-navy sm:text-3xl">What’s inside</h2>
-          <ol className="mt-8 space-y-0">
-            {sections.map((title, index) => {
-              const last = index === sections.length - 1
-              return (
-                <li key={title} className="relative flex gap-5 pb-8 last:pb-0">
-                  {!last && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute left-[15px] top-9 h-[calc(100%-1.5rem)] w-px bg-gray-300"
-                    />
-                  )}
-                  <span
-                    aria-hidden="true"
-                    className="relative z-10 mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full border-2 border-navy bg-navy text-xs font-bold text-white"
-                  >
-                    {index + 1}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-bold text-navy">{title}</h3>
-                    {SECTION_BLURBS[title] && (
-                      <p className="mt-1 text-base text-gray-700">{SECTION_BLURBS[title]}</p>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
+      {/* How it works — three steps, stacked on a phone. */}
+      <section id="how" className="scroll-mt-20">
+        <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-16">
+          <h2 className="text-2xl font-bold text-evergreen sm:text-3xl">How it works</h2>
+          <ol className="mt-6 grid gap-4 md:grid-cols-3">
+            {STEPS.map((step, index) => (
+              <li key={step.title} className="flex gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-sand md:flex-col">
+                <span
+                  aria-hidden="true"
+                  className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-evergreen text-sm font-bold text-gold"
+                >
+                  {index + 1}
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-bold text-evergreen">{step.title}</h3>
+                  <p className="mt-1 text-base leading-relaxed text-gray-700">{step.body}</p>
+                </div>
+              </li>
+            ))}
           </ol>
         </div>
       </section>
 
-      {/* Local rules */}
-      <section className="mx-auto max-w-5xl px-5 py-12 sm:px-8">
-        <div className="rounded-2xl border-l-4 border-gold bg-amber-50 p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-navy">Check your local rules</h2>
-          <p className="mt-2 text-lg leading-relaxed text-gray-800">
-            The kit’s state details are for Georgia. Wherever you live, check with your city and
-            county government before acting on anything local, such as zoning, building permits,
-            home businesses, business licenses, home child care or elder care, short-term rentals
-            and property taxes. Local rules can be stricter than state law.
-          </p>
-        </div>
-      </section>
-
-      {/* Important notices, verbatim from the kit */}
-      <section id="important-notices" className="mx-auto max-w-5xl scroll-mt-24 px-5 pb-14 sm:px-8">
-        <h2 className="text-2xl font-bold text-navy sm:text-3xl">Important notices</h2>
-        <p className="mt-2 text-base text-gray-700">
-          These appear on the first pages of the kit, word for word. Please read them before you buy.
-        </p>
-        <ul className="mt-6 space-y-3 text-base leading-relaxed text-gray-800">
-          {notices.map((notice) => (
-            <li key={notice.lead}>
-              <strong className="text-navy">{notice.lead}</strong> {notice.body}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Buy */}
-      <section id="buy" className="scroll-mt-24 bg-navy">
-        <div className="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:px-8 sm:py-20 md:grid-cols-2 md:items-center">
-          <div className="min-w-0 text-white">
-            <h2 className="text-2xl font-bold sm:text-3xl">Get the kit</h2>
-            <p className="mt-4 text-lg leading-relaxed text-gray-200">
-              {LEGACY_KIT_PRICE_DISPLAY}, one household, yours to fill in and keep. Prices are in
-              U.S. dollars and the kit can be bought from anywhere in the world.
+      {/* The kit and the buy box together, so the price is never far away. */}
+      <section id="buy" className="scroll-mt-20 bg-sand/60">
+        <div className="mx-auto grid max-w-5xl gap-8 px-5 py-10 sm:px-8 sm:py-16 md:grid-cols-2 md:items-start">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-text">Start here</p>
+            <h2 className="mt-2 text-2xl font-bold text-evergreen sm:text-3xl">{LEGACY_KIT_NAME_TM}</h2>
+            <p className="mt-3 text-lg leading-relaxed text-gray-800">
+              A fillable workbook your family completes at home: your mission and values, a budget,
+              savings goals for each child, a readiness check, a family constitution starter and a
+              plan for what to build next.
             </p>
-            <p className="mt-4 text-base text-gray-300">
-              Church, nonprofit or community organization? Partner and bulk options are coming;{' '}
-              <a href="/contact" className="font-semibold text-gold underline">contact us</a>.
+            <ul className="mt-4 space-y-2 text-base leading-relaxed text-gray-800">
+              <li className="flex gap-2"><span aria-hidden="true" className="text-leaf">●</span>For parents and grandparents who want a written plan everyone can see.</li>
+              <li className="flex gap-2"><span aria-hidden="true" className="text-leaf">●</span>For families starting to save, organize paperwork or talk about the future.</li>
+              <li className="flex gap-2"><span aria-hidden="true" className="text-leaf">●</span>Faith-grounded, and yours to adapt to your own beliefs.</li>
+            </ul>
+            <p className="mt-5 text-base text-gray-700">
+              Church, nonprofit or community group? Partner and bulk options are coming;{' '}
+              <a href="/contact" className="font-semibold text-evergreen underline">contact us</a>.
             </p>
           </div>
           <BuyBox />
         </div>
       </section>
 
-      {/* FAQ — native <details>, no client JavaScript */}
-      <section aria-labelledby="faq-heading" className="mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
-        <h2 id="faq-heading" className="text-2xl font-bold text-navy sm:text-3xl">
+      {/* Reference material, folded so the page stays short on a phone. */}
+      <section aria-label="Details" className="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-16">
+        <h2 className="text-2xl font-bold text-evergreen sm:text-3xl">Before you buy</h2>
+        <div className="mt-4 rounded-2xl bg-white px-5 shadow-sm ring-1 ring-sand sm:px-7">
+          <Fold id="inside" title="What’s inside" hint={`${sections.length} sections, in order`}>
+            <ol className="space-y-4">
+              {sections.map((title, index) => (
+                <li key={title} className="flex gap-3">
+                  <span aria-hidden="true" className="w-6 flex-none pt-0.5 text-right text-sm font-bold text-gold-text">
+                    {index + 1}.
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-evergreen">{title}</h3>
+                    {SECTION_BLURBS[title] && (
+                      <p className="mt-0.5 text-base text-gray-700">{SECTION_BLURBS[title]}</p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Fold>
+
+          <Fold id="important-notices" title="Important notices" hint="Read before you buy · also on the kit’s first pages">
+            <p className="text-base text-gray-700">
+              These appear on the first pages of the kit, word for word.
+            </p>
+            <ul className="mt-4 space-y-3 text-base leading-relaxed text-gray-800">
+              {notices.map((notice) => (
+                <li key={notice.lead}>
+                  <strong className="text-evergreen">{notice.lead}</strong> {notice.body}
+                </li>
+              ))}
+            </ul>
+          </Fold>
+
+          <Fold title="Check your local rules" hint="The kit’s state details are for Georgia">
+            <p className="text-base leading-relaxed text-gray-800">
+              Wherever you live, check with your city and county government before acting on
+              anything local, such as zoning, building permits, home businesses, business licenses,
+              home child care or elder care, short-term rentals and property taxes. Local rules can
+              be stricter than state law.
+            </p>
+          </Fold>
+        </div>
+
+        <h2 id="faq-heading" className="mt-12 text-2xl font-bold text-evergreen sm:text-3xl">
           Questions families ask
         </h2>
-        <div className="mt-8 divide-y divide-gray-200 rounded-2xl border border-gray-200">
+        <div aria-labelledby="faq-heading" className="mt-4 rounded-2xl bg-white px-5 shadow-sm ring-1 ring-sand sm:px-7">
           {FAQ.map((item) => (
-            <details key={item.q} className="group p-6">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
-                {item.q}
-                <span aria-hidden="true" className="text-2xl text-gray-500 group-open:rotate-45 transition-transform">
-                  +
-                </span>
-              </summary>
-              <p className="mt-3 text-base leading-relaxed text-gray-700">{item.a}</p>
-            </details>
+            <Fold key={item.q} title={item.q}>
+              <p className="text-base leading-relaxed text-gray-700">{item.a}</p>
+            </Fold>
           ))}
         </div>
+
         <p className="mt-10 text-center text-base font-semibold text-gray-800">
           Educational only — not legal, tax or financial advice.
         </p>
       </section>
-    </main>
+    </div>
   )
 }
