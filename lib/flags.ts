@@ -54,6 +54,12 @@ export type FeatureFlag =
   // no referral code exists, so nothing is stranded by it being off.
   | 'LIAP_PARTNERS'
   | 'CAPM_PATHWAY'
+  // The Wiser Generations International Legacy Kit for families. Its own flag,
+  // never coupled to LIAP or PMP: a different product for a different reader.
+  //
+  // Default off, and off in every environment, until the owner's attorney has
+  // signed off on the kit's disclaimers and Terms of Sale.
+  | 'LEGACY_KIT'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */
 export function isEnabled(flag: FeatureFlag): boolean {

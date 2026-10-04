@@ -38,7 +38,7 @@
 // Deliberately absent. Adding it is one entry here. It is not authorised.
 // ---------------------------------------------------------------------------
 
-export const SHELL_KEYS = ['default', 'liap'] as const
+export const SHELL_KEYS = ['default', 'liap', 'legacy'] as const
 export type ShellKey = (typeof SHELL_KEYS)[number]
 
 export interface ShellLink {
@@ -189,9 +189,42 @@ const LIAP_SHELL: Shell = {
   showProgramDisclaimers: false,
 }
 
+/**
+ * The Legacy Kit shell.
+ *
+ * Owner ruling, 4 October 2026: the Wiser Generations International Legacy Kit
+ * is a family product and lives in its own section, not in the PMP header.
+ * Same reasoning as LIAP — a family who came for the kit must not be shown an
+ * exam simulator, a $49/month subscription or a pass-rate disclaimer.
+ *
+ * Navigation is minimal, like LIAP's. Kit pages that do not exist yet (Terms of
+ * Sale, Partners) are added here when they are built, never before: a nav link
+ * to a 404 is worse than no link.
+ */
+const LEGACY_SHELL: Shell = {
+  key: 'legacy',
+  pathPrefixes: ['/legacy-kit'],
+  homeHref: '/legacy-kit',
+  nav: [{ label: 'Need help?', href: '/contact' }],
+  mobileNav: [],
+  footerColumns: [
+    {
+      title: 'Wiser Generations',
+      links: [
+        { label: 'Contact Us', href: '/contact' },
+        { label: 'Privacy Policy', href: '/privacy-policy' },
+      ],
+    },
+  ],
+  showHeaderCtas: false,
+  showNewsletter: false,
+  showProgramDisclaimers: false,
+}
+
 const SHELLS: Record<ShellKey, Shell> = {
   default: DEFAULT_SHELL,
   liap: LIAP_SHELL,
+  legacy: LEGACY_SHELL,
 }
 
 /** Every claimed prefix, longest first so a nested claim wins over its parent. */
