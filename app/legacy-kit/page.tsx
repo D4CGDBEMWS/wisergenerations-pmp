@@ -59,7 +59,9 @@ const FAQ = [
   },
   {
     q: 'What is your refund policy?',
-    a: 'The refund policy will be set out in the Terms of Sale, which are published before checkout opens.',
+    // Owner's decision, 4 Oct 2026: no refunds. Wording from the launch plan's
+    // disclaimer 11, pending attorney review.
+    a: 'Because the kit is a digital download delivered immediately, all sales are final. If your download link does not work, contact us and we will send a new one.',
   },
 ]
 

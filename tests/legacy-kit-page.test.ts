@@ -77,6 +77,10 @@ describe('the Legacy Kit page copy', () => {
     expect(LEGACY_KIT_CHECKOUT_OPEN).toBe(false)
   })
 
+  it('states the owner’s no-refund policy', () => {
+    expect(page).toContain('all sales are final')
+  })
+
   it('has no testimonials', () => {
     // Code comments may state the rule; rendered copy may not break it.
     const code = page
