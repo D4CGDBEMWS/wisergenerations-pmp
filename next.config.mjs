@@ -53,6 +53,15 @@ const nextConfig = {
 
       // Consolidated duplicate routes onto a single canonical URL
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
+      // Legacy Kit short links. Added only to builds with the kit switched on,
+      // so the live site does not reveal the kit's addresses before launch.
+      // Temporary (307) until launch, when the kit's addresses are final.
+      ...(process.env.FEATURE_LEGACY_KIT === 'true'
+        ? [
+            { source: '/terms-of-sale', destination: '/legacy-kit/terms-of-sale', permanent: false },
+            { source: '/partners', destination: '/legacy-kit/partners', permanent: false },
+          ]
+        : []),
       { source: '/resources/blog', destination: '/blog', permanent: true },
       // WIOA offering removed — redirect any inbound links to Programs
       { source: '/wioa', destination: '/programs', permanent: true },

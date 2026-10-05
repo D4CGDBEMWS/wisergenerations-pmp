@@ -209,8 +209,9 @@ export default function LegacyKitPage() {
               <li className="flex gap-2"><span aria-hidden="true" className="text-leaf">●</span>Faith-grounded, and yours to adapt to your own beliefs.</li>
             </ul>
             <p className="mt-5 text-base text-gray-700">
-              Church, nonprofit or community group? Partner and bulk options are coming;{' '}
-              <a href="/contact" className="font-semibold text-evergreen underline">contact us</a>.
+              Church, nonprofit or community group? See{' '}
+              <a href="/legacy-kit/partners" className="font-semibold text-evergreen underline">how to offer the kit</a>{' '}
+              to the families you serve.
             </p>
           </div>
           <BuyBox />

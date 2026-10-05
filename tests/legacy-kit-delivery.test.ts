@@ -274,3 +274,16 @@ describe('the draft Terms of Sale', () => {
     expect(JSON.stringify(KIT_DISCLAIMERS)).not.toContain('[Alternative')
   })
 })
+
+describe('the partners page and short links', () => {
+  it('publishes no example prices from the launch plan', () => {
+    const page = read('app/legacy-kit/partners/page.tsx')
+    expect(page).not.toMatch(/\$15|25 or more/)
+    expect(page).toContain('partner license')
+  })
+
+  it('adds /partners and /terms-of-sale only to builds with the kit switched on', () => {
+    const config = read('next.config.mjs')
+    expect(config).toMatch(/process\.env\.FEATURE_LEGACY_KIT === 'true'\s*\?\s*\[\s*\{ source: '\/terms-of-sale'/)
+  })
+})

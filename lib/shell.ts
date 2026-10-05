@@ -222,6 +222,7 @@ const LEGACY_SHELL: Shell = {
     {
       title: 'Wiser Generations',
       links: [
+        { label: 'For Partners', href: '/legacy-kit/partners' },
         { label: 'Terms of Sale', href: '/legacy-kit/terms-of-sale' },
         { label: 'Privacy Policy', href: '/privacy-policy' },
         { label: 'Contact Us', href: '/contact' },
