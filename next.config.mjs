@@ -46,6 +46,10 @@ const nextConfig = {
       },
 
       // Consolidated duplicate routes onto a single canonical URL
+      // Short author address, printed in the Words to Know guide. Not
+      // permanent: the page may move, the printed /author must keep working.
+      { source: '/author', destination: '/living-is-a-project/author', permanent: false },
+
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
       { source: '/resources/blog', destination: '/blog', permanent: true },
       // WIOA offering removed — redirect any inbound links to Programs

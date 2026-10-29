@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { GraduationCap, Repeat, Rocket, Medal, Briefcase, ClipboardList, Check } from 'lucide-react'
+import { ClassesResumeNotice } from '@/components/marketing/ClassesResumeNotice'
 
 export const metadata: Metadata = {
   title: 'CAPM® Certification Prep',
@@ -11,6 +12,7 @@ export default function CAPMPage() {
   return (
     <div className="bg-white">
 
+      <ClassesResumeNotice />
       {/* Hero */}
       <section className="bg-navy text-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">

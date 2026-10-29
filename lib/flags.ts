@@ -53,6 +53,23 @@ export type FeatureFlag =
   // Default off, and off in every environment. No QR has been generated and
   // no referral code exists, so nothing is stranded by it being off.
   | 'LIAP_PARTNERS'
+  // The Life Project-Ready™ Assessment itself.
+  //
+  // Owner ruling, 2026-10-29: the book section (LIAP) may open for pre-orders
+  // before the Assessment is production-validated (open production
+  // migration / purge-cron issue). With LIAP on and this flag off, a buyer's
+  // entitlement is still granted and recorded, but the Assessment page shows
+  // "opening soon" and the Assessment API refuses. Turning this on opens the
+  // Assessment to every entitled buyer at once.
+  //
+  // Default off. Turn it on only after the production database and purge job
+  // are verified.
+  | 'LIAP_ASSESSMENT'
+  // Opens Stripe checkout for Living the Journey — 3-Day Retreat (owner
+  // request, 2026-10-29). Default off: with it off the Retreat card keeps its
+  // interest-list button and /api/liap/retreat refuses. Turn on only after the
+  // price, dates, location and cancellation terms are confirmed.
+  | 'LIAP_RETREAT'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */

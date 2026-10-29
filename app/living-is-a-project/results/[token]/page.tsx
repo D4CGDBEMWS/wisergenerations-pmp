@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
-import { STEADY_STEPS } from '@/lib/liap/scoring'
+import { PIVOTS_INTRO, PIVOTS_CYCLE } from '@/lib/liap/scoring'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
 import { InterestButton } from '@/components/liap/InterestButton'
@@ -128,32 +129,30 @@ export default async function ResultsPage({
           </section>
         )}
 
-        {/* S.T.E.A.D.Y., before any expansion advice. §17. */}
+        {/* WISER Pivots™, before any expansion advice. §17.
+            Owner ruling 2026-10-29 (option B): a brief mention here; the full
+            cycle lives in the downloadable one-sheet, not on the page. Every
+            visible string is approved wording from PIVOTS_INTRO / PIVOTS_CYCLE. */}
         {report.steady && (
-          <section aria-labelledby="steady-heading">
-            <h2 id="steady-heading" className="text-xl font-bold text-navy">
-              Start with S.T.E.A.D.Y.
+          <section
+            aria-labelledby="pivots-heading"
+            className="rounded-xl border border-gold/50 bg-white p-5"
+          >
+            <h2 id="pivots-heading" className="text-xl font-bold text-navy">
+              {PIVOTS_INTRO.heading}
             </h2>
-            <p className="mt-2 leading-relaxed text-gray-600">
-              What you described is the kind of change that rewards steadying before planning. Work
-              these in order — it is how you move from reacting to choosing.
+            <p className="mt-1 text-gray-600">{PIVOTS_INTRO.descriptor}</p>
+            <p className="mt-2 text-sm font-semibold tracking-wide text-navy">
+              {PIVOTS_CYCLE.join(' · ')}
             </p>
-            <ol className="mt-5 space-y-3">
-              {STEADY_STEPS.map((s) => (
-                <li key={s.letter} className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4">
-                  <span
-                    aria-hidden="true"
-                    className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-navy font-bold text-gold"
-                  >
-                    {s.letter}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-navy">{s.title}</p>
-                    <p className="mt-0.5 text-sm leading-relaxed text-gray-600">{s.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <p className="mt-3 font-semibold italic text-navy">{PIVOTS_INTRO.signature}</p>
+            <a
+              href={PREBUY_BONUS.href}
+              download
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-navy px-5 text-sm font-bold text-white hover:bg-navy/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            >
+              Download the WISER Pivots™ one-sheet (PDF)
+            </a>
           </section>
         )}
 

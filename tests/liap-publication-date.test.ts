@@ -48,7 +48,7 @@ function liapSurfaces(): string[] {
 describe('November is publication, October is preorder', () => {
   it('publishes in November 2026', () => {
     expect(PUBLICATION_MONTH).toBe('November 2026')
-    expect(publicationDate()).toContain('November 2026')
+    expect(publicationDate()).toMatch(/^November .*2026$/)
   })
 
   it('keeps October as the preorder period and nothing else', () => {
@@ -141,13 +141,12 @@ describe('the date cannot silently diverge', () => {
   })
 })
 
-describe('the exact day stays the owner’s to choose', () => {
-  it('is pending, and is not invented', () => {
-    expect(PUBLICATION_DAY).toBeNull()
-    expect(publicationDayPending()).toBe(true)
-    // No placeholder day anywhere — not the 1st, not a plausible Tuesday.
-    expect(publicationDate()).toBe('November 2026')
-    expect(publicationDate()).not.toMatch(/\d{1,2},\s*2026/)
+describe('the exact day is the owner’s, and is set', () => {
+  it('is November 30, 2026 — the owner ruling of 29 October 2026', () => {
+    expect(PUBLICATION_DAY).toBe('November 30, 2026')
+    expect(publicationDayPending()).toBe(false)
+    expect(publicationDate()).toBe('November 30, 2026')
+    expect(publicationDate()).toContain(PUBLICATION_MONTH.split(' ')[0]!)
   })
 
   it('needs one edit to adopt a day, on every surface at once', () => {

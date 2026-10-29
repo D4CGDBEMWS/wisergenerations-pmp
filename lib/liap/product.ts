@@ -46,3 +46,56 @@ export const LIAP_BOOK = {
 
 /** Granted by a completed preorder, however it was placed. */
 export const LIAP_ENTITLEMENT = 'LIAP_ASSESSMENT_ACCESS'
+
+// ---------------------------------------------------------------------------
+// Living the Journey — 3-Day Retreat. Owner rulings 2026-10-29:
+//   - canonical name (not "Weekend Masterclass Retreat");
+//   - sold through Stripe; $1,499.99 per person confirmed;
+//   - Garland Mountain Retreat, Allatoona, Georgia, March 19–21, 2027 (venue
+//     changed from Callaway Gardens by the owner the same day);
+//   - limited to 12 participants, first come, first served;
+//   - $500 deposit per seat at checkout (non-refundable), the balance due
+//     30 days before the retreat by invoice;
+//   - other payments non-refundable within 7 days of the retreat.
+// Every customer-facing number and term below is derived or stated once here.
+// ---------------------------------------------------------------------------
+
+const RETREAT_CENTS = 149999
+const DEPOSIT_CENTS = 50000
+const BALANCE_CENTS = RETREAT_CENTS - DEPOSIT_CENTS
+
+/** "$500" for whole dollars, "$999.99" otherwise. */
+const usd = (cents: number) =>
+  `$${(cents / 100).toLocaleString('en-US', {
+    minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`
+
+export const LIAP_RETREAT = {
+  name: 'Living the Journey — 3-Day Retreat',
+  /** Cents, per person: the full price. */
+  amount: RETREAT_CENTS,
+  priceLabel: `${usd(RETREAT_CENTS)} per person`,
+  /** Cents, per person: what checkout charges today. */
+  depositAmount: DEPOSIT_CENTS,
+  depositLabel: usd(DEPOSIT_CENTS),
+  /** Cents, per person: invoiced before the retreat. */
+  balanceAmount: BALANCE_CENTS,
+  balanceLabel: usd(BALANCE_CENTS),
+  when: 'March 19–21, 2027',
+  where: 'Garland Mountain Retreat, Allatoona, Georgia',
+  cancellation: `The ${usd(DEPOSIT_CENTS)} deposit is non-refundable. Other payments are refundable if you cancel more than 7 days before the retreat; within 7 days, nothing is refundable.`,
+  currency: 'usd',
+  /** Total participants. First come, first served — enforced at checkout. */
+  capacity: 12,
+  /** Seats one buyer may reserve in a single checkout. */
+  maxSeats: 4,
+  /** Stripe metadata marker the webhook matches on. Shared with nothing. */
+  metadataKey: 'liap-retreat',
+} as const
+
+/** The deposit-and-balance promise, in one sentence, for checkout and pages. */
+export function retreatPaymentTerms(): string {
+  const r = LIAP_RETREAT
+  return `A ${r.depositLabel} deposit per person reserves your seat today. The remaining ${r.balanceLabel} per person is due 30 days before the retreat — we’ll email you an invoice.`
+}

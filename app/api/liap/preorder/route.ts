@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { isEnabled } from '@/lib/flags'
+import { assessmentCheckoutLine } from '@/lib/liap/assessment-availability'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { isWellFormedCode } from '@/lib/liap/partners'
 import { publicationDate } from '@/lib/liap/launch'
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             product_data: {
               name: `${LIAP_BOOK.name} — Preorder`,
               description:
-                `Preorder the hardcover, publishing ${publicationDate()}, and unlock the Life Project-Ready™ Assessment immediately.`,
+                `Preorder the hardcover, publishing ${publicationDate()}, and ${assessmentCheckoutLine()}.`,
             },
           },
         },

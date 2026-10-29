@@ -3,6 +3,8 @@ import { LiapPageView } from '@/components/liap/LiapPageView'
 import { LiapCta } from '@/components/liap/LiapCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
+import { assessmentOpen, assessmentTimingShort } from '@/lib/liap/assessment-availability'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 
 export const metadata = {
   title: 'Living Is a Project…Are You Ready? | Wiser Generations',
@@ -26,7 +28,11 @@ const FAQ = [
   },
   {
     q: 'When do I get the assessment?',
-    a: 'Immediately. Your preorder unlocks the Life Project-Ready™ Assessment as soon as payment is confirmed — you do not wait for the book to arrive.',
+    // Read per request (the LIAP layout is force-dynamic), so flipping
+    // LIAP_ASSESSMENT changes this answer without a code change.
+    get a() {
+      return assessmentTimingShort()
+    },
   },
   {
     q: 'How long does the assessment take?',
@@ -128,9 +134,12 @@ export default function LiapBookPage() {
             Preorder the book. Start your project now.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-gray-600">
-            Your assessment unlocks the moment your preorder is confirmed. The book arrives in
-            October.
+            {assessmentOpen()
+              ? 'Your assessment unlocks the moment your preorder is confirmed.'
+              : 'Your assessment is included and opens soon — we’ll email you when it’s ready.'}{' '}
+            The book publishes {publicationDate()}.
           </p>
+          <p className="mx-auto mt-3 max-w-xl font-semibold text-navy">Bonus: {PREBUY_BONUS.offer}</p>
           <LiapCta className="mt-7 flex justify-center" />
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}

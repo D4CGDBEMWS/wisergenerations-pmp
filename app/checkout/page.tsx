@@ -7,6 +7,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import { useSearchParams } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
 import { CHECKOUT_PROGRAMS } from '@/lib/constants'
+import { ClassesResumeNotice } from '@/components/marketing/ClassesResumeNotice'
 
 // ---------------------------------------------------------------------------
 // Stripe — only initialise once, at module level (correct pattern).
@@ -449,6 +450,7 @@ function CheckoutPageInner() {
 
   return (
     <main className="min-h-screen bg-slate-50">
+      <ClassesResumeNotice />
       {/* Fix #1 — surface the missing Stripe key immediately at the top of the
           page so the user (and developer) don't discover it only after filling
           in the entire form. */}
