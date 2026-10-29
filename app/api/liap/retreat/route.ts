@@ -4,6 +4,7 @@ import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { isEnabled } from '@/lib/flags'
 import { LIAP_RETREAT, retreatPaymentTerms } from '@/lib/liap/product'
 import { isWellFormedCode } from '@/lib/liap/partners'
+import { countRetreatSeats, seatsRemaining, HOLD_MINUTES } from '@/lib/liap/retreat-seats'
 
 // ---------------------------------------------------------------------------
 // Living the Journey — 3-Day Retreat checkout.
@@ -59,12 +60,39 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const stripe = new Stripe(secret, { apiVersion: '2025-08-27.basil' })
     const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wisergenerations.com'
 
+    // First come, first served: refuse once all 12 seats are paid or held,
+    // and never let one buyer take more than what is left.
+    let remaining: number
+    try {
+      remaining = seatsRemaining(await countRetreatSeats(stripe))
+    } catch (err) {
+      // Fail closed. Better a retry than a 13th seat.
+      console.error('[liap/retreat] could not count seats', err)
+      return NextResponse.json(
+        { error: 'We could not check seat availability. Please try again in a moment.' },
+        { status: 503 }
+      )
+    }
+    if (remaining <= 0) {
+      return NextResponse.json(
+        {
+          error: `${LIAP_RETREAT.name} is full. Contact us to join the waiting list.`,
+          full: true,
+        },
+        { status: 409 }
+      )
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: [
         {
           quantity: 1,
-          adjustable_quantity: { enabled: true, minimum: 1, maximum: LIAP_RETREAT.maxSeats },
+          adjustable_quantity: {
+            enabled: true,
+            minimum: 1,
+            maximum: Math.min(LIAP_RETREAT.maxSeats, remaining),
+          },
           price_data: {
             currency: LIAP_RETREAT.currency,
             // The deposit, not the full price: the balance is invoiced later.
@@ -86,6 +114,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
       payment_intent_data: { metadata: { product: LIAP_RETREAT.metadataKey, payment: 'deposit' } },
       customer_creation: 'always',
+      // Releases held seats if the buyer walks away from the payment page.
+      expires_at: Math.floor(Date.now() / 1000) + HOLD_MINUTES * 60,
       phone_number_collection: { enabled: true },
       success_url: `${origin}/living-is-a-project/retreat-complete?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/living-is-a-project/author#next-steps`,

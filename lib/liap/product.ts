@@ -51,8 +51,9 @@ export const LIAP_ENTITLEMENT = 'LIAP_ASSESSMENT_ACCESS'
 // Living the Journey — 3-Day Retreat. Owner rulings 2026-10-29:
 //   - canonical name (not "Weekend Masterclass Retreat");
 //   - sold through Stripe; $1,499.99 per person confirmed;
-//   - Garland Mountain Retreat, Allatoona, Georgia, March 2027 (venue changed
-//     from Callaway Gardens by the owner the same day);
+//   - Garland Mountain Retreat, Allatoona, Georgia, March 19–21, 2027 (venue
+//     changed from Callaway Gardens by the owner the same day);
+//   - limited to 12 participants, first come, first served;
 //   - $500 deposit per seat at checkout (non-refundable), the balance due
 //     30 days before the retreat by invoice;
 //   - other payments non-refundable within 7 days of the retreat.
@@ -81,10 +82,12 @@ export const LIAP_RETREAT = {
   /** Cents, per person: invoiced before the retreat. */
   balanceAmount: BALANCE_CENTS,
   balanceLabel: usd(BALANCE_CENTS),
-  when: 'March 2027',
+  when: 'March 19–21, 2027',
   where: 'Garland Mountain Retreat, Allatoona, Georgia',
   cancellation: `The ${usd(DEPOSIT_CENTS)} deposit is non-refundable. Other payments are refundable if you cancel more than 7 days before the retreat; within 7 days, nothing is refundable.`,
   currency: 'usd',
+  /** Total participants. First come, first served — enforced at checkout. */
+  capacity: 12,
   /** Seats one buyer may reserve in a single checkout. */
   maxSeats: 4,
   /** Stripe metadata marker the webhook matches on. Shared with nothing. */

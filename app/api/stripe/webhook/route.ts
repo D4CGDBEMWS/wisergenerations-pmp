@@ -13,6 +13,7 @@ import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { creditBookPurchase } from '@/lib/liap/attribution'
 import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
+import { countRetreatSeats } from '@/lib/liap/retreat-seats'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
 import Stripe from 'stripe'
@@ -445,7 +446,17 @@ export async function POST(request: NextRequest) {
         const rs = event.data.object as Stripe.Checkout.Session
         const rEmail = rs.customer_email || rs.customer_details?.email || ''
         if (isLiapRetreat(rs.metadata) && rEmail && rs.payment_status === 'paid') {
+          // Check the 12-seat limit after payment, in case two buyers finished
+          // together. A failed count must not cost the buyer their registration.
+          let paidSeats: number | null = null
+          try {
+            const rStripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2025-08-27.basil' })
+            paidSeats = (await countRetreatSeats(rStripe)).paid
+          } catch (err) {
+            console.error('[stripe/webhook] could not count retreat seats', err)
+          }
           await fulfilRetreat({
+            paidSeats,
             email: rEmail,
             name: rs.customer_details?.name ?? null,
             stripeCustomerId: typeof rs.customer === 'string' ? rs.customer : null,

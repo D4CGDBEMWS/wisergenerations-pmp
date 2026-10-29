@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 // ---------------------------------------------------------------------------
 // The Retreat registration button. Server-side checkout, like the book
@@ -20,6 +21,7 @@ function referralFromUrl(): string | null {
 export function RetreatCta({ label, className = '' }: { label: string; className?: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [full, setFull] = useState(false)
 
   async function start() {
     setLoading(true)
@@ -31,8 +33,9 @@ export function RetreatCta({ label, className = '' }: { label: string; className
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(referral ? { p: referral } : {}),
       })
-      const data = (await res.json()) as { url?: string; error?: string }
+      const data = (await res.json()) as { url?: string; error?: string; full?: boolean }
       if (!res.ok || !data.url) {
+        setFull(Boolean(data.full))
         setError(data.error ?? 'We could not start checkout. Please try again in a moment.')
         setLoading(false)
         return
@@ -57,6 +60,14 @@ export function RetreatCta({ label, className = '' }: { label: string; className
       {error && (
         <p role="alert" className="mt-2 text-sm text-red-800">
           {error}
+          {full && (
+            <>
+              {' '}
+              <Link href="/contact" className="font-semibold underline">
+                Join the waiting list
+              </Link>
+            </>
+          )}
         </p>
       )}
     </div>

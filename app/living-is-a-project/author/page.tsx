@@ -298,6 +298,8 @@ export default function AuthorPage() {
               <p className={`text-[15px] ${BODY}`}>Step away from the noise and build the road ahead. Lodging and meals included.</p>
               <p className={`text-sm ${BODY}`}>
                 {LIAP_RETREAT.when} · {LIAP_RETREAT.where}
+                <br />
+                Limited to {LIAP_RETREAT.capacity} participants · first come, first served.
                 {isEnabled('LIAP_RETREAT') && (
                   <>
                     <br />

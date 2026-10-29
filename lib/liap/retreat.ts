@@ -19,6 +19,8 @@ import { LIAP_RETREAT } from './product'
 export const RETREAT_TAG = 'liap_retreat_registered'
 /** Marks registrants who still owe the balance — the owner's invoicing list. */
 export const RETREAT_BALANCE_TAG = 'liap_retreat_balance_due'
+/** Marks a registration that arrived after all seats were paid for. */
+export const RETREAT_OVER_CAPACITY_TAG = 'liap_retreat_over_capacity'
 
 /** True when a Stripe object carries the Retreat's marker. */
 export function isLiapRetreat(metadata: Stripe.Metadata | null | undefined): boolean {
@@ -30,6 +32,8 @@ export async function fulfilRetreat(input: {
   name: string | null
   stripeCustomerId: string | null
   referralCode: string | null
+  /** Paid seats including this registration; over capacity flags it for the owner. */
+  paidSeats?: number | null
 }): Promise<void> {
   let customerId: string | null = null
   try {
@@ -43,13 +47,25 @@ export async function fulfilRetreat(input: {
     console.error('[liap/retreat] could not record customer', err)
   }
 
+  if ((input.paidSeats ?? 0) > LIAP_RETREAT.capacity) {
+    console.error(
+      `[liap/retreat] OVERBOOKED: ${input.paidSeats} paid seats for ${LIAP_RETREAT.capacity}; ` +
+        `latest registration ${input.email} is tagged ${RETREAT_OVER_CAPACITY_TAG}`
+    )
+  }
+
   const [firstName, ...rest] = (input.name ?? '').trim().split(/\s+/)
   try {
     await upsertSubscriber({
       email: input.email,
       firstName: firstName || undefined,
       lastName: rest.join(' ') || undefined,
-      tags: ['customer', RETREAT_TAG, RETREAT_BALANCE_TAG],
+      tags: [
+        'customer',
+        RETREAT_TAG,
+        RETREAT_BALANCE_TAG,
+        ...((input.paidSeats ?? 0) > LIAP_RETREAT.capacity ? [RETREAT_OVER_CAPACITY_TAG] : []),
+      ],
     })
   } catch (err) {
     console.error('[liap/retreat] could not tag subscriber', err)
