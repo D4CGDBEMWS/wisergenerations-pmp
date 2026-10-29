@@ -3,10 +3,12 @@ import Link from 'next/link'
 import localFont from 'next/font/local'
 import { LiapCta } from '@/components/liap/LiapCta'
 import { AuthorSignup } from '@/components/liap/AuthorSignup'
-import { LIAP_BOOK } from '@/lib/liap/product'
+import { LIAP_BOOK, LIAP_RETREAT } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
 import { assessmentOpen, assessmentTimingShort } from '@/lib/liap/assessment-availability'
 import { PREBUY_BONUS } from '@/lib/liap/bonus'
+import { RetreatCta } from '@/components/liap/RetreatCta'
+import { isEnabled } from '@/lib/flags'
 
 // ---------------------------------------------------------------------------
 // Crystal Glover Stewart — author page.
@@ -30,7 +32,8 @@ import { PREBUY_BONUS } from '@/lib/liap/bonus'
 //   - Descriptions and covers for the other three books. Owner ruling
 //     2026-10-29: shown as "Coming soon" with "Notify me" (to the free-guide
 //     sign-up); no dates, prices or book pages until each is ready.
-//   - Booking pages for the workshop and retreat; those CTAs go to /contact.
+//   - A booking page for the workshop; its CTA goes to /contact. The retreat
+//     card opens Stripe checkout when FEATURE_LIAP_RETREAT is on, otherwise /contact.
 // ---------------------------------------------------------------------------
 
 // Bundled (SIL Open Font License, see app/fonts/liap) rather than fetched from
@@ -53,7 +56,6 @@ const greatVibes = localFont({
 
 /** Owner-approved offer prices from the 2026 Marketing Package. */
 const WORKSHOP_PRICE = '$49'
-const RETREAT_PRICE = '$1,499.99 per person'
 const SPONSOR_FROM = '$1,000'
 
 const GOLD_TEXT = 'text-[#8A5A0C]'
@@ -291,10 +293,14 @@ export default function AuthorPage() {
             </article>
             <article className="flex flex-col gap-2 rounded-3xl border border-[#EADFC8] p-6">
               <p className={EYEBROW}>Build</p>
-              <h3 className={`${cormorant.className} text-2xl font-semibold leading-tight`}>Weekend Masterclass Retreat</h3>
-              <p className={`${cormorant.className} text-2xl italic ${GOLD_ACCENT}`}>{RETREAT_PRICE}</p>
+              <h3 className={`${cormorant.className} text-2xl font-semibold leading-tight`}>{LIAP_RETREAT.name}</h3>
+              <p className={`${cormorant.className} text-2xl italic ${GOLD_ACCENT}`}>{LIAP_RETREAT.priceLabel}</p>
               <p className={`text-[15px] ${BODY}`}>Step away from the noise and build the road ahead. Lodging and meals included.</p>
-              <Link href="/contact" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full border border-navy px-4 text-center text-xs font-semibold uppercase tracking-[0.16em]">Join the retreat interest list</Link>
+              {isEnabled('LIAP_RETREAT') ? (
+                <RetreatCta label="Reserve my seat" className="mt-auto" />
+              ) : (
+                <Link href="/contact" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full border border-navy px-4 text-center text-xs font-semibold uppercase tracking-[0.16em]">Join the retreat interest list</Link>
+              )}
             </article>
           </div>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-[#EADFC8] p-6">

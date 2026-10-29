@@ -46,3 +46,25 @@ export const LIAP_BOOK = {
 
 /** Granted by a completed preorder, however it was placed. */
 export const LIAP_ENTITLEMENT = 'LIAP_ASSESSMENT_ACCESS'
+
+// ---------------------------------------------------------------------------
+// Living the Journey — 3-Day Retreat. Owner rulings 2026-10-29: this is the
+// canonical name (not "Weekend Masterclass Retreat"), and it is sold through
+// Stripe checkout. The per-person amount is the price shown on the Author
+// page; it still sits under the handoff's PRICING CONFIRMATION hold, which is
+// why the checkout is behind FEATURE_LIAP_RETREAT.
+// ---------------------------------------------------------------------------
+
+const RETREAT_CENTS = 149999
+
+export const LIAP_RETREAT = {
+  name: 'Living the Journey — 3-Day Retreat',
+  /** Cents, per person. The only place this number exists. */
+  amount: RETREAT_CENTS,
+  priceLabel: `$${(RETREAT_CENTS / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })} per person`,
+  currency: 'usd',
+  /** Seats one buyer may reserve in a single checkout. */
+  maxSeats: 4,
+  /** Stripe metadata marker the webhook matches on. Shared with nothing. */
+  metadataKey: 'liap-retreat',
+} as const

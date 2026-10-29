@@ -12,6 +12,7 @@ import {
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { creditBookPurchase } from '@/lib/liap/attribution'
+import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
 import Stripe from 'stripe'
@@ -432,6 +433,23 @@ export async function POST(request: NextRequest) {
             referralCode: liapSession.metadata?.referral ?? null,
             customerId: result.customerId,
             outcomeRef: liapSession.id,
+          })
+        }
+      }
+
+      // ───────────────────────────────────────────────────────────────
+      // Living the Journey — 3-Day Retreat registration. Matched on its own
+      // metadata marker, set only by app/api/liap/retreat.
+      // ───────────────────────────────────────────────────────────────
+      if (event.type === 'checkout.session.completed') {
+        const rs = event.data.object as Stripe.Checkout.Session
+        const rEmail = rs.customer_email || rs.customer_details?.email || ''
+        if (isLiapRetreat(rs.metadata) && rEmail && rs.payment_status === 'paid') {
+          await fulfilRetreat({
+            email: rEmail,
+            name: rs.customer_details?.name ?? null,
+            stripeCustomerId: typeof rs.customer === 'string' ? rs.customer : null,
+            referralCode: rs.metadata?.referral ?? null,
           })
         }
       }

@@ -65,6 +65,11 @@ export type FeatureFlag =
   // Default off. Turn it on only after the production database and purge job
   // are verified.
   | 'LIAP_ASSESSMENT'
+  // Opens Stripe checkout for Living the Journey — 3-Day Retreat (owner
+  // request, 2026-10-29). Default off: with it off the Retreat card keeps its
+  // interest-list button and /api/liap/retreat refuses. Turn on only after the
+  // price, dates, location and cancellation terms are confirmed.
+  | 'LIAP_RETREAT'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */
