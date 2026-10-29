@@ -46,6 +46,7 @@ beforeEach(async () => {
   setDbForTesting(db)
   cookieValue = undefined
   process.env.FEATURE_LIAP = 'true'
+  process.env.FEATURE_LIAP_ASSESSMENT = 'true'
   process.env.NEXT_PUBLIC_SITE_URL = ORIGIN
 })
 
@@ -53,6 +54,7 @@ afterEach(async () => {
   setDbForTesting(null)
   await close()
   delete process.env.FEATURE_LIAP
+  delete process.env.FEATURE_LIAP_ASSESSMENT
 })
 
 function request(method: string, body?: unknown): Request {
@@ -308,5 +310,23 @@ describe('the same journey, refused at each door', () => {
     delete process.env.FEATURE_LIAP
     const { POST } = await routes()
     expect((await POST(request('POST') as never)).status).toBe(404)
+  })
+
+  it('refuses an entitled buyer while the Assessment has not opened (book section on)', async () => {
+    const id = await seedCustomer(db, 'early@example.com')
+    await grantEntitlement({
+      customerId: id,
+      entitlementKey: LIAP_ASSESSMENT_ACCESS,
+      sourceType: 'order',
+      idempotencyKey: 'flag:2',
+    })
+    await signIn(id)
+
+    delete process.env.FEATURE_LIAP_ASSESSMENT
+    const { POST } = await routes()
+    expect((await POST(request('POST') as never)).status).toBe(404)
+
+    process.env.FEATURE_LIAP_ASSESSMENT = 'true'
+    expect((await POST(request('POST') as never)).status).not.toBe(404)
   })
 })

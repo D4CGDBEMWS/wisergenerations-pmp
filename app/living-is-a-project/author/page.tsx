@@ -5,6 +5,7 @@ import { LiapCta } from '@/components/liap/LiapCta'
 import { AuthorSignup } from '@/components/liap/AuthorSignup'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
+import { assessmentOpen, assessmentTimingShort } from '@/lib/liap/assessment-availability'
 
 // ---------------------------------------------------------------------------
 // Crystal Glover Stewart — author page.
@@ -25,7 +26,9 @@ import { publicationDate } from '@/lib/liap/launch'
 //
 // Deliberately NOT on this page yet (owner to supply):
 //   - Reader / endorser quotes. No placeholder quotes ship to production.
-//   - Descriptions, status and covers for the other three books.
+//   - Descriptions and covers for the other three books. Owner ruling
+//     2026-10-29: shown as "Coming soon" with "Notify me" (to the free-guide
+//     sign-up); no dates, prices or book pages until each is ready.
 //   - Booking pages for the workshop and retreat; those CTAs go to /contact.
 // ---------------------------------------------------------------------------
 
@@ -215,7 +218,9 @@ export default function AuthorPage() {
               ))}
             </ul>
             <p className={`mt-6 text-sm ${BODY}`}>
-              Unlocked as soon as your payment is confirmed.{' '}
+              {assessmentOpen()
+                ? 'Unlocked as soon as your payment is confirmed.'
+                : 'Included with your pre-buy and opening soon — we’ll email you when it’s ready.'}{' '}
               <Link href="/living-is-a-project/verify-preorder" className={`font-semibold underline ${GOLD_TEXT}`}>
                 Already bought the book elsewhere?
               </Link>
@@ -380,7 +385,16 @@ export default function AuthorPage() {
                     {b.title}
                     {b.subtitle ? `: ${b.subtitle}` : ''}
                   </h3>
-                  <p className={`text-sm ${BODY}`}>Details coming soon.</p>
+                  <span className="self-start rounded-full border border-[#EADFC8] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.08em] text-navy">
+                    Coming soon
+                  </span>
+                  <a
+                    href="#free-guide"
+                    className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full border text-xs font-semibold uppercase tracking-[0.16em]"
+                    style={{ borderColor: b.color, color: b.color }}
+                  >
+                    Notify me
+                  </a>
                 </div>
               </li>
             ))}
@@ -417,7 +431,7 @@ export default function AuthorPage() {
           <h2 className={`${cormorant.className} text-4xl font-medium`}>Questions</h2>
           <dl className="mt-6 space-y-3">
             {[
-              ['When do I get the assessment?', 'Immediately. Your pre-buy unlocks the Life Project-Ready™ Assessment as soon as payment is confirmed.'],
+              ['When do I get the assessment?', assessmentTimingShort()],
               ['When does the book ship?', `The book publishes ${publicationDate()}. Pre-buy orders ship from that date.`],
               ['How long does the assessment take?', 'Most people finish in fifteen to twenty minutes. It saves as you go, so you can stop and come back.'],
               ['Can I invite Crystal to speak?', 'Yes — churches, teams, veteran groups and conferences. Reach out through the contact page.'],

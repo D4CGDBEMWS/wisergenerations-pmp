@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { readLiapAccess } from '@/lib/liap/entitlements'
 import { AssessmentForm } from '@/components/liap/AssessmentForm'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { assessmentOpen } from '@/lib/liap/assessment-availability'
 
 export const metadata = {
   title: 'Life Project-Ready™ Assessment | Wiser Generations',
@@ -63,6 +64,23 @@ export default async function AssessmentPage() {
         <p className="mt-8 text-sm text-gray-500">
           If you preordered in the last few minutes, give it a moment and refresh — payment
           confirmation can take a short time to arrive.
+        </p>
+      </main>
+    )
+  }
+
+  // Entitled, but the Assessment has not opened yet (LIAP_ASSESSMENT off).
+  // The entitlement is already recorded; nothing more is needed from the buyer.
+  if (!assessmentOpen()) {
+    return (
+      <main className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-24">
+        <h1 className="text-2xl font-bold text-navy sm:text-3xl">
+          Thank you — your assessment is reserved
+        </h1>
+        <p className="mt-4 leading-relaxed text-gray-600">
+          Your purchase of <em>Living Is a Project&hellip;Are You Ready?</em> includes the Life
+          Project-Ready™ Assessment. It opens soon — we&rsquo;ll email you the moment it&rsquo;s
+          ready, and you won&rsquo;t need to buy anything else.
         </p>
       </main>
     )
