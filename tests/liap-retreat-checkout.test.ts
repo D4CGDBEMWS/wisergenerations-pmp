@@ -42,7 +42,7 @@ describe('Living the Journey — 3-Day Retreat checkout', () => {
     expect(LIAP_RETREAT.depositAmount + LIAP_RETREAT.balanceAmount).toBe(LIAP_RETREAT.amount)
     expect(LIAP_RETREAT.depositLabel).toBe('$500')
     expect(LIAP_RETREAT.balanceLabel).toBe('$999.99')
-    expect(LIAP_RETREAT.where).toBe('Callaway Gardens, Georgia')
+    expect(LIAP_RETREAT.where).toBe('Garland Mountain Retreat, Allatoona, Georgia')
   })
 
   it('does not exist while the Retreat switch is off', async () => {
