@@ -4,6 +4,7 @@ import { LiapCta } from '@/components/liap/LiapCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
 import { assessmentOpen, assessmentTimingShort } from '@/lib/liap/assessment-availability'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 
 export const metadata = {
   title: 'Living Is a Project…Are You Ready? | Wiser Generations',
@@ -138,6 +139,7 @@ export default function LiapBookPage() {
               : 'Your assessment is included and opens soon — we’ll email you when it’s ready.'}{' '}
             The book publishes {publicationDate()}.
           </p>
+          <p className="mx-auto mt-3 max-w-xl font-semibold text-navy">Bonus: {PREBUY_BONUS.offer}</p>
           <LiapCta className="mt-7 flex justify-center" />
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}

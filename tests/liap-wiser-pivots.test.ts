@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 import { STEADY_STEPS, PIVOTS_INTRO, PIVOTS_CYCLE, PIVOT_STEP } from '@/lib/liap/scoring'
 
 // Owner ruling 2026-10-29: S.T.E.A.D.Y. is retired from every customer surface;
@@ -26,7 +27,21 @@ describe('WISER Pivots™ replaces S.T.E.A.D.Y.', () => {
 
   it('links to a one-sheet that ships with the site', () => {
     const src = readFileSync(RESULTS, 'utf8')
-    expect(src).toContain('/liap/wiser-pivots-one-sheet.pdf')
+    expect(src).toContain('PREBUY_BONUS.href')
+    expect(PREBUY_BONUS.href).toBe('/liap/wiser-pivots-one-sheet.pdf')
     expect(existsSync(join(process.cwd(), 'public/liap/wiser-pivots-one-sheet.pdf'))).toBe(true)
+  })
+})
+
+describe('the pre-buy bonus', () => {
+  const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8')
+  it('is offered where people pre-buy and handed over on the thank-you page', () => {
+    for (const p of [
+      'app/living-is-a-project/author/page.tsx',
+      'app/living-is-a-project/book/page.tsx',
+    ]) expect(read(p)).toContain('PREBUY_BONUS.offer')
+    // Both thank-you variants (Assessment open and not yet open) carry it.
+    const done = read('app/living-is-a-project/preorder-complete/page.tsx')
+    expect(done.match(/href=\{PREBUY_BONUS\.href\}/g)).toHaveLength(2)
   })
 })

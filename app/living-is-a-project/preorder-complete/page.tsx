@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { publicationDate } from '@/lib/liap/launch'
 import { assessmentOpen } from '@/lib/liap/assessment-availability'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 
 export const metadata = {
   title: 'Thank you for your order | Wiser Generations',
@@ -37,6 +38,13 @@ export default function PreorderCompletePage() {
             email you the moment it&rsquo;s ready, and you won&rsquo;t need to buy anything else.
           </p>
         </div>
+        <a
+          href={PREBUY_BONUS.href}
+          download
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-xl border-2 border-gold px-6 text-base font-bold text-navy hover:bg-gold/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+        >
+          Download your bonus: the {PREBUY_BONUS.name} (PDF)
+        </a>
       </main>
     )
   }
@@ -66,6 +74,14 @@ export default function PreorderCompletePage() {
       >
         Begin my assessment
       </Link>
+
+      <a
+          href={PREBUY_BONUS.href}
+          download
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-xl border-2 border-gold px-6 text-base font-bold text-navy hover:bg-gold/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+        >
+          Download your bonus: the {PREBUY_BONUS.name} (PDF)
+        </a>
 
       <p className="mt-8 text-sm leading-relaxed text-gray-500">
         We&rsquo;ve emailed you an access link as well, so you can come back to this later. If the

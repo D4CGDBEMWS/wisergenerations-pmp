@@ -6,6 +6,7 @@ import { AuthorSignup } from '@/components/liap/AuthorSignup'
 import { LIAP_BOOK } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
 import { assessmentOpen, assessmentTimingShort } from '@/lib/liap/assessment-availability'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 
 // ---------------------------------------------------------------------------
 // Crystal Glover Stewart — author page.
@@ -135,7 +136,8 @@ export default function AuthorPage() {
                 Includes the free assessment ↓
               </a>
             </div>
-            <p className={`mt-4 text-sm ${BODY}`}>
+            <p className={`mt-4 text-[15px] font-semibold ${GOLD_TEXT}`}>Bonus: {PREBUY_BONUS.offer}</p>
+            <p className={`mt-2 text-sm ${BODY}`}>
               Hardcover · Goshen Publishing · Ships from {publicationDate()}
             </p>
           </div>
@@ -432,6 +434,7 @@ export default function AuthorPage() {
           <dl className="mt-6 space-y-3">
             {[
               ['When do I get the assessment?', assessmentTimingShort()],
+              ['Do I get anything right away?', `Yes. As soon as your order is confirmed, you can download the ${PREBUY_BONUS.name} — an adaptive cycle for navigating change.`],
               ['When does the book ship?', `The book publishes ${publicationDate()}. Pre-buy orders ship from that date.`],
               ['How long does the assessment take?', 'Most people finish in fifteen to twenty minutes. It saves as you go, so you can stop and come back.'],
               ['Can I invite Crystal to speak?', 'Yes — churches, teams, veteran groups and conferences. Reach out through the contact page.'],
