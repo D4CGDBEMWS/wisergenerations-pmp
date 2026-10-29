@@ -3,6 +3,7 @@ import Link from 'next/link'
 import TrustSignals from '@/components/marketing/TrustSignals'
 import Faq from '@/components/marketing/Faq'
 import { PMP_TIERS, checkoutIdForTier } from '@/lib/constants'
+import { ClassesResumeNotice } from '@/components/marketing/ClassesResumeNotice'
 
 export const metadata: Metadata = {
   title: 'PMP® Certification Prep — Wiser Generations Int\'l',
@@ -55,7 +56,8 @@ export const metadata: Metadata = {
                                                                                                               export default function PMPPage() {
                                                                                                                 return (
                                                                                                                     <div>
-                                                                                                                          {/* Hero */}
+                                                                                                                          <ClassesResumeNotice />
+{/* Hero */}
                                                                                                                                 <section className="bg-navy text-white py-20 relative overflow-hidden">
                                                                                                                                         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
                                                                                                                                                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

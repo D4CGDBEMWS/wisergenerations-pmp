@@ -7,6 +7,7 @@ import {
   isGiveawayActive,
   COHORTS,
   getUpcomingCohorts,
+  classesResumeLabel,
   getCohortSessionTimes,
 } from '@/lib/site-config'
 
@@ -115,6 +116,19 @@ function renderCohortSchedule(): string {
   // that it does not have a date and offer the strategy call. It must never
   // fill this gap from general knowledge or from a date it saw earlier in the
   // conversation.
+  const resume = classesResumeLabel()
+  if (upcoming.length === 0 && resume) {
+    return [
+      '# Boot Camp Schedule: LIVE CLASSES PAUSED',
+      '',
+      `Live PMP® and CAPM® classes are on a break and resume in ${resume}.`,
+      '',
+      `When asked when the next cohort starts, say classes resume in ${resume}, that`,
+      'exact dates are not set yet, and offer the free strategy call to plan ahead.',
+      `NEVER state, guess or imply a specific start date or a month other than ${resume}.`,
+    ].join('\n')
+  }
+
   if (upcoming.length === 0) {
     return [
       '# Boot Camp Schedule: NO DATES CURRENTLY PUBLISHED',

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ClassesResumeNotice } from '@/components/marketing/ClassesResumeNotice'
 
 export const metadata: Metadata = {
   title: 'Enroll — Wiser Generations Int’l',
@@ -56,6 +57,7 @@ const PROGRAMS = [
 export default function EnrollPage() {
   return (
     <div>
+      <ClassesResumeNotice />
       {/* Hero */}
       <section className="bg-navy text-white py-16">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
