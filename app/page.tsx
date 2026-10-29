@@ -5,6 +5,7 @@ import HomeClient from './components/HomeClient'
 import ProgramRouter from './components/ProgramRouter'
 import InstructorSection from './components/InstructorSection'
 import TrustSignals from '@/components/marketing/TrustSignals'
+import { classesResumeLabel } from '@/lib/site-config'
 
 const CALENDLY = 'https://calendly.com/space4grace/30min-pod'
 
@@ -45,11 +46,13 @@ export const revalidate = 86400
 
 export default function HomePage() {
   const COHORTS = getUpcomingCohorts()
+  // Owner ruling 2026-10-29: live classes paused until May 2027 (cohorts.json).
+  const resume = classesResumeLabel()
   return (
     <>
       {/* Top announcement banner */}
       <div className="bg-navy text-gold text-center py-2.5 px-4 text-sm font-bold border-b-2 border-gold">
-        🎯 Mentor-led PMP® &amp; CAPM® prep.{' '}
+        {resume ? <>🎯 Live PMP® &amp; CAPM® classes resume in {resume}.</> : <>🎯 Mentor-led PMP® &amp; CAPM® prep.</>}{' '}
         <a href={CALENDLY} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline text-white">
           Book a free strategy call →
         </a>
@@ -258,7 +261,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Cohort Countdown */}
+      {/* Cohort Countdown — or, while classes are paused, when they come back */}
+      {resume ? (
+      <section className="py-12 bg-paper border-b border-gray-100">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <p className="text-gold-text text-sm font-bold uppercase tracking-widest mb-2">Cohort Schedule</p>
+          <h2 className="text-2xl font-bold text-navy">Live classes resume in {resume}</h2>
+          <p className="text-gray-600 mt-2">
+            Mentor-led PMP® and CAPM® cohorts are taking a short break. Dates for {resume} will be posted here.
+            In the meantime, book a free strategy call to plan your path to the exam.
+          </p>
+          <a href={CALENDLY} target="_blank" rel="noopener noreferrer"
+            className="mt-6 inline-block bg-navy text-white font-bold py-3 px-8 rounded-xl hover:bg-blue-900 transition-colors">
+            Book a free strategy call
+          </a>
+        </div>
+      </section>
+      ) : (
       <section className="py-12 bg-paper border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8">
@@ -299,6 +318,7 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+      )}
 
       {/* Why certify now */}
       <section className="py-16 bg-navy text-white">
