@@ -76,7 +76,7 @@ export default function AboutPage() {
             <div className="text-center md:text-left">
               <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">About Crystal Stewart, PMP</p>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                The Project Management Evangelist
+                Your PM Evangelist
               </h1>
               <p className="text-gray-300 text-xl leading-relaxed">
                 20+ years of enterprise transformation. U.S. Army veteran. Founder of Enterprise Academy.
@@ -117,7 +117,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[420px] aspect-[420/520]">
                 <Image
                   src="/crystal-glover-stewart.jpg"
-                  alt="Crystal Glover Stewart, PMP® — The Project Management Evangelist"
+                  alt="Crystal Glover Stewart, PMP® — Your PM Evangelist"
                   fill
                   sizes="(min-width: 768px) 660px, 155vw"
                   className="rounded-2xl shadow-2xl object-cover"

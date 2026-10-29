@@ -43,16 +43,13 @@ export const PREORDER_PERIOD = 'October 2026'
 export const PUBLICATION_MONTH = 'November 2026'
 
 /**
- * The exact day. OWNER DATE PENDING — deliberately null, never a placeholder.
+ * The exact day. Owner ruling, 29 October 2026: publication and public launch
+ * are Monday, November 30, 2026 (book files ready November 15).
  *
- * Nothing currently renders a day: every customer-facing surface shows the
- * month, which is why this could be left honestly unset rather than filled
- * with an invented Tuesday that would then appear on a receipt.
- *
- * When the owner picks one, set it here — as 'November 14, 2026' or similar —
- * and every surface updates together. That is the whole point of the file.
+ * Set here once, so every page, the checkout description and the receipt
+ * update together. That is the whole point of the file.
  */
-export const PUBLICATION_DAY: string | null = null
+export const PUBLICATION_DAY: string | null = 'November 30, 2026'
 
 /**
  * What a customer is shown as the publication date.
