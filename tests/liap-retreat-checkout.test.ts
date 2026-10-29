@@ -39,6 +39,10 @@ describe('Living the Journey — 3-Day Retreat checkout', () => {
     expect(LIAP_RETREAT.name).toBe('Living the Journey — 3-Day Retreat')
     expect(LIAP_RETREAT.amount).toBe(149999)
     expect(LIAP_RETREAT.priceLabel).toBe('$1,499.99 per person')
+    expect(LIAP_RETREAT.depositAmount + LIAP_RETREAT.balanceAmount).toBe(LIAP_RETREAT.amount)
+    expect(LIAP_RETREAT.depositLabel).toBe('$500')
+    expect(LIAP_RETREAT.balanceLabel).toBe('$999.99')
+    expect(LIAP_RETREAT.where).toBe('Callaway Gardens, Georgia')
   })
 
   it('does not exist while the Retreat switch is off', async () => {
@@ -58,10 +62,12 @@ describe('Living the Journey — 3-Day Retreat checkout', () => {
     expect(await res.json()).toEqual({ url: 'https://checkout.stripe.com/test' })
     const arg = create.mock.calls[0]![0]
     expect(arg.mode).toBe('payment')
-    expect(arg.line_items[0].price_data.unit_amount).toBe(149999)
-    expect(arg.line_items[0].price_data.product_data.name).toBe(LIAP_RETREAT.name)
+    expect(arg.line_items[0].price_data.unit_amount).toBe(50000)
+    expect(arg.line_items[0].price_data.product_data.name).toBe(`${LIAP_RETREAT.name} — Deposit`)
+    expect(arg.custom_text.submit.message).toContain('$999.99')
+    expect(arg.custom_text.submit.message).toContain('7 days')
     expect(arg.line_items[0].adjustable_quantity).toEqual({ enabled: true, minimum: 1, maximum: 4 })
-    expect(arg.metadata).toEqual({ product: 'liap-retreat' })
+    expect(arg.metadata).toEqual({ product: 'liap-retreat', payment: 'deposit' })
     expect(arg.success_url).toContain('/living-is-a-project/retreat-complete')
     expect(isLiapRetreat(arg.metadata)).toBe(true)
   })

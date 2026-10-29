@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LIAP_RETREAT } from '@/lib/liap/product'
+import { LIAP_RETREAT, retreatPaymentTerms } from '@/lib/liap/product'
 
 export const metadata = {
   title: 'Your retreat seat is reserved | Wiser Generations',
@@ -16,7 +16,12 @@ export default function RetreatCompletePage() {
         Thank you. Your seat at {LIAP_RETREAT.name} is reserved.
       </h1>
       <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-        <p>Stripe has emailed your receipt. We&rsquo;ll follow up by email with your retreat details.</p>
+        <p>
+          {LIAP_RETREAT.when} · {LIAP_RETREAT.where}. Stripe has emailed your deposit receipt, and
+          we&rsquo;ll follow up by email with your retreat details.
+        </p>
+        <p>{retreatPaymentTerms()}</p>
+        <p className="text-sm text-gray-500">{LIAP_RETREAT.cancellation}</p>
         <p>
           Questions before then?{' '}
           <Link href="/contact" className="font-semibold text-navy underline">

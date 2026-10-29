@@ -2,15 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { isEnabled } from '@/lib/flags'
-import { LIAP_RETREAT } from '@/lib/liap/product'
+import { LIAP_RETREAT, retreatPaymentTerms } from '@/lib/liap/product'
 import { isWellFormedCode } from '@/lib/liap/partners'
 
 // ---------------------------------------------------------------------------
 // Living the Journey — 3-Day Retreat checkout.
 //
 // Same shape as the book pre-buy: a hosted Stripe Checkout Session whose price
-// comes from lib/liap/product.ts, never from the browser. Seats are per person
-// and the buyer may adjust the count on Stripe's page, up to maxSeats.
+// comes from lib/liap/product.ts, never from the browser. Checkout takes the
+// $500-per-seat deposit; the balance is invoiced by the owner in Stripe before
+// the retreat. Seats are per person, adjustable on Stripe's page up to maxSeats.
 //
 // Two switches: LIAP (the section exists) and LIAP_RETREAT (the Retreat is on
 // sale). Either off and this route does not exist.
@@ -66,19 +67,24 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           adjustable_quantity: { enabled: true, minimum: 1, maximum: LIAP_RETREAT.maxSeats },
           price_data: {
             currency: LIAP_RETREAT.currency,
-            unit_amount: LIAP_RETREAT.amount,
+            // The deposit, not the full price: the balance is invoiced later.
+            unit_amount: LIAP_RETREAT.depositAmount,
             product_data: {
-              name: LIAP_RETREAT.name,
-              description: 'One seat per person. We’ll email your confirmation and retreat details.',
+              name: `${LIAP_RETREAT.name} — Deposit`,
+              description: `${LIAP_RETREAT.when} · ${LIAP_RETREAT.where}. Deposit per person; full price ${LIAP_RETREAT.priceLabel}.`,
             },
           },
         },
       ],
+      custom_text: {
+        submit: { message: `${retreatPaymentTerms()} ${LIAP_RETREAT.cancellation}` },
+      },
       metadata: {
         product: LIAP_RETREAT.metadataKey,
+        payment: 'deposit',
         ...(referral ? { referral } : {}),
       },
-      payment_intent_data: { metadata: { product: LIAP_RETREAT.metadataKey } },
+      payment_intent_data: { metadata: { product: LIAP_RETREAT.metadataKey, payment: 'deposit' } },
       customer_creation: 'always',
       phone_number_collection: { enabled: true },
       success_url: `${origin}/living-is-a-project/retreat-complete?session_id={CHECKOUT_SESSION_ID}`,

@@ -17,6 +17,8 @@ import { LIAP_RETREAT } from './product'
 // ---------------------------------------------------------------------------
 
 export const RETREAT_TAG = 'liap_retreat_registered'
+/** Marks registrants who still owe the balance — the owner's invoicing list. */
+export const RETREAT_BALANCE_TAG = 'liap_retreat_balance_due'
 
 /** True when a Stripe object carries the Retreat's marker. */
 export function isLiapRetreat(metadata: Stripe.Metadata | null | undefined): boolean {
@@ -47,7 +49,7 @@ export async function fulfilRetreat(input: {
       email: input.email,
       firstName: firstName || undefined,
       lastName: rest.join(' ') || undefined,
-      tags: ['customer', RETREAT_TAG],
+      tags: ['customer', RETREAT_TAG, RETREAT_BALANCE_TAG],
     })
   } catch (err) {
     console.error('[liap/retreat] could not tag subscriber', err)

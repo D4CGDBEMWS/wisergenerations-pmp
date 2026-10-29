@@ -296,8 +296,18 @@ export default function AuthorPage() {
               <h3 className={`${cormorant.className} text-2xl font-semibold leading-tight`}>{LIAP_RETREAT.name}</h3>
               <p className={`${cormorant.className} text-2xl italic ${GOLD_ACCENT}`}>{LIAP_RETREAT.priceLabel}</p>
               <p className={`text-[15px] ${BODY}`}>Step away from the noise and build the road ahead. Lodging and meals included.</p>
+              <p className={`text-sm ${BODY}`}>
+                {LIAP_RETREAT.when} · {LIAP_RETREAT.where}
+                {isEnabled('LIAP_RETREAT') && (
+                  <>
+                    <br />
+                    {LIAP_RETREAT.depositLabel} deposit reserves your seat.{' '}
+                    <span className="text-xs">{LIAP_RETREAT.cancellation}</span>
+                  </>
+                )}
+              </p>
               {isEnabled('LIAP_RETREAT') ? (
-                <RetreatCta label="Reserve my seat" className="mt-auto" />
+                <RetreatCta label={`Reserve my seat — ${LIAP_RETREAT.depositLabel} deposit`} className="mt-auto" />
               ) : (
                 <Link href="/contact" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full border border-navy px-4 text-center text-xs font-semibold uppercase tracking-[0.16em]">Join the retreat interest list</Link>
               )}

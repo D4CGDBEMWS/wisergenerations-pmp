@@ -48,23 +48,52 @@ export const LIAP_BOOK = {
 export const LIAP_ENTITLEMENT = 'LIAP_ASSESSMENT_ACCESS'
 
 // ---------------------------------------------------------------------------
-// Living the Journey — 3-Day Retreat. Owner rulings 2026-10-29: this is the
-// canonical name (not "Weekend Masterclass Retreat"), and it is sold through
-// Stripe checkout. The per-person amount is the price shown on the Author
-// page; it still sits under the handoff's PRICING CONFIRMATION hold, which is
-// why the checkout is behind FEATURE_LIAP_RETREAT.
+// Living the Journey — 3-Day Retreat. Owner rulings 2026-10-29:
+//   - canonical name (not "Weekend Masterclass Retreat");
+//   - sold through Stripe; $1,499.99 per person confirmed;
+//   - Callaway Gardens, Georgia, March (year to confirm — see `when`);
+//   - $500 deposit per seat at checkout, the remainder invoiced later;
+//   - non-refundable within 7 days of the retreat.
+// Every customer-facing number and term below is derived or stated once here.
 // ---------------------------------------------------------------------------
 
 const RETREAT_CENTS = 149999
+const DEPOSIT_CENTS = 50000
+const BALANCE_CENTS = RETREAT_CENTS - DEPOSIT_CENTS
+
+/** "$500" for whole dollars, "$999.99" otherwise. */
+const usd = (cents: number) =>
+  `$${(cents / 100).toLocaleString('en-US', {
+    minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`
 
 export const LIAP_RETREAT = {
   name: 'Living the Journey — 3-Day Retreat',
-  /** Cents, per person. The only place this number exists. */
+  /** Cents, per person: the full price. */
   amount: RETREAT_CENTS,
-  priceLabel: `$${(RETREAT_CENTS / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })} per person`,
+  priceLabel: `${usd(RETREAT_CENTS)} per person`,
+  /** Cents, per person: what checkout charges today. */
+  depositAmount: DEPOSIT_CENTS,
+  depositLabel: usd(DEPOSIT_CENTS),
+  /** Cents, per person: invoiced before the retreat. */
+  balanceAmount: BALANCE_CENTS,
+  balanceLabel: usd(BALANCE_CENTS),
+  /** OWNER TO CONFIRM: said "March 2026", which has passed; 2027 assumed. */
+  when: 'March 2027',
+  where: 'Callaway Gardens, Georgia',
+  /** OWNER TO CONFIRM the reading of "non refundable 7 days before". */
+  cancellation:
+    'Cancel more than 7 days before the retreat for a refund. Within 7 days of the retreat, payments are non-refundable.',
   currency: 'usd',
   /** Seats one buyer may reserve in a single checkout. */
   maxSeats: 4,
   /** Stripe metadata marker the webhook matches on. Shared with nothing. */
   metadataKey: 'liap-retreat',
 } as const
+
+/** The deposit-and-balance promise, in one sentence, for checkout and pages. */
+export function retreatPaymentTerms(): string {
+  const r = LIAP_RETREAT
+  return `A ${r.depositLabel} deposit per person reserves your seat today. The remaining ${r.balanceLabel} per person is due before the retreat — we’ll email you an invoice.`
+}
