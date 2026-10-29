@@ -66,6 +66,8 @@ describe('Living the Journey — 3-Day Retreat checkout', () => {
     expect(arg.line_items[0].price_data.product_data.name).toBe(`${LIAP_RETREAT.name} — Deposit`)
     expect(arg.custom_text.submit.message).toContain('$999.99')
     expect(arg.custom_text.submit.message).toContain('7 days')
+    expect(arg.custom_text.submit.message).toContain('deposit is non-refundable')
+    expect(arg.custom_text.submit.message).toContain('30 days before')
     expect(arg.line_items[0].adjustable_quantity).toEqual({ enabled: true, minimum: 1, maximum: 4 })
     expect(arg.metadata).toEqual({ product: 'liap-retreat', payment: 'deposit' })
     expect(arg.success_url).toContain('/living-is-a-project/retreat-complete')
