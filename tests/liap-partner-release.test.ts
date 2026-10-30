@@ -160,7 +160,7 @@ describe('attribution reaches a confirmed purchase', () => {
   it('carries the code from the URL into the checkout request', () => {
     const cta = code('components/liap/LiapCta.tsx')
     expect(cta).toContain("URLSearchParams(window.location.search).get('p')")
-    expect(cta).toContain('JSON.stringify(referral ? { p: referral } : {})')
+    expect(cta).toContain('...(referral ? { p: referral } : {})')
     // No cookie, no storage. Pressing a preorder button is an intentional act.
     for (const forbidden of ['localStorage', 'sessionStorage', 'document.cookie']) {
       expect(cta, forbidden).not.toContain(forbidden)

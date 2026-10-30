@@ -144,7 +144,7 @@ export default function LiapBookPage() {
             The book publishes {publicationDate()}.
           </p>
           <p className="mx-auto mt-3 max-w-xl font-semibold text-navy">Bonus: {PREBUY_BONUS.offer}</p>
-          <LiapCta className="mt-7 flex justify-center" />
+          <LiapCta className="mt-7 flex flex-col items-center" />
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}
             <Link

@@ -21,7 +21,7 @@ describe('hardcover pre-order shipping', () => {
     const src = read('app/api/liap/preorder/route.ts')
     expect(src).toContain('shipping_address_collection: { allowed_countries: [...LIAP_BOOK.shipping.countries] }')
     expect(src).toContain("type: 'fixed_amount'")
-    expect(src).toContain('amount: LIAP_BOOK.shipping.amount')
+    expect(src).toContain('LIAP_BOOK.shipping.amount')
   })
 
   it('the webhook saves the address with the order', () => {
@@ -58,5 +58,33 @@ describe('hardcover pre-order shipping', () => {
     expect(sql).toContain('CREATE TABLE IF NOT EXISTS book_shipments')
     expect(sql).toContain('CREATE OR REPLACE VIEW book_shipping_list')
     expect(sql).not.toMatch(/\bDROP\b|\bALTER\b/)
+  })
+})
+
+describe('free-shipping code SHIP2027', async () => {
+  const { isFreeShippingCode, normalizeCode, FREE_SHIPPING_CODES } = await import('@/lib/liap/promo')
+  it('accepts SHIP2027 in any case, with spaces trimmed', () => {
+    expect(FREE_SHIPPING_CODES).toContain('SHIP2027')
+    expect(isFreeShippingCode('ship2027')).toBe(true)
+    expect(isFreeShippingCode('  SHIP2027 ')).toBe(true)
+  })
+  it('rejects anything else', () => {
+    for (const c of ['SHIP2026', '', 'SHIP 2027', null, 42, 'x'.repeat(40)]) expect(isFreeShippingCode(c)).toBe(false)
+    expect(normalizeCode('<script>')).toBeNull()
+  })
+  it('sets only the book shipping to $0 and refuses a mistyped code', () => {
+    const src = read('app/api/liap/preorder/route.ts')
+    expect(src).toContain('amount: freeShipping ? 0 : LIAP_BOOK.shipping.amount')
+    expect(src).toContain('That shipping code is not valid')
+    expect(src).toContain('unit_amount: LIAP_BOOK.amount')
+  })
+  it('is only offered on the book pre-order, not the retreat or PMP checkouts', () => {
+    expect(read('app/api/liap/retreat/route.ts')).not.toContain('isFreeShippingCode')
+    expect(read('app/api/checkout-subscription/route.ts')).not.toContain('isFreeShippingCode')
+  })
+  it('the pre-order button sends the code and reads ?ship= from flyers', () => {
+    const src = read('components/liap/LiapCta.tsx')
+    expect(src).toContain('ship: shipCode.trim()')
+    expect(src).toContain("get('ship')")
   })
 })
