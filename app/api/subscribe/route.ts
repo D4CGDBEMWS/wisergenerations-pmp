@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { verifyTurnstile } from '@/lib/turnstile'
+import { upsertSubscriber } from '@/lib/mailchimp'
 
 // ---------------------------------------------------------------------------
 // POST /api/subscribe
@@ -61,53 +62,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
   }
 
-  const apiKey = process.env.MAILCHIMP_API_KEY
-  const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
-  const dc = process.env.MAILCHIMP_DC
-
-  if (!apiKey || !audienceId || !dc) {
-    console.warn('[/api/subscribe] Mailchimp env vars not set — skipping subscription.')
-    return NextResponse.json({ ok: true })
-  }
-
-  // Mailchimp uses MD5 hash of lowercase email as subscriber ID
-  const crypto = await import('crypto')
-  const emailHash = crypto.createHash('md5').update(email).digest('hex')
-
-  const url = `https://${dc}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`
-
-  const payload = {
-    email_address: email,
-    status_if_new: 'pending',
-    status: 'pending',
-    tags,
-  }
-
-  try {
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Basic ${Buffer.from(`anystring:${apiKey}`).toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null)
-      console.error('[/api/subscribe] Mailchimp error:', errorData)
-      return NextResponse.json(
-        { error: 'Could not subscribe. Please try again later.' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({ ok: true })
-  } catch (err) {
-    console.error('[/api/subscribe] Unexpected error:', err)
+  // 2026-10-29 fix. This used to PUT the member with `status: 'pending'` and
+  // the tags in the same body. Mailchimp only applies tags in that body when
+  // it CREATES a member, so someone already on the list who signed up again
+  // (for Words to Know, say) got no new tag and no welcome series; and forcing
+  // `status` could push an existing subscriber back to unconfirmed. The shared
+  // helper sets status only for new members and applies tags separately.
+  const result = await upsertSubscriber({ email, tags })
+  if (!result.ok) {
     return NextResponse.json(
-      { error: 'An unexpected error occurred. Please try again.' },
+      { error: 'Could not subscribe. Please try again later.' },
       { status: 500 }
     )
   }
+  return NextResponse.json({ ok: true })
 }

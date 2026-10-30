@@ -12,6 +12,7 @@ import {
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { creditBookPurchase } from '@/lib/liap/attribution'
+import { tagLiapContact } from '@/lib/liap/crm'
 import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
 import { countRetreatSeats } from '@/lib/liap/retreat-seats'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
@@ -421,6 +422,11 @@ export async function POST(request: NextRequest) {
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
           })
+
+          // Tag the buyer in Mailchimp so the "your Assessment is open" email
+          // and launch-week emails can reach every pre-buyer. Never fatal:
+          // tagLiapContact swallows its own errors.
+          await tagLiapContact(liapEmail, ['liap_book_preorder', 'liap_assessment_entitled'])
 
           // Credit the community partner whose code brought this buyer, if
           // there was one. AFTER fulfilment and deliberately not before: the
