@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { verifyTurnstile } from '@/lib/turnstile'
 import { upsertSubscriber } from '@/lib/mailchimp'
+import { sendWordsToKnowGuide } from '@/lib/liap/guide-email'
 
 // ---------------------------------------------------------------------------
 // POST /api/subscribe
@@ -74,6 +75,11 @@ export async function POST(req: NextRequest) {
       { error: 'Could not subscribe. Please try again later.' },
       { status: 500 }
     )
+  }
+  // Words to Know is delivered by the website, not only by a Mailchimp
+  // journey (owner ruling 2026-10-29). Never fails the sign-up.
+  if (tags.includes('liap-words-to-know')) {
+    await sendWordsToKnowGuide(email)
   }
   return NextResponse.json({ ok: true })
 }
