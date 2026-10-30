@@ -14,6 +14,7 @@ import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
 import { creditBookPurchase } from '@/lib/liap/attribution'
 import { tagLiapContact } from '@/lib/liap/crm'
 import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
+import { saveBookShipment, shippingFromSession } from '@/lib/liap/shipping'
 import { countRetreatSeats } from '@/lib/liap/retreat-seats'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
@@ -422,6 +423,11 @@ export async function POST(request: NextRequest) {
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
           })
+
+          // Where to mail the hardcover. Never fatal (see lib/liap/shipping).
+          const shipTo = shippingFromSession(liapSession)
+          if (result.orderId && shipTo) await saveBookShipment(result.orderId, shipTo)
+          else if (!shipTo) console.error('[stripe/webhook] book preorder without a shipping address', liapSession.id)
 
           // Tag the buyer in Mailchimp so the "your Assessment is open" email
           // and launch-week emails can reach every pre-buyer. Never fatal:

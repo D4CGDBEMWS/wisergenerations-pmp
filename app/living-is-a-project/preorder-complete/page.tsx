@@ -40,7 +40,7 @@ export default async function PreorderCompletePage({
           Thank you. Your book and your assessment are reserved.
         </h1>
         <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-          <p>Your copy ships when the book publishes on {publicationDate()}.</p>
+          <p>Your copy mails to the address you gave at checkout when the book publishes on {publicationDate()}.</p>
           <p>
             Your purchase includes the Life Project-Ready™ Assessment. It opens soon — we&rsquo;ll
             email you the moment it&rsquo;s ready, and you won&rsquo;t need to buy anything else.
@@ -68,7 +68,7 @@ export default async function PreorderCompletePage({
       </h1>
 
       <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-        <p>Your preorder is confirmed. Your copy ships when the book publishes on {publicationDate()}.</p>
+        <p>Your preorder is confirmed. Your copy mails to the address you gave at checkout when the book publishes on {publicationDate()}.</p>
         <p>
           Now let&rsquo;s determine where you are and what deserves your attention next. It takes
           about fifteen minutes, and it saves as you go.

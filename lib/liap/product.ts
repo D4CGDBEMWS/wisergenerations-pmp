@@ -17,6 +17,12 @@ import { publicationDate } from './launch'
 
 const AMOUNT_CENTS = 2499
 
+/**
+ * Flat shipping for the hardcover. Owner ruling 2026-10-30: $4.99, US only,
+ * USPS Media Mail, books mailed by the author after publication.
+ */
+const SHIPPING_CENTS = 499
+
 export const LIAP_BOOK = {
   productKey: 'LIAP_BOOK_PREORDER',
   /**
@@ -31,6 +37,15 @@ export const LIAP_BOOK = {
   /** Cents. The only place this number exists. */
   amount: AMOUNT_CENTS,
   priceLabel: `$${(AMOUNT_CENTS / 100).toFixed(2)}`,
+  shipping: {
+    amount: SHIPPING_CENTS,
+    label: `$${(SHIPPING_CENTS / 100).toFixed(2)}`,
+    /** Stripe allowed_countries. */
+    countries: ['US'] as const,
+    displayName: 'USPS Media Mail (US only) — mails after publication',
+  },
+  /** e.g. "$24.99 + $4.99 shipping" */
+  priceWithShippingLabel: `$${(AMOUNT_CENTS / 100).toFixed(2)} + $${(SHIPPING_CENTS / 100).toFixed(2)} shipping`,
   currency: 'usd',
   format: 'Hardcover',
   publisher: 'Goshen Publishing',
