@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { trackLiap } from '@/lib/liap/analytics'
 
 // ---------------------------------------------------------------------------
@@ -31,6 +31,16 @@ import { trackLiap } from '@/lib/liap/analytics'
 // nothing else — the price and the product come from the server.
 // ---------------------------------------------------------------------------
 
+/** A free-shipping code on the URL (?ship=CODE), e.g. from a flyer or QR. */
+function shipCodeFromUrl(): string {
+  if (typeof window === 'undefined') return ''
+  try {
+    return new URLSearchParams(window.location.search).get('ship') ?? ''
+  } catch {
+    return ''
+  }
+}
+
 /** The partner code on the current URL, if the visitor arrived with one. */
 function referralFromUrl(): string | null {
   if (typeof window === 'undefined') return null
@@ -50,6 +60,17 @@ export function LiapCta({
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [shipCode, setShipCode] = useState('')
+  const [showCode, setShowCode] = useState(false)
+
+  // Read ?ship= after mount, so the server and browser render the same HTML.
+  useEffect(() => {
+    const fromUrl = shipCodeFromUrl()
+    if (fromUrl) {
+      setShipCode(fromUrl)
+      setShowCode(true)
+    }
+  }, [])
 
   async function start() {
     setLoading(true)
@@ -61,7 +82,10 @@ export function LiapCta({
       const res = await fetch('/api/liap/preorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(referral ? { p: referral } : {}),
+        body: JSON.stringify({
+          ...(referral ? { p: referral } : {}),
+          ...(shipCode.trim() ? { ship: shipCode.trim() } : {}),
+        }),
       })
       const data = (await res.json()) as { url?: string; error?: string }
 
@@ -90,6 +114,31 @@ export function LiapCta({
       >
         {loading ? 'Opening secure checkout…' : label}
       </button>
+
+      {showCode ? (
+        <div className="mt-3">
+          <label className="block text-sm font-medium text-current" htmlFor="liap-ship-code">
+            Free-shipping code
+          </label>
+          <input
+            id="liap-ship-code"
+            type="text"
+            autoComplete="off"
+            autoCapitalize="characters"
+            value={shipCode}
+            onChange={(e) => setShipCode(e.target.value)}
+            className="mt-1 w-full max-w-[16rem] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm uppercase text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+          />
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowCode(true)}
+          className="mt-3 block text-sm underline underline-offset-2 opacity-80 hover:opacity-100"
+        >
+          Have a free-shipping code?
+        </button>
+      )}
 
       {/* role="alert" so a screen reader is told, rather than the message
           appearing silently below a button the user is still focused on. */}

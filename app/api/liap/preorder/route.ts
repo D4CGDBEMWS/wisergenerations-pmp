@@ -4,6 +4,7 @@ import { checkOrigin, rateLimit } from '@/lib/api-guard'
 import { isEnabled } from '@/lib/flags'
 import { assessmentCheckoutLine } from '@/lib/liap/assessment-availability'
 import { LIAP_BOOK } from '@/lib/liap/product'
+import { isFreeShippingCode, normalizeCode } from '@/lib/liap/promo'
 import { isWellFormedCode } from '@/lib/liap/partners'
 import { publicationDate } from '@/lib/liap/launch'
 
@@ -57,14 +58,28 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // what the buyer receives — this route reads it and passes it on, and there
   // is no branch below that behaves differently because of it.
   let referral: string | null = null
+  let shipCode: unknown = null
   try {
     const body = await req.json().catch(() => null)
     const candidate = body && typeof body === 'object' ? (body as { p?: unknown }).p : null
     if (typeof candidate === 'string' && isWellFormedCode(candidate.trim())) {
       referral = candidate.trim()
     }
+    shipCode = body && typeof body === 'object' ? (body as { ship?: unknown }).ship : null
   } catch {
     // A malformed body is not a reason to refuse somebody's purchase.
+  }
+
+  // Free-shipping code (lib/liap/promo.ts). A code that was typed but does not
+  // match is refused with a clear message rather than silently charging
+  // shipping, so the buyer can fix a typo before paying.
+  const typedShipCode = typeof shipCode === 'string' && shipCode.trim() !== ''
+  const freeShipping = typedShipCode && isFreeShippingCode(shipCode)
+  if (typedShipCode && !freeShipping) {
+    return NextResponse.json(
+      { error: 'That shipping code is not valid. Check the spelling, or leave it blank to continue.' },
+      { status: 400 }
+    )
   }
 
   try {
@@ -93,6 +108,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       metadata: {
         product: LIAP_BOOK.metadataKey,
         ...(referral ? { referral } : {}),
+        ...(freeShipping ? { free_shipping_code: normalizeCode(shipCode)! } : {}),
       },
       payment_intent_data: { metadata: { product: LIAP_BOOK.metadataKey } },
       // Collected here so the customer never types it twice — §24 asks that
@@ -105,8 +121,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: LIAP_BOOK.shipping.amount, currency: LIAP_BOOK.currency },
-            display_name: LIAP_BOOK.shipping.displayName,
+            fixed_amount: {
+              amount: freeShipping ? 0 : LIAP_BOOK.shipping.amount,
+              currency: LIAP_BOOK.currency,
+            },
+            display_name: freeShipping
+              ? `Free shipping (code ${normalizeCode(shipCode)}) — USPS Media Mail, mails after publication`
+              : LIAP_BOOK.shipping.displayName,
           },
         },
       ],
