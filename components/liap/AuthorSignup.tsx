@@ -118,7 +118,7 @@ export function AuthorSignup() {
       }
 
       setStatus('success')
-      setMessage('Your Words to Know guide is on its way. Check your inbox to confirm your email.')
+      setMessage('Your guide is ready. Download it below — we’ve also emailed you the link.')
       setEmail('')
       setTurnstileToken(null)
     } catch {
@@ -195,6 +195,16 @@ export function AuthorSignup() {
         >
           {message}
         </p>
+      ) : null}
+
+      {done ? (
+        <a
+          href="/liap/author/words-to-know.pdf"
+          download
+          className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#CC9C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-navy"
+        >
+          Download Words to Know (PDF)
+        </a>
       ) : null}
 
       <p className="text-[13px] text-[#5A5F70]">
