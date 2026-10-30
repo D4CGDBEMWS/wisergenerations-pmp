@@ -29,7 +29,14 @@ export async function POST(req: NextRequest) {
   const rateBlock = await rateLimit(req, 'subscribe', { limit: 5, windowMs: 60_000 })
   if (rateBlock) return rateBlock
 
-  let body: { email?: string; tags?: string[]; source?: string; turnstileToken?: string }
+  let body: {
+    email?: string
+    firstName?: string
+    lastName?: string
+    tags?: string[]
+    source?: string
+    turnstileToken?: string
+  }
   try {
     body = await req.json()
   } catch {
@@ -69,7 +76,14 @@ export async function POST(req: NextRequest) {
   // (for Words to Know, say) got no new tag and no welcome series; and forcing
   // `status` could push an existing subscriber back to unconfirmed. The shared
   // helper sets status only for new members and applies tags separately.
-  const result = await upsertSubscriber({ email, tags })
+  // Names are optional and capped; Mailchimp stores them as FNAME / LNAME.
+  const clean = (v: unknown) => (typeof v === 'string' ? v.trim().slice(0, 80) : undefined)
+  const result = await upsertSubscriber({
+    email,
+    firstName: clean(body.firstName),
+    lastName: clean(body.lastName),
+    tags,
+  })
   if (!result.ok) {
     return NextResponse.json(
       { error: 'Could not subscribe. Please try again later.' },
