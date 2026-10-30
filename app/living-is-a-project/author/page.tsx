@@ -276,6 +276,7 @@ export default function AuthorPage() {
               <p className={EYEBROW}>Read</p>
               <h3 className={`${cormorant.className} text-2xl font-semibold leading-tight`}>Living Is a Project…Are You Ready?™</h3>
               <p className={`${cormorant.className} text-2xl italic ${GOLD_ACCENT}`}>{LIAP_BOOK.priceLabel}</p>
+              <p className={`text-xs ${BODY}`}>+ {LIAP_BOOK.shipping.label} shipping · US only</p>
               <p className={`text-[15px] ${BODY}`}>The book introduces a practical way to approach significant change.</p>
               <a href="#book" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full bg-gold px-4 text-xs font-semibold uppercase tracking-[0.16em] text-navy">Pre-buy now</a>
             </article>
@@ -509,7 +510,7 @@ export default function AuthorPage() {
             {[
               ['When do I get the assessment?', assessmentTimingShort()],
               ['Do I get anything right away?', `Yes. As soon as your order is confirmed, you can download the ${PREBUY_BONUS.name} — an adaptive cycle for navigating change.`],
-              ['When does the book ship?', `The book publishes ${publicationDate()}. Pre-buy orders ship from that date.`],
+              ['When does the book ship?', `The book publishes ${publicationDate()}. Pre-buy orders mail from that date by USPS Media Mail to the address you give at checkout. Shipping is a flat ${LIAP_BOOK.shipping.label}, US addresses only.`],
               ['How long does the assessment take?', 'Most people finish in fifteen to twenty minutes. It saves as you go, so you can stop and come back.'],
               ['Can I invite Crystal to speak?', 'Yes — churches, teams, veteran groups and conferences. Reach out through the contact page.'],
             ].map(([q, a]) => (

@@ -98,6 +98,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       // Collected here so the customer never types it twice — §24 asks that
       // the results email reuse the checkout address rather than re-prompting.
       customer_creation: 'always',
+      // A hardcover has to be mailed somewhere. Owner ruling 2026-10-30:
+      // US addresses only, flat $4.99 shipping.
+      shipping_address_collection: { allowed_countries: [...LIAP_BOOK.shipping.countries] },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: { amount: LIAP_BOOK.shipping.amount, currency: LIAP_BOOK.currency },
+            display_name: LIAP_BOOK.shipping.displayName,
+          },
+        },
+      ],
       success_url: `${origin}/living-is-a-project/preorder-complete?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/living-is-a-project/book`,
       allow_promotion_codes: true,

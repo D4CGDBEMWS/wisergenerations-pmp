@@ -115,6 +115,10 @@ export default function LiapBookPage() {
                 <dd className="font-semibold text-white">{LIAP_BOOK.priceLabel}</dd>
               </div>
               <div className="flex justify-between gap-4 border-b border-white/10 pb-2">
+                <dt className="text-gray-400">Shipping</dt>
+                <dd className="font-semibold text-white">{LIAP_BOOK.shipping.label} (US only)</dd>
+              </div>
+              <div className="flex justify-between gap-4 border-b border-white/10 pb-2">
                 <dt className="text-gray-400">Format</dt>
                 <dd className="font-semibold text-white">{LIAP_BOOK.format}</dd>
               </div>
