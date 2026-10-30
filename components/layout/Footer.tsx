@@ -98,7 +98,7 @@ export function Footer() {
               <p className="text-gray-400 text-xs">&copy; {new Date().getFullYear()} Wiser Generations Int&apos;l. An Enterprise Academy Program. All rights reserved.</p>
               {/* Owner ruling 2026-10-30 (copy-protection review). */}
               <p className="text-gray-400 text-xs">
-                Living Is a Project&hellip;Are You Ready?&trade;, Life Project-Ready&trade; and WISER Pivots&trade; are trademarks of Crystal Glover Stewart. Copying or scraping this site&apos;s content is not permitted.
+                Living Is a Project&hellip;Are You Ready?&trade;, The LIAP Way&trade;, Life Project-Ready&trade; and WISER Pivots&trade; are trademarks of Wiser Generations International LLC. Copying or scraping this site&apos;s content is not permitted.
               </p>
             </div>
             {/* The PMI trademark notice is required where PMI marks appear.
