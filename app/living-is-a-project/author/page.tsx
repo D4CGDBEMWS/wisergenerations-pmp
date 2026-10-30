@@ -146,9 +146,9 @@ export default function AuthorPage() {
           <div className="relative mx-auto w-full max-w-[300px]">
             <Image
               src="/liap/author/living-is-a-project-cover.png"
-              alt="Living Is a Project…Are You Ready? by Crystal Glover Stewart — book cover"
-              width={435}
-              height={681}
+              alt="Living Is a Project…Are You Ready? by Crystal Glover Stewart, PMP® — book cover"
+              width={512}
+              height={768}
               priority
               className="h-auto w-full drop-shadow-[0_22px_34px_rgba(0,27,58,0.28)]"
             />
@@ -183,10 +183,11 @@ export default function AuthorPage() {
             &ldquo;A bend in the road is not the end of the road, unless you fail to turn.&rdquo;
           </blockquote>
           <Image
-            src="/liap/author/winding-road.jpg"
-            alt="A winding road through green hills at sunrise"
-            width={730}
-            height={382}
+            src="/liap/author/winding-sign.jpg"
+            alt="A winding road through autumn woods with a curving-road sign"
+            width={1536}
+            height={1024}
+            sizes="(min-width: 768px) 720px, 100vw"
             className="mx-auto mt-10 h-auto w-full max-w-[720px] rounded-[28px]"
           />
         </div>
@@ -259,10 +260,11 @@ export default function AuthorPage() {
           </p>
           <figure className="mx-auto mt-10 max-w-4xl">
             <Image
-              src="/liap/author/next-step.jpg"
-              alt="A woman with a backpack looking out over a winding road at sunset"
-              width={772}
-              height={380}
+              src="/liap/author/sunset-path.jpg"
+              alt="A footpath winding over golden hills toward the sunset"
+              width={1776}
+              height={896}
+              sizes="(min-width: 1024px) 896px, 100vw"
               className="h-auto w-full rounded-[28px]"
             />
             <figcaption className={`${cormorant.className} mt-3 text-center text-2xl italic`}>
@@ -385,7 +387,7 @@ export default function AuthorPage() {
           <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <li className="flex flex-col overflow-hidden rounded-3xl border border-[#EADFC8]">
               <div className="flex justify-center bg-navy px-6 py-8">
-                <Image src="/liap/author/living-is-a-project-cover.png" alt="Living Is a Project…Are You Ready? book cover" width={150} height={235} className="h-auto w-[150px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.35)]" />
+                <Image src="/liap/author/living-is-a-project-cover.png" alt="Living Is a Project…Are You Ready? book cover" width={150} height={225} className="h-auto w-[150px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.35)]" />
               </div>
               <div className="flex flex-1 flex-col gap-2 p-5">
                 <p className={`text-xs font-bold uppercase tracking-[0.08em] ${GOLD_TEXT}`}>Pre-buy now · {publicationDate()}</p>
@@ -425,26 +427,77 @@ export default function AuthorPage() {
         </div>
       </section>
 
-      {/* Free guide + weekly emails */}
+      {/* Free guide + weekly emails — layout from the owner's Words to Know
+          mockup (2026-10-29), with high-resolution photos. */}
       <section id="free-guide" className={`relative overflow-hidden ${RULE}`}>
-        <div className="mx-auto max-w-3xl px-5 py-16 text-center">
-          <p className={EYEBROW}>Free guide</p>
-          <h2 className={`${cormorant.className} mt-3 text-5xl font-medium`}>Words to Know</h2>
-          <p className={`${greatVibes.className} mt-2 text-3xl ${GOLD_ACCENT}`}>
-            You know more than you think.
-          </p>
-          <Image
-            src="/liap/author/words-to-know.jpg"
-            alt="Words to Know: 30 Project Management Terms to Help You Navigate the Projects That Matter in Life, by Crystal Glover Stewart"
-            width={935}
-            height={1210}
-            className="mx-auto mt-8 h-auto w-[190px] rounded-sm border border-[#EADFC8] shadow-xl"
-          />
-          <p className={`mx-auto mt-6 max-w-xl text-[17px] leading-relaxed ${BODY}`}>
-            30 project management terms to help you navigate the projects that matter in life — free. You&rsquo;ll
-            also get the Living Is a Project Letter on Tuesdays and Weekly Tips on Saturdays.
-          </p>
-          <AuthorSignup />
+        <div className="relative">
+          <div className="relative h-64 sm:h-80 lg:absolute lg:inset-0 lg:h-auto">
+            <Image
+              src="/liap/author/hiker-sunset.jpg"
+              alt="A woman with a backpack on a hillside trail, looking out at the sunset"
+              fill
+              sizes="100vw"
+              className="object-cover object-[75%_center]"
+            />
+            <div aria-hidden="true" className="absolute inset-0 hidden bg-gradient-to-r from-white via-white/90 to-transparent lg:block" />
+          </div>
+          <div className="relative mx-auto max-w-6xl px-5 py-12 lg:py-20">
+            <div className="max-w-xl">
+              <h2 className={`${cormorant.className} text-4xl font-semibold leading-[1.05] sm:text-5xl`}>
+                You&rsquo;ve Been Managing Projects Longer Than You Think.
+              </h2>
+              <p className={`mt-5 text-[17px] leading-relaxed ${BODY}`}>
+                A move. A career change. A family decision. A vacation. Starting over. You&rsquo;ve planned,
+                prioritized, adjusted, managed resources and solved problems.{' '}
+                <strong className="text-navy">You just may not have known what to call it.</strong>
+              </p>
+              <p className={`mt-8 ${EYEBROW}`}>Free guide</p>
+              <p className={`${cormorant.className} mt-2 text-3xl font-semibold`}>Words to Know</p>
+              <p className={`mt-1 text-[17px] ${BODY}`}>
+                30 Project Management Terms to Help You Navigate the Projects That Matter in Life
+              </p>
+              <AuthorSignup />
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-6xl px-5 pb-16 pt-4">
+          <h3 className={`${cormorant.className} text-center text-4xl font-medium`}>Sound familiar?</h3>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <article className="overflow-hidden rounded-3xl border border-[#EADFC8]">
+              <Image src="/liap/author/packing.jpg" alt="A woman packing folded clothes into a suitcase" width={1536} height={1024} sizes="(min-width: 768px) 360px, 100vw" className="h-48 w-full object-cover" />
+              <div className="p-6">
+                <p className={`${cormorant.className} text-2xl font-semibold`}>You identified what you needed.</p>
+                <p className={`mt-2 text-[15px] leading-relaxed ${BODY}`}>
+                  You considered where you were going, how long you&rsquo;d be there, what would fit and what you could leave behind.
+                </p>
+                <p className="mt-3 text-[15px] font-semibold text-navy">There&rsquo;s a project-management word for that.</p>
+                <a href="#free-guide" className={`mt-3 inline-block text-[15px] font-semibold ${GOLD_TEXT}`}>Discover it in Words to Know &rarr;</a>
+              </div>
+            </article>
+            <article className="overflow-hidden rounded-3xl border border-[#EADFC8]">
+              <Image src="/liap/author/groceries.jpg" alt="A grocery cart full of fresh food in a supermarket aisle" width={1536} height={1024} sizes="(min-width: 768px) 360px, 100vw" className="h-48 w-full object-cover" />
+              <div className="p-6">
+                <p className={`${cormorant.className} text-2xl font-semibold`}>You had resources &mdash; and limits.</p>
+                <p className={`mt-2 text-[15px] leading-relaxed ${BODY}`}>
+                  You decided what you needed, what you could spend and what mattered most.
+                </p>
+                <p className="mt-3 text-[15px] font-semibold text-navy">There are project-management words for that too.</p>
+                <a href="#free-guide" className={`mt-3 inline-block text-[15px] font-semibold ${GOLD_TEXT}`}>Discover them in Words to Know &rarr;</a>
+              </div>
+            </article>
+            <article className="overflow-hidden rounded-3xl border border-[#EADFC8]">
+              <Image src="/liap/author/winding-sign.jpg" alt="A curving-road warning sign beside a forest road" width={1536} height={1024} sizes="(min-width: 768px) 360px, 100vw" className="h-48 w-full object-cover object-right" />
+              <div className="p-6">
+                <p className={`${cormorant.className} text-2xl font-semibold`}>The plan changed.</p>
+                <p className={`mt-2 text-[15px] leading-relaxed ${BODY}`}>
+                  You had to decide whether to stop, wait, adjust or find another way forward.
+                </p>
+                <p className="mt-3 text-[15px] font-semibold text-navy">You&rsquo;ve managed this before. But did you know there was a process?</p>
+                <a href="#free-guide" className={`mt-3 inline-block text-[15px] font-semibold ${GOLD_TEXT}`}>Get Words to Know &rarr;</a>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 

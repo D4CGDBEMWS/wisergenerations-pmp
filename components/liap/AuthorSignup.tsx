@@ -32,6 +32,8 @@ declare global {
 }
 
 export function AuthorSignup() {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [letter, setLetter] = useState(true)
   const [tips, setTips] = useState(true)
@@ -106,7 +108,7 @@ export function AuthorSignup() {
       const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, tags, source: 'liap-author-page', turnstileToken }),
+        body: JSON.stringify({ firstName, lastName, email, tags, source: 'liap-author-page', turnstileToken }),
       })
       const data = await response.json().catch(() => null)
 
@@ -118,8 +120,10 @@ export function AuthorSignup() {
       }
 
       setStatus('success')
-      setMessage('Your Words to Know guide is on its way. Check your inbox to confirm your email.')
+      setMessage('Your guide is ready. Download it below — we’ve also emailed you the link.')
       setEmail('')
+      setFirstName('')
+      setLastName('')
       setTurnstileToken(null)
     } catch {
       setStatus('error')
@@ -136,6 +140,41 @@ export function AuthorSignup() {
       noValidate
       className="mx-auto mt-8 flex max-w-xl flex-col gap-4 rounded-2xl border-2 border-[#CC9C48] bg-white p-6 text-left sm:p-7"
     >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="author-signup-first" className="text-sm font-semibold text-navy">
+            First name
+          </label>
+          <input
+            id="author-signup-first"
+            name="firstName"
+            type="text"
+            autoComplete="given-name"
+            maxLength={80}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            disabled={status === 'submitting' || done}
+            className="min-h-[48px] rounded-full border border-[#CDBFA6] bg-white px-4 text-base text-navy outline-none focus:border-[#A86F14] focus:ring-2 focus:ring-[#CC9C48]/40 disabled:opacity-60"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="author-signup-last" className="text-sm font-semibold text-navy">
+            Last name
+          </label>
+          <input
+            id="author-signup-last"
+            name="lastName"
+            type="text"
+            autoComplete="family-name"
+            maxLength={80}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            disabled={status === 'submitting' || done}
+            className="min-h-[48px] rounded-full border border-[#CDBFA6] bg-white px-4 text-base text-navy outline-none focus:border-[#A86F14] focus:ring-2 focus:ring-[#CC9C48]/40 disabled:opacity-60"
+          />
+        </div>
+      </div>
+
       <div className="flex flex-col gap-1.5">
         <label htmlFor="author-signup-email" className="text-sm font-semibold text-navy">
           Email address
@@ -195,6 +234,16 @@ export function AuthorSignup() {
         >
           {message}
         </p>
+      ) : null}
+
+      {done ? (
+        <a
+          href="/liap/author/words-to-know.pdf"
+          download
+          className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#CC9C48] px-6 text-sm font-semibold uppercase tracking-[0.14em] text-navy"
+        >
+          Download Words to Know (PDF)
+        </a>
       ) : null}
 
       <p className="text-[13px] text-[#5A5F70]">
