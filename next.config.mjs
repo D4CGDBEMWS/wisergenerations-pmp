@@ -17,6 +17,7 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/api/chat': ['./content/knowledge-base/**/*'],
     '/api/studio': ['./content/studio/**'],
+    '/api/liap/bonus': ['./content/liap/**'],
   },
   images: {
     remotePatterns: [
@@ -81,6 +82,9 @@ const nextConfig = {
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
+              // Modern form of X-Frame-Options: no other site may show these
+              // pages inside a frame (copy-protection review, 2026-10-30).
+              "frame-ancestors 'self'",
             ].join('; '),
           },
         ],

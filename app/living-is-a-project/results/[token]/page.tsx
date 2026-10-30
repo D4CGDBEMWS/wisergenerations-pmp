@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
 import { findByResultToken, rebuildReport } from '@/lib/liap/assessment-service'
 import { PIVOTS_INTRO, PIVOTS_CYCLE } from '@/lib/liap/scoring'
-import { PREBUY_BONUS } from '@/lib/liap/bonus'
+import { bonusHref } from '@/lib/liap/bonus'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
 import { InterestButton } from '@/components/liap/InterestButton'
@@ -147,8 +147,7 @@ export default async function ResultsPage({
             </p>
             <p className="mt-3 font-semibold italic text-navy">{PIVOTS_INTRO.signature}</p>
             <a
-              href={PREBUY_BONUS.href}
-              download
+              href={bonusHref({ token })}
               className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-navy px-5 text-sm font-bold text-white hover:bg-navy/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
             >
               Download the WISER Pivots™ one-sheet (PDF)
