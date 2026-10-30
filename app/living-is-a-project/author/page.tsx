@@ -146,9 +146,9 @@ export default function AuthorPage() {
           <div className="relative mx-auto w-full max-w-[300px]">
             <Image
               src="/liap/author/living-is-a-project-cover.png"
-              alt="Living Is a Project…Are You Ready? by Crystal Glover Stewart — book cover"
-              width={435}
-              height={681}
+              alt="Living Is a Project…Are You Ready? by Crystal Glover Stewart, PMP® — book cover"
+              width={512}
+              height={768}
               priority
               className="h-auto w-full drop-shadow-[0_22px_34px_rgba(0,27,58,0.28)]"
             />
@@ -387,7 +387,7 @@ export default function AuthorPage() {
           <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <li className="flex flex-col overflow-hidden rounded-3xl border border-[#EADFC8]">
               <div className="flex justify-center bg-navy px-6 py-8">
-                <Image src="/liap/author/living-is-a-project-cover.png" alt="Living Is a Project…Are You Ready? book cover" width={150} height={235} className="h-auto w-[150px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.35)]" />
+                <Image src="/liap/author/living-is-a-project-cover.png" alt="Living Is a Project…Are You Ready? book cover" width={150} height={225} className="h-auto w-[150px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.35)]" />
               </div>
               <div className="flex flex-1 flex-col gap-2 p-5">
                 <p className={`text-xs font-bold uppercase tracking-[0.08em] ${GOLD_TEXT}`}>Pre-buy now · {publicationDate()}</p>
