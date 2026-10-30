@@ -54,9 +54,15 @@ function referralFromUrl(): string | null {
 export function LiapCta({
   label = 'Preorder + unlock my assessment',
   className = '',
+  bundle,
+  disabled = false,
 }: {
   label?: string
   className?: string
+  /** A bundle slug (lib/liap/bundles.ts): checks out that bundle instead of one book. */
+  bundle?: string
+  /** Shown but not clickable, e.g. a bundle whose sale has not started. */
+  disabled?: boolean
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -79,10 +85,11 @@ export function LiapCta({
 
     try {
       const referral = referralFromUrl()
-      const res = await fetch('/api/liap/preorder', {
+      const res = await fetch(bundle ? '/api/liap/bundle' : '/api/liap/preorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          ...(bundle ? { bundle } : {}),
           ...(referral ? { p: referral } : {}),
           ...(shipCode.trim() ? { ship: shipCode.trim() } : {}),
         }),
@@ -109,13 +116,13 @@ export function LiapCta({
       <button
         type="button"
         onClick={start}
-        disabled={loading}
+        disabled={loading || disabled}
         className="inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-gold px-8 text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {loading ? 'Opening secure checkout…' : label}
       </button>
 
-      {showCode ? (
+      {disabled ? null : showCode ? (
         <div className="mt-3">
           <label className="block text-sm font-medium text-current" htmlFor="liap-ship-code">
             Free-shipping code

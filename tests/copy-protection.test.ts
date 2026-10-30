@@ -29,7 +29,7 @@ describe('the pre-buy bonus is no longer a public file', () => {
     const src = read('app/api/liap/bonus/route.ts')
     expect(src).toContain('readLiapAccess')
     expect(src).toContain('findByResultToken')
-    expect(src).toContain("payment_status === 'paid' && isLiapPreorder")
+    expect(src).toContain("payment_status === 'paid' && (isLiapPreorder(s.metadata) || isLiapBundle(s.metadata))")
     expect(src).toContain('status: 403')
     expect(src).toContain("'Cache-Control': 'private, no-store'")
     // The route reads a static path (for file tracing); it must be the same file.

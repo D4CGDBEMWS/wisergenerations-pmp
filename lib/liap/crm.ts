@@ -26,6 +26,7 @@ export const LIAP_TAGS = [
   'liap_ready_to_stabilize',
   'liap_workshop_interest',
   'liap_starter_kit_interest',
+  'liap_book_bundle',
 ] as const
 
 export type LiapTag = (typeof LIAP_TAGS)[number]

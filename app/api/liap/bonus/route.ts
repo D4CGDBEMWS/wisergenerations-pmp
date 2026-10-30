@@ -8,6 +8,7 @@ import { readLiapAccess } from '@/lib/liap/entitlements'
 import { findByResultToken } from '@/lib/liap/assessment-service'
 import { isLiapPreorder } from '@/lib/liap/fulfilment'
 import { PREBUY_BONUS } from '@/lib/liap/bonus'
+import { isLiapBundle } from '@/lib/liap/bundles'
 
 // ---------------------------------------------------------------------------
 // The WISER Pivots™ one-sheet, for pre-buyers only.
@@ -36,7 +37,7 @@ async function paidPreorderSession(sessionId: string): Promise<boolean> {
   try {
     const stripe = new Stripe(secret, { apiVersion: '2025-08-27.basil' })
     const s = await stripe.checkout.sessions.retrieve(sessionId)
-    return s.payment_status === 'paid' && isLiapPreorder(s.metadata)
+    return s.payment_status === 'paid' && (isLiapPreorder(s.metadata) || isLiapBundle(s.metadata))
   } catch (err) {
     console.error('[liap/bonus] stripe lookup failed:', err)
     return false

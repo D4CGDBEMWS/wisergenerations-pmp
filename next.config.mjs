@@ -50,6 +50,8 @@ const nextConfig = {
       // Short author address, printed in the Words to Know guide. Not
       // permanent: the page may move, the printed /author must keep working.
       { source: '/author', destination: '/living-is-a-project/author', permanent: false },
+      // Book bundles page, owner ruling 2026-10-30. Short address for flyers.
+      { source: '/bundles', destination: '/living-is-a-project/bundles', permanent: false },
 
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
       { source: '/resources/blog', destination: '/blog', permanent: true },

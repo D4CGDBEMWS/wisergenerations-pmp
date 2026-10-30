@@ -70,6 +70,9 @@ export type FeatureFlag =
   // interest-list button and /api/liap/retreat refuses. Turn on only after the
   // price, dates, location and cancellation terms are confirmed.
   | 'LIAP_RETREAT'
+  // Book bundles page (/bundles) and its checkout (owner ruling 2026-10-30).
+  // Default off: hidden until the owner says to flip the switch.
+  | 'LIAP_BUNDLES'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */

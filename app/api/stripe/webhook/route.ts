@@ -15,6 +15,7 @@ import { creditBookPurchase } from '@/lib/liap/attribution'
 import { tagLiapContact } from '@/lib/liap/crm'
 import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
 import { saveBookShipment, shippingFromSession } from '@/lib/liap/shipping'
+import { isLiapBundle } from '@/lib/liap/bundles'
 import { countRetreatSeats } from '@/lib/liap/retreat-seats'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
@@ -411,7 +412,14 @@ export async function POST(request: NextRequest) {
         const liapEmail =
           liapSession.customer_email || liapSession.customer_details?.email || ''
 
-        if (isLiapPreorder(liapSession.metadata) && liapEmail && liapSession.payment_status === 'paid') {
+        // A bundle (lib/liap/bundles.ts) is the same book in quantity, so it is
+        // fulfilled through the same path, with its copy count.
+        const liapIsBundle = isLiapBundle(liapSession.metadata)
+        if (
+          (isLiapPreorder(liapSession.metadata) || liapIsBundle) &&
+          liapEmail &&
+          liapSession.payment_status === 'paid'
+        ) {
           const result = await fulfilPreorder({
             email: liapEmail,
             name: liapSession.customer_details?.name ?? null,
@@ -422,6 +430,7 @@ export async function POST(request: NextRequest) {
               typeof liapSession.payment_intent === 'string' ? liapSession.payment_intent : null,
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
+            quantity: liapIsBundle ? Math.max(1, Number(liapSession.metadata?.copies) || 1) : 1,
           })
 
           // Where to mail the hardcover. Never fatal (see lib/liap/shipping).
@@ -432,7 +441,12 @@ export async function POST(request: NextRequest) {
           // Tag the buyer in Mailchimp so the "your Assessment is open" email
           // and launch-week emails can reach every pre-buyer. Never fatal:
           // tagLiapContact swallows its own errors.
-          await tagLiapContact(liapEmail, ['liap_book_preorder', 'liap_assessment_entitled'])
+          await tagLiapContact(
+            liapEmail,
+            liapIsBundle
+              ? ['liap_book_preorder', 'liap_book_bundle', 'liap_assessment_entitled']
+              : ['liap_book_preorder', 'liap_assessment_entitled']
+          )
 
           // Credit the community partner whose code brought this buyer, if
           // there was one. AFTER fulfilment and deliberately not before: the

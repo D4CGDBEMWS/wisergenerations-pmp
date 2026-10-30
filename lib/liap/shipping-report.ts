@@ -20,9 +20,10 @@ export interface ShippingRow {
   postal_code: string
   country: string
   email: string
+  copies: number
 }
 
-const HEADERS = ['Order date', 'Name', 'Address line 1', 'Address line 2', 'City', 'State', 'ZIP', 'Country', 'Email']
+const HEADERS = ['Order date', 'Copies', 'Name', 'Address line 1', 'Address line 2', 'City', 'State', 'ZIP', 'Country', 'Email']
 
 function cell(v: unknown): string {
   let s = v instanceof Date ? v.toISOString().slice(0, 10) : String(v ?? '')
@@ -35,7 +36,7 @@ export function shippingCsv(rows: ShippingRow[]): string {
   const lines = [HEADERS.join(',')]
   for (const r of rows) {
     lines.push(
-      [r.ordered_on, r.name, r.line1, r.line2, r.city, r.state, r.postal_code, r.country, r.email]
+      [r.ordered_on, r.copies, r.name, r.line1, r.line2, r.city, r.state, r.postal_code, r.country, r.email]
         .map(cell)
         .join(',')
     )
@@ -45,18 +46,18 @@ export function shippingCsv(rows: ShippingRow[]): string {
 
 export async function unshippedOrders(): Promise<ShippingRow[]> {
   return getDb().query<ShippingRow>(
-    `SELECT ordered_on, name, line1, line2, city, state, postal_code, country, email
+    `SELECT ordered_on, copies, name, line1, line2, city, state, postal_code, country, email
        FROM book_shipping_list
       WHERE shipped_at IS NULL
       ORDER BY ordered_on`
   )
 }
 
-export function shippingEmailText(count: number, today: string): string {
+export function shippingEmailText(count: number, today: string, copies: number = count): string {
   return [
     count === 0
       ? `No pre-orders are waiting to ship this week (${today}).`
-      : `${count} pre-order${count === 1 ? '' : 's'} waiting to ship, as of ${today}. The list is attached (CSV, opens in Excel or Google Sheets).`,
+      : `${count} pre-order${count === 1 ? '' : 's'} waiting to ship (${copies} ${copies === 1 ? 'copy' : 'copies'} in all), as of ${today}. The list is attached (CSV, opens in Excel or Google Sheets).`,
     '',
     'Books mail after publication on November 30, 2026, by USPS Media Mail.',
     'When you mail books, reply with the tracking numbers and they will be marked shipped.',
@@ -90,8 +91,8 @@ export async function sendShippingList(now = new Date()): Promise<{ sent: boolea
       body: JSON.stringify({
         from: `Wiser Generations <${from}>`,
         to: [...SHIPPING_LIST_RECIPIENTS],
-        subject: `Book shipping list: ${rows.length} to ship (${today})`,
-        text: shippingEmailText(rows.length, today),
+        subject: `Book shipping list: ${rows.length} order${rows.length === 1 ? '' : 's'} to ship (${today})`,
+        text: shippingEmailText(rows.length, today, rows.reduce((n, r) => n + (Number(r.copies) || 1), 0)),
         ...(rows.length
           ? {
               attachments: [
