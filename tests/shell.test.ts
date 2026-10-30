@@ -151,7 +151,9 @@ describe('the default shell is unchanged', () => {
   const base = shell('default')
 
   it('keeps every navigation link it had', () => {
+    // '/author' added 2026-10-29 at owner go-live: the author page's way in.
     expect(base.nav.map((l) => l.href)).toEqual([
+      '/author',
       '/programs',
       '/veterans',
       '/corporate',
