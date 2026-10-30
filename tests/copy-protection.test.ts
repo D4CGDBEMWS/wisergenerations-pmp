@@ -67,7 +67,8 @@ describe('framing and footer', () => {
   })
   it('names the book trademarks in the footer', () => {
     const f = read('components/layout/Footer.tsx')
-    expect(f).toContain('are trademarks of Crystal Glover Stewart')
+    expect(f).toContain('are trademarks of Wiser Generations International LLC')
+    expect(f).toContain('The LIAP Way&trade;')
     expect(f).toContain('Life Project-Ready&trade;')
   })
 })
