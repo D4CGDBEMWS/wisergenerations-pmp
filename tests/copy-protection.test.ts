@@ -50,7 +50,7 @@ describe('AI crawlers are asked to stay out; search engines are not', () => {
   it('disallows every listed AI crawler from the whole site', () => {
     const ai = rules.find((r) => Array.isArray(r.userAgent) && r.userAgent.includes('GPTBot'))!
     expect(ai.disallow).toBe('/')
-    for (const bot of ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'PerplexityBot', 'Bytespider'])
+    for (const bot of ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Bytespider'])
       expect(AI_CRAWLERS).toContain(bot)
   })
   it('still allows everyone else, including Googlebot', () => {
@@ -58,6 +58,9 @@ describe('AI crawlers are asked to stay out; search engines are not', () => {
     expect(all.allow).toBe('/')
     expect(AI_CRAWLERS).not.toContain('Googlebot')
     expect(AI_CRAWLERS).not.toContain('Bingbot')
+    // AI assistants fetching for a person stay allowed (firewall: Log).
+    for (const bot of ['ChatGPT-User', 'OAI-SearchBot', 'Claude-Web', 'PerplexityBot'])
+      expect(AI_CRAWLERS as readonly string[]).not.toContain(bot)
   })
 })
 
