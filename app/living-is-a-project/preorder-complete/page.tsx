@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { publicationDate } from '@/lib/liap/launch'
 import { assessmentOpen } from '@/lib/liap/assessment-availability'
-import { PREBUY_BONUS } from '@/lib/liap/bonus'
+import { PREBUY_BONUS, bonusHref } from '@/lib/liap/bonus'
 
 export const metadata = {
   title: 'Thank you for your order | Wiser Generations',
@@ -19,7 +19,15 @@ export const metadata = {
 // the real check, and it explains the delay if the grant has not landed yet.
 // ---------------------------------------------------------------------------
 
-export default function PreorderCompletePage() {
+export default async function PreorderCompletePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>
+}) {
+  // Stripe appends the checkout session; the bonus route checks it is paid.
+  const { session_id: sessionId } = await searchParams
+  const bonus = bonusHref({ sessionId })
+
   // Pre-orders can be open before the Assessment is (LIAP_ASSESSMENT off).
   if (!assessmentOpen()) {
     return (
@@ -39,8 +47,7 @@ export default function PreorderCompletePage() {
           </p>
         </div>
         <a
-          href={PREBUY_BONUS.href}
-          download
+          href={bonus}
           className="mt-8 inline-flex min-h-[48px] items-center rounded-xl border-2 border-gold px-6 text-base font-bold text-navy hover:bg-gold/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
         >
           Download your bonus: the {PREBUY_BONUS.name} (PDF)
@@ -76,8 +83,7 @@ export default function PreorderCompletePage() {
       </Link>
 
       <a
-          href={PREBUY_BONUS.href}
-          download
+          href={bonus}
           className="mt-8 inline-flex min-h-[48px] items-center rounded-xl border-2 border-gold px-6 text-base font-bold text-navy hover:bg-gold/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
         >
           Download your bonus: the {PREBUY_BONUS.name} (PDF)

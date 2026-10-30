@@ -25,11 +25,10 @@ describe('WISER Pivots™ replaces S.T.E.A.D.Y.', () => {
     }
   })
 
-  it('links to a one-sheet that ships with the site', () => {
+  it('links to the one-sheet through the buyer check, with the result token', () => {
     const src = readFileSync(RESULTS, 'utf8')
-    expect(src).toContain('PREBUY_BONUS.href')
-    expect(PREBUY_BONUS.href).toBe('/liap/wiser-pivots-one-sheet.pdf')
-    expect(existsSync(join(process.cwd(), 'public/liap/wiser-pivots-one-sheet.pdf'))).toBe(true)
+    expect(src).toContain('bonusHref({ token })')
+    expect(existsSync(join(process.cwd(), PREBUY_BONUS.file))).toBe(true)
   })
 })
 
@@ -42,6 +41,7 @@ describe('the pre-buy bonus', () => {
     ]) expect(read(p)).toContain('PREBUY_BONUS.offer')
     // Both thank-you variants (Assessment open and not yet open) carry it.
     const done = read('app/living-is-a-project/preorder-complete/page.tsx')
-    expect(done.match(/href=\{PREBUY_BONUS\.href\}/g)).toHaveLength(2)
+    expect(done.match(/href=\{bonus\}/g)).toHaveLength(2)
+    expect(done).toContain('bonusHref({ sessionId })')
   })
 })
