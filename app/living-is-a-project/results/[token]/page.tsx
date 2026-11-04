@@ -9,6 +9,35 @@ import { LiapPageView } from '@/components/liap/LiapPageView'
 import { EmailPlanButton } from '@/components/liap/EmailPlanButton'
 import { InterestButton } from '@/components/liap/InterestButton'
 import { queryOne } from '@/lib/db/client'
+import localFont from 'next/font/local'
+import { LiapBanner } from '@/components/liap/LiapBanner'
+import { BrandIcon } from '@/components/liap/BrandIcon'
+import type { BrandIconName } from '@/lib/liap/brand-icons'
+
+// Owner request, 2026-11-04: the report felt impersonal, with no icons or
+// pictures. It now carries the Living Is a Project banner, the campaign's road
+// and crown art, an icon for every dimension and step, and Crystal's own
+// words from the author page under the crown (no photo, owner ruling). No copy below was rewritten.
+const cormorant = localFont({
+  src: '../../../fonts/liap/cormorant-garamond-latin-600-normal.woff2',
+  weight: '600',
+  display: 'swap',
+})
+const greatVibes = localFont({
+  src: '../../../fonts/liap/great-vibes-latin-400-normal.woff2',
+  weight: '400',
+  display: 'swap',
+})
+
+/** A gold icon in a cream circle, the house style for this report. */
+function IconBadge({ name, size = 'md' }: { name: BrandIconName; size?: 'sm' | 'md' }) {
+  const box = size === 'sm' ? 'h-10 w-10' : 'h-12 w-12'
+  return (
+    <span aria-hidden="true" className={`flex ${box} flex-none items-center justify-center rounded-full bg-[#F6F1E6]`}>
+      <BrandIcon name={name} size={size === 'sm' ? 20 : 24} />
+    </span>
+  )
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -89,18 +118,37 @@ export default async function ResultsPage({
   return (
     <main className="bg-gray-50">
       <LiapPageView event="liap_results_viewed" props={{ position: report.position }} />
+      <LiapBanner eyebrow="Your Life Project-Ready™ Plan" />
 
       {/* Position */}
       <section className="bg-navy text-white">
-        <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-            Your Life Project Position
-          </p>
-          <h1 className="mt-4 text-3xl font-bold sm:text-5xl">{report.positionLabel}</h1>
-          <p className="mt-4 max-w-2xl leading-relaxed text-gray-200">{report.positionMeaning}</p>
-          <p className="mt-6 text-sm text-gray-400">
-            {report.total} of 200 across eight dimensions
-          </p>
+        <div className="mx-auto flex max-w-3xl items-start gap-5 px-5 py-12 sm:gap-7 sm:px-8 sm:py-16">
+          <img src="/liap/brand/crown.png" alt="" aria-hidden="true" width={72} height={60} className="mt-1 hidden h-14 w-auto flex-none sm:block" />
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+              Your Life Project Position
+            </p>
+            <h1 className={`${cormorant.className} mt-3 text-4xl sm:text-6xl`}>{report.positionLabel}</h1>
+            <p className="mt-4 max-w-2xl leading-relaxed text-gray-200">{report.positionMeaning}</p>
+            <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-gold/50 px-4 py-1.5 text-sm text-gray-200">
+              <span className="font-bold text-gold">{report.total}</span> of 200 across eight dimensions
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* A word from Crystal: her own approved words from the author page. */}
+      <section className="border-b border-[#EADFC8] bg-white">
+        <div className="mx-auto flex max-w-3xl flex-col items-start gap-5 px-5 py-8 sm:flex-row sm:items-center sm:px-8">
+          {/* Owner ruling 2026-11-04: no photo of Crystal on any material. */}
+          <img src="/liap/brand/crown.png" alt="" aria-hidden="true" width={80} height={67} className="h-16 w-auto flex-none" />
+          <div>
+            <p className={`${cormorant.className} text-xl leading-snug text-navy sm:text-2xl`}>
+              &ldquo;This book is the blueprint I wish I had, and it offers practical structure for a life worth living.&rdquo;
+            </p>
+            <p className={`${greatVibes.className} mt-1 text-3xl text-[#A86F14]`}>Crystal</p>
+            <p className="text-xs uppercase tracking-[0.16em] text-gray-500">Crystal Glover Stewart, PMP&reg; &middot; Life is a journey. Enjoy the ride!</p>
+          </div>
         </div>
       </section>
 
@@ -112,7 +160,8 @@ export default async function ResultsPage({
             aria-labelledby="urgent-heading"
             className="rounded-xl border-l-4 border-red-700 bg-red-50 p-5 sm:p-6"
           >
-            <h2 id="urgent-heading" className="text-lg font-bold text-red-900">
+            <h2 id="urgent-heading" className="flex items-center gap-2 text-lg font-bold text-red-900">
+              <BrandIcon name="attention" size={22} className="text-red-800" />
               Needs attention first
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-red-900">
@@ -158,14 +207,16 @@ export default async function ResultsPage({
         {/* Dashboard. §22: score, classification and a written label — never
             colour alone, and the bar is decorative with the number beside it. */}
         <section aria-labelledby="dashboard-heading">
-          <h2 id="dashboard-heading" className="text-xl font-bold text-navy">
+          <h2 id="dashboard-heading" className={`${cormorant.className} text-3xl text-navy`}>
             Your eight dimensions
           </h2>
           <ul className="mt-5 space-y-3">
             {report.scores.map((s) => {
               const style = CLASSIFICATION_STYLE[s.classification]!
               return (
-                <li key={s.key} className="rounded-xl border border-gray-200 bg-white p-4">
+                <li key={s.key} className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4">
+                  <IconBadge name={s.key as BrandIconName} size="sm" />
+                  <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                     <p className="font-semibold text-navy">{s.name}</p>
                     <p className="text-sm text-gray-600">
@@ -184,6 +235,7 @@ export default async function ResultsPage({
                       style={{ width: `${((s.score - 5) / 20) * 100}%` }}
                     />
                   </div>
+                  </div>
                 </li>
               )
             })}
@@ -192,7 +244,8 @@ export default async function ResultsPage({
 
         {report.strengths.length > 0 && (
           <section aria-labelledby="strengths-heading">
-            <h2 id="strengths-heading" className="text-xl font-bold text-navy">
+            <h2 id="strengths-heading" className={`${cormorant.className} flex items-center gap-3 text-3xl text-navy`}>
+              <IconBadge name="strengths" size="sm" />
               Strengths you can use
             </h2>
             <p className="mt-2 leading-relaxed text-gray-600">
@@ -214,17 +267,20 @@ export default async function ResultsPage({
 
         {/* Exactly three. §18. */}
         <section aria-labelledby="actions-heading">
-          <h2 id="actions-heading" className="text-xl font-bold text-navy">
+          <h2 id="actions-heading" className={`${cormorant.className} text-3xl text-navy`}>
             Your next best three
           </h2>
           <div className="mt-5 space-y-4">
             {report.actions.map((action) => (
-              <article key={action.kind} className="rounded-xl border border-gray-200 bg-white p-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-gold">
+              <article key={action.kind} className="flex gap-4 rounded-xl border border-[#EADFC8] bg-white p-5 shadow-sm">
+                <IconBadge name={action.kind} />
+                <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-widest text-[#8A5A0C]">
                   {ACTION_HEADING[action.kind]}
                 </p>
                 <h3 className="mt-1.5 text-lg font-bold text-navy">{action.headline}</h3>
                 <p className="mt-2 leading-relaxed text-gray-700">{action.body}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -232,13 +288,14 @@ export default async function ResultsPage({
 
         {/* 30/60/90. §20. */}
         <section aria-labelledby="plan-heading">
-          <h2 id="plan-heading" className="text-xl font-bold text-navy">
+          <h2 id="plan-heading" className={`${cormorant.className} flex items-center gap-3 text-3xl text-navy`}>
+            <IconBadge name="plan" size="sm" />
             Your 30/60/90-day starting plan
           </h2>
           <div className="mt-5 space-y-4">
             {report.plan.phases.map((phase) => (
-              <article key={phase.window} className="rounded-xl border border-gray-200 bg-white p-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
+              <article key={phase.window} className="rounded-xl border border-gray-200 border-l-4 border-l-[#CC9C48] bg-white p-5">
+                <p className="inline-block rounded-full bg-[#F6F1E6] px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#8A5A0C]">
                   {phase.window}
                 </p>
                 <h3 className="mt-1 text-lg font-bold text-navy">{phase.title}</h3>
@@ -262,7 +319,8 @@ export default async function ResultsPage({
 
         {/* §24: reuse the checkout email rather than asking for it again. */}
         <section aria-labelledby="email-heading" className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
-          <h2 id="email-heading" className="text-lg font-bold text-navy">
+          <h2 id="email-heading" className="flex items-center gap-3 text-lg font-bold text-navy">
+            <IconBadge name="mail" size="sm" />
             Resend My Results Email
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
@@ -276,7 +334,10 @@ export default async function ResultsPage({
             rather than a script-driven download, so it works with JavaScript
             off and behaves like a file in every browser. */}
         <section className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-bold text-navy">Keep a copy</h2>
+          <h2 className="flex items-center gap-3 text-lg font-bold text-navy">
+            <IconBadge name="download" size="sm" />
+            Keep a copy
+          </h2>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
             A one-page snapshot of your position, your eight dimensions and your 30/60/90 plan.
           </p>
@@ -289,13 +350,25 @@ export default async function ResultsPage({
         </section>
 
         {/* §30: name what is coming, sell nothing that does not exist. */}
-        <section aria-labelledby="next-heading" className="border-t border-gray-200 pt-10">
-          <h2 id="next-heading" className="text-xl font-bold text-navy">
-            You have the plan. Now let&rsquo;s work the plan.
-          </h2>
+        <section aria-labelledby="next-heading" className="overflow-hidden rounded-2xl border border-[#EADFC8] bg-[#FBF9F5]">
+          <div className="relative px-5 pb-2 pt-8 sm:px-8">
+            <img
+              src="/liap/brand/road-photo.jpg"
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none absolute right-0 top-0 hidden h-56 w-44 object-cover sm:block"
+              style={{ WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 40%)', maskImage: 'linear-gradient(90deg, transparent, #000 40%)' }}
+            />
+            <h2 id="next-heading" className={`${cormorant.className} relative max-w-md text-3xl leading-tight text-navy`}>
+              You have the plan. Now let&rsquo;s work the plan.
+            </h2>
+            <p className={`${greatVibes.className} relative mt-1 text-2xl text-[#A86F14]`}>The bend is not the end.</p>
+          </div>
+          <div className="px-5 pb-8 sm:px-8">
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <article className="rounded-xl border border-gray-200 bg-white p-5">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
+              <IconBadge name="workshop" size="sm" />
+              <p className="mt-3 text-xs font-bold uppercase tracking-widest text-gray-500">
                 Coming soon
               </p>
               <h3 className="mt-1 font-bold text-navy">
@@ -307,7 +380,8 @@ export default async function ResultsPage({
               <InterestButton interest="workshop" label="Join the priority list" />
             </article>
             <article className="rounded-xl border border-gray-200 bg-white p-5">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
+              <IconBadge name="kit" size="sm" />
+              <p className="mt-3 text-xs font-bold uppercase tracking-widest text-gray-500">
                 Coming soon
               </p>
               <h3 className="mt-1 font-bold text-navy">Life Project Starter Kit</h3>
@@ -316,6 +390,7 @@ export default async function ResultsPage({
               </p>
               <InterestButton interest="starter_kit" label="Notify me" />
             </article>
+          </div>
           </div>
         </section>
 

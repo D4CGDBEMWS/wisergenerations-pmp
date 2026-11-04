@@ -4,6 +4,7 @@ import { readLiapAccess } from '@/lib/liap/entitlements'
 import { queryOne } from '@/lib/db/client'
 import { AssessmentForm } from '@/components/liap/AssessmentForm'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { LiapBanner } from '@/components/liap/LiapBanner'
 import { assessmentOpen } from '@/lib/liap/assessment-availability'
 
 export const metadata = {
@@ -108,6 +109,8 @@ export default async function AssessmentPage({
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York',
       })
       return (
+        <>
+        <LiapBanner eyebrow="Life Project-Ready™ Assessment" />
         <main className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-24">
           <h1 className="text-2xl font-bold text-navy sm:text-3xl">You&rsquo;ve completed your assessment</h1>
           <p className="mt-4 leading-relaxed text-gray-600">
@@ -133,12 +136,14 @@ export default async function AssessmentPage({
             </Link>
           </div>
         </main>
+        </>
       )
     }
   }
 
   return (
     <main className="bg-gray-50">
+      <LiapBanner eyebrow="Life Project-Ready™ Assessment" />
       <LiapPageView event="liap_assessment_started" />
       <AssessmentForm />
     </main>
