@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import localFont from 'next/font/local'
 import { LiapCta } from '@/components/liap/LiapCta'
+import { BuyerAware } from '@/components/liap/BuyerAware'
 import { AuthorSignup } from '@/components/liap/AuthorSignup'
 import { LIAP_BOOK, LIAP_RETREAT } from '@/lib/liap/product'
 import { publicationDate } from '@/lib/liap/launch'
@@ -151,7 +152,9 @@ export default function AuthorPage() {
             </p>
             <p className={`${greatVibes.className} mt-4 text-4xl ${GOLD_ACCENT}`}>by Crystal Glover Stewart, PMP®</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <LiapCta label={`Pre-buy the book — ${LIAP_BOOK.priceLabel}`} />
+              <BuyerAware>
+                <LiapCta label={`Pre-buy the book — ${LIAP_BOOK.priceLabel}`} />
+              </BuyerAware>
               <a href="#assessment" className={`text-[15px] font-semibold underline ${GOLD_TEXT}`}>
                 Includes the free assessment ↓
               </a>

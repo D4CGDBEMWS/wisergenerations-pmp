@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { KeepReferral } from '@/components/liap/KeepReferral'
+import { BuyerAware } from '@/components/liap/BuyerAware'
 
 export const metadata = {
   title: 'Living Is a Project | Wiser Generations',
@@ -97,12 +98,14 @@ export default function LiapHubPage() {
           </div>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <BuyerAware>
             <Link
               href="/living-is-a-project/book"
               className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-gold px-7 text-center text-base font-bold text-navy transition-colors hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Preorder the book + unlock my assessment
             </Link>
+            </BuyerAware>
             <a
               href="#how-it-works"
               className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/30 px-7 text-center text-base font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -180,12 +183,14 @@ export default function LiapHubPage() {
             Preorder <em>Living Is a Project&hellip;Are You Ready?</em> and receive the Life Project-Ready&trade;
             Assessment at no additional charge.
           </p>
+          <BuyerAware className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-navy px-7 text-base font-bold text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">
           <Link
             href="/living-is-a-project/book"
             className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-navy px-7 text-base font-bold text-white transition-colors hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             Preorder + unlock my assessment
           </Link>
+          </BuyerAware>
         </div>
       </section>
     </main>
