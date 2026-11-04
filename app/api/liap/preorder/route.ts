@@ -97,7 +97,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             product_data: {
               name: `${LIAP_BOOK.name} — Preorder`,
               description:
-                `Preorder the hardcover, publishing ${publicationDate()}, and ${assessmentCheckoutLine()}.`,
+                `Preorder the paperback, publishing ${publicationDate()}, and ${assessmentCheckoutLine()}.`,
             },
           },
         },
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       // Collected here so the customer never types it twice — §24 asks that
       // the results email reuse the checkout address rather than re-prompting.
       customer_creation: 'always',
-      // A hardcover has to be mailed somewhere. Owner ruling 2026-10-30:
+      // A paperback has to be mailed somewhere. Owner ruling 2026-10-30:
       // US addresses only, flat $4.99 shipping.
       shipping_address_collection: { allowed_countries: [...LIAP_BOOK.shipping.countries] },
       shipping_options: [

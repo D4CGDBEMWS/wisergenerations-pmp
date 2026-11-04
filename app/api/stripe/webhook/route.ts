@@ -433,7 +433,7 @@ export async function POST(request: NextRequest) {
             quantity: liapIsBundle ? Math.max(1, Number(liapSession.metadata?.copies) || 1) : 1,
           })
 
-          // Where to mail the hardcover. Never fatal (see lib/liap/shipping).
+          // Where to mail the paperback. Never fatal (see lib/liap/shipping).
           const shipTo = shippingFromSession(liapSession)
           if (result.orderId && shipTo) await saveBookShipment(result.orderId, shipTo)
           else if (!shipTo) console.error('[stripe/webhook] book preorder without a shipping address', liapSession.id)

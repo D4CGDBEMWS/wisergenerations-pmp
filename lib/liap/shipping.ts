@@ -2,7 +2,7 @@ import type Stripe from 'stripe'
 import { getDb } from '@/lib/db/client'
 
 // ---------------------------------------------------------------------------
-// Saves where a pre-ordered hardcover is to be mailed. Owner ruling 2026-10-30.
+// Saves where a pre-ordered paperback is to be mailed. Owner ruling 2026-10-30.
 //
 // Never fatal: the buyer has paid and has their entitlement whatever happens
 // here. A failure is logged, and the address is still in Stripe.

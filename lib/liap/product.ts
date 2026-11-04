@@ -18,7 +18,7 @@ import { publicationDate } from './launch'
 const AMOUNT_CENTS = 2499
 
 /**
- * Flat shipping for the hardcover. Owner ruling 2026-10-30: $4.99, US only,
+ * Flat shipping for the paperback. Owner ruling 2026-10-30: $4.99, US only,
  * USPS Media Mail, books mailed by the author after publication.
  */
 const SHIPPING_CENTS = 499
@@ -47,7 +47,7 @@ export const LIAP_BOOK = {
   /** e.g. "$24.99 + $4.99 shipping" */
   priceWithShippingLabel: `$${(AMOUNT_CENTS / 100).toFixed(2)} + $${(SHIPPING_CENTS / 100).toFixed(2)} shipping`,
   currency: 'usd',
-  format: 'Hardcover',
+  format: 'Paperback',
   publisher: 'Goshen Publishing',
   /**
    * Derived, never typed. The canonical value lives in lib/liap/launch.ts;

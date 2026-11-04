@@ -35,7 +35,7 @@ export const BUNDLES: readonly Bundle[] = [
   {
     slug: 'black-friday-3-pack',
     name: 'Black Friday 3-Book Bundle',
-    tagline: 'One for you, two to give. Three hardcovers for the people you are making the turn with.',
+    tagline: 'One for you, two to give. Three paperbacks for the people you are making the turn with.',
     items: [
       { title: LIAP_BOOK.name, format: LIAP_BOOK.format, quantity: 3, unitValue: LIAP_BOOK.amount },
     ],
