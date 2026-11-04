@@ -28,7 +28,7 @@ export function LiapBanner({ eyebrow }: { eyebrow: string }) {
         src="/liap/brand/road.jpg"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute -right-4 top-0 h-full w-auto max-w-none opacity-90 sm:opacity-100"
+        className="pointer-events-none absolute -right-4 top-0 hidden h-full w-auto max-w-none sm:block"
         style={{ WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, #000 40%)', maskImage: 'linear-gradient(90deg, transparent 0%, #000 40%)' }}
       />
       <div className="relative mx-auto max-w-5xl px-5 pb-8 pt-8 sm:px-8 sm:pb-10 sm:pt-10">
