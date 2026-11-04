@@ -499,11 +499,11 @@ export default function AuthorPage() {
             <article className="overflow-hidden rounded-3xl border border-[#EADFC8]">
               <Image src="/liap/author/groceries.jpg" alt="A grocery cart full of fresh food in a supermarket aisle" width={1536} height={1024} sizes="(min-width: 768px) 360px, 100vw" className="h-48 w-full object-cover" />
               <div className="p-6">
-                <p className={`${cormorant.className} text-2xl font-semibold`}>You had resources &mdash; and limits.</p>
+                <p className={`${cormorant.className} text-2xl font-semibold`}>You used every resource you had.</p>
                 <p className={`mt-2 text-[15px] leading-relaxed ${BODY}`}>
-                  You decided what you needed, what you could spend and what mattered most.
+                  Your budget, the people who could help, the tools in your kitchen and the apps on your phone &mdash; you put them all to work to get it done.
                 </p>
-                <p className="mt-3 text-[15px] font-semibold text-navy">There are project-management words for that too.</p>
+                <p className="mt-3 text-[15px] font-semibold text-navy">Project managers have words for that too.</p>
                 <a href="#free-guide" className={`mt-3 inline-block text-[15px] font-semibold ${GOLD_TEXT}`}>Discover them in Words to Know &rarr;</a>
               </div>
             </article>
