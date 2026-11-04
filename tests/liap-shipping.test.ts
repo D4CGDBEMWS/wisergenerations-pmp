@@ -9,7 +9,7 @@ import { shippingFromSession } from '@/lib/liap/shipping'
 
 const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8')
 
-describe('hardcover pre-order shipping', () => {
+describe('paperback pre-order shipping', () => {
   it('is a flat $4.99, US only', () => {
     expect(LIAP_BOOK.shipping.amount).toBe(499)
     expect(LIAP_BOOK.shipping.label).toBe('$4.99')

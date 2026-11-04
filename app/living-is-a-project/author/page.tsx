@@ -29,7 +29,7 @@ import { isEnabled } from '@/lib/flags'
 //
 // Deliberately NOT on this page yet (owner to supply):
 //   - Reader / endorser quotes. No placeholder quotes ship to production.
-//   - Descriptions and covers for the other three books. Owner ruling
+//   - Descriptions for the other three books (covers added 2026-11-04). Owner ruling
 //     2026-10-29: shown as "Coming soon" with "Notify me" (to the free-guide
 //     sign-up); no dates, prices or book pages until each is ready.
 //   - A booking page for the workshop; its CTA goes to /contact. The retreat
@@ -64,10 +64,28 @@ const BODY = 'text-[#1E2F55]'
 const EYEBROW = `text-xs font-medium uppercase tracking-[0.3em] ${GOLD_TEXT}`
 const RULE = 'border-t border-[#EADFC8]'
 
+// Covers: front panels cut from the owner's press-ready cover files (2026-11-04).
+// Owner ruling 2026-11-04: Grace and Peace to Rest replaces The Chronicles of
+// Grandma Ya Ya on the shelf.
 const OTHER_BOOKS = [
-  { title: 'You Just Never Know', subtitle: 'Whose Report Will You Believe', color: '#5B2A6E' },
-  { title: 'Love Smells Like Gardenias', subtitle: null, color: '#A8566F' },
-  { title: 'The Chronicles of Grandma Ya Ya', subtitle: null, color: '#B4532A' },
+  {
+    title: 'You Just Never Know',
+    subtitle: 'Whose Report Will You Believe',
+    color: '#5B2A6E',
+    cover: '/liap/author/you-just-never-know-cover.jpg',
+  },
+  {
+    title: 'Love Smells Like Gardenias',
+    subtitle: null,
+    color: '#A8566F',
+    cover: '/liap/author/love-smells-like-gardenias-cover.jpg',
+  },
+  {
+    title: 'Grace and Peace to Rest',
+    subtitle: 'Paint Over It',
+    color: '#1E3A6E',
+    cover: '/liap/author/grace-and-peace-to-rest-cover.jpg',
+  },
 ] as const
 
 export const metadata = {
@@ -140,7 +158,7 @@ export default function AuthorPage() {
             </div>
             <p className={`mt-4 text-[15px] font-semibold ${GOLD_TEXT}`}>Bonus: {PREBUY_BONUS.offer}</p>
             <p className={`mt-2 text-sm ${BODY}`}>
-              Hardcover · Goshen Publishing · Ships from {publicationDate()}
+              Paperback · Goshen Publishing · Ships from {publicationDate()}
             </p>
           </div>
           <div className="relative mx-auto w-full max-w-[300px]">
@@ -399,12 +417,7 @@ export default function AuthorPage() {
             {OTHER_BOOKS.map((b) => (
               <li key={b.title} className="flex flex-col overflow-hidden rounded-3xl border border-[#EADFC8]">
                 <div className="flex justify-center px-6 py-8" style={{ backgroundColor: b.color }}>
-                  <div className="flex aspect-[2/3] w-[150px] items-center justify-center rounded-r-md bg-white p-3 text-center shadow-lg">
-                    <p className={`${cormorant.className} text-lg font-bold leading-tight`} style={{ color: b.color }}>
-                      {b.title}
-                      {b.subtitle ? <span className="mt-1 block text-sm font-medium italic">{b.subtitle}</span> : null}
-                    </p>
-                  </div>
+                  <Image src={b.cover} alt={`${b.title} book cover`} width={150} height={225} className="h-auto w-[150px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.35)]" />
                 </div>
                 <div className="flex flex-1 flex-col gap-2 p-5">
                   <h3 className="text-lg font-semibold leading-snug">
