@@ -1,4 +1,6 @@
+import Image from 'next/image'
 import Link from 'next/link'
+import { BuyerAware } from '@/components/liap/BuyerAware'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { LiapCta } from '@/components/liap/LiapCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
@@ -91,24 +93,15 @@ export default function LiapBookPage() {
 
           {/* Cover */}
           <div className="lg:pt-2">
-            <div
-              className="mx-auto flex aspect-[2/3] w-full max-w-[280px] flex-col justify-between rounded-lg bg-gradient-to-br from-[#12233c] to-[#0A1628] p-6 text-center shadow-2xl ring-1 ring-white/10"
-              role="img"
-              aria-label="Cover of Living Is a Project…Are You Ready?"
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
-                Wiser Generations
-              </p>
-              <div>
-                <p className="text-2xl font-bold leading-tight text-white">
-                  Living Is a<span className="block">Project&hellip;</span>
-                </p>
-                <p className="mt-3 text-lg font-semibold text-gold">Are You Ready?</p>
-              </div>
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">
-                Goshen Publishing
-              </p>
-            </div>
+            {/* The real cover (owner report 2026-11-04: the placeholder was out of date). */}
+            <Image
+              src="/liap/author/living-is-a-project-cover.png"
+              alt="Cover of Living Is a Project…Are You Ready? by Crystal Glover Stewart, PMP®"
+              width={512}
+              height={768}
+              priority
+              className="mx-auto h-auto w-full max-w-[280px] rounded-sm shadow-2xl"
+            />
             <dl className="mx-auto mt-6 max-w-[280px] space-y-2 text-sm">
               <div className="flex justify-between gap-4 border-b border-white/10 pb-2">
                 <dt className="text-gray-400">Price</dt>
@@ -144,7 +137,11 @@ export default function LiapBookPage() {
             The book publishes {publicationDate()}.
           </p>
           <p className="mx-auto mt-3 max-w-xl font-semibold text-navy">Bonus: {PREBUY_BONUS.offer}</p>
-          <LiapCta className="mt-7 flex flex-col items-center" />
+          <div className="mt-7 flex flex-col items-center">
+            <BuyerAware>
+              <LiapCta className="flex flex-col items-center" />
+            </BuyerAware>
+          </div>
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}
             <Link
