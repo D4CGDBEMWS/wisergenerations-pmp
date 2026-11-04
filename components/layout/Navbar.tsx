@@ -61,8 +61,8 @@ export default function Navbar() {
           {liapJourney ? (
             <Link href={shell.homeHref} className="flex flex-shrink-0 items-center gap-2 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Living Is a Project home">
               <img src="/liap/brand/crown.png" alt="" width={40} height={34} className="h-8 w-auto" />
-              <span className="font-serif text-base font-semibold leading-tight text-navy sm:text-lg">
-                Living Is a Project&hellip; <span className="italic text-[#A86F14]">Are You Ready?&trade;</span>
+              <span className="min-w-0 font-serif text-base font-semibold leading-tight text-navy sm:text-lg">
+                Living Is a Project&hellip;<span className="hidden italic text-[#A86F14] sm:inline"> Are You Ready?&trade;</span>
               </span>
             </Link>
           ) : (
