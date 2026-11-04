@@ -73,6 +73,9 @@ export type FeatureFlag =
   // Book bundles page (/bundles) and its checkout (owner ruling 2026-10-30).
   // Default off: hidden until the owner says to flip the switch.
   | 'LIAP_BUNDLES'
+  // Workshop registration (/living-is-a-project/workshop) and its checkout,
+  // owner ruling 2026-11-04. Default off until the owner switches it on.
+  | 'LIAP_WORKSHOP'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */
