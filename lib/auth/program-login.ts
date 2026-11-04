@@ -1,4 +1,5 @@
 import { STUDY_ACCESS } from '@/lib/entitlements'
+import { brandedEmail, emailButton } from '@/lib/liap/email-brand'
 import { LOGIN_PRODUCTS, type LoginProduct } from '@/lib/auth/login-token'
 
 // ---------------------------------------------------------------------------
@@ -131,6 +132,23 @@ export function loginEmailHtml(
   const greeting = firstName
     ? `<p style="color:#374151;line-height:1.6;margin-top:0">Hi ${escapeHtml(firstName)},</p>`
     : ''
+
+  // Owner request, 2026-11-04: the LIAP sign-in email carries the Living Is a
+  // Project banner and Crystal's sign-off. Same approved words. The sign-off
+  // omits the PMP credential: a LIAP email must never mention PMP.
+  if (product === 'liap') {
+    return brandedEmail({
+      preheader: escapeHtml(copy.emailIntro),
+      signoffName: 'Crystal Glover Stewart',
+      bodyHtml:
+        greeting.replace('color:#374151', 'color:#1E2F55') +
+        `<p style="margin:0 0 4px;font-family:Georgia,'Times New Roman',serif;font-size:21px;color:#001B3A">${escapeHtml(copy.emailIntro)}</p>` +
+        emailButton(loginUrl, escapeHtml(copy.emailCta)) +
+        `<p style="color:#6b7280;font-size:14px;margin:0 0 8px">This link works once and expires in ` +
+        `<strong>15 minutes</strong>.</p>` +
+        `<p style="color:#6b7280;font-size:14px;margin:0 0 18px">${escapeHtml(copy.emailIgnore)}</p>`,
+    })
+  }
 
   return (
     `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">` +
