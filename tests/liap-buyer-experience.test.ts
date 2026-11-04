@@ -39,3 +39,21 @@ describe('book page cover', () => {
     expect(p).not.toContain('bg-gradient-to-br from-[#12233c]')
   })
 })
+
+describe('branded assessment journey (owner request 2026-11-04)', () => {
+  it('no photo of Crystal on the results page or in emails', () => {
+    expect(read('app/living-is-a-project/results/[token]/page.tsx')).not.toContain('crystal-glover-stewart')
+    expect(read('lib/liap/email-brand.ts')).not.toContain('crystal-glover-stewart')
+  })
+  it('assessment and results open under the Living Is a Project banner', () => {
+    expect(read('app/living-is-a-project/assessment/page.tsx')).toContain('<LiapBanner')
+    expect(read('app/living-is-a-project/results/[token]/page.tsx')).toContain('<LiapBanner')
+    expect(read('components/layout/Navbar.tsx')).toContain("'/living-is-a-project/assessment'")
+  })
+  it('emails use PNG art from the live site, never SVG', async () => {
+    const { brandedEmail } = await import('@/lib/liap/email-brand')
+    const html = brandedEmail({ preheader: 'x', bodyHtml: '<p>hi</p>' })
+    expect(html).toContain('https://www.wisergenerations.com/liap/brand/email-banner.png')
+    expect(html).not.toContain('<svg')
+  })
+})
