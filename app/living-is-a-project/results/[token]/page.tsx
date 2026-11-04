@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { isEnabled } from '@/lib/flags'
 import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, validateSession } from '@/lib/auth/session'
@@ -368,6 +369,21 @@ export default async function ResultsPage({
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <article className="rounded-xl border border-gray-200 bg-white p-5">
               <IconBadge name="workshop" size="sm" />
+{isEnabled('LIAP_WORKSHOP') ? (
+                <>
+                  <p className="mt-3 text-xs font-bold uppercase tracking-widest text-[#8A5A0C]">
+                    January 11–15, 2027 · Live on Zoom · $49
+                  </p>
+                  <h3 className="mt-1 font-bold text-navy">Be Ready to Make the Turn Workshop</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                    Ninety minutes working your plan alongside others going through their own change.
+                  </p>
+                  <Link href="/living-is-a-project/workshop" className="mt-4 inline-flex min-h-[44px] items-center rounded-full bg-navy px-5 text-xs font-semibold uppercase tracking-[0.14em] text-white">
+                    Choose my session
+                  </Link>
+                </>
+              ) : (
+                <>
               <p className="mt-3 text-xs font-bold uppercase tracking-widest text-gray-500">
                 Coming soon
               </p>
@@ -378,6 +394,8 @@ export default async function ResultsPage({
                 Ninety minutes working your plan alongside others going through their own change.
               </p>
               <InterestButton interest="workshop" label="Join the priority list" />
+                </>
+              )}
             </article>
             <article className="rounded-xl border border-gray-200 bg-white p-5">
               <IconBadge name="kit" size="sm" />

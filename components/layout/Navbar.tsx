@@ -41,6 +41,7 @@ export default function Navbar() {
     '/living-is-a-project/access',
     '/living-is-a-project/preorder-complete',
     '/living-is-a-project/verify-preorder',
+    '/living-is-a-project/workshop',
   ].some((p) => pathname === p || pathname?.startsWith(p + '/'))
 
   useEffect(() => {

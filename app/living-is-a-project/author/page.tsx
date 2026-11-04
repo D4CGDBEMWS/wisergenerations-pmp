@@ -316,7 +316,11 @@ export default function AuthorPage() {
               <p className={`text-sm ${BODY}`}>
                 First workshops: January 11–15, 2027, live on Zoom. Choose one session: 12:00–1:30 pm or 7:00–8:30 pm Eastern.
               </p>
-              <Link href="/contact" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full border border-navy px-4 text-center text-xs font-semibold uppercase tracking-[0.16em]">Ask about the January workshop</Link>
+              {isEnabled('LIAP_WORKSHOP') ? (
+                <Link href="/living-is-a-project/workshop" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full bg-navy px-4 text-center text-xs font-semibold uppercase tracking-[0.16em] text-white">Register for a session</Link>
+              ) : (
+                <Link href="/contact" className="mt-auto inline-flex min-h-[48px] items-center justify-center rounded-full border border-navy px-4 text-center text-xs font-semibold uppercase tracking-[0.16em]">Ask about the January workshop</Link>
+              )}
             </article>
             <article className="flex flex-col gap-2 rounded-3xl border border-[#EADFC8] p-6">
               <p className={EYEBROW}>Build</p>
