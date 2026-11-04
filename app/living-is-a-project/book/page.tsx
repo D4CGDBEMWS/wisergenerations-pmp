@@ -151,6 +151,15 @@ export default function LiapBookPage() {
               Preordered from another retailer?
             </Link>
           </p>
+          <p className="mt-2 text-sm text-gray-500">
+            Already pre-ordered here?{' '}
+            <Link
+              href="/living-is-a-project/access"
+              className="font-semibold text-brand-blue underline underline-offset-2 hover:text-navy"
+            >
+              Sign in to your assessment
+            </Link>
+          </p>
         </div>
       </section>
 
