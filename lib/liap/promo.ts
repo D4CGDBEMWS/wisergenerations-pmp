@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Free-shipping codes for the hardcover pre-order.
+// Free-shipping codes for the paperback pre-order.
 //
 // Owner ruling 2026-10-30: code SHIP2027, no limits, until the owner turns it
 // off. To retire a code, delete it from this list; to add one, add it here.

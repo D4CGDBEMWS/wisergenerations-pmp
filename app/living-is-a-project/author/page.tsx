@@ -158,7 +158,7 @@ export default function AuthorPage() {
             </div>
             <p className={`mt-4 text-[15px] font-semibold ${GOLD_TEXT}`}>Bonus: {PREBUY_BONUS.offer}</p>
             <p className={`mt-2 text-sm ${BODY}`}>
-              Hardcover · Goshen Publishing · Ships from {publicationDate()}
+              Paperback · Goshen Publishing · Ships from {publicationDate()}
             </p>
           </div>
           <div className="relative mx-auto w-full max-w-[300px]">

@@ -74,7 +74,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             unit_amount: bundle.price,
             product_data: {
               name: bundle.name,
-              description: `${copies} hardcover copies of ${LIAP_BOOK.name}, publishing ${publicationDate()}.`,
+              description: `${copies} paperback copies of ${LIAP_BOOK.name}, publishing ${publicationDate()}.`,
             },
           },
         },

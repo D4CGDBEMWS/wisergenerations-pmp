@@ -12,7 +12,7 @@ const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8')
 const bf = findBundle('black-friday-3-pack')!
 
 describe('Black Friday 3-book bundle', () => {
-  it('is 3 hardcovers for $50.00, saving $24.97 on $74.97', () => {
+  it('is 3 paperbacks for $50.00, saving $24.97 on $74.97', () => {
     expect(bf).toBeTruthy()
     expect(bundleCopies(bf)).toBe(3)
     expect(bf.price).toBe(5000)
@@ -62,5 +62,15 @@ describe('bundle checkout and fulfilment', () => {
     expect(read('app/living-is-a-project/bundles/page.tsx')).toContain("!isEnabled('LIAP_BUNDLES')")
     expect(route).toContain("!isEnabled('LIAP_BUNDLES')")
     expect(read('lib/shell.ts')).not.toContain("href: '/bundles'")
+  })
+})
+
+describe('format', () => {
+  it('the book is a paperback everywhere (owner ruling 2026-11-04)', async () => {
+    const { LIAP_BOOK } = await import('@/lib/liap/product')
+    expect(LIAP_BOOK.format).toBe('Paperback')
+    for (const p of ['app/api/liap/preorder/route.ts', 'app/api/liap/bundle/route.ts', 'app/living-is-a-project/author/page.tsx', 'lib/liap/bundles.ts']) {
+      expect(read(p).toLowerCase()).not.toContain('hardcover')
+    }
   })
 })
