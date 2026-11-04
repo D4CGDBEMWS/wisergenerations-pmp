@@ -36,6 +36,8 @@ export const LIAP_EVENTS = [
   'liap_results_viewed',
   'liap_results_email_sent',
   'liap_next_offer_clicked',
+  'liap_workshop_viewed',
+  'liap_workshop_clicked',
 ] as const
 
 export type LiapEvent = (typeof LIAP_EVENTS)[number]

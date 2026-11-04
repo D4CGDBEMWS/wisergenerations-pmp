@@ -16,6 +16,8 @@ import { tagLiapContact } from '@/lib/liap/crm'
 import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
 import { saveBookShipment, shippingFromSession } from '@/lib/liap/shipping'
 import { isLiapBundle } from '@/lib/liap/bundles'
+import { isLiapWorkshop } from '@/lib/liap/workshop'
+import { fulfilWorkshop } from '@/lib/liap/workshop-service'
 import { countRetreatSeats } from '@/lib/liap/retreat-seats'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
@@ -461,6 +463,28 @@ export async function POST(request: NextRequest) {
             customerId: result.customerId,
             outcomeRef: liapSession.id,
           })
+        }
+      }
+
+      // ───────────────────────────────────────────────────────────────
+      // Be Ready to Make the Turn Workshop registration (owner ruling
+      // 2026-11-04). Matched on its own marker, set only by
+      // app/api/liap/workshop. Never fatal: a failure is logged and Stripe
+      // still has the payment.
+      // ───────────────────────────────────────────────────────────────
+      if (event.type === 'checkout.session.completed') {
+        const ws = event.data.object as Stripe.Checkout.Session
+        const wEmail = ws.customer_email || ws.customer_details?.email || ''
+        if (isLiapWorkshop(ws.metadata) && wEmail && ws.payment_status === 'paid') {
+          await fulfilWorkshop({
+            email: wEmail,
+            name: ws.customer_details?.name ?? null,
+            stripeCustomerId: typeof ws.customer === 'string' ? ws.customer : null,
+            checkoutSessionId: ws.id,
+            sessionKey: ws.metadata?.session,
+            amount: ws.amount_total ?? null,
+            referralCode: ws.metadata?.referral ?? null,
+          }).catch((err) => console.error('[stripe/webhook] workshop fulfilment failed', ws.id, err))
         }
       }
 
