@@ -497,7 +497,7 @@ export default function AuthorPage() {
               </div>
             </article>
             <article className="overflow-hidden rounded-3xl border border-[#EADFC8]">
-              <Image src="/liap/author/groceries.jpg" alt="A grocery cart full of fresh food in a supermarket aisle" width={1536} height={1024} sizes="(min-width: 768px) 360px, 100vw" className="h-48 w-full object-cover" />
+              <Image src="/liap/author/resources.jpg" alt="A phone with a grocery app open beside a handwritten shopping list, while two people unpack groceries" width={1536} height={1024} sizes="(min-width: 768px) 360px, 100vw" className="h-48 w-full object-cover" />
               <div className="p-6">
                 <p className={`${cormorant.className} text-2xl font-semibold`}>You used every resource you had.</p>
                 <p className={`mt-2 text-[15px] leading-relaxed ${BODY}`}>
