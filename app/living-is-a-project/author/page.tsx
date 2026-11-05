@@ -504,7 +504,7 @@ export default function AuthorPage() {
                   Your budget, the people who could help, the tools in your kitchen and the apps on your phone &mdash; you put them all to work to get it done.
                 </p>
                 <p className="mt-3 text-[15px] font-semibold text-navy">Project managers have words for that too.</p>
-                <a href="#free-guide" className={`mt-3 inline-block text-[15px] font-semibold ${GOLD_TEXT}`}>Discover them in Words to Know &rarr;</a>
+                <a href="#free-guide" className={`mt-3 inline-block text-[15px] font-semibold ${GOLD_TEXT}`}>Check out the Words to Know &rarr;</a>
               </div>
             </article>
             <article className="overflow-hidden rounded-3xl border border-[#EADFC8]">
