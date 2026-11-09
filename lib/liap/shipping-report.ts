@@ -59,7 +59,7 @@ export function shippingEmailText(count: number, today: string, copies: number =
       ? `No pre-orders are waiting to ship this week (${today}).`
       : `${count} pre-order${count === 1 ? '' : 's'} waiting to ship (${copies} ${copies === 1 ? 'copy' : 'copies'} in all), as of ${today}. The list is attached (CSV, opens in Excel or Google Sheets).`,
     '',
-    'Books mail after publication on November 30, 2026, by USPS Media Mail.',
+    'Books mail after publication on December 16, 2026, by USPS Media Mail.',
     'When you mail books, reply with the tracking numbers and they will be marked shipped.',
     '',
     'Sent automatically every Monday by wisergenerations.com.',

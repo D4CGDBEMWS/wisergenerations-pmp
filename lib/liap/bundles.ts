@@ -43,7 +43,7 @@ export const BUNDLES: readonly Bundle[] = [
     // Black Friday through publication day, Eastern time.
     startsAt: '2026-11-27T00:00:00-05:00',
     endsAt: '2026-11-30T23:59:59-05:00',
-    note: 'Ships to one US address after publication on November 30, 2026. Your purchase includes the Life Project-Ready™ Assessment.',
+    note: 'Ships to one US address after publication on December 16, 2026. Your purchase includes the Life Project-Ready™ Assessment.',
   },
 ]
 
