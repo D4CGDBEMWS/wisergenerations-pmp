@@ -40,16 +40,17 @@ export const PREORDER_OPENS = 'October 1, 2026'
 export const PREORDER_PERIOD = 'October 2026'
 
 /** Publication and public launch — one event, one month. */
-export const PUBLICATION_MONTH = 'November 2026'
+export const PUBLICATION_MONTH = 'December 2026'
 
 /**
- * The exact day. Owner ruling, 29 October 2026: publication and public launch
- * are Monday, November 30, 2026 (book files ready November 15).
+ * The exact day. Owner ruling, 29 October 2026: Monday, November 30, 2026.
+ * Owner ruling, 9 November 2026: moved to Wednesday, December 16, 2026, for
+ * both publication and the LinkedIn launch.
  *
  * Set here once, so every page, the checkout description and the receipt
  * update together. That is the whole point of the file.
  */
-export const PUBLICATION_DAY: string | null = 'November 30, 2026'
+export const PUBLICATION_DAY: string | null = 'December 16, 2026'
 
 /**
  * What a customer is shown as the publication date.

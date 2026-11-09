@@ -45,10 +45,10 @@ function liapSurfaces(): string[] {
   return out
 }
 
-describe('November is publication, October is preorder', () => {
-  it('publishes in November 2026', () => {
-    expect(PUBLICATION_MONTH).toBe('November 2026')
-    expect(publicationDate()).toMatch(/^November .*2026$/)
+describe('December is publication, October is preorder', () => {
+  it('publishes in December 2026', () => {
+    expect(PUBLICATION_MONTH).toBe('December 2026')
+    expect(publicationDate()).toMatch(/^December .*2026$/)
   })
 
   it('keeps October as the preorder period and nothing else', () => {
@@ -86,7 +86,7 @@ describe('the three milestones stay three', () => {
     // document and the release in another, so neither reading looked wrong.
     expect(CAMPAIGN_AWARENESS).toBe('September 2026')
     expect(PREORDER_OPENS).toBe('October 1, 2026')
-    expect(PUBLICATION_MONTH).toBe('November 2026')
+    expect(PUBLICATION_MONTH).toBe('December 2026')
 
     const milestones = [CAMPAIGN_AWARENESS, PREORDER_OPENS, PREORDER_PERIOD, PUBLICATION_MONTH]
     expect(new Set(milestones).size).toBe(milestones.length)
@@ -142,10 +142,10 @@ describe('the date cannot silently diverge', () => {
 })
 
 describe('the exact day is the owner’s, and is set', () => {
-  it('is November 30, 2026 — the owner ruling of 29 October 2026', () => {
-    expect(PUBLICATION_DAY).toBe('November 30, 2026')
+  it('is December 16, 2026 — the owner ruling of 9 November 2026', () => {
+    expect(PUBLICATION_DAY).toBe('December 16, 2026')
     expect(publicationDayPending()).toBe(false)
-    expect(publicationDate()).toBe('November 30, 2026')
+    expect(publicationDate()).toBe('December 16, 2026')
     expect(publicationDate()).toContain(PUBLICATION_MONTH.split(' ')[0]!)
   })
 
