@@ -1,66 +1,84 @@
 # Migration convergence note — Journey Game branch
 
-**Status: NOTE ONLY. Nothing renumbered, nothing applied.**
+**Status: CONVERGED. Renumbered once, on this branch. Nothing applied.**
 
-Owner decision, following the JG-1 review: leave this unchanged for now.
+Supersedes the pre-convergence version of this note. That version anticipated
+the duplicate-prefix collision described below and guessed wrong about how to
+resolve it; the correction and the reason for it are recorded here rather than
+quietly dropped.
 
 ---
 
-## The situation
+## What happened
 
-`claude/liap-journey-game` carries a gap in its migration sequence:
+`main` was merged into `claude/liap-journey-game` after the branch had fallen
+62 commits behind. The gap this note was written about is closed:
 
-| Migration | `claude/liap-assessment-content-master` | `claude/liap-journey-game` |
+| Migration | before the merge | now |
 |---|---|---|
-| 0001–0004 | present | present |
-| 0005 results email delivery | present | present |
-| 0006 partner attribution | present | **absent** |
-| 0007 standalone assessment product | present | **absent** |
-| 0008 facilitation governance | present | present *(transferred for JG-1)* |
+| 0001–0005 | present | present |
+| 0006 partner attribution | **absent** | present (from main) |
+| 0007 book shipments | **absent** | present (from main) |
+| 0008 shipping list quantity | absent | present (from main) |
+| 0009 workshop | absent | present (from main) |
+| 0010 facilitation governance | was 0008 | **renumbered** |
 
-0008 arrived on the Journey Game branch as part of closing JG-1, because the
-authorization guard needs its tables. 0006 and 0007 belong to work that branch
-never carried.
+## The collision, and why the earlier guidance was reversed
 
-## Why this is safe today
+The merge produced two files numbered `0008_`: this branch's facilitation
+governance, and main's shipping-list quantity. `tests/liap-partner-release.ts`
+fails on exactly that, and its comment states the hazard precisely:
 
-0008 references only `customers`, created in 0001. It has no dependency on 0006
-or 0007, so applying it after 0005 works: the gap is in the *numbering*, not in
-the *dependency graph*.
+> One migration per number. Two files sharing a prefix is how one silently
+> marks the other as already applied.
 
-Both branches are unmerged, undeployed, and behind the Pre-Launch Database Gate.
-No environment has applied any of 0005–0008.
+The previous version of this note said the facilitation migration should keep
+its number, "because it is referenced by name in commit messages, in
+`docs/LIAP-FIRST-ADMIN-BOOTSTRAP.md`, and in tests on both branches."
 
-## What must be reviewed at convergence
+**That premise was checked and is false.** A repository-wide search for the
+filename returns no hit in any `.ts`, `.tsx` or `.mjs` file: not in the runner,
+not in `tests/helpers/db.ts` (which globs the directory), not anywhere. The
+only references are prose — this note, the bootstrap procedure and the JG-2
+proposal — and prose is editable. Both prose references have been updated.
 
-When the branches are reconciled, before any migration is applied:
+The decisive fact is the other one:
 
-1. **Confirm 0008 is byte-identical on both branches.** It was copied, not
-   merged. If either copy has drifted, resolve that *before* deciding order —
-   two different 0008s applied to different environments is the failure this
-   note exists to prevent.
+- **Main's 0008 may already be applied.** It has been on `main` since October
+  and the runner tracks applied migrations by full filename. Renaming an
+  applied migration makes it run a second time.
+- **This branch's migration provably is not applied.** It is behind the
+  Pre-Launch Database Gate, on an unmerged branch, and the standing freeze has
+  held since it was written.
 
-2. **Apply in numeric order: 0005 → 0006 → 0007 → 0008.** Verify 0008 still
-   applies cleanly after 0006 and 0007, which it has never run alongside.
+Renaming the one that cannot have run is the move with no failure mode.
+Renaming the one that may have run risks a double apply on production to
+preserve a number that nothing reads. So facilitation governance became
+**0010**, which also puts it last — correct, since it is the newest work.
 
-3. **Do not renumber.** 0008 is referenced by name in commit messages, in
-   `docs/LIAP-FIRST-ADMIN-BOOTSTRAP.md`, and in tests on both branches.
-   Renumbering to close the gap would break those references to fix something
-   that is not broken.
+## What still must be reviewed before anything is applied
 
-4. **Check for a duplicate `0008_` prefix.** If other work has since created a
-   different 0008 elsewhere, one must be renamed — and the facilitation
-   migration is the one with external references, so it should keep its number.
-
+1. **Apply in numeric order: 0006 → 0007 → 0008 → 0009 → 0010.** 0010 has now
+   run after 0006–0009 for the first time, in the test suite, on the merged
+   tree. That is new evidence, not a guarantee about production.
+2. **0010 depends only on `customers`**, created in 0001. It has no dependency
+   on anything main added, which is why the renumber is a rename and nothing
+   more — the file's contents are untouched.
+3. **Confirm 0010 is byte-identical to the copy on
+   `claude/liap-assessment-content-master`**, where it is still numbered 0008.
+   It was copied between branches, not merged. If the two have drifted, resolve
+   that before deciding order.
+4. **The assessment branch still numbers it 0008 and does not collide**, because
+   main's 0008 is not on that branch. Whichever branch merges to `main` second
+   inherits this same renumber. Do it there the same way, and for the same
+   reason: move the file that has not been applied.
 5. **Re-run the full suite on the merged tree.** `createTestDb` applies every
-   `.sql` file in filename order, so the merged sequence is exercised the first
-   time the suite runs after convergence. That run is the real check.
+   `.sql` file in filename order, so the merged sequence is exercised on every
+   run. That run is the real check.
 
 ## What not to do
 
-- Do not renumber independently on either branch.
-- Do not add 0006 or 0007 to the Journey Game branch to "close the gap" — that
-  brings partner attribution and the standalone assessment product onto a branch
-  that has no use for either.
-- Do not apply anything to production before the Gate is opened deliberately and
-  the set is reviewed together.
+- Do not renumber main's migrations. Any of them may have been applied.
+- Do not apply anything to production before the Gate is opened deliberately
+  and the whole set is reviewed together.
+- Do not close a numbering gap by adding migrations a branch has no use for.

@@ -130,7 +130,7 @@ Both are excluded by construction, not by filtering:
 
 - Identity — `sessions` (exists)
 - Clearance — `facilitator_profiles`, `retreat_assignments`,
-  `retreat_preparation_confirmations` (0008, prepared)
+  `retreat_preparation_confirmations` (0010, prepared)
 - Content — TypeScript modules, server-side (exists)
 - Game position — **deliberately not persisted**, per E
 
