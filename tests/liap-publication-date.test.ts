@@ -3,6 +3,8 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   CAMPAIGN_AWARENESS,
+  EMAIL_CAMPAIGN_FIRST_SEND,
+  EMAIL_CAMPAIGN_LAUNCH,
   PREORDER_OPENS,
   PREORDER_PERIOD,
   PUBLICATION_DAY,
@@ -155,5 +157,74 @@ describe('the exact day is the owner’s, and is set', () => {
     // constant together, because they all call the same function.
     const launch = source('lib/liap/launch.ts')
     expect(launch).toContain('return PUBLICATION_DAY ?? PUBLICATION_MONTH')
+  })
+})
+
+
+// ---------------------------------------------------------------------------
+// The email campaign. Owner ruling, 13 November 2026.
+//
+// Two dates, not one: sending begins 16 November, the campaign proper opens
+// 30 November. Publication is unchanged at 16 December.
+//
+// The trap this block guards is specific. November 30 was the publication
+// date under the 29 October ruling, before the 9 November ruling moved
+// publication to 16 December. The number is now reused for a different event,
+// so the two are one careless edit from being reunited -- and a reunion would
+// look entirely plausible to whoever made it.
+// ---------------------------------------------------------------------------
+
+describe('the email campaign has two dates, and neither is publication', () => {
+  const asDate = (s: string) => new Date(`${s} 12:00:00 UTC`)
+  const weekday = (s: string) =>
+    asDate(s).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })
+
+  it('begins sending Monday, November 16, 2026', () => {
+    expect(EMAIL_CAMPAIGN_FIRST_SEND).toBe('November 16, 2026')
+    expect(weekday(EMAIL_CAMPAIGN_FIRST_SEND)).toBe('Monday')
+  })
+
+  it('opens the campaign proper Monday, November 30, 2026', () => {
+    expect(EMAIL_CAMPAIGN_LAUNCH).toBe('November 30, 2026')
+    expect(weekday(EMAIL_CAMPAIGN_LAUNCH)).toBe('Monday')
+  })
+
+  it('does not move publication, which stays Wednesday, December 16, 2026', () => {
+    // The regression that matters most in this change: adding campaign dates
+    // must not disturb the date a paying customer reads on the checkout page.
+    expect(PUBLICATION_DAY).toBe('December 16, 2026')
+    expect(publicationDate()).toBe('December 16, 2026')
+    expect(weekday('December 16, 2026')).toBe('Wednesday')
+  })
+
+  it('runs first send, then campaign, then publication, in that order', () => {
+    const order = [EMAIL_CAMPAIGN_FIRST_SEND, EMAIL_CAMPAIGN_LAUNCH, publicationDate()]
+    const times = order.map((d) => asDate(d).getTime())
+    expect(times[0]!).toBeLessThan(times[1]!)
+    expect(times[1]!).toBeLessThan(times[2]!)
+    // Three events, three days. If two ever collapse into one value, the
+    // distinction this file exists to protect has been lost again.
+    expect(new Set(order).size).toBe(3)
+  })
+
+  it('keeps the campaign out of every customer-facing surface', () => {
+    // Same rule the publication date lives under: launch.ts is the only place
+    // a campaign date may be written down. Nothing renders these yet -- the
+    // campaign is scheduled outside the application -- and if something ever
+    // does, it must read the constant rather than retype the day.
+    for (const file of liapSurfaces()) {
+      if (file === 'lib/liap/launch.ts') continue
+      expect(source(file), `${file} hardcodes a campaign date`).not.toContain('November 16, 2026')
+      expect(source(file), `${file} hardcodes a campaign date`).not.toContain('November 30, 2026')
+    }
+  })
+
+  it('does not reintroduce a bare launch constant', () => {
+    // EMAIL_CAMPAIGN_LAUNCH is qualified on purpose. An unqualified one would
+    // be the exact collapse the header of launch.ts warns about.
+    const launch = source('lib/liap/launch.ts')
+    expect(launch).not.toMatch(/export const LAUNCH_DATE\b/)
+    expect(launch).not.toMatch(/export const LAUNCH\b/)
+    expect(launch).not.toMatch(/export const CAMPAIGN_LAUNCH\b/)
   })
 })
