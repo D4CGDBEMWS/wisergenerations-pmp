@@ -45,12 +45,44 @@ export const PUBLICATION_MONTH = 'December 2026'
 /**
  * The exact day. Owner ruling, 29 October 2026: Monday, November 30, 2026.
  * Owner ruling, 9 November 2026: moved to Wednesday, December 16, 2026, for
- * both publication and the LinkedIn launch.
+ * both publication and the LinkedIn launch. Unchanged since.
+ *
+ * NOTE for anyone reading the history above: November 30 appears twice in
+ * this file now, meaning two different things. It is the SUPERSEDED
+ * publication date here, and it is the live email-campaign launch below. The
+ * book publishes 16 December. Do not let the coincidence of the number
+ * reunite them -- that collapse is the bug this whole file exists to prevent.
  *
  * Set here once, so every page, the checkout description and the receipt
  * update together. That is the whole point of the file.
  */
 export const PUBLICATION_DAY: string | null = 'December 16, 2026'
+
+// ── THE EMAIL CAMPAIGN ─────────────────────────────────────────────────────
+//
+// Owner ruling, 13 November 2026: the campaign has TWO dates, and they are
+// not the same event.
+//
+// Sending begins on the 16th; the campaign proper launches on the 30th. Both
+// run ahead of publication on 16 December, which is the point of a campaign
+// and not a discrepancy to be tidied away.
+//
+// ── WHY "LAUNCH" IS QUALIFIED HERE ─────────────────────────────────────────
+//
+// The header of this file records what the bare word "launch" already cost
+// this project once: it meant the campaign in one document and the release in
+// another, so a stale October publication date read as correct in six places
+// and nobody saw it. EMAIL_CAMPAIGN_LAUNCH is the launch OF THE EMAIL
+// CAMPAIGN. It is not the book launch, it is not publication, and it is not
+// the LinkedIn launch, which moved to 16 December with publication.
+//
+// A test asserts these stay three distinct values.
+
+/** First email goes out. Monday, November 16, 2026. */
+export const EMAIL_CAMPAIGN_FIRST_SEND = 'November 16, 2026'
+
+/** The campaign proper opens. Monday, November 30, 2026. NOT publication. */
+export const EMAIL_CAMPAIGN_LAUNCH = 'November 30, 2026'
 
 /**
  * What a customer is shown as the publication date.
