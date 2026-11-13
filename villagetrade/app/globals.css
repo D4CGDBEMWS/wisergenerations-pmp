@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-warm text-ink antialiased;
+  }
+  /* Mobile-first: never let a layout force a sideways scroll on a phone. */
+  html, body {
+    @apply overflow-x-hidden;
+  }
+}

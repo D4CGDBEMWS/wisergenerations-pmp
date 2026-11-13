@@ -15,6 +15,10 @@ export default [
       'node_modules/**',
       'public/studio/**', // vendored static app, not ours to lint
       'db/**',
+      // VillageTrade is a separate application living here only until it is
+      // extracted to its own repository. It has its own toolchain; the Wiser
+      // Generations checks must never see it.
+      'villagetrade/**',
     ],
   },
   ...next,
