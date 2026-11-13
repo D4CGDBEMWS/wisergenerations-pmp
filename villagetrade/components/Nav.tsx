@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BRAND_NAME, PILOT_AREA } from '@/lib/brand'
+import { PILOT_AREA } from '@/lib/brand'
 
 // Mobile-first: a bottom bar on phones (thumb reach), a header row on wider
 // screens. Both render the same five destinations from one list, so they
@@ -19,14 +19,30 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-navy">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className={`rounded-lg ${FOCUS}`} aria-label={`${BRAND_NAME} home`}>
-          <span className="font-display text-lg font-bold text-white">
-            Village<span className="text-gold">Trade</span>
-          </span>
+        {/*
+          No aria-label here, deliberately.
+
+          It previously read "VillageTrade home" while the link also contained
+          the pilot-area line, so the accessible name did not contain the
+          visible text — a WCAG 2.1 AA failure (label-content-name-mismatch)
+          that axe caught on every page. Someone using voice control says what
+          they see; if the name and the text disagree, the command does not
+          work.
+
+          The fix is to let the visible text be the name, and move the
+          location out of the link, where it was never part of the
+          destination anyway.
+        */}
+        <div>
+          <Link href="/" className={`rounded-lg ${FOCUS}`}>
+            <span className="font-display text-lg font-bold text-white">
+              Village<span className="text-gold">Trade</span>
+            </span>
+          </Link>
           <span className="block text-[10px] uppercase tracking-[0.12em] text-white/50">
             {PILOT_AREA}
           </span>
-        </Link>
+        </div>
         <nav aria-label="Main" className="hidden gap-1 sm:flex">
           {DESTINATIONS.slice(1).map((d) => (
             <Link
