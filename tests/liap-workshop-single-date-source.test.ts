@@ -11,8 +11,17 @@ import { WORKSHOP_SESSIONS, sessionDayLabel } from '@/lib/liap/workshop'
 // WORKSHOP_SESSIONS, which every route, the API and the Stripe webhook read.
 //
 // This branch also carries lib/liap/workshop/, an earlier take on the same
-// idea that the merge with main brought alongside it. Its email templates are
-// owner-approved and are kept, but it must never become a SECOND place a
+// idea that the merge with main brought alongside it.
+//
+// OWNER RULING, 2026-11-13: LEAVE IT AS IS, FOR FUTURE USE. It is not dead
+// code awaiting cleanup and it is not to be deleted as tidying. It holds seven
+// owner-approved workshop emails; main's shipped workshop-email.ts holds
+// three, and four of the seven have no equivalent there -- Bring One Project
+// With You, Your Next Wise Move, A Quick Reflection on Your LIAP Workshop, and
+// When You're Ready to Build the Roadmap. Removing the module would discard
+// approved copy with nothing to replace it.
+//
+// So its templates are kept, but it must never become a SECOND place a
 // workshop date is written down: two sources drift, and the one that drifts is
 // always the one nobody is looking at. Its templates carry a [Date] merge
 // field precisely so they have no date of their own.
