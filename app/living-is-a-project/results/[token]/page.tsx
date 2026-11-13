@@ -103,10 +103,15 @@ export default async function ResultsPage({
   if (session && session.customerId !== found.customerId) notFound()
 
   const report = await rebuildReport(found.id)
-  const reviewRow = await queryOne<{ next_review_on: string | null }>(
+  // `unknown`, deliberately. A `date` column does NOT arrive here as a string:
+  // the Neon driver runs pg-types, whose parser for oid 1082 returns a JS Date.
+  // Typing it `string` compiled fine and printed "Invalid Date" on every plan
+  // that reached this line. formatDate normalises instead.
+  const reviewRow = await queryOne<{ next_review_on: unknown }>(
     `SELECT next_review_on FROM assessment_results WHERE assessment_id = $1`,
     [found.id]
   )
+  const reviewOn = formatDate(reviewRow?.next_review_on)
 
   const maskedEmail = maskEmail(
     (
@@ -309,10 +314,10 @@ export default async function ResultsPage({
             ))}
           </div>
 
-          {reviewRow?.next_review_on && (
+          {reviewOn && (
             <p className="mt-5 rounded-lg bg-navy/5 p-4 text-sm text-navy">
               <span className="font-semibold">Next review date:</span>{' '}
-              {formatDate(reviewRow.next_review_on)} — put it in your calendar now, while you are
+              {reviewOn} — put it in your calendar now, while you are
               thinking about it.
             </p>
           )}
@@ -430,8 +435,23 @@ function maskEmail(email: string): string {
   return `${head}${'•'.repeat(Math.max(local.length - 1, 3))}@${domain}`
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(`${iso}T00:00:00Z`)
+/**
+ * Formats a review date that may arrive as a Date OR as a 'YYYY-MM-DD' string.
+ *
+ * Both happen: the driver's type parser decides, and it is not the same in
+ * every deployment. Returns null rather than the string "Invalid Date" -- a
+ * date we cannot read is a date not worth showing a participant. The caller
+ * tests the FORMATTED value, so an unreadable date drops the whole sentence
+ * rather than rendering it with a gap in it.
+ */
+function formatDate(value: unknown): string | null {
+  const d =
+    value instanceof Date
+      ? value
+      : typeof value === 'string'
+        ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00Z` : value)
+        : null
+  if (!d || Number.isNaN(d.getTime())) return null
   return d.toLocaleDateString('en-US', {
     timeZone: 'UTC',
     year: 'numeric',
