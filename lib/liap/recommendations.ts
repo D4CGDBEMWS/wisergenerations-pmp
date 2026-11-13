@@ -223,7 +223,7 @@ export function renderAction(action: Action, narratives: NarrativeMap): Rendered
  * RESOLVE comes from the next one down, unless the customer named a decision
  * themselves — in which case theirs wins, because they know their situation
  * and being told to resolve something else would read as not having listened.
- * MOVE comes from the position, tempered by S.T.E.A.D.Y.: someone in an
+ * MOVE comes from the position, tempered by WISER Pivots™ routing: someone in an
  * unexpected, urgent change is not told to expand.
  */
 export function nextBestThree(report: ScoreReport, intake: Intake): Action[] {
@@ -356,7 +356,12 @@ export function buildPlan(report: ScoreReport, intake: Intake, today?: Date): Pl
     { text: 'Gather the information you are currently missing, rather than deciding without it.' },
   ]
   if (report.steady) {
-    first.unshift({ text: 'Work the S.T.E.A.D.Y. sequence before committing to anything larger. Stabilise first; the plan will hold better for it.' })
+    // Owner-approved wording, 22 August 2026. Verbatim; not to be rewritten.
+    first.unshift({
+      text:
+        'Use the WISER Pivots™ cycle before committing to anything larger — Wait. Inspect. ' +
+        'Select. Embrace. Then make your Pivot. Review what you learned.',
+    })
   }
   if (namedDecision) {
     // Complete as a sentence on its own; the quotation adds their words while

@@ -94,7 +94,7 @@ const process = [
 
 export default function CorporatePage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
       <section className="bg-navy text-white py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -145,7 +145,7 @@ export default function CorporatePage() {
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Why Organizations Choose Us</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Why Organizations Choose Us</p>
             <h2 className="text-3xl font-bold text-navy">What Makes Corporate Training With Crystal Different</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -163,7 +163,7 @@ export default function CorporatePage() {
       <section className="bg-paper py-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">How It Works</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">How It Works</p>
             <h2 className="text-3xl font-bold text-navy">From First Call to Certified Team</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -186,7 +186,7 @@ export default function CorporatePage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Outcomes</p>
+              <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Outcomes</p>
               <h2 className="text-3xl font-bold text-navy mb-6">What a Certified Team Delivers</h2>
               <p className="text-gray-600 leading-relaxed mb-6">
                 Organizations that invest in PM certification see measurable improvements in project delivery, team confidence, and organizational capability.
@@ -210,7 +210,7 @@ export default function CorporatePage() {
           <p className="text-2xl text-navy italic mb-6 leading-relaxed">
             &ldquo;Knowledgeable with a sincere concern for each of her pupils, she has a unique way of conveying the concepts regardless of their learning method. I highly recommend Crystal&apos;s services to any organization that desires to improve their PMO.&rdquo;
           </p>
-          <p className="font-bold text-gold">Lynn Fleming MBA, PMP, PMI-ACP, PMI-SP</p>
+          <p className="font-bold text-gold-text">Lynn Fleming MBA, PMP, PMI-ACP, PMI-SP</p>
           <p className="text-gray-600 text-sm">Principal Strategic Program Manager</p>
         </div>
       </section>
@@ -237,6 +237,6 @@ export default function CorporatePage() {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

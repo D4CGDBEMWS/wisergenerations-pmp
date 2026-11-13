@@ -36,6 +36,17 @@ export default function Navbar() {
   // has no business in front of a book reader.
   const hideCTAs = pathname === '/free-practice' || !shell.showHeaderCtas
 
+  // Owner request, 2026-11-04: the assessment journey carries the Living Is a
+  // Project mark at the top, not the Wiser Generations logo.
+  const liapJourney = [
+    '/living-is-a-project/assessment',
+    '/living-is-a-project/results',
+    '/living-is-a-project/access',
+    '/living-is-a-project/preorder-complete',
+    '/living-is-a-project/verify-preorder',
+    '/living-is-a-project/workshop',
+  ].some((p) => pathname === p || pathname?.startsWith(p + '/'))
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
@@ -53,6 +64,14 @@ export default function Navbar() {
               it reads as a plaque against the white bar. Sized as tall as the
               64px bar allows — see the note in the footer about the tagline,
               which is only ~1.5px at this height. */}
+          {liapJourney ? (
+            <Link href={shell.homeHref} className="flex flex-shrink-0 items-center gap-2 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Living Is a Project home">
+              <img src="/liap/brand/crown.png" alt="" width={40} height={34} className="h-8 w-auto" />
+              <span className="min-w-0 font-serif text-base font-semibold leading-tight text-navy sm:text-lg">
+                Living Is a Project&hellip;<span className="hidden italic text-[#A86F14] sm:inline"> Are You Ready?&trade;</span>
+              </span>
+            </Link>
+          ) : (
           <Link href={shell.homeHref} className="flex-shrink-0 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Wiser Generations home">
             <img
               src="/wg-logo.png"
@@ -62,6 +81,7 @@ export default function Navbar() {
               className="h-10 sm:h-12 w-auto"
             />
           </Link>
+          )}
 
           {/* Desktop nav — core links */}
           <div className="hidden lg:flex items-center gap-1">
@@ -106,9 +126,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu — all links available */}
-      {isOpen && (
-        <div id="mobile-menu" className="lg:hidden bg-white border-t border-gray-200">
+      {/* Mobile menu — all links available.
+          Rendered at all times rather than mounted on open, because the
+          hamburger's aria-controls names this id: while the menu was
+          conditionally mounted, that attribute pointed at nothing for as long
+          as the menu was shut, which is every moment before someone needs it.
+          `hidden` keeps it out of the layout and out of the accessibility
+          tree, so the visible and interactive behaviour is unchanged. */}
+      <div id="mobile-menu" hidden={!isOpen} className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
@@ -145,8 +170,7 @@ export default function Navbar() {
               </div>
             )}
           </div>
-        </div>
-      )}
+      </div>
     </nav>
   )
 }

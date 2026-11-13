@@ -1,6 +1,7 @@
 'use client'
 
 import { FormEvent, useRef, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
@@ -123,9 +124,11 @@ export default function FreeGuidePage() {
             </ul>
 
             <div className="mt-10 flex items-center gap-4">
-              <img
-                src="/crystal-stewart.jpg"
-                alt="Crystal Stewart, PMP®"
+              <Image
+                src="/crystal-glover-stewart-square.jpg"
+                alt="Crystal Glover Stewart, PMP®"
+                width={56}
+                height={56}
                 className="h-14 w-14 rounded-full object-cover"
               />
               <div>

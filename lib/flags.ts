@@ -51,6 +51,46 @@ export type FeatureFlag =
   //
   // Default off, and off in every environment.
   | 'LIAP_JOURNEY'
+  // Community partner referral codes and /liap/go/{code}.
+  //
+  // Standalone, and never coupled to LIAP: partner QR codes have to work the
+  // day the signs go up, which is not the same day the hub opens. Switching
+  // this on does not open the book, the assessment or the game, and switching
+  // any of those on does not expose the referral route.
+  //
+  // ── THE FACT THAT MATTERS MOST ABOUT THIS FLAG ────────────────────────────
+  //
+  // Like the book QR, a printed referral code cannot be recalled. Once a
+  // postcard is in a shop window this flag protects nothing that happens
+  // after it — it protects the period before the first print, which is
+  // exactly where this project is now.
+  //
+  // Default off, and off in every environment. No QR has been generated and
+  // no referral code exists, so nothing is stranded by it being off.
+  | 'LIAP_PARTNERS'
+  // The Life Project-Ready™ Assessment itself.
+  //
+  // Owner ruling, 2026-10-29: the book section (LIAP) may open for pre-orders
+  // before the Assessment is production-validated (open production
+  // migration / purge-cron issue). With LIAP on and this flag off, a buyer's
+  // entitlement is still granted and recorded, but the Assessment page shows
+  // "opening soon" and the Assessment API refuses. Turning this on opens the
+  // Assessment to every entitled buyer at once.
+  //
+  // Default off. Turn it on only after the production database and purge job
+  // are verified.
+  | 'LIAP_ASSESSMENT'
+  // Opens Stripe checkout for Living the Journey — 3-Day Retreat (owner
+  // request, 2026-10-29). Default off: with it off the Retreat card keeps its
+  // interest-list button and /api/liap/retreat refuses. Turn on only after the
+  // price, dates, location and cancellation terms are confirmed.
+  | 'LIAP_RETREAT'
+  // Book bundles page (/bundles) and its checkout (owner ruling 2026-10-30).
+  // Default off: hidden until the owner says to flip the switch.
+  | 'LIAP_BUNDLES'
+  // Workshop registration (/living-is-a-project/workshop) and its checkout,
+  // owner ruling 2026-11-04. Default off until the owner switches it on.
+  | 'LIAP_WORKSHOP'
   | 'CAPM_PATHWAY'
 
 /** Off unless explicitly enabled. An unset or misspelled variable stays off. */

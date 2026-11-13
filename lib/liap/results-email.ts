@@ -1,4 +1,5 @@
 import type { RenderedReport } from './recommendations'
+import { brandedEmail, emailButton, emailIcon, EMAIL_COLORS } from './email-brand'
 
 // ---------------------------------------------------------------------------
 // The results email. §23.
@@ -16,62 +17,72 @@ import type { RenderedReport } from './recommendations'
 export const RESULTS_SUBJECT = 'Your Life Project-Ready™ Plan Is Ready'
 
 export function resultsEmailHtml(report: RenderedReport, resultsUrl: string): string {
+  // Owner request, 2026-11-04: same words as before, now with the Living Is a
+  // Project banner, the campaign's crown, an icon per step and Crystal's
+  // sign-off (lib/liap/email-brand.ts). No dimension name appears, by design.
+  const c = EMAIL_COLORS
   const actions = report.actions
     .map(
       (a) => `
-        <tr><td style="padding:0 0 18px">
-          <p style="margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#C9A84C;font-weight:bold">${
-            a.kind === 'protect' ? 'Protect' : a.kind === 'resolve' ? 'Resolve' : 'Move'
-          }</p>
-          <p style="margin:4px 0 0;font-size:16px;font-weight:bold;color:#0A1628">${escapeHtml(a.headline)}</p>
-        </td></tr>`
+        <tr>
+          <td width="60" style="padding:0 14px 18px 0;vertical-align:top">${emailIcon(a.kind)}</td>
+          <td style="padding:2px 0 18px;vertical-align:top">
+            <p style="margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:${c.goldText};font-weight:bold">${
+              a.kind === 'protect' ? 'Protect' : a.kind === 'resolve' ? 'Resolve' : 'Move'
+            }</p>
+            <p style="margin:4px 0 0;font-size:17px;font-weight:bold;color:${c.navy}">${escapeHtml(a.headline)}</p>
+          </td>
+        </tr>`
     )
     .join('')
 
-  return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;padding:20px">
-  <div style="background:#0A1628;padding:24px;text-align:center;border-radius:8px 8px 0 0">
-    <h1 style="color:#C9A84C;margin:0;font-size:22px">Wiser Generations</h1>
-    <p style="color:#B9C4D2;margin:6px 0 0;font-size:13px">Living Is a Project</p>
-  </div>
-
-  <div style="background:#f9fafb;padding:32px;border-radius:0 0 8px 8px">
-    <p style="color:#374151;line-height:1.6;margin:0 0 16px">
+  const body = `
+    <p style="margin:0 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:22px;color:${c.navy}">
       Something changed — or something is about to.
     </p>
-    <p style="color:#374151;line-height:1.6;margin:0 0 24px">
+    <p style="margin:0 0 24px">
       Your Life Project-Ready™ Assessment has helped organize what deserves your attention next.
     </p>
 
-    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:24px">
-      <p style="margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#6b7280">Your Life Project Position</p>
-      <p style="margin:6px 0 0;font-size:24px;font-weight:bold;color:#0A1628">${escapeHtml(report.positionLabel)}</p>
-      <p style="margin:8px 0 0;font-size:14px;color:#4b5563;line-height:1.6">${escapeHtml(report.positionMeaning)}</p>
-    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${c.navy};border-radius:12px;margin:0 0 28px">
+      <tr><td style="padding:24px 26px">
+        <p style="margin:0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:${c.gold};font-weight:bold">Your Life Project Position</p>
+        <p style="margin:8px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:30px;color:#ffffff">${escapeHtml(report.positionLabel)}</p>
+        <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:#D7DEE8">${escapeHtml(report.positionMeaning)}</p>
+      </td></tr>
+    </table>
 
-    <p style="margin:0 0 12px;font-size:14px;font-weight:bold;color:#0A1628">Your next best three</p>
-    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%">${actions}</table>
+    <p style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:21px;color:${c.navy}">Your next best three</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${actions}</table>
 
-    <p style="color:#374151;line-height:1.6;margin:8px 0 4px">Your plan also includes:</p>
-    <ul style="color:#374151;line-height:1.7;margin:0 0 24px;padding-left:20px">
-      <li>Your eight readiness dimensions</li>
-      <li>Strengths you can use</li>
-      <li>Priority areas</li>
-      <li>Your 30/60/90-day starting plan</li>
-    </ul>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${c.cream};border:1px solid ${c.rule};border-radius:12px;margin:8px 0 0">
+      <tr>
+        <td width="60" style="padding:18px 0 18px 18px;vertical-align:top">${emailIcon('plan')}</td>
+        <td style="padding:18px 18px 18px 14px">
+          <p style="margin:0 0 4px">Your plan also includes:</p>
+          <p style="margin:0;font-size:15px;line-height:1.8;color:${c.ink}">
+            ✦ Your eight readiness dimensions<br>
+            ✦ Strengths you can use<br>
+            ✦ Priority areas<br>
+            ✦ Your 30/60/90-day starting plan
+          </p>
+        </td>
+      </tr>
+    </table>
 
-    <p style="text-align:center;margin:28px 0">
-      <a href="${resultsUrl}" style="background:#C9A84C;color:#0A1628;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">View my personalized plan</a>
-    </p>
+    ${emailButton(resultsUrl, 'View my personalized plan')}
 
-    <p style="color:#374151;font-size:14px;line-height:1.6;margin:20px 0 0">
+    <p style="margin:0;font-size:15px">
       Your downloadable Life Project Snapshot is available from your secure results page so you can keep it and use it as you move forward.
     </p>
-
-    <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:16px 0 0">
+    <p style="margin:14px 0 18px;font-size:13px;color:#6b7280">
       This link opens your plan. Keep it private — anyone with the link can read it.
-    </p>
-  </div>
-</div>`
+    </p>`
+
+  return brandedEmail({
+    preheader: `Your Life Project Position: ${escapeHtml(report.positionLabel)}. Your next best three are inside.`,
+    bodyHtml: body,
+  })
 }
 
 export function resultsEmailText(report: RenderedReport, resultsUrl: string): string {

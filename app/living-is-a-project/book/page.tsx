@@ -1,12 +1,17 @@
+import Image from 'next/image'
 import Link from 'next/link'
+import { BuyerAware } from '@/components/liap/BuyerAware'
 import { LiapPageView } from '@/components/liap/LiapPageView'
 import { LiapCta } from '@/components/liap/LiapCta'
 import { LIAP_BOOK } from '@/lib/liap/product'
+import { publicationDate } from '@/lib/liap/launch'
+import { assessmentOpen, assessmentTimingShort } from '@/lib/liap/assessment-availability'
+import { PREBUY_BONUS } from '@/lib/liap/bonus'
 
 export const metadata = {
   title: 'Living Is a Project…Are You Ready? | Wiser Generations',
   description:
-    'Preorder Living Is a Project…Are You Ready? and receive the Life Project-Ready™ Assessment at no additional charge. Publishing October 2026 from Goshen Publishing.',
+    `Preorder Living Is a Project…Are You Ready? and receive the Life Project-Ready™ Assessment at no additional charge. Publishing ${publicationDate()} from Goshen Publishing.`,
 }
 
 // ---------------------------------------------------------------------------
@@ -21,11 +26,15 @@ export const metadata = {
 const FAQ = [
   {
     q: 'When does the book ship?',
-    a: 'Publication is October 2026. Preorder customers are charged now and receive their copy on release.',
+    a: `Publication is ${publicationDate()}. Preorder customers are charged now and receive their copy on release.`,
   },
   {
     q: 'When do I get the assessment?',
-    a: 'Immediately. Your preorder unlocks the Life Project-Ready™ Assessment as soon as payment is confirmed — you do not wait for the book to arrive.',
+    // Read per request (the LIAP layout is force-dynamic), so flipping
+    // LIAP_ASSESSMENT changes this answer without a code change.
+    get a() {
+      return assessmentTimingShort()
+    },
   },
   {
     q: 'How long does the assessment take?',
@@ -54,7 +63,7 @@ export default function LiapBookPage() {
         <div className="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-              Goshen Publishing · October 2026
+              Goshen Publishing · {publicationDate()}
             </p>
             <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-5xl">
               Living Is a Project&hellip;Are You Ready?
@@ -84,28 +93,23 @@ export default function LiapBookPage() {
 
           {/* Cover */}
           <div className="lg:pt-2">
-            <div
-              className="mx-auto flex aspect-[2/3] w-full max-w-[280px] flex-col justify-between rounded-lg bg-gradient-to-br from-[#12233c] to-[#0A1628] p-6 text-center shadow-2xl ring-1 ring-white/10"
-              role="img"
-              aria-label="Cover of Living Is a Project…Are You Ready?"
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
-                Wiser Generations
-              </p>
-              <div>
-                <p className="text-2xl font-bold leading-tight text-white">
-                  Living Is a<span className="block">Project&hellip;</span>
-                </p>
-                <p className="mt-3 text-lg font-semibold text-gold">Are You Ready?</p>
-              </div>
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">
-                Goshen Publishing
-              </p>
-            </div>
+            {/* The real cover (owner report 2026-11-04: the placeholder was out of date). */}
+            <Image
+              src="/liap/author/living-is-a-project-cover.png"
+              alt="Cover of Living Is a Project…Are You Ready? by Crystal Glover Stewart, PMP®"
+              width={512}
+              height={768}
+              priority
+              className="mx-auto h-auto w-full max-w-[280px] rounded-sm shadow-2xl"
+            />
             <dl className="mx-auto mt-6 max-w-[280px] space-y-2 text-sm">
               <div className="flex justify-between gap-4 border-b border-white/10 pb-2">
                 <dt className="text-gray-400">Price</dt>
                 <dd className="font-semibold text-white">{LIAP_BOOK.priceLabel}</dd>
+              </div>
+              <div className="flex justify-between gap-4 border-b border-white/10 pb-2">
+                <dt className="text-gray-400">Shipping</dt>
+                <dd className="font-semibold text-white">{LIAP_BOOK.shipping.label} (US only)</dd>
               </div>
               <div className="flex justify-between gap-4 border-b border-white/10 pb-2">
                 <dt className="text-gray-400">Format</dt>
@@ -113,7 +117,7 @@ export default function LiapBookPage() {
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-gray-400">Publishes</dt>
-                <dd className="font-semibold text-white">October 2026</dd>
+                <dd className="font-semibold text-white">{publicationDate()}</dd>
               </div>
             </dl>
           </div>
@@ -127,10 +131,17 @@ export default function LiapBookPage() {
             Preorder the book. Start your project now.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-gray-600">
-            Your assessment unlocks the moment your preorder is confirmed. The book arrives in
-            October.
+            {assessmentOpen()
+              ? 'Your assessment unlocks the moment your preorder is confirmed.'
+              : 'Your assessment is included and opens soon — we’ll email you when it’s ready.'}{' '}
+            The book publishes {publicationDate()}.
           </p>
-          <LiapCta className="mt-7 flex justify-center" />
+          <p className="mx-auto mt-3 max-w-xl font-semibold text-navy">Bonus: {PREBUY_BONUS.offer}</p>
+          <div className="mt-7 flex flex-col items-center">
+            <BuyerAware>
+              <LiapCta className="flex flex-col items-center" />
+            </BuyerAware>
+          </div>
           <p className="mt-4 text-sm text-gray-500">
             Secure checkout by Stripe.{' '}
             <Link
@@ -138,6 +149,15 @@ export default function LiapBookPage() {
               className="font-semibold text-brand-blue underline underline-offset-2 hover:text-navy"
             >
               Preordered from another retailer?
+            </Link>
+          </p>
+          <p className="mt-2 text-sm text-gray-500">
+            Already pre-ordered here?{' '}
+            <Link
+              href="/living-is-a-project/access"
+              className="font-semibold text-brand-blue underline underline-offset-2 hover:text-navy"
+            >
+              Sign in to your assessment
             </Link>
           </p>
         </div>

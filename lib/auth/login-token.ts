@@ -204,6 +204,25 @@ export async function consumeLoginToken(
   return { email: row.email, redirectTo: resolveStoredRedirect(row.redirect_to) }
 }
 
+/**
+ * Where a link that can no longer be used was meant to go.
+ *
+ * Read-only: it grants nothing and changes nothing. The sign-in route uses it
+ * only to pick the right product's sign-in page for the error, and to send an
+ * already signed-in customer straight on instead of showing an error for a
+ * link they simply clicked twice (owner report, 2026-11-04).
+ */
+export async function lookupUnusableToken(
+  token: string
+): Promise<{ redirectTo: string } | null> {
+  if (!token) return null
+  const row = await queryOne<{ redirect_to: string | null }>(
+    `SELECT redirect_to FROM login_tokens WHERE token_hash = $1`,
+    [hashToken(token)]
+  )
+  return row ? { redirectTo: resolveStoredRedirect(row.redirect_to) } : null
+}
+
 /** Housekeeping. Safe to run from a scheduled job later; not required for correctness. */
 export async function purgeExpiredLoginTokens(): Promise<number> {
   const rows = await getDb().query<{ id: string }>(

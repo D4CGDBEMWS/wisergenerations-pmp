@@ -41,6 +41,8 @@ type Refused = { ok: false; response: NextResponse }
 
 async function authorize(req: NextRequest): Promise<Authorized | Refused> {
   if (!isEnabled('LIAP')) return { ok: false, response: deny() }
+  // Pre-orders can be open while the Assessment is not. See LIAP_ASSESSMENT.
+  if (!isEnabled('LIAP_ASSESSMENT')) return { ok: false, response: deny() }
 
   const originBlock = checkOrigin(req)
   if (originBlock) return { ok: false, response: originBlock }

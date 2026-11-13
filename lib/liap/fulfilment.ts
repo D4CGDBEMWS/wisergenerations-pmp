@@ -35,6 +35,8 @@ export interface PreorderInput {
   /** Stripe event id, so a replayed webhook cannot grant twice. */
   idempotencyKey: string
   amount?: number | null
+  /** Copies in this order (a bundle is several). Defaults to 1. */
+  quantity?: number
 }
 
 export interface PreorderResult {
@@ -105,8 +107,13 @@ export async function fulfilPreorder(input: PreorderInput): Promise<PreorderResu
       if (!existing) {
         await db.query(
           `INSERT INTO order_items (order_id, product_id, quantity, unit_amount)
-           VALUES ($1, $2, 1, $3)`,
-          [orderId, productId, input.amount ?? LIAP_BOOK.amount]
+           VALUES ($1, $2, $3, $4)`,
+          [
+            orderId,
+            productId,
+            input.quantity ?? 1,
+            Math.round((input.amount ?? LIAP_BOOK.amount) / (input.quantity ?? 1)),
+          ]
         )
       }
     }

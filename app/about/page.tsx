@@ -30,11 +30,6 @@ const milestones = [
     title: 'Opening the Door Wider',
     body: 'Crystal launched Wiser Generations Int\'l to extend her reach beyond corporate clients and serve career transitioners, veterans, and early-career professionals — the people who need a strong mentor most and benefit most from the PMP credential.'
   },
-  {
-    year: 'Today',
-    title: '87% First-Attempt Pass Rate',
-    body: 'With 500+ professionals trained, an 87% first-attempt pass rate, and a growing community of certified PMs, Crystal continues to teach, mentor, and advocate for the next generation of project leaders.'
-  }
 ]
 
 const credentials = [
@@ -71,7 +66,7 @@ const values = [
 
 export default function AboutPage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
 
       {/* Hero */}
       <section className="bg-navy text-white py-20 px-4">
@@ -81,7 +76,7 @@ export default function AboutPage() {
             <div className="text-center md:text-left">
               <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-4">About Crystal Stewart, PMP</p>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                The Project Management Evangelist
+                Your PM Evangelist
               </h1>
               <p className="text-gray-300 text-xl leading-relaxed">
                 20+ years of enterprise transformation. U.S. Army veteran. Founder of Enterprise Academy.
@@ -107,21 +102,29 @@ export default function AboutPage() {
             </div>
             {/* Photo */}
             <div className="flex justify-center md:justify-end">
-              <div className="relative">
+              {/* The master headshot is a 5:4 landscape frame, and this slot is
+                  the portrait one the page was designed around, so the crop is
+                  done here in CSS rather than in the file: the wrapper holds the
+                  420x520 footprint and object-cover takes the centred portion of
+                  the untouched source.
+
+                  That crop keeps only the middle ~65% of the source width, so
+                  sizes cannot be the slot width — asking for 420px of source
+                  leaves 271px of it after cropping, and the browser serves a
+                  file too small for the box. The values below are the slot
+                  widths divided by that crop factor: what the source actually
+                  has to supply. */}
+              <div className="relative w-full max-w-[420px] aspect-[420/520]">
                 <Image
-                  src="/crystal-about.jpg"
-                  alt="Crystal Stewart, PMP — The Project Management Evangelist"
-                  width={420}
-                  height={520}
+                  src="/crystal-glover-stewart.jpg"
+                  alt="Crystal Glover Stewart, PMP® — Your PM Evangelist"
+                  fill
+                  sizes="(min-width: 768px) 660px, 155vw"
                   className="rounded-2xl shadow-2xl object-cover"
                   priority
                 />
                 <div className="absolute -bottom-4 -left-4 bg-gold text-navy font-bold px-4 py-2 rounded-xl text-sm shadow-lg">
                   Crystal Stewart, PMP®
-                </div>
-                <div className="absolute -top-4 -right-4 bg-navy border-2 border-gold text-white px-4 py-2 rounded-xl text-sm shadow-lg text-center">
-                  <p className="font-bold text-gold">87%</p>
-                  <p className="text-xs">First-attempt<br/>pass rate</p>
                 </div>
               </div>
             </div>
@@ -148,7 +151,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Her Story</p>
+              <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Her Story</p>
               <h2 className="text-3xl font-bold text-navy mb-6">
                 A PM Career Built on Service, Grit, and Real Work
               </h2>
@@ -174,10 +177,6 @@ export default function AboutPage() {
             <div className="bg-navy rounded-2xl p-8 text-white">
               <div className="space-y-6">
                 <div className="text-center border-b border-gold/30 pb-6">
-                  <div className="text-4xl font-bold text-gold">87%</div>
-                  <div className="text-sm text-gray-300 mt-1">First-attempt PMP pass rate</div>
-                </div>
-                <div className="text-center border-b border-gold/30 pb-6">
                   <div className="text-4xl font-bold text-gold">500+</div>
                   <div className="text-sm text-gray-300 mt-1">Professionals trained</div>
                 </div>
@@ -199,7 +198,7 @@ export default function AboutPage() {
       <section className="bg-paper py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Teaching Philosophy</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">Teaching Philosophy</p>
             <h2 className="text-3xl font-bold text-navy">What Makes Wiser Generations Different</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
@@ -218,7 +217,7 @@ export default function AboutPage() {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">The Journey</p>
+            <p className="text-gold-text text-sm font-semibold tracking-widest uppercase mb-3">The Journey</p>
             <h2 className="text-3xl font-bold text-navy">From Service to Classroom</h2>
           </div>
           <div className="space-y-0">
@@ -233,7 +232,7 @@ export default function AboutPage() {
                   )}
                 </div>
                 <div className="pb-10">
-                  <div className="text-gold text-sm font-semibold mb-1">{m.year}</div>
+                  <div className="text-gold-text text-sm font-semibold mb-1">{m.year}</div>
                   <h3 className="text-xl font-bold text-navy mb-2">{m.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{m.body}</p>
                 </div>
@@ -307,6 +306,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

@@ -2,6 +2,7 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import { getCurrentSession } from '@/lib/auth/guard'
 import { hasEntitlement, STUDY_ACCESS } from '@/lib/entitlements'
+import { withBuyerWatermark } from '@/lib/studio-watermark'
 
 // ---------------------------------------------------------------------------
 // The paid studio, served only to entitled customers.
@@ -66,7 +67,7 @@ export async function GET(): Promise<Response> {
     return new Response('Not found', { status: 404 })
   }
 
-  return new Response(await loadStudio(), {
+  return new Response(withBuyerWatermark(await loadStudio(), session.email), {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       // Never let a shared cache hold a copy of a per-customer authorized

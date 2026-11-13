@@ -50,10 +50,6 @@ const faqCategories = [
       {
         q: 'How much time should I expect to study each week?',
         a: 'Most students spend 8–12 hours per week between live sessions, reading, and practice exams. The amount varies by your background — PMs with more experience typically need less review time, while career transitioners may need more. Crystal builds a personalized study plan for each student based on their starting point.'
-      },
-      {
-        q: 'What is your pass rate?',
-        a: 'Students who complete the Wiser Generations program pass the PMP on their first attempt at an 87% rate — well above the industry average. This is the result of mentor-led learning, real-world application, and accountability built into every cohort.'
       }
     ]
   },
@@ -127,7 +123,7 @@ const faqCategories = [
 
 export default function FaqPage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
 
       {/* Hero */}
       <section className="bg-navy text-white py-16 px-4">
@@ -191,7 +187,7 @@ export default function FaqPage() {
       <section className="bg-brand-blue text-white py-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Still Have Questions?</h2>
-          <p className="text-gray-300 mb-8">
+          <p className="text-gray-200 mb-8">
             Book a free 15-minute strategy call with Crystal. She answers every question personally —
             no sales scripts, no pressure. Just an honest conversation about whether this program
             is the right fit for your situation.
@@ -215,6 +211,6 @@ export default function FaqPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

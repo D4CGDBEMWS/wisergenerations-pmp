@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { AUDIENCE_MAP } from '@/app/components/HomeClient'
+import { AUDIENCE_MAP } from '@/app/components/audiences'
 import { PROGRAMS } from '@/lib/constants'
 
 // Regression test for the audit finding: AUDIENCE_MAP referenced 'pmp-adult',

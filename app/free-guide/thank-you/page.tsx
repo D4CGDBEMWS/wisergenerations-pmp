@@ -68,7 +68,7 @@ export default function FreeGuideThankYouPage() {
           <p className="mt-3 text-base leading-7 text-gray-600">
             The guide tells you what changed. The program gets you certified. Mentor-led PMP® prep
             with Crystal Stewart, PMP® — live cohorts, 35 PMI contact hours, a 694-question
-            practice bank, and an 87% first-attempt pass rate.
+            practice bank.
           </p>
 
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">

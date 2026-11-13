@@ -17,6 +17,7 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/api/chat': ['./content/knowledge-base/**/*'],
     '/api/studio': ['./content/studio/**'],
+    '/api/liap/bonus': ['./content/liap/**'],
   },
   images: {
     remotePatterns: [
@@ -46,6 +47,12 @@ const nextConfig = {
       },
 
       // Consolidated duplicate routes onto a single canonical URL
+      // Short author address, printed in the Words to Know guide. Not
+      // permanent: the page may move, the printed /author must keep working.
+      { source: '/author', destination: '/living-is-a-project/author', permanent: false },
+      // Book bundles page, owner ruling 2026-10-30. Short address for flyers.
+      { source: '/bundles', destination: '/living-is-a-project/bundles', permanent: false },
+
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
       { source: '/resources/blog', destination: '/blog', permanent: true },
       // WIOA offering removed — redirect any inbound links to Programs
@@ -77,6 +84,9 @@ const nextConfig = {
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
+              // Modern form of X-Frame-Options: no other site may show these
+              // pages inside a frame (copy-protection review, 2026-10-30).
+              "frame-ancestors 'self'",
             ].join('; '),
           },
         ],

@@ -177,6 +177,15 @@ export function hasCohortSchedule(now: number = Date.now()): boolean {
   return getUpcomingCohorts(now).length > 0
 }
 
+/**
+ * The month live classes come back, while the schedule is switched off. Null
+ * when classes are running, so nothing shows a pause that is not happening.
+ */
+export function classesResumeLabel(): string | null {
+  const resume = (COHORTS as { classesResume?: string }).classesResume
+  return !COHORTS.enabled && resume ? resume : null
+}
+
 /** "9:00 AM – 5:00 PM ET" */
 export function getCohortSessionTimes(): string {
   return `${COHORTS.sessionStartTime} – ${COHORTS.sessionEndTime} ${COHORTS.timezone}`

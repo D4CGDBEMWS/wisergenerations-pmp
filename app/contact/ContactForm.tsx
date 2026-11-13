@@ -65,7 +65,7 @@ export default function ContactForm() {
         </div>
         <h2 className="text-2xl font-bold text-navy">Message sent!</h2>
         <p className="mt-3 text-sm leading-6 text-gray-600">
-          Thanks for reaching out. Crystal or someone on the team will respond within 2 business days.
+          Thanks for reaching out. Crystal or someone on the team will respond within 24 hours.
         </p>
         <button
           type="button"
@@ -123,7 +123,7 @@ export default function ContactForm() {
         </div>
 
         <label className="block space-y-1.5 text-sm font-medium text-navy">
-          <span>Subject <span className="text-gray-400 font-normal">(optional)</span></span>
+          <span>Subject <span className="text-gray-600 font-normal">(optional)</span></span>
           <input
             type="text"
             maxLength={200}
@@ -159,8 +159,8 @@ export default function ContactForm() {
           {formState === 'submitting' ? 'Sending…' : 'Send Message'}
         </button>
 
-        <p className="text-center text-xs text-gray-500">
-          Crystal or a team member responds within 2 business days.
+        <p className="text-center text-xs text-gray-600">
+          Crystal or a team member responds within 24 hours.
         </p>
       </form>
     </div>

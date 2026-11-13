@@ -6,6 +6,7 @@ import { grantEntitlement, hasEntitlement, STUDY_ACCESS } from '@/lib/entitlemen
 import {
   issueLoginToken,
   consumeLoginToken,
+  lookupUnusableToken,
   productForDestination,
   type LoginProduct,
 } from '@/lib/auth/login-token'
@@ -19,6 +20,7 @@ import {
 import { identifyCheckoutSession, identifySubscription, productGrants } from '@/lib/programs'
 import {
   createSession,
+  validateSession,
   SESSION_COOKIE,
   LEGACY_COOKIE,
   sessionCookieOptions,
@@ -303,8 +305,21 @@ export async function GET(req: NextRequest) {
 
   const consumed = await consumeLoginToken(token)
   if (!consumed) {
+    // A used or expired link. Owner report, 2026-11-04: someone who clicks
+    // the email link a second time is usually already signed in, and should
+    // simply arrive; everyone else gets their own product's sign-in page
+    // (never the Study Access one for a book reader) with a fresh-link prompt.
+    const earlier = await lookupUnusableToken(token)
+    const product = productForDestination(earlier?.redirectTo) ?? 'study'
+    const config = programLogin(product)
+
+    const session = await validateSession(req.cookies.get(SESSION_COOKIE)?.value)
+    if (earlier && session && (await hasEntitlement(session.customerId, config.entitlementKey))) {
+      return NextResponse.redirect(new URL(earlier.redirectTo, req.url))
+    }
+
     await recordAuditEvent({ eventType: 'login.failed', metadata: { result: 'invalid_or_expired' } })
-    return NextResponse.redirect(new URL('/access?error=expired', req.url))
+    return NextResponse.redirect(new URL(`${config.signInPath}?error=expired`, req.url))
   }
 
   // Which program this link belongs to is derived from the destination stored

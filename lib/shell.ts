@@ -97,6 +97,9 @@ const DEFAULT_SHELL: Shell = {
   pathPrefixes: [],
   homeHref: '/',
   nav: [
+    // Owner go-live 2026-10-29: the author page is public and needs a way in
+    // from the main site. /author redirects to /living-is-a-project/author.
+    { label: 'New Book', href: '/author' },
     { label: 'Programs', href: '/programs' },
     { label: 'Veterans', href: '/veterans' },
     { label: 'Corporate', href: '/corporate' },

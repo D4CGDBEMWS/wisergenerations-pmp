@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import { LiapPageView } from '@/components/liap/LiapPageView'
+import { publicationDate } from '@/lib/liap/launch'
+import { assessmentOpen } from '@/lib/liap/assessment-availability'
+import { PREBUY_BONUS, bonusHref } from '@/lib/liap/bonus'
 
 export const metadata = {
-  title: 'Your assessment is unlocked | Wiser Generations',
+  title: 'Thank you for your order | Wiser Generations',
   robots: { index: false, follow: false },
 }
 
@@ -16,7 +19,43 @@ export const metadata = {
 // the real check, and it explains the delay if the grant has not landed yet.
 // ---------------------------------------------------------------------------
 
-export default function PreorderCompletePage() {
+export default async function PreorderCompletePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>
+}) {
+  // Stripe appends the checkout session; the bonus route checks it is paid.
+  const { session_id: sessionId } = await searchParams
+  const bonus = bonusHref({ sessionId })
+
+  // Pre-orders can be open before the Assessment is (LIAP_ASSESSMENT off).
+  if (!assessmentOpen()) {
+    return (
+      <main className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-24">
+        <LiapPageView event="liap_preorder_completed" />
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+          Order confirmed
+        </p>
+        <h1 className="mt-4 text-3xl font-bold leading-tight text-navy sm:text-4xl">
+          Thank you. Your book and your assessment are reserved.
+        </h1>
+        <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
+          <p>Your copy mails to the address you gave at checkout when the book publishes on {publicationDate()}.</p>
+          <p>
+            Your purchase includes the Life Project-Ready™ Assessment. It opens soon — we&rsquo;ll
+            email you the moment it&rsquo;s ready, and you won&rsquo;t need to buy anything else.
+          </p>
+        </div>
+        <a
+          href={bonus}
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-xl border-2 border-gold px-6 text-base font-bold text-navy hover:bg-gold/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+        >
+          Download your bonus: the {PREBUY_BONUS.name} (PDF)
+        </a>
+      </main>
+    )
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-24">
       <LiapPageView event="liap_preorder_completed" />
@@ -29,7 +68,7 @@ export default function PreorderCompletePage() {
       </h1>
 
       <div className="mt-6 space-y-4 leading-relaxed text-gray-700">
-        <p>Your preorder is confirmed. Your copy ships when the book publishes in October 2026.</p>
+        <p>Your preorder is confirmed. Your copy mails to the address you gave at checkout when the book publishes on {publicationDate()}.</p>
         <p>
           Now let&rsquo;s determine where you are and what deserves your attention next. It takes
           about fifteen minutes, and it saves as you go.
@@ -42,6 +81,13 @@ export default function PreorderCompletePage() {
       >
         Begin my assessment
       </Link>
+
+      <a
+          href={bonus}
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-xl border-2 border-gold px-6 text-base font-bold text-navy hover:bg-gold/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+        >
+          Download your bonus: the {PREBUY_BONUS.name} (PDF)
+        </a>
 
       <p className="mt-8 text-sm leading-relaxed text-gray-500">
         We&rsquo;ve emailed you an access link as well, so you can come back to this later. If the

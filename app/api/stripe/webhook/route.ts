@@ -11,6 +11,14 @@ import {
 } from '@/lib/entitlements'
 import { identifyCheckoutSession, productGrants } from '@/lib/programs'
 import { fulfilPreorder, isLiapPreorder } from '@/lib/liap/fulfilment'
+import { creditBookPurchase } from '@/lib/liap/attribution'
+import { tagLiapContact } from '@/lib/liap/crm'
+import { fulfilRetreat, isLiapRetreat } from '@/lib/liap/retreat'
+import { saveBookShipment, shippingFromSession } from '@/lib/liap/shipping'
+import { isLiapBundle } from '@/lib/liap/bundles'
+import { isLiapWorkshop } from '@/lib/liap/workshop'
+import { fulfilWorkshop } from '@/lib/liap/workshop-service'
+import { countRetreatSeats } from '@/lib/liap/retreat-seats'
 import { LIAP_ENTITLEMENT } from '@/lib/liap/product'
 import { revokeAllSessionsForCustomer } from '@/lib/auth/session'
 import Stripe from 'stripe'
@@ -406,8 +414,15 @@ export async function POST(request: NextRequest) {
         const liapEmail =
           liapSession.customer_email || liapSession.customer_details?.email || ''
 
-        if (isLiapPreorder(liapSession.metadata) && liapEmail && liapSession.payment_status === 'paid') {
-          await fulfilPreorder({
+        // A bundle (lib/liap/bundles.ts) is the same book in quantity, so it is
+        // fulfilled through the same path, with its copy count.
+        const liapIsBundle = isLiapBundle(liapSession.metadata)
+        if (
+          (isLiapPreorder(liapSession.metadata) || liapIsBundle) &&
+          liapEmail &&
+          liapSession.payment_status === 'paid'
+        ) {
+          const result = await fulfilPreorder({
             email: liapEmail,
             name: liapSession.customer_details?.name ?? null,
             stripeCustomerId:
@@ -417,6 +432,85 @@ export async function POST(request: NextRequest) {
               typeof liapSession.payment_intent === 'string' ? liapSession.payment_intent : null,
             idempotencyKey: `${event.id}:${LIAP_ENTITLEMENT}`,
             amount: liapSession.amount_total ?? null,
+            quantity: liapIsBundle ? Math.max(1, Number(liapSession.metadata?.copies) || 1) : 1,
+          })
+
+          // Where to mail the paperback. Never fatal (see lib/liap/shipping).
+          const shipTo = shippingFromSession(liapSession)
+          if (result.orderId && shipTo) await saveBookShipment(result.orderId, shipTo)
+          else if (!shipTo) console.error('[stripe/webhook] book preorder without a shipping address', liapSession.id)
+
+          // Tag the buyer in Mailchimp so the "your Assessment is open" email
+          // and launch-week emails can reach every pre-buyer. Never fatal:
+          // tagLiapContact swallows its own errors.
+          await tagLiapContact(
+            liapEmail,
+            liapIsBundle
+              ? ['liap_book_preorder', 'liap_book_bundle', 'liap_assessment_entitled']
+              : ['liap_book_preorder', 'liap_assessment_entitled']
+          )
+
+          // Credit the community partner whose code brought this buyer, if
+          // there was one. AFTER fulfilment and deliberately not before: the
+          // customer's access is the thing that must not fail, and
+          // creditBookPurchase swallows its own errors so a measurement
+          // problem cannot cost somebody the product they paid for.
+          //
+          // Keyed on the checkout session id, so Stripe's webhook retries
+          // credit one sale once.
+          await creditBookPurchase({
+            referralCode: liapSession.metadata?.referral ?? null,
+            customerId: result.customerId,
+            outcomeRef: liapSession.id,
+          })
+        }
+      }
+
+      // ───────────────────────────────────────────────────────────────
+      // Be Ready to Make the Turn Workshop registration (owner ruling
+      // 2026-11-04). Matched on its own marker, set only by
+      // app/api/liap/workshop. Never fatal: a failure is logged and Stripe
+      // still has the payment.
+      // ───────────────────────────────────────────────────────────────
+      if (event.type === 'checkout.session.completed') {
+        const ws = event.data.object as Stripe.Checkout.Session
+        const wEmail = ws.customer_email || ws.customer_details?.email || ''
+        if (isLiapWorkshop(ws.metadata) && wEmail && ws.payment_status === 'paid') {
+          await fulfilWorkshop({
+            email: wEmail,
+            name: ws.customer_details?.name ?? null,
+            stripeCustomerId: typeof ws.customer === 'string' ? ws.customer : null,
+            checkoutSessionId: ws.id,
+            sessionKey: ws.metadata?.session,
+            amount: ws.amount_total ?? null,
+            referralCode: ws.metadata?.referral ?? null,
+          }).catch((err) => console.error('[stripe/webhook] workshop fulfilment failed', ws.id, err))
+        }
+      }
+
+      // ───────────────────────────────────────────────────────────────
+      // Living the Journey — 3-Day Retreat registration. Matched on its own
+      // metadata marker, set only by app/api/liap/retreat.
+      // ───────────────────────────────────────────────────────────────
+      if (event.type === 'checkout.session.completed') {
+        const rs = event.data.object as Stripe.Checkout.Session
+        const rEmail = rs.customer_email || rs.customer_details?.email || ''
+        if (isLiapRetreat(rs.metadata) && rEmail && rs.payment_status === 'paid') {
+          // Check the 12-seat limit after payment, in case two buyers finished
+          // together. A failed count must not cost the buyer their registration.
+          let paidSeats: number | null = null
+          try {
+            const rStripe = new Stripe(getEnv('STRIPE_SECRET_KEY'), { apiVersion: '2025-08-27.basil' })
+            paidSeats = (await countRetreatSeats(rStripe)).paid
+          } catch (err) {
+            console.error('[stripe/webhook] could not count retreat seats', err)
+          }
+          await fulfilRetreat({
+            paidSeats,
+            email: rEmail,
+            name: rs.customer_details?.name ?? null,
+            stripeCustomerId: typeof rs.customer === 'string' ? rs.customer : null,
+            referralCode: rs.metadata?.referral ?? null,
           })
         }
       }

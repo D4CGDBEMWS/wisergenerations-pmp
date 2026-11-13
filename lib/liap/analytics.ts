@@ -26,6 +26,7 @@ import { trackEvent } from '@/components/Analytics'
 export const LIAP_EVENTS = [
   'liap_hub_view',
   'liap_book_view',
+  'liap_bundles_viewed',
   'liap_preorder_clicked',
   'liap_preorder_completed',
   'liap_assessment_unlocked',
@@ -35,6 +36,8 @@ export const LIAP_EVENTS = [
   'liap_results_viewed',
   'liap_results_email_sent',
   'liap_next_offer_clicked',
+  'liap_workshop_viewed',
+  'liap_workshop_clicked',
 ] as const
 
 export type LiapEvent = (typeof LIAP_EVENTS)[number]
